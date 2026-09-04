@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "aiesec-event-scraper"
+version = "1.0.0"
+description = "AIESEC Egypt B2C Event Scraping & Google Sheets Synchronization Engine"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "httpx>=0.28.0",
+    "beautifulsoup4>=4.12.0",
+    "lxml>=5.0.0",
+    "pandas>=2.0.0",
+    "openpyxl>=3.1.0",
+    "pydantic>=2.5.0",
+    "pyyaml>=6.0",
+    "rich>=13.0.0",
+    "gspread>=6.0.0",
+    "google-auth>=2.20.0",
+    "python-dateutil>=2.8.2",
+    "pytest>=8.0.0",
+]
+
+[project.scripts]
+aiesec-scraper = "aiesec_scraper.cli:main"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]

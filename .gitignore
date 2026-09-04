@@ -1,0 +1,23 @@
+# Virtual Environment
+.venv/
+venv/
+ENV/
+
+# Secrets & Credentials
+service_account.json
+.env
+*.pem
+*.key
+
+# Python Bytecode & Cache
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Local Data Exports & Previews
+data/
+
+# OS Specific
+.DS_Store
+Thumbs.db

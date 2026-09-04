@@ -1,0 +1,149 @@
+# AIESEC Egypt B2C Event Scraper Configuration
+
+country: "egypt"
+
+# Major Egyptian hubs to query when scraping country-wide
+default_cities:
+  - "cairo"
+  - "alexandria"
+  - "giza"
+  - "new-cairo"
+  - "mansoura"
+  - "assiut"
+  - "hurghada"
+
+# Date window: filter events occurring within next N months (6 months = ~180 days)
+date_window_months: 6
+
+# Automated schedule interval in days
+schedule_interval_days: 3
+
+# Target categories and keyword weights for AIESEC B2C recruitment and partnerships
+keywords:
+  career_and_jobs:
+    weight: 10
+    terms:
+      - "career"
+      - "job"
+      - "fair"
+      - "recruitment"
+      - "employment"
+      - "internship"
+      - "hiring"
+      - "career day"
+      - "cv"
+      - "linkedin"
+
+  university_and_youth:
+    weight: 10
+    terms:
+      - "student"
+      - "university"
+      - "campus"
+      - "youth"
+      - "undergraduate"
+      - "auc"
+      - "guc"
+      - "cairo university"
+      - "ain shams"
+      - "alexandria university"
+      - "bue"
+      - "msa"
+      - "giu"
+      - "must"
+      - "aast"
+
+  parallel_youth_organizations:
+    weight: 10
+    terms:
+      - "ieee"
+      - "enactus"
+      - "hult prize"
+      - "toastmasters"
+      - "gdg"
+      - "google developer"
+      - "tedx"
+      - "rotaract"
+      - "lions club"
+      - "youth speak"
+      - "model united nations"
+      - "mun"
+
+  leadership_and_development:
+    weight: 9
+    terms:
+      - "leadership"
+      - "skills"
+      - "workshop"
+      - "bootcamp"
+      - "training"
+      - "public speaking"
+      - "entrepreneurship"
+      - "startup"
+      - "incubator"
+      - "summit"
+      - "conference"
+
+  tech_and_innovation:
+    weight: 10
+    terms:
+      - "tech"
+      - "hackathon"
+      - "ai"
+      - "artificial intelligence"
+      - "software"
+      - "coding"
+      - "web development"
+      - "data science"
+      - "robotics"
+
+  volunteering_and_sdgs:
+    weight: 9
+    terms:
+      - "volunteer"
+      - "volunteering"
+      - "ngo"
+      - "sdg"
+      - "social impact"
+      - "climate"
+      - "sustainability"
+      - "community service"
+
+  culture_and_arts:
+    weight: 6
+    terms:
+      - "cultural"
+      - "language exchange"
+      - "festival"
+      - "music"
+      - "concert"
+      - "arts"
+      - "exhibition"
+
+# Email Notifications Settings
+notifications:
+  enabled: true
+  min_score_threshold: 8.5
+  smtp_host: "smtp.gmail.com"
+  smtp_port: 587
+  smtp_user: ""          # Configure in .env (SMTP_USER)
+  smtp_password: ""      # Configure in .env (SMTP_PASSWORD)
+  sender_name: "AIESEC Egypt B2C Event Radar"
+  recipients:
+    - "b2c.egypt@aiesec.net"
+
+# Output settings
+output:
+  export_excel: true
+  export_csv: true
+  output_dir: "data"
+  google_sheets:
+    enabled: true
+    sheet_name: "AIESEC Egypt B2C Event Radar"
+    service_account_file: "service_account.json"
+
+# Web Dashboard Settings
+web:
+  host: "0.0.0.0"
+  port: 8000
+  title: "AIESEC Egypt B2C Event Radar"
