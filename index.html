@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en" class="dark bg-[#030712]">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AIESEC in Tanta - B2C Event Radar & Command Center</title>
+  
+  <!-- Critical Dark Mode Fallback Styles -->
+  <style>
+    html, body {
+      background-color: #030712 !important;
+      color: #F8FAFC !important;
+      min-height: 100vh;
+      margin: 0;
+      padding: 0;
+    }
+    .radar-surface, .figma-surface, .radar-card {
+      background-color: #0A1020 !important;
+      border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    }
+    .figma-input {
+      background-color: #080D1D !important;
+      color: #F8FAFC !important;
+      border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    }
+  </style>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            aiesec: {
+              blue: '#037EF3',
+              glow: '#38BDF8',
+              coral: '#FF4D36',
+              cyan: '#00E5FF',
+              dark: '#030712',
+              surface: '#0A1020',
+              elevated: '#0F172C'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  
+  <!-- Three.js (WebGL 3D Holographic Graphics Engine) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <!-- GSAP (GreenSock Physics & Timeline Animations) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="style.css?v=6.2">
+</head>
+<body class="dark min-h-screen flex flex-col antialiased bg-[#030712] text-slate-100 selection:bg-[#037EF3]/30 selection:text-white relative overflow-x-hidden">
+
+  <!-- Interactive Three.js 3D Holographic Particle Radar Canvas -->
+  <canvas id="threejs-radar-canvas"></canvas>
+
+  <!-- Top Floating Frosted Navigation Bar -->
+  <header class="bg-[#060B18]/85 backdrop-blur-2xl border-b border-white/[0.08] sticky top-0 z-30 shadow-2xl relative">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      
+      <!-- Brand, LC Identifier & Telemetry -->
+      <div class="flex items-center space-x-3.5">
+        <a href="./" class="flex items-center shrink-0">
+          <img src="aiesec-logo.svg" alt="AIESEC Logo" class="h-8 sm:h-9 w-auto hover:brightness-110 transition drop-shadow-[0_0_18px_rgba(3,126,243,0.45)]">
+        </a>
+        <div class="border-l border-white/10 pl-3">
+          <div class="flex items-center gap-2">
+            <h1 class="font-extrabold text-base sm:text-lg tracking-tight text-white flex items-center gap-1.5">
+              <span>AIESEC in Tanta</span>
+            </h1>
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-500/10 text-sky-400 border border-sky-500/30 uppercase tracking-wider">
+              <span class="radar-live-dot"></span> B2C RADAR v3.2
+            </span>
+          </div>
+          <div class="flex items-center gap-2 text-[11px] text-slate-400 font-medium">
+            <span>Egypt Campus Radar</span>
+            <span class="text-slate-600">•</span>
+            <span id="live-clock" class="text-slate-300 font-mono text-[10px]">Cairo: --:-- --</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Action Buttons -->
+      <div class="flex items-center space-x-2">
+        <button id="btn-sync-sheets" class="flex items-center gap-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 hover:border-emerald-500/50 text-xs font-semibold px-3 py-2 rounded-xl transition shadow-sm active:scale-95">
+          <i data-lucide="sheet" class="w-4 h-4"></i>
+          <span class="hidden md:inline">Sync Sheets</span>
+        </button>
+
+        <button id="btn-send-email" class="flex items-center gap-1.5 bg-sky-500/10 hover:bg-sky-500/20 text-sky-400 border border-sky-500/30 hover:border-sky-500/50 text-xs font-semibold px-3 py-2 rounded-xl transition shadow-sm active:scale-95">
+          <i data-lucide="mail" class="w-4 h-4"></i>
+          <span class="hidden md:inline">Email Digest</span>
+        </button>
+
+        <button id="btn-scrape-now" class="flex items-center gap-1.5 bg-gradient-to-r from-[#FF4D36] to-[#E03620] hover:brightness-110 text-white text-xs font-bold px-3.5 py-2 rounded-xl transition shadow-[0_0_22px_rgba(255,77,54,0.4)] active:scale-95">
+          <i data-lucide="refresh-cw" class="w-4 h-4" id="scrape-icon"></i>
+          <span>Scrape Now</span>
+        </button>
+
+        <!-- Export Dropdown -->
+        <div class="relative group">
+          <button class="p-2 text-slate-400 hover:text-white hover:bg-white/[0.08] rounded-xl transition border border-white/[0.09]" title="Export Options">
+            <i data-lucide="download" class="w-4 h-4"></i>
+          </button>
+          <div class="absolute right-0 mt-2 w-52 bg-[#080D1D] rounded-2xl shadow-2xl py-1.5 hidden group-hover:block border border-white/10 z-50 text-slate-200 text-xs backdrop-blur-2xl animate-in fade-in zoom-in-95 duration-100">
+            <div class="px-3.5 py-1.5 text-[10px] font-bold text-slate-500 uppercase tracking-wider border-b border-white/[0.06] mb-1">Export Data Feeds</div>
+            <a href="/api/export/excel" class="flex items-center px-3.5 py-2 hover:bg-blue-600/20 gap-2.5 font-medium transition text-slate-300 hover:text-white">
+              <i data-lucide="file-spreadsheet" class="w-4 h-4 text-emerald-400"></i> Excel Workbook (.xlsx)
+            </a>
+            <a href="/api/export/csv" class="flex items-center px-3.5 py-2 hover:bg-blue-600/20 gap-2.5 font-medium transition text-slate-300 hover:text-white">
+              <i data-lucide="file-text" class="w-4 h-4 text-sky-400"></i> CSV Spreadsheet (.csv)
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Container -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+
+    <!-- ============================================================
+         EXECUTIVE HERO BENTO GRID (Three.js 3D Radar + Telemetry Hub)
+         ============================================================ -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
+      
+      <!-- Left Column (3 cols on lg): Total Monitored & High-Priority Target Hub -->
+      <div class="lg:col-span-3 flex flex-col gap-5 justify-between">
+        
+        <!-- Tile 1: Total Events Monitored with Floating Crown & Flagship Pill -->
+        <div class="radar-surface p-5 flex-1 flex flex-col justify-between cursor-pointer group hover:border-sky-500/40 transition" id="tile-total-radar" title="Click to view all events">
+          <div class="flex items-center justify-between">
+            <div class="w-10 h-10 rounded-2xl bg-amber-500/10 border border-amber-500/25 flex items-center justify-center text-amber-400 shadow-[0_0_16px_rgba(245,158,11,0.25)] group-hover:scale-105 transition">
+              <i data-lucide="crown" class="w-5 h-5"></i>
+            </div>
+            <span class="text-[10px] font-bold text-sky-400 bg-sky-500/10 px-2.5 py-0.5 rounded-full border border-sky-500/25 uppercase tracking-wider">Pipeline</span>
+          </div>
+
+          <div class="my-3">
+            <div class="text-4xl sm:text-5xl font-black text-white tracking-tight font-display" id="stat-total">283</div>
+            <div class="text-xs font-semibold text-slate-400 mt-1 flex items-center gap-1.5">
+              <span>Total Events Monitored</span>
+            </div>
+          </div>
+
+          <div class="pt-3 border-t border-white/[0.06]">
+            <button id="btn-filter-flagship-badge" class="w-full px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-500/35 flex items-center justify-between shadow-[0_0_12px_rgba(245,158,11,0.18)] transition active:scale-95" title="Click to filter Flagship Summits">
+              <span class="flex items-center gap-1.5">
+                <i data-lucide="crown" class="w-3.5 h-3.5 text-amber-400"></i>
+                <span>Flagship Summits</span>
+              </span>
+              <span class="px-2 py-0.5 rounded-md bg-amber-500/30 text-amber-200 font-extrabold text-[11px]" id="stat-flagship-count">10</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Tile 2: High Priority Lead Focus Card with Center Flame -->
+        <div class="radar-surface p-5 flex-1 flex flex-col justify-between card-high-glow">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-bold text-[#FF8875] uppercase tracking-wider flex items-center gap-1.5">
+              <span>High Priority B2C</span>
+            </span>
+            <span class="text-[10px] bg-red-500/15 text-red-300 px-2 py-0.5 rounded-md font-bold">≥8.5</span>
+          </div>
+
+          <div class="text-center my-2">
+            <div class="w-11 h-11 rounded-2xl bg-red-500/10 border border-red-500/25 flex items-center justify-center text-[#FF4D36] shadow-[0_0_16px_rgba(255,77,54,0.3)] mx-auto flame-animated mb-2">
+              <i data-lucide="flame" class="w-5 h-5"></i>
+            </div>
+            <div class="text-3xl font-black text-[#FF8875] tracking-tight font-display" id="stat-high">46</div>
+            <div class="text-[11px] text-slate-400 font-medium">Immediate Conversion Targets</div>
+          </div>
+
+          <div class="grid grid-cols-3 gap-1 py-2 my-1 border-y border-white/[0.06] text-center">
+            <div>
+              <div class="text-xs font-black text-white">23%</div>
+              <div class="text-[9px] text-slate-500 uppercase font-semibold">Techne</div>
+            </div>
+            <div>
+              <div class="text-xs font-black text-emerald-400">100%</div>
+              <div class="text-[9px] text-slate-500 uppercase font-semibold">Verified</div>
+            </div>
+            <div>
+              <div class="text-xs font-black text-sky-400">50+</div>
+              <div class="text-[9px] text-slate-500 uppercase font-semibold">LC Impact</div>
+            </div>
+          </div>
+
+          <button id="btn-quick-filter-high" class="w-full py-1.5 px-3 rounded-xl bg-[#FF4D36]/20 hover:bg-[#FF4D36] text-[#FF8875] hover:text-white border border-[#FF4D36]/40 text-xs font-bold transition active:scale-95 text-center">
+            View High Leads
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Center Column (6 cols on lg): 3D Holographic Particle Globe & Interactive Calendar -->
+      <div class="lg:col-span-6 radar-surface p-5 flex flex-col justify-between">
+        
+        <!-- Header of 3D Globe Card -->
+        <div class="flex items-center justify-between mb-2">
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-[#00E5FF] shadow-[0_0_8px_#00E5FF] animate-pulse"></span>
+            <h3 class="font-extrabold text-xs sm:text-sm text-white tracking-tight font-display">Egypt Campus Radar Grid (3D Spatial Feed)</h3>
+          </div>
+          <span class="text-[10px] font-mono text-slate-400 bg-white/[0.05] px-2.5 py-0.5 rounded-full border border-white/[0.08]">WebGL 60 FPS</span>
+        </div>
+
+        <!-- Dedicated Three.js 3D WebGL Globe Viewport -->
+        <div class="relative w-full h-56 sm:h-64 rounded-2xl bg-[#040816]/70 border border-white/[0.08] overflow-hidden flex items-center justify-center shadow-inner group">
+          <canvas id="hero-globe-canvas" class="w-full h-full cursor-grab active:cursor-grabbing"></canvas>
+          
+          <!-- Floating 3D City Intel Tooltip -->
+          <div id="globe-tooltip" class="absolute pointer-events-none opacity-0 bg-[#080E1E]/95 backdrop-blur-xl border border-sky-500/40 rounded-xl p-2.5 shadow-2xl z-30 transition-opacity duration-150 text-xs w-52 -translate-x-1/2 -translate-y-full">
+            <div class="flex items-center justify-between border-b border-white/10 pb-1 mb-1.5">
+              <span id="globe-tooltip-city" class="font-extrabold text-white text-xs flex items-center gap-1">📍 Cairo</span>
+              <span id="globe-tooltip-badge" class="text-[9px] font-bold bg-sky-500/20 text-sky-300 px-1.5 py-0.5 rounded">Hub Node</span>
+            </div>
+            <div class="text-[11px] text-slate-300 space-y-0.5">
+              <div class="flex justify-between">
+                <span>Active Radar Events:</span>
+                <strong id="globe-tooltip-count" class="text-white font-bold">124</strong>
+              </div>
+              <div id="globe-tooltip-flagships" class="text-amber-400 font-semibold text-[10px]">👑 Techne Summit Cairo, RiseUp</div>
+              <div class="text-[9px] text-sky-300 mt-1 pt-1 border-t border-white/5 font-semibold flex items-center gap-1">
+                <span>⚡ Click pin to filter radar</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom Floating Interactive Telemetry Strip over Globe -->
+          <div class="absolute bottom-2 left-2.5 right-2.5 flex items-center justify-between text-[10px] text-slate-300 bg-[#070D1E]/92 backdrop-blur-md px-2.5 py-1.5 rounded-xl border border-white/[0.08] z-20">
+            <div class="flex items-center gap-1 overflow-x-auto py-0.5 scrollbar-none" id="globe-city-chips">
+              <span class="text-[9px] uppercase font-bold text-slate-400 mr-1 shrink-0">Hubs:</span>
+              <button class="globe-hub-btn px-2 py-0.5 rounded-md bg-[#037EF3] text-white font-bold transition active:scale-95 shrink-0 shadow-sm" data-city="all">All</button>
+              <button class="globe-hub-btn px-2 py-0.5 rounded-md bg-white/[0.07] hover:bg-sky-500/20 text-slate-200 hover:text-sky-300 font-medium transition active:scale-95 shrink-0" data-city="tanta">📍 Tanta</button>
+              <button class="globe-hub-btn px-2 py-0.5 rounded-md bg-white/[0.07] hover:bg-sky-500/20 text-slate-200 hover:text-sky-300 font-medium transition active:scale-95 shrink-0" data-city="cairo">Cairo</button>
+              <button class="globe-hub-btn px-2 py-0.5 rounded-md bg-white/[0.07] hover:bg-sky-500/20 text-slate-200 hover:text-sky-300 font-medium transition active:scale-95 shrink-0" data-city="alexandria">Alex</button>
+              <button class="globe-hub-btn px-2 py-0.5 rounded-md bg-white/[0.07] hover:bg-sky-500/20 text-slate-200 hover:text-sky-300 font-medium transition active:scale-95 shrink-0" data-city="giza">Giza</button>
+              <button class="globe-hub-btn px-2 py-0.5 rounded-md bg-white/[0.07] hover:bg-sky-500/20 text-slate-200 hover:text-sky-300 font-medium transition active:scale-95 shrink-0" data-city="mansoura">Mansoura</button>
+              <button class="globe-hub-btn px-2 py-0.5 rounded-md bg-white/[0.07] hover:bg-sky-500/20 text-slate-200 hover:text-sky-300 font-medium transition active:scale-95 shrink-0" data-city="assiut">Assiut</button>
+            </div>
+            <div id="globe-status-pill" class="text-sky-400 font-mono font-bold shrink-0 ml-2 text-[9px] bg-sky-500/10 px-2 py-0.5 rounded border border-sky-500/20">
+              6 Active Hubs
+            </div>
+          </div>
+        </div>
+
+        <!-- Campus Calendar Mini-Horizon -->
+        <div class="mt-4 pt-3 border-t border-white/[0.06]">
+          <div class="flex items-center justify-between mb-2">
+            <div class="flex items-center gap-1.5 text-xs font-bold text-slate-200">
+              <i data-lucide="calendar" class="w-3.5 h-3.5 text-sky-400"></i>
+              <span>Upcoming Summit Calendar</span>
+            </div>
+            <span class="text-[10px] text-slate-400">October - November 2026</span>
+          </div>
+
+          <!-- Interactive Day Capsules -->
+          <div class="grid grid-cols-7 gap-1.5 text-center text-xs">
+            <div class="p-2 rounded-xl bg-white/[0.03] text-slate-400">
+              <div class="text-[9px] uppercase font-bold text-slate-500">Thu</div>
+              <div class="font-bold text-slate-300 text-xs">01</div>
+            </div>
+            <div class="p-2 rounded-xl bg-white/[0.03] text-slate-400">
+              <div class="text-[9px] uppercase font-bold text-slate-500">Fri</div>
+              <div class="font-bold text-slate-300 text-xs">02</div>
+            </div>
+            <div class="p-2 rounded-xl bg-[#037EF3]/25 border border-[#037EF3]/60 text-white cursor-pointer hover:scale-105 transition shadow-[0_0_14px_rgba(3,126,243,0.4)] active:scale-95" id="hero-cal-techne" title="Click to inspect Techne Summit Alexandria">
+              <div class="text-[9px] uppercase font-black text-[#38BDF8]">OCT</div>
+              <div class="font-black text-white text-xs">03</div>
+            </div>
+            <div class="p-2 rounded-xl bg-white/[0.03] text-slate-400">
+              <div class="text-[9px] uppercase font-bold text-slate-500">Sun</div>
+              <div class="font-bold text-slate-300 text-xs">04</div>
+            </div>
+            <div class="p-2 rounded-xl bg-white/[0.03] text-slate-400">
+              <div class="text-[9px] uppercase font-bold text-slate-500">Mon</div>
+              <div class="font-bold text-slate-300 text-xs">05</div>
+            </div>
+            <div class="p-2 rounded-xl bg-amber-500/20 border border-amber-500/45 text-amber-300 cursor-pointer hover:scale-105 transition shadow-[0_0_14px_rgba(245,158,11,0.3)] active:scale-95" id="hero-cal-clash" title="Click to view Peak Competition Weekend">
+              <div class="text-[9px] uppercase font-black text-amber-400">PEAK</div>
+              <div class="font-black text-white text-xs">16</div>
+            </div>
+            <div class="p-2 rounded-xl bg-white/[0.03] text-slate-400">
+              <div class="text-[9px] uppercase font-bold text-slate-500">Sat</div>
+              <div class="font-bold text-slate-300 text-xs">17</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right Column (3 cols on lg): Strategic Action & Trend Telemetry -->
+      <div class="lg:col-span-3 flex flex-col gap-5 justify-between">
+        
+        <!-- Tile 3: Recommended B2C Action -->
+        <div class="radar-surface p-5 flex-1 flex flex-col justify-between border-l-4 border-l-[#037EF3]">
+          <div>
+            <div class="flex items-center gap-2 mb-2">
+              <div class="w-7 h-7 rounded-xl bg-[#037EF3]/20 flex items-center justify-center text-[#38BDF8]">
+                <i data-lucide="zap" class="w-4 h-4"></i>
+              </div>
+              <h4 class="font-extrabold text-xs text-white uppercase tracking-wider font-display">Recommended B2C Action</h4>
+            </div>
+            <p class="text-xs text-slate-300 leading-relaxed font-medium">
+              Deploy physical booth delegation & youth sign-ups at Techne Summit Alexandria. Immediate high-yield B2C pipeline.
+            </p>
+          </div>
+
+          <button id="btn-hero-launch-pitch" class="mt-3 w-full py-2 px-3 rounded-xl bg-[#037EF3]/20 hover:bg-[#037EF3] text-[#38BDF8] hover:text-white border border-[#037EF3]/40 text-xs font-bold transition flex items-center justify-center gap-1.5 active:scale-95 shadow-[0_0_14px_rgba(3,126,243,0.2)]">
+            <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Launch Outreach Pitch →
+          </button>
+        </div>
+
+        <!-- Tile 4: Campus Reach & Sparkline Trends -->
+        <div class="radar-surface p-5 flex-1 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between text-xs mb-2">
+              <div>
+                <div class="text-[10px] text-slate-400 font-bold uppercase">Total Reach</div>
+                <div class="text-lg font-black text-white font-display">2,014 <span class="text-[10px] text-emerald-400 font-bold">▲ 10.8%</span></div>
+              </div>
+              <div class="text-right">
+                <div class="text-[10px] text-slate-400 font-bold uppercase">Impressions</div>
+                <div class="text-lg font-black text-white font-display">176,651 <span class="text-[10px] text-sky-400 font-bold">▲ 10.7%</span></div>
+              </div>
+            </div>
+
+            <!-- Glowing SVG Sparkline Curve -->
+            <div class="py-1">
+              <svg viewBox="0 0 300 70" class="w-full h-14 overflow-visible">
+                <defs>
+                  <linearGradient id="sparkGradient" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stop-color="#037EF3" />
+                    <stop offset="50%" stop-color="#00E5FF" />
+                    <stop offset="100%" stop-color="#38BDF8" />
+                  </linearGradient>
+                  <linearGradient id="sparkFill" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="rgba(0, 229, 255, 0.28)" />
+                    <stop offset="100%" stop-color="rgba(0, 229, 255, 0)" />
+                  </linearGradient>
+                </defs>
+                <path d="M 0,55 Q 40,60 75,35 T 150,45 T 225,15 T 300,30 L 300,70 L 0,70 Z" fill="url(#sparkFill)" />
+                <path d="M 0,55 Q 40,60 75,35 T 150,45 T 225,15 T 300,30" fill="none" stroke="url(#sparkGradient)" stroke-width="2.5" stroke-linecap="round" />
+                <circle cx="225" cy="15" r="4.5" fill="#00E5FF" class="animate-ping opacity-75" />
+                <circle cx="225" cy="15" r="3.5" fill="#FFFFFF" stroke="#00E5FF" stroke-width="2" />
+              </svg>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between text-[9px] text-slate-500 font-mono border-t border-white/[0.05] pt-2">
+            <span>JAN</span><span>APR</span><span>JUL</span><span>OCT</span><span>DEC</span>
+          </div>
+        </div>
+
+        <!-- Tile 5: Event Intelligence Feed Summary -->
+        <div class="radar-surface p-4 text-xs space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5 text-sky-400">
+              <i data-lucide="activity" class="w-3.5 h-3.5"></i> Live Intelligence
+            </span>
+            <span class="text-[9px] text-slate-500 font-mono">Stream Feed</span>
+          </div>
+          <div class="p-2 rounded-xl bg-white/[0.03] border border-white/[0.05] flex items-center justify-between">
+            <div>
+              <div class="text-[11px] font-bold text-white truncate max-w-[130px]">Techne Summit '26</div>
+              <div class="text-[10px] text-slate-400">12,000+ Attendees</div>
+            </div>
+            <div class="flex items-end gap-1 h-5">
+              <span class="w-1.5 h-3 bg-sky-500/60 rounded-full"></span>
+              <span class="w-1.5 h-4 bg-sky-400 rounded-full"></span>
+              <span class="w-1.5 h-2 bg-sky-500/40 rounded-full"></span>
+              <span class="w-1.5 h-5 bg-[#00E5FF] rounded-full"></span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Command-Style Toolbar & Filters -->
+    <div class="radar-surface p-5 space-y-4">
+      <div class="flex flex-col md:flex-row gap-3 items-center justify-between">
+        
+        <!-- Search Command Bar -->
+        <div class="relative w-full md:w-96">
+          <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-3"></i>
+          <input id="input-search" type="text" placeholder="Search Techne, career fairs, venues, topics..." 
+                 class="w-full pl-9 pr-10 py-2.5 figma-input rounded-xl text-xs font-medium focus:ring-2 focus:ring-[#00E5FF] focus:border-transparent outline-none transition placeholder:text-slate-500">
+          <kbd class="kbd-shortcut absolute right-3 top-2.5" title="Press / to focus search">/</kbd>
+        </div>
+
+        <!-- Sorting & Views -->
+        <div class="flex items-center gap-3 w-full md:w-auto justify-end">
+          <div class="flex items-center gap-2 text-xs font-semibold text-slate-300">
+            <span class="text-slate-400">Sort:</span>
+            <select id="select-sort" class="figma-input py-1.5 px-3 rounded-xl text-xs font-semibold cursor-pointer outline-none">
+              <option value="score_desc">Highest Score to Lowest</option>
+              <option value="score_asc">Lowest Score to Highest</option>
+              <option value="date_asc">Soonest Date First</option>
+              <option value="date_desc">Latest Date First</option>
+            </select>
+          </div>
+
+          <!-- View Switcher Segmented Control -->
+          <div class="flex bg-[#050A16] p-1 rounded-xl border border-white/[0.08]">
+            <button id="btn-view-cards" class="px-3 py-1 text-xs font-bold rounded-lg bg-[#037EF3] text-white shadow-sm flex items-center gap-1.5 transition active:scale-95">
+              <i data-lucide="layout-grid" class="w-3.5 h-3.5"></i> Cards
+            </button>
+            <button id="btn-view-calendar" class="px-3 py-1 text-xs font-bold rounded-lg text-slate-400 hover:text-white flex items-center gap-1.5 transition active:scale-95">
+              <i data-lucide="calendar-range" class="w-3.5 h-3.5"></i> Conflict Radar
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filter Controls & Chips -->
+      <div class="flex flex-wrap items-center gap-2 pt-3 border-t border-white/[0.06] text-xs">
+        
+        <!-- City Selector -->
+        <span class="font-bold text-slate-400 mr-1 flex items-center gap-1">
+          <i data-lucide="map-pin" class="w-3.5 h-3.5 text-rose-400"></i> City:
+        </span>
+        <select id="select-city" class="figma-input py-1 px-3 rounded-xl font-medium text-slate-200 mr-2 cursor-pointer outline-none">
+          <option value="all">All Egypt (Nationwide)</option>
+          <option value="tanta">📍 Tanta (Local Hub)</option>
+          <option value="cairo">Cairo</option>
+          <option value="alexandria">Alexandria</option>
+          <option value="giza">Giza</option>
+          <option value="mansoura">Mansoura</option>
+          <option value="assiut">Assiut</option>
+          <option value="hurghada">Hurghada</option>
+        </select>
+
+        <!-- Category Selector -->
+        <span class="font-bold text-slate-400 mx-1 flex items-center gap-1">
+          <i data-lucide="tag" class="w-3.5 h-3.5 text-amber-400"></i> Category:
+        </span>
+        <select id="select-category" class="figma-input py-1 px-3 rounded-xl font-medium text-slate-200 mr-2 cursor-pointer outline-none">
+          <option value="all">All Categories</option>
+          <option value="Flagship Summits">👑 Flagship Summits (Techne, RiseUp)</option>
+          <option value="Career Fair & Employment">💼 Career Fair & Employment</option>
+          <option value="Technology & Hackathons">💻 Technology & Hackathons</option>
+          <option value="Youth Leadership & Student Orgs">🌱 Youth Leadership & Student Orgs</option>
+          <option value="Arts & Entertainment">🎭 Arts & Entertainment</option>
+        </select>
+
+        <!-- Platform Source Selector -->
+        <span class="font-bold text-slate-400 mx-1 flex items-center gap-1">
+          <i data-lucide="layers" class="w-3.5 h-3.5 text-sky-400"></i> Stream:
+        </span>
+        <select id="select-source" class="figma-input py-1 px-3 rounded-xl font-medium text-slate-200 mr-2 cursor-pointer outline-none">
+          <option value="all">All Streams</option>
+          <option value="summit">👑 Flagship Summits</option>
+          <option value="ticketsmarche">🎟️ TicketsMarche</option>
+          <option value="facebook">📘 Facebook Events</option>
+          <option value="linkedin">💼 LinkedIn Announcements</option>
+          <option value="instagram">📸 Instagram Channels</option>
+          <option value="telegram">✈️ Telegram Broadcasts</option>
+          <option value="eventbrite">🎫 Eventbrite</option>
+          <option value="allevents">🌐 AllEvents</option>
+        </select>
+
+        <!-- Priority Chips -->
+        <span class="font-bold text-slate-400 mx-1">Priority:</span>
+        <button class="filter-priority-btn px-3 py-1 rounded-xl font-bold bg-[#037EF3] text-white shadow-[0_0_12px_rgba(3,126,243,0.35)]" data-priority="all">All</button>
+        <button class="filter-priority-btn px-3 py-1 rounded-xl font-medium bg-[#080D1D] text-slate-300 hover:bg-[#111A30] border border-white/[0.08]" data-priority="HIGH">High (≥8.5)</button>
+        <button class="filter-priority-btn px-3 py-1 rounded-xl font-medium bg-[#080D1D] text-slate-300 hover:bg-[#111A30] border border-white/[0.08]" data-priority="MEDIUM">Medium</button>
+        <button class="filter-priority-btn px-3 py-1 rounded-xl font-medium bg-[#080D1D] text-slate-300 hover:bg-[#111A30] border border-white/[0.08]" data-priority="LOW">Low</button>
+
+        <!-- Quick Toggles -->
+        <div class="ml-auto flex items-center gap-3">
+          <label class="flex items-center gap-1.5 cursor-pointer font-semibold text-purple-300 select-none hover:text-purple-200 transition">
+            <input type="checkbox" id="check-partners-only" class="rounded bg-[#080D1D] border-purple-500/40 text-purple-600 focus:ring-0">
+            <span>Youth Orgs (IEEE/Enactus)</span>
+          </label>
+          <label class="flex items-center gap-1.5 cursor-pointer font-semibold text-amber-300 select-none hover:text-amber-200 transition">
+            <input type="checkbox" id="check-clashes-only" class="rounded bg-[#080D1D] border-amber-500/40 text-amber-500 focus:ring-0">
+            <span>Clashes Only</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- View A: Event Cards Grid -->
+    <div id="container-cards" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+      <!-- Dynamically rendered by app.js -->
+    </div>
+
+    <!-- View B: Campus Calendar & Conflict Radar -->
+    <div id="container-calendar" class="hidden radar-surface p-6 space-y-6">
+      <div>
+        <h2 class="text-base font-bold text-white flex items-center gap-2">
+          <i data-lucide="calendar" class="w-5 h-5 text-[#00E5FF]"></i>
+          Campus Calendar & Conflict Radar
+        </h2>
+        <p class="text-xs text-slate-400 mt-1">Interactive timeline identifying peak competition weekends where multiple student summits compete for Egyptian university students.</p>
+      </div>
+
+      <div id="calendar-timeline" class="space-y-4">
+        <!-- Dynamically rendered by app.js -->
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Interactive Outreach Pitch Modal Window -->
+  <div id="pitch-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-overlay-dark hidden">
+    <div class="modal-dialog-dark rounded-3xl max-w-2xl w-full overflow-hidden flex flex-col max-h-[90vh] animate-in fade-in zoom-in-95 duration-200">
+      
+      <!-- Modal Header -->
+      <div class="bg-gradient-to-r from-[#090F20] to-[#121B32] border-b border-white/[0.08] px-6 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#037EF3] to-[#00E5FF] flex items-center justify-center text-white shadow-[0_0_14px_rgba(3,126,243,0.4)]">
+            <i data-lucide="sparkles" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <h3 class="font-extrabold text-sm sm:text-base text-white">AIESEC Partnership Pitch Generator</h3>
+            <p class="text-[11px] text-sky-400 font-medium" id="pitch-event-subtitle">Tailored Outreach Proposal</p>
+          </div>
+        </div>
+        <button id="btn-close-modal" class="text-slate-400 hover:text-white p-1.5 rounded-xl hover:bg-white/[0.08] transition">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Modal Body (Form + Output) -->
+      <div class="p-6 overflow-y-auto space-y-4 flex-1">
+        
+        <!-- Event Intelligence Briefing Summary -->
+        <div id="pitch-event-briefing" class="p-3.5 bg-[#050A16] border border-white/[0.08] rounded-2xl text-xs space-y-1">
+          <div class="text-[10px] font-bold text-sky-400 uppercase tracking-wider flex items-center gap-1.5">
+            <i data-lucide="file-text" class="w-3.5 h-3.5"></i> Target Event Briefing
+          </div>
+          <p id="pitch-event-desc-text" class="text-slate-300 text-[11px] leading-relaxed">
+            Loading event intelligence...
+          </p>
+        </div>
+
+        <!-- Input Form -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+          <div>
+            <label class="block font-semibold text-slate-300 mb-1">Your Name</label>
+            <input type="text" id="pitch-name" value="Abdelrahman Motazz" placeholder="e.g. Abdelrahman Motazz" 
+                   class="w-full px-3.5 py-2 figma-input rounded-xl focus:outline-none">
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-300 mb-1">Your AIESEC Email</label>
+            <input type="email" id="pitch-email" value="abdelrahman.motazz@aiesec.net" placeholder="e.g. name@aiesec.net" 
+                   class="w-full px-3.5 py-2 figma-input rounded-xl focus:outline-none">
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-300 mb-1">Phone / WhatsApp Number</label>
+            <input type="text" id="pitch-phone" value="+20 10 1234 5678" placeholder="+20 1X XXXX XXXX" 
+                   class="w-full px-3.5 py-2 figma-input rounded-xl focus:outline-none">
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-300 mb-1">Collaboration Purpose</label>
+            <select id="pitch-purpose" class="w-full px-3.5 py-2 figma-input rounded-xl font-medium focus:outline-none cursor-pointer">
+              <option value="event_collaboration">Event Collaboration & Booth Presence</option>
+              <option value="pr_collaboration">PR & Social Media Cross-Promotion</option>
+              <option value="speaker_collaboration">Speaker, Panelist & Keynote Synergy</option>
+            </select>
+          </div>
+        </div>
+
+        <button id="btn-generate-pitch" class="w-full bg-gradient-to-r from-[#037EF3] to-[#0266C8] hover:brightness-110 text-white font-bold py-2.5 rounded-xl text-xs transition flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(3,126,243,0.35)] active:scale-95">
+          <i data-lucide="sparkles" class="w-4 h-4 text-cyan-200"></i> Generate Outreach Proposal
+        </button>
+
+        <!-- Generated Output Section -->
+        <div id="pitch-output-box" class="space-y-3 pt-3 border-t border-white/[0.08] hidden">
+          <div>
+            <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Subject Line</label>
+            <input type="text" id="pitch-subject" readonly 
+                   class="w-full px-3.5 py-2 bg-[#050A16] border border-sky-500/30 rounded-xl text-xs font-semibold text-sky-200">
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Email Body</label>
+            <textarea id="pitch-body" rows="9" readonly 
+                      class="w-full p-3.5 bg-[#050A16] border border-white/10 rounded-xl text-xs text-slate-200 font-mono leading-relaxed"></textarea>
+          </div>
+
+          <!-- Actions -->
+          <div class="flex items-center justify-end gap-2 pt-1">
+            <button id="btn-copy-pitch" class="px-4 py-2 bg-white/[0.08] hover:bg-white/[0.14] text-white font-semibold rounded-xl text-xs flex items-center gap-1.5 transition border border-white/10 active:scale-95">
+              <i data-lucide="copy" class="w-4 h-4" id="copy-icon"></i>
+              <span id="copy-text">Copy to Clipboard</span>
+            </button>
+            <a id="btn-open-mail" href="#" target="_blank" class="px-4 py-2 bg-[#FF4D36] hover:bg-orange-600 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 transition shadow-[0_0_16px_rgba(255,77,54,0.35)] active:scale-95">
+              <i data-lucide="external-link" class="w-4 h-4"></i> Open in Mail Client
+            </a>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 bg-[#0A1020]/95 backdrop-blur-2xl text-white px-4 py-3 rounded-2xl shadow-2xl border border-white/15 flex items-center gap-3 text-xs font-medium transform transition-all duration-300 translate-y-20 opacity-0 pointer-events-none">
+    <i data-lucide="info" class="w-4 h-4 text-[#00E5FF]" id="toast-icon"></i>
+    <span id="toast-message">Action processed</span>
+  </div>
+
+  <script src="app.js?v=6.2"></script>
+  <script>
+    if (window.lucide && typeof lucide.createIcons === 'function') {
+      lucide.createIcons();
+    }
+  </script>
+</body>
+</html>
