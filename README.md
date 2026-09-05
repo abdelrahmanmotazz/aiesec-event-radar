@@ -1,3 +1,13 @@
+---
+title: AIESEC Egypt B2C Event Radar
+emoji: 🌐
+colorFrom: blue
+colorTo: indigo
+sdk: docker
+app_port: 7860
+pinned: false
+---
+
 # AIESEC Egypt B2C Event Radar & Command Center
 
 An enterprise-grade, intelligent event scraping, outreach, and synchronization engine built specifically for **AIESEC B2C teams in Egypt**. It continuously tracks major event platforms and social media, filters events for the **next 6 months**, scores them for **student recruitment & partnership opportunities**, detects **campus calendar clashes**, and provides an **interactive web dashboard** with an **automated pitch generator** and **Google Sheets sync**.
