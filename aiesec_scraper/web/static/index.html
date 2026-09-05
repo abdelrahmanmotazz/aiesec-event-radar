@@ -50,7 +50,7 @@
   
   <!-- Lucide Icons CDN -->
   <script src="https://unpkg.com/lucide@latest"></script>
-  <link rel="stylesheet" href="/static/style.css?v=5.0">
+  <link rel="stylesheet" href="/static/style.css?v=5.1">
 </head>
 <body class="dark min-h-screen flex flex-col antialiased bg-[#030712] text-slate-100 selection:bg-[#037EF3]/30 selection:text-white">
 
@@ -122,30 +122,32 @@
     <!-- Executive HUD Telemetry Cards (2-Card Focus Layout) -->
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
       
-      <!-- Tile 1: Pipeline Radar - Dedicated Flagship Events Counter -->
-      <div class="radar-surface p-6 flex flex-col justify-between cursor-pointer group hover:border-amber-500/40 transition" id="tile-flagship-radar" title="Click to filter Flagship Summits">
+      <!-- Tile 1: Pipeline Radar - Total Events Monitored with Flagship Counter at Bottom -->
+      <div class="radar-surface p-6 flex flex-col justify-between cursor-pointer group hover:border-sky-500/40 transition" id="tile-total-radar" title="Click to view all events">
         <div class="flex items-center justify-between">
           <div>
             <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
               <span>Pipeline Radar</span>
               <span class="text-slate-600">•</span>
-              <span class="text-amber-400 font-semibold uppercase">Flagship Events</span>
+              <span class="text-sky-400 font-semibold uppercase">Total Events Monitored</span>
             </span>
-            <div class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mt-1 group-hover:text-amber-300 transition" id="stat-flagship-count">10</div>
+            <div class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mt-1 group-hover:text-sky-300 transition" id="stat-total">283</div>
           </div>
-          <div class="w-11 h-11 rounded-2xl bg-amber-500/10 border border-amber-500/25 flex items-center justify-center text-amber-400 shadow-[0_0_16px_rgba(245,158,11,0.25)] group-hover:scale-105 transition">
-            <i data-lucide="crown" class="w-5 h-5"></i>
+          <div class="w-11 h-11 rounded-2xl bg-blue-500/10 border border-sky-500/25 flex items-center justify-center text-sky-400 shadow-[0_0_16px_rgba(3,126,243,0.25)] group-hover:scale-105 transition">
+            <i data-lucide="radar" class="w-5 h-5"></i>
           </div>
         </div>
 
         <div class="mt-4 pt-3 border-t border-white/[0.06] flex items-center justify-between flex-wrap gap-2 text-xs">
-          <div class="flex items-center gap-2 flex-wrap">
-            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/15 text-amber-300 border border-amber-500/35 flex items-center gap-1 shadow-[0_0_10px_rgba(245,158,11,0.15)]">
-              <i data-lucide="crown" class="w-3 h-3 inline text-amber-400"></i> Flagship Summits
-            </span>
+          <div class="flex items-center gap-2.5 flex-wrap">
+            <button id="btn-filter-flagship-badge" class="px-2.5 py-1 rounded-xl text-[11px] font-bold bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-500/35 flex items-center gap-1.5 shadow-[0_0_12px_rgba(245,158,11,0.18)] transition active:scale-95" title="Click to filter Flagship Summits">
+              <i data-lucide="crown" class="w-3.5 h-3.5 text-amber-400"></i>
+              <strong id="stat-flagship-count" class="font-extrabold text-amber-300">10</strong>
+              <span>Flagship Events</span>
+            </button>
             <span class="text-[11px] text-slate-400">Techne, RiseUp, National Forums</span>
           </div>
-          <span class="text-[11px] font-medium text-slate-400"><strong id="stat-total" class="text-slate-300">283</strong> Total Events Monitored</span>
+          <span class="text-[11px] font-medium text-slate-400">Active Egypt Radar</span>
         </div>
       </div>
 
@@ -406,7 +408,7 @@
     <span id="toast-message">Action processed</span>
   </div>
 
-  <script src="/static/app.js?v=5.0"></script>
+  <script src="/static/app.js?v=5.1"></script>
   <script>
     if (window.lucide && typeof lucide.createIcons === 'function') {
       lucide.createIcons();

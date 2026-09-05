@@ -154,9 +154,21 @@ function setupEventListeners() {
     btnQuickFilterFlagship.addEventListener("click", handleFlagshipFilter);
   }
 
-  const tileFlagshipRadar = document.getElementById("tile-flagship-radar");
-  if (tileFlagshipRadar) {
-    tileFlagshipRadar.addEventListener("click", handleFlagshipFilter);
+  const btnFilterFlagshipBadge = document.getElementById("btn-filter-flagship-badge");
+  if (btnFilterFlagshipBadge) {
+    btnFilterFlagshipBadge.addEventListener("click", (e) => {
+      e.stopPropagation();
+      handleFlagshipFilter();
+    });
+  }
+
+  const tileTotalRadar = document.getElementById("tile-total-radar");
+  if (tileTotalRadar) {
+    tileTotalRadar.addEventListener("click", () => {
+      state.category = "all";
+      if (selectCategory) selectCategory.value = "all";
+      fetchEvents();
+    });
   }
 
   // Priority buttons
