@@ -80,17 +80,22 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // ============================================================
-// THREE.JS 3D HOLOGRAPHIC PARTICLE RADAR (WebGL Spatial Depth)
+// THREE.JS 3D HOLOGRAPHIC PARTICLE RADAR GLOBE (Interactive Spatial Navigator)
 // ============================================================
-// ============================================================
-// THREE.JS 3D HOLOGRAPHIC PARTICLE RADAR GLOBE (Hero Centerpiece)
-// ============================================================
+let globeController = {
+  focusCity: null
+};
+
 function initThreeRadar() {
   const canvas = document.getElementById("hero-globe-canvas");
   if (!canvas || typeof THREE === "undefined") return;
 
   try {
     const container = canvas.parentElement;
+    const tooltip = document.getElementById("globe-tooltip");
+    const statusPill = document.getElementById("globe-status-pill");
+    const cityButtons = document.querySelectorAll(".globe-hub-btn");
+
     const width = container.clientWidth || 400;
     const height = container.clientHeight || 250;
 
@@ -107,6 +112,9 @@ function initThreeRadar() {
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
+    const globeGroup = new THREE.Group();
+    scene.add(globeGroup);
+
     // 1. Holographic Wireframe Sphere
     const globeRadius = 58;
     const wireframeGeo = new THREE.SphereGeometry(globeRadius, 20, 14);
@@ -118,7 +126,7 @@ function initThreeRadar() {
       blending: THREE.AdditiveBlending
     });
     const wireframeGlobe = new THREE.Mesh(wireframeGeo, wireframeMat);
-    scene.add(wireframeGlobe);
+    globeGroup.add(wireframeGlobe);
 
     // 2. High-Density Particle Constellation Globe
     const particleCount = 650;
@@ -152,7 +160,7 @@ function initThreeRadar() {
       blending: THREE.AdditiveBlending
     });
     const particleMesh = new THREE.Points(partGeo, partMat);
-    scene.add(particleMesh);
+    globeGroup.add(particleMesh);
 
     // 3. Orbiting Radar Sweep Rings
     const ringGroup = new THREE.Group();
@@ -171,17 +179,17 @@ function initThreeRadar() {
       ringMesh.rotation.y = idx * 0.4;
       ringGroup.add(ringMesh);
     });
-    scene.add(ringGroup);
+    globeGroup.add(ringGroup);
 
-    // 4. Egypt Hub Beacon Pins on the Globe
-    const pinGroup = new THREE.Group();
+    // 4. Egypt Hub Beacon Pins on the Globe (Clickable Interactive Targets)
+    const interactivePins = [];
     const hubs = [
-      { name: "Cairo", lat: 30.0444, lon: 31.2357, color: 0x00e5ff },
-      { name: "Alexandria", lat: 31.2001, lon: 29.9187, color: 0x38bdf8 },
-      { name: "Tanta", lat: 30.7865, lon: 31.0004, color: 0x037ef3, primary: true },
-      { name: "Giza", lat: 30.0131, lon: 31.2089, color: 0xff4d36 },
-      { name: "Mansoura", lat: 31.0409, lon: 31.3785, color: 0xa855f7 },
-      { name: "Assiut", lat: 27.1801, lon: 31.1837, color: 0xf59e0b }
+      { name: "Cairo", cityKey: "cairo", lat: 30.0444, lon: 31.2357, color: 0x00e5ff },
+      { name: "Alexandria", cityKey: "alexandria", lat: 31.2001, lon: 29.9187, color: 0x38bdf8 },
+      { name: "Tanta", cityKey: "tanta", lat: 30.7865, lon: 31.0004, color: 0x037ef3, primary: true },
+      { name: "Giza", cityKey: "giza", lat: 30.0131, lon: 31.2089, color: 0xff4d36 },
+      { name: "Mansoura", cityKey: "mansoura", lat: 31.0409, lon: 31.3785, color: 0xa855f7 },
+      { name: "Assiut", cityKey: "assiut", lat: 27.1801, lon: 31.1837, color: 0xf59e0b }
     ];
 
     function latLonToVector3(lat, lon, radius) {
@@ -195,61 +203,229 @@ function initThreeRadar() {
     }
 
     hubs.forEach(hub => {
-      const pos = latLonToVector3(hub.lat, hub.lon, globeRadius + 1);
-      const pinGeo = new THREE.SphereGeometry(hub.primary ? 3.2 : 2.2, 16, 16);
+      const pos = latLonToVector3(hub.lat, hub.lon, globeRadius + 1.2);
+      
+      // Pin Sphere
+      const pinGeo = new THREE.SphereGeometry(hub.primary ? 4.2 : 3.0, 16, 16);
       const pinMat = new THREE.MeshBasicMaterial({
         color: hub.color,
         blending: THREE.AdditiveBlending
       });
       const pin = new THREE.Mesh(pinGeo, pinMat);
       pin.position.copy(pos);
-      pinGroup.add(pin);
 
-      const bRingGeo = new THREE.RingGeometry(2.5, 3.8, 16);
+      // Beacon Ripple Ring
+      const bRingGeo = new THREE.RingGeometry(2.5, 4.2, 24);
       const bRingMat = new THREE.MeshBasicMaterial({
         color: hub.color,
         side: THREE.DoubleSide,
         transparent: true,
-        opacity: 0.7,
+        opacity: 0.75,
         blending: THREE.AdditiveBlending
       });
       const bRing = new THREE.Mesh(bRingGeo, bRingMat);
       bRing.position.copy(pos);
       bRing.lookAt(0, 0, 0);
-      pinGroup.add(bRing);
-    });
-    scene.add(pinGroup);
 
-    // Mouse Tracking Parallax
+      // Store Metadata for Raycasting
+      pin.userData = { hub, beaconRing: bRing };
+      interactivePins.push(pin);
+
+      globeGroup.add(pin);
+      globeGroup.add(bRing);
+    });
+
+    // 5. Raycasting Engine (Hover Intel & Click to Filter)
+    const raycaster = new THREE.Raycaster();
+    const mouseNorm = new THREE.Vector2();
+    let hoveredPin = null;
+
+    // Filter Radar by City Helper
+    function filterByCity(cityKey, cityName) {
+      if (selectCity) selectCity.value = cityKey;
+      state.city = cityKey;
+      fetchEvents();
+
+      // Highlight active button in hub chips
+      cityButtons.forEach(btn => {
+        if (btn.dataset.city === cityKey) {
+          btn.className = "globe-hub-btn px-2 py-0.5 rounded-md bg-[#037EF3] text-white font-bold transition active:scale-95 shrink-0 shadow-sm";
+        } else {
+          btn.className = "globe-hub-btn px-2 py-0.5 rounded-md bg-white/[0.07] hover:bg-sky-500/20 text-slate-200 hover:text-sky-300 font-medium transition active:scale-95 shrink-0";
+        }
+      });
+
+      // Update status indicator
+      if (statusPill) {
+        statusPill.innerText = cityKey === "all" ? "6 Active Hubs" : `Selected: ${cityName}`;
+      }
+
+      showToast(`Radar focused on ${cityName} opportunities!`, "info");
+    }
+
+    // Function to rotate globe directly to a city
+    function rotateToCity(cityKey) {
+      if (cityKey === "all") {
+        if (typeof gsap !== "undefined") {
+          gsap.to(globeGroup.rotation, { x: 0.2, y: 0, duration: 1.2, ease: "power2.out" });
+        } else {
+          globeGroup.rotation.set(0.2, 0, 0);
+        }
+        return;
+      }
+
+      const targetHub = hubs.find(h => h.cityKey === cityKey);
+      if (!targetHub) return;
+
+      const phi = (90 - targetHub.lat) * (Math.PI / 180);
+      const theta = (targetHub.lon + 180) * (Math.PI / 180);
+
+      const targetY = -theta + Math.PI / 2;
+      const targetX = phi - Math.PI / 2;
+
+      if (typeof gsap !== "undefined") {
+        gsap.to(globeGroup.rotation, {
+          y: targetY,
+          x: targetX,
+          duration: 1.3,
+          ease: "power2.out"
+        });
+      } else {
+        globeGroup.rotation.set(targetX, targetY, 0);
+      }
+    }
+
+    // Expose controller for external city selection synchronization
+    globeController.focusCity = rotateToCity;
+
+    // Connect Hub Button Clicks
+    cityButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        const cKey = btn.dataset.city;
+        const matchingHub = hubs.find(h => h.cityKey === cKey);
+        const cName = matchingHub ? matchingHub.name : "All Egypt";
+        rotateToCity(cKey);
+        filterByCity(cKey, cName);
+      });
+    });
+
+    // Mouse Tracking Parallax & Hover Raycasting
     let targetRotX = 0.2;
     let targetRotY = 0;
+
     container.addEventListener("mousemove", (e) => {
       const rect = container.getBoundingClientRect();
       const nx = ((e.clientX - rect.left) / rect.width) * 2 - 1;
       const ny = -(((e.clientY - rect.top) / rect.height) * 2 - 1);
-      targetRotY = nx * 0.7;
-      targetRotX = 0.2 + ny * 0.35;
+
+      mouseNorm.set(nx, ny);
+      targetRotY = nx * 0.6;
+      targetRotX = 0.2 + ny * 0.3;
+
+      // Raycast against pins
+      raycaster.setFromCamera(mouseNorm, camera);
+      const hits = raycaster.intersectObjects(interactivePins, false);
+
+      if (hits.length > 0) {
+        const pin = hits[0].object;
+        const hub = pin.userData.hub;
+
+        if (hoveredPin !== pin) {
+          if (hoveredPin) hoveredPin.scale.set(1, 1, 1);
+          hoveredPin = pin;
+          pin.scale.set(1.45, 1.45, 1.45);
+        }
+
+        canvas.style.cursor = "pointer";
+
+        // Calculate dynamic stats
+        const cityEvents = state.events.filter(ev => ev.city.toLowerCase().includes(hub.cityKey.toLowerCase()));
+        const flagshipEvents = cityEvents.filter(ev => (ev.category && ev.category.toLowerCase().includes("flagship")) || ev.title.toLowerCase().includes("techne") || ev.title.toLowerCase().includes("riseup"));
+
+        // Position & populate tooltip
+        if (tooltip) {
+          const tooltipCity = document.getElementById("globe-tooltip-city");
+          const tooltipCount = document.getElementById("globe-tooltip-count");
+          const tooltipFlagships = document.getElementById("globe-tooltip-flagships");
+
+          if (tooltipCity) tooltipCity.innerText = `📍 ${hub.name}`;
+          if (tooltipCount) tooltipCount.innerText = `${cityEvents.length} Events`;
+          if (tooltipFlagships) {
+            tooltipFlagships.innerText = flagshipEvents.length > 0 
+              ? `👑 ${flagshipEvents.length} Flagship (${flagshipEvents[0].title.split(" 202")[0]})` 
+              : "Campus Lead Pipeline";
+          }
+
+          const worldPos = new THREE.Vector3();
+          pin.getWorldPosition(worldPos);
+          worldPos.project(camera);
+
+          const screenX = (worldPos.x * 0.5 + 0.5) * rect.width;
+          const screenY = (-(worldPos.y * 0.5) + 0.5) * rect.height;
+
+          tooltip.style.left = `${screenX}px`;
+          tooltip.style.top = `${screenY - 12}px`;
+          tooltip.classList.remove("opacity-0");
+        }
+      } else {
+        if (hoveredPin) {
+          hoveredPin.scale.set(1, 1, 1);
+          hoveredPin = null;
+        }
+        canvas.style.cursor = isDragging ? "grabbing" : "grab";
+        if (tooltip) tooltip.classList.add("opacity-0");
+      }
     }, { passive: true });
 
     // Drag to rotate interactively
     let isDragging = false;
+    let dragMoved = false;
     let prevMousePos = { x: 0, y: 0 };
+
     container.addEventListener("mousedown", (e) => {
       isDragging = true;
+      dragMoved = false;
       prevMousePos = { x: e.clientX, y: e.clientY };
     });
-    window.addEventListener("mouseup", () => { isDragging = false; });
+
+    window.addEventListener("mouseup", () => {
+      isDragging = false;
+    });
+
     window.addEventListener("mousemove", (e) => {
       if (!isDragging) return;
       const deltaX = e.clientX - prevMousePos.x;
       const deltaY = e.clientY - prevMousePos.y;
-      wireframeGlobe.rotation.y += deltaX * 0.01;
-      particleMesh.rotation.y += deltaX * 0.01;
-      pinGroup.rotation.y += deltaX * 0.01;
-      wireframeGlobe.rotation.x += deltaY * 0.01;
-      particleMesh.rotation.x += deltaY * 0.01;
-      pinGroup.rotation.x += deltaY * 0.01;
+      if (Math.abs(deltaX) > 3 || Math.abs(deltaY) > 3) dragMoved = true;
+
+      globeGroup.rotation.y += deltaX * 0.01;
+      globeGroup.rotation.x += deltaY * 0.01;
+
       prevMousePos = { x: e.clientX, y: e.clientY };
+    });
+
+    // Click on Canvas Pin Trigger
+    container.addEventListener("click", () => {
+      if (dragMoved) return; // Ignore drag end click
+      raycaster.setFromCamera(mouseNorm, camera);
+      const hits = raycaster.intersectObjects(interactivePins, false);
+
+      if (hits.length > 0) {
+        const pin = hits[0].object;
+        const hub = pin.userData.hub;
+        const bRing = pin.userData.beaconRing;
+
+        // Animate beacon ring ripple
+        if (typeof gsap !== "undefined" && bRing) {
+          gsap.fromTo(bRing.scale, 
+            { x: 1, y: 1 }, 
+            { x: 3.2, y: 3.2, duration: 0.65, ease: "power2.out", onComplete: () => bRing.scale.set(1, 1, 1) }
+          );
+        }
+
+        rotateToCity(hub.cityKey);
+        filterByCity(hub.cityKey, hub.name);
+      }
     });
 
     // Render Animation Loop
@@ -257,15 +433,14 @@ function initThreeRadar() {
       requestAnimationFrame(animate);
 
       if (!isDragging) {
-        wireframeGlobe.rotation.y += 0.003;
-        particleMesh.rotation.y += 0.003;
-        pinGroup.rotation.y += 0.003;
+        wireframeGlobe.rotation.y += 0.002;
+        particleMesh.rotation.y += 0.002;
 
         ringGroup.rotation.z += 0.0035;
         ringGroup.rotation.y += 0.0018;
 
-        scene.rotation.y += (targetRotY - scene.rotation.y) * 0.05;
-        scene.rotation.x += (targetRotX - scene.rotation.x) * 0.05;
+        globeGroup.rotation.y += (targetRotY - globeGroup.rotation.y) * 0.035;
+        globeGroup.rotation.x += (targetRotX - globeGroup.rotation.x) * 0.035;
       }
 
       renderer.render(scene, camera);
