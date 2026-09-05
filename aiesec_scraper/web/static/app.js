@@ -82,14 +82,21 @@ document.addEventListener("DOMContentLoaded", () => {
 // ============================================================
 // THREE.JS 3D HOLOGRAPHIC PARTICLE RADAR (WebGL Spatial Depth)
 // ============================================================
+// ============================================================
+// THREE.JS 3D HOLOGRAPHIC PARTICLE RADAR GLOBE (Hero Centerpiece)
+// ============================================================
 function initThreeRadar() {
-  const canvas = document.getElementById("threejs-radar-canvas");
+  const canvas = document.getElementById("hero-globe-canvas");
   if (!canvas || typeof THREE === "undefined") return;
 
   try {
+    const container = canvas.parentElement;
+    const width = container.clientWidth || 400;
+    const height = container.clientHeight || 250;
+
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.z = 240;
+    const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+    camera.position.z = 175;
 
     const renderer = new THREE.WebGLRenderer({
       canvas: canvas,
@@ -97,100 +104,189 @@ function initThreeRadar() {
       antialias: true,
       powerPreference: "high-performance"
     });
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-    // Create 3D Holographic Particle Sphere (Radar Core)
-    const particleCount = 750;
-    const geometry = new THREE.BufferGeometry();
+    // 1. Holographic Wireframe Sphere
+    const globeRadius = 58;
+    const wireframeGeo = new THREE.SphereGeometry(globeRadius, 20, 14);
+    const wireframeMat = new THREE.MeshBasicMaterial({
+      color: 0x037ef3,
+      wireframe: true,
+      transparent: true,
+      opacity: 0.2,
+      blending: THREE.AdditiveBlending
+    });
+    const wireframeGlobe = new THREE.Mesh(wireframeGeo, wireframeMat);
+    scene.add(wireframeGlobe);
+
+    // 2. High-Density Particle Constellation Globe
+    const particleCount = 650;
+    const partGeo = new THREE.BufferGeometry();
     const positions = new Float32Array(particleCount * 3);
     const colors = new Float32Array(particleCount * 3);
+    const cBlue = new THREE.Color(0x037ef3);
+    const cCyan = new THREE.Color(0x00e5ff);
 
-    const colorBlue = new THREE.Color(0x037ef3);
-    const colorCyan = new THREE.Color(0x00e5ff);
-
-    const radius = 95;
     for (let i = 0; i < particleCount; i++) {
       const phi = Math.acos(-1 + (2 * i) / particleCount);
       const theta = Math.sqrt(particleCount * Math.PI) * phi;
 
-      const x = radius * Math.cos(theta) * Math.sin(phi);
-      const y = radius * Math.sin(theta) * Math.sin(phi);
-      const z = radius * Math.cos(phi);
+      positions[i * 3] = globeRadius * Math.cos(theta) * Math.sin(phi);
+      positions[i * 3 + 1] = globeRadius * Math.sin(theta) * Math.sin(phi);
+      positions[i * 3 + 2] = globeRadius * Math.cos(phi);
 
-      positions[i * 3] = x + (Math.random() - 0.5) * 6;
-      positions[i * 3 + 1] = y + (Math.random() - 0.5) * 6;
-      positions[i * 3 + 2] = z + (Math.random() - 0.5) * 6;
-
-      const mixedColor = colorBlue.clone().lerp(colorCyan, Math.random());
-      colors[i * 3] = mixedColor.r;
-      colors[i * 3 + 1] = mixedColor.g;
-      colors[i * 3 + 2] = mixedColor.b;
+      const mixed = cBlue.clone().lerp(cCyan, Math.random());
+      colors[i * 3] = mixed.r;
+      colors[i * 3 + 1] = mixed.g;
+      colors[i * 3 + 2] = mixed.b;
     }
+    partGeo.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+    partGeo.setAttribute("color", new THREE.BufferAttribute(colors, 3));
 
-    geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-    geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
-
-    const material = new THREE.PointsMaterial({
+    const partMat = new THREE.PointsMaterial({
       size: 2.2,
       vertexColors: true,
       transparent: true,
-      opacity: 0.85,
+      opacity: 0.88,
       blending: THREE.AdditiveBlending
     });
+    const particleMesh = new THREE.Points(partGeo, partMat);
+    scene.add(particleMesh);
 
-    const particleGlobe = new THREE.Points(geometry, material);
-    scene.add(particleGlobe);
-
-    // Outer Orbital Radar Rings
+    // 3. Orbiting Radar Sweep Rings
     const ringGroup = new THREE.Group();
-    for (let r = 0; r < 2; r++) {
-      const ringGeo = new THREE.RingGeometry(110 + r * 22, 111 + r * 22, 64);
-      const ringMat = new THREE.MeshBasicMaterial({
-        color: r === 0 ? 0x037ef3 : 0x00e5ff,
+    const ringRadii = [72, 84];
+    ringRadii.forEach((r, idx) => {
+      const rGeo = new THREE.RingGeometry(r, r + 1.2, 64);
+      const rMat = new THREE.MeshBasicMaterial({
+        color: idx === 0 ? 0x00e5ff : 0x037ef3,
         side: THREE.DoubleSide,
         transparent: true,
-        opacity: 0.22 - r * 0.08,
+        opacity: 0.42 - idx * 0.15,
         blending: THREE.AdditiveBlending
       });
-      const ring = new THREE.Mesh(ringGeo, ringMat);
-      ring.rotation.x = Math.PI / 2.3 + (r * 0.2);
-      ringGroup.add(ring);
-    }
+      const ringMesh = new THREE.Mesh(rGeo, rMat);
+      ringMesh.rotation.x = Math.PI / 2.3 + (idx * 0.3);
+      ringMesh.rotation.y = idx * 0.4;
+      ringGroup.add(ringMesh);
+    });
     scene.add(ringGroup);
 
+    // 4. Egypt Hub Beacon Pins on the Globe
+    const pinGroup = new THREE.Group();
+    const hubs = [
+      { name: "Cairo", lat: 30.0444, lon: 31.2357, color: 0x00e5ff },
+      { name: "Alexandria", lat: 31.2001, lon: 29.9187, color: 0x38bdf8 },
+      { name: "Tanta", lat: 30.7865, lon: 31.0004, color: 0x037ef3, primary: true },
+      { name: "Giza", lat: 30.0131, lon: 31.2089, color: 0xff4d36 },
+      { name: "Mansoura", lat: 31.0409, lon: 31.3785, color: 0xa855f7 },
+      { name: "Assiut", lat: 27.1801, lon: 31.1837, color: 0xf59e0b }
+    ];
+
+    function latLonToVector3(lat, lon, radius) {
+      const phi = (90 - lat) * (Math.PI / 180);
+      const theta = (lon + 180) * (Math.PI / 180);
+      return new THREE.Vector3(
+        -(radius * Math.sin(phi) * Math.cos(theta)),
+        radius * Math.cos(phi),
+        radius * Math.sin(phi) * Math.sin(theta)
+      );
+    }
+
+    hubs.forEach(hub => {
+      const pos = latLonToVector3(hub.lat, hub.lon, globeRadius + 1);
+      const pinGeo = new THREE.SphereGeometry(hub.primary ? 3.2 : 2.2, 16, 16);
+      const pinMat = new THREE.MeshBasicMaterial({
+        color: hub.color,
+        blending: THREE.AdditiveBlending
+      });
+      const pin = new THREE.Mesh(pinGeo, pinMat);
+      pin.position.copy(pos);
+      pinGroup.add(pin);
+
+      const bRingGeo = new THREE.RingGeometry(2.5, 3.8, 16);
+      const bRingMat = new THREE.MeshBasicMaterial({
+        color: hub.color,
+        side: THREE.DoubleSide,
+        transparent: true,
+        opacity: 0.7,
+        blending: THREE.AdditiveBlending
+      });
+      const bRing = new THREE.Mesh(bRingGeo, bRingMat);
+      bRing.position.copy(pos);
+      bRing.lookAt(0, 0, 0);
+      pinGroup.add(bRing);
+    });
+    scene.add(pinGroup);
+
     // Mouse Tracking Parallax
-    let targetRotX = 0;
+    let targetRotX = 0.2;
     let targetRotY = 0;
-    window.addEventListener("mousemove", (e) => {
-      const normX = (e.clientX / window.innerWidth) * 2 - 1;
-      const normY = -(e.clientY / window.innerHeight) * 2 + 1;
-      targetRotY = normX * 0.35;
-      targetRotX = normY * 0.25;
+    container.addEventListener("mousemove", (e) => {
+      const rect = container.getBoundingClientRect();
+      const nx = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      const ny = -(((e.clientY - rect.top) / rect.height) * 2 - 1);
+      targetRotY = nx * 0.7;
+      targetRotX = 0.2 + ny * 0.35;
     }, { passive: true });
+
+    // Drag to rotate interactively
+    let isDragging = false;
+    let prevMousePos = { x: 0, y: 0 };
+    container.addEventListener("mousedown", (e) => {
+      isDragging = true;
+      prevMousePos = { x: e.clientX, y: e.clientY };
+    });
+    window.addEventListener("mouseup", () => { isDragging = false; });
+    window.addEventListener("mousemove", (e) => {
+      if (!isDragging) return;
+      const deltaX = e.clientX - prevMousePos.x;
+      const deltaY = e.clientY - prevMousePos.y;
+      wireframeGlobe.rotation.y += deltaX * 0.01;
+      particleMesh.rotation.y += deltaX * 0.01;
+      pinGroup.rotation.y += deltaX * 0.01;
+      wireframeGlobe.rotation.x += deltaY * 0.01;
+      particleMesh.rotation.x += deltaY * 0.01;
+      pinGroup.rotation.x += deltaY * 0.01;
+      prevMousePos = { x: e.clientX, y: e.clientY };
+    });
 
     // Render Animation Loop
     function animate() {
       requestAnimationFrame(animate);
 
-      particleGlobe.rotation.y += 0.0022;
-      ringGroup.rotation.z += 0.0016;
+      if (!isDragging) {
+        wireframeGlobe.rotation.y += 0.003;
+        particleMesh.rotation.y += 0.003;
+        pinGroup.rotation.y += 0.003;
 
-      scene.rotation.y += (targetRotY - scene.rotation.y) * 0.04;
-      scene.rotation.x += (targetRotX - scene.rotation.x) * 0.04;
+        ringGroup.rotation.z += 0.0035;
+        ringGroup.rotation.y += 0.0018;
+
+        scene.rotation.y += (targetRotY - scene.rotation.y) * 0.05;
+        scene.rotation.x += (targetRotX - scene.rotation.x) * 0.05;
+      }
 
       renderer.render(scene, camera);
     }
     animate();
 
-    // Window Resize Support
-    window.addEventListener("resize", () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-    });
+    // Resize Observer for auto scaling
+    if (window.ResizeObserver) {
+      const ro = new ResizeObserver(() => {
+        const w = container.clientWidth;
+        const h = container.clientHeight;
+        if (w && h) {
+          camera.aspect = w / h;
+          camera.updateProjectionMatrix();
+          renderer.setSize(w, h);
+        }
+      });
+      ro.observe(container);
+    }
   } catch (err) {
-    console.warn("Three.js WebGL canvas initialization bypassed:", err);
+    console.warn("Three.js WebGL hero globe bypassed:", err);
   }
 }
 
@@ -376,6 +472,33 @@ function setupEventListeners() {
           b.className = "filter-priority-btn px-3 py-1 rounded-xl font-medium bg-[#080D1D] text-slate-300 hover:bg-[#111A30] border border-white/[0.08]";
         }
       });
+      fetchEvents();
+    });
+  }
+
+  // Hero Bento Widget Controls
+  const btnHeroLaunchPitch = document.getElementById("btn-hero-launch-pitch");
+  if (btnHeroLaunchPitch) {
+    btnHeroLaunchPitch.addEventListener("click", () => {
+      const targetEvent = state.events.find(e => e.b2c_priority === "HIGH") || state.events[0];
+      if (targetEvent) openPitchModal(targetEvent);
+    });
+  }
+
+  const heroCalTechne = document.getElementById("hero-cal-techne");
+  if (heroCalTechne) {
+    heroCalTechne.addEventListener("click", () => {
+      state.search = "Techne";
+      inputSearch.value = "Techne";
+      fetchEvents();
+    });
+  }
+
+  const heroCalClash = document.getElementById("hero-cal-clash");
+  if (heroCalClash) {
+    heroCalClash.addEventListener("click", () => {
+      checkClashesOnly.checked = !checkClashesOnly.checked;
+      state.clashesOnly = checkClashesOnly.checked;
       fetchEvents();
     });
   }
