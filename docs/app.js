@@ -431,10 +431,13 @@ function initThreeRadar() {
       if (!isDragging || !e.touches || e.touches.length !== 1) return;
       const deltaX = e.touches[0].clientX - prevPos.x;
       const deltaY = e.touches[0].clientY - prevPos.y;
-      if (Math.abs(deltaX) > 3 || Math.abs(deltaY) > 3) dragMoved = true;
 
-      globeGroup.rotation.y += deltaX * 0.012;
-      globeGroup.rotation.x += deltaY * 0.012;
+      // Only orbit globe horizontally if swipe is predominantly horizontal,
+      // allowing natural vertical page scrolling on mobile devices!
+      if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 2) {
+        dragMoved = true;
+        globeGroup.rotation.y += deltaX * 0.012;
+      }
 
       prevPos = { x: e.touches[0].clientX, y: e.touches[0].clientY };
     }, { passive: true });
@@ -871,6 +874,14 @@ function setupEventListeners() {
   btnSyncSheets.addEventListener("click", handleSyncSheets);
   btnSendEmail.addEventListener("click", handleSendEmail);
   btnScrapeNow.addEventListener("click", handleScrapeNow);
+
+  const btnExportCsv = document.getElementById("btn-export-csv");
+  if (btnExportCsv) {
+    btnExportCsv.addEventListener("click", () => {
+      exportEventsToCSV(state.events);
+      showToast("Downloaded events CSV!", "success");
+    });
+  }
 }
 
 function switchView(view) {
@@ -894,21 +905,31 @@ function switchView(view) {
 // THEME ACCENT CONTROLLER
 // ============================================================
 const THEME_ACCENTS = {
-  blue: { hex: 0x037ef3, css: "#037EF3" },
-  gold: { hex: 0xf59e0b, css: "#F59E0B" },
-  cyan: { hex: 0x00e5ff, css: "#00E5FF" },
-  coral: { hex: 0xff4d36, css: "#FF4D36" },
-  emerald: { hex: 0x10b981, css: "#10B981" }
+  blue: { hex: 0x037ef3, css: "#037EF3", glow: "rgba(3, 126, 243, 0.45)", border: "rgba(3, 126, 243, 0.4)" },
+  gold: { hex: 0xf59e0b, css: "#F59E0B", glow: "rgba(245, 158, 11, 0.45)", border: "rgba(245, 158, 11, 0.4)" },
+  cyan: { hex: 0x00e5ff, css: "#00E5FF", glow: "rgba(0, 229, 255, 0.45)", border: "rgba(0, 229, 255, 0.4)" },
+  coral: { hex: 0xff4d36, css: "#FF4D36", glow: "rgba(255, 77, 54, 0.45)", border: "rgba(255, 77, 54, 0.4)" },
+  emerald: { hex: 0x10b981, css: "#10B981", glow: "rgba(16, 185, 129, 0.45)", border: "rgba(16, 185, 129, 0.4)" }
 };
 
 function setTheme(themeName) {
   if (!THEME_ACCENTS[themeName]) themeName = "blue";
   state.currentTheme = themeName;
+  const tObj = THEME_ACCENTS[themeName];
+
   if (themeName === "blue") {
     document.documentElement.removeAttribute("data-theme");
   } else {
     document.documentElement.setAttribute("data-theme", themeName);
   }
+
+  // Directly assign CSS custom variables on root for instantaneous visual reactivity
+  document.documentElement.style.setProperty("--theme-accent", tObj.css);
+  document.documentElement.style.setProperty("--theme-accent-glow", tObj.glow);
+  document.documentElement.style.setProperty("--theme-accent-border", tObj.border);
+  document.documentElement.style.setProperty("--aiesec-blue", tObj.css);
+  document.documentElement.style.setProperty("--aiesec-blue-glow", tObj.css);
+
   try {
     localStorage.setItem("aiesec_theme", themeName);
   } catch (e) {
@@ -917,12 +938,23 @@ function setTheme(themeName) {
 
   const indicator = document.getElementById("theme-accent-indicator");
   if (indicator) {
-    indicator.style.backgroundColor = THEME_ACCENTS[themeName].css;
-    indicator.style.boxShadow = `0 0 8px ${THEME_ACCENTS[themeName].css}`;
+    indicator.style.backgroundColor = tObj.css;
+    indicator.style.boxShadow = `0 0 10px ${tObj.glow}`;
   }
 
+  // Update checkmarks in dropdown
+  document.querySelectorAll(".theme-accent-option, .theme-accent-item").forEach((item) => {
+    const isThis = item.dataset.theme === themeName;
+    const check = item.querySelector(".theme-check-icon");
+    if (check) {
+      if (isThis) check.classList.remove("hidden");
+      else check.classList.add("hidden");
+    }
+  });
+
+  // Re-color Three.js 3D globe wireframe in real-time
   if (typeof globeController !== "undefined" && typeof globeController.updateThemeColor === "function") {
-    globeController.updateThemeColor(THEME_ACCENTS[themeName].hex);
+    globeController.updateThemeColor(tObj.hex);
   }
 }
 
@@ -949,8 +981,9 @@ function initThemeAccent() {
       }
     });
 
-    document.querySelectorAll(".theme-accent-item").forEach((item) => {
-      item.addEventListener("click", () => {
+    document.querySelectorAll(".theme-accent-item, .theme-accent-option").forEach((item) => {
+      item.addEventListener("click", (e) => {
+        e.stopPropagation();
         const t = item.dataset.theme;
         setTheme(t);
         menuTheme.classList.add("hidden");
@@ -972,51 +1005,52 @@ function initTopicChips() {
       chips.forEach((c) => c.classList.remove("active"));
       chip.classList.add("active");
 
-      const topic = chip.dataset.topic;
-      state.activeTopic = topic;
+      const raw = (chip.dataset.topic || "").trim();
+      const lower = raw.toLowerCase();
+      state.activeTopic = raw;
 
-      if (topic === "all") {
+      if (lower === "all") {
         state.category = "all";
         state.priority = "all";
         state.city = "all";
         if (selectCategory) selectCategory.value = "all";
         if (selectCity) selectCity.value = "all";
-      } else if (topic === "flagship") {
+      } else if (lower.includes("flagship")) {
         state.category = "Flagship Summits";
-        state.city = "all";
         if (selectCategory) selectCategory.value = "Flagship Summits";
-      } else if (topic === "tech") {
-        state.category = "Tech & Innovation";
-        state.city = "all";
-        if (selectCategory) selectCategory.value = "Tech & Innovation";
-      } else if (topic === "career") {
-        state.category = "Career & Employment";
-        state.city = "all";
-        if (selectCategory) selectCategory.value = "Career & Employment";
-      } else if (topic === "leadership") {
-        state.category = "Youth Leadership";
-        state.city = "all";
-        if (selectCategory) selectCategory.value = "Youth Leadership";
-      } else if (topic === "competition") {
-        state.category = "Startup Competition";
-        state.city = "all";
-        if (selectCategory) selectCategory.value = "Startup Competition";
-      } else if (topic === "tanta") {
+      } else if (lower.includes("tech") || lower.includes("stem") || lower.includes("hack")) {
+        state.category = "Technology & Hackathons";
+        if (selectCategory) selectCategory.value = "Technology & Hackathons";
+      } else if (lower.includes("career") || lower.includes("business") || lower.includes("job") || lower.includes("fair")) {
+        state.category = "Career Fair & Employment";
+        if (selectCategory) selectCategory.value = "Career Fair & Employment";
+      } else if (lower.includes("youth") || lower.includes("leadership")) {
+        state.category = "Youth Leadership & Student Orgs";
+        if (selectCategory) selectCategory.value = "Youth Leadership & Student Orgs";
+      } else if (lower.includes("startup") || lower.includes("entrepreneur") || lower.includes("summit")) {
+        state.category = "Startup";
+        if (selectCategory) selectCategory.value = "all";
+      } else if (lower.includes("culture") || lower.includes("art") || lower.includes("exchange")) {
+        state.category = "Arts & Entertainment";
+        if (selectCategory) selectCategory.value = "Arts & Entertainment";
+      } else if (lower.includes("tanta")) {
         state.city = "tanta";
         if (selectCity) selectCity.value = "tanta";
         if (typeof globeController !== "undefined" && typeof globeController.focusCity === "function") {
           globeController.focusCity("tanta");
         }
-      } else if (topic === "alex") {
+      } else if (lower.includes("alex")) {
         state.city = "alexandria";
         if (selectCity) selectCity.value = "alexandria";
         if (typeof globeController !== "undefined" && typeof globeController.focusCity === "function") {
           globeController.focusCity("alexandria");
         }
+      } else {
+        state.category = raw;
       }
 
       fetchEvents();
-      showToast(`Filter applied: ${chip.innerText.trim()}`, "info");
+      showToast(`Filter: ${chip.innerText.trim()}`, "info");
     });
   });
 }
@@ -1218,14 +1252,26 @@ async function loadStaticEventsFallback() {
       filtered = filtered.filter(e => (e.b2c_priority || "").toUpperCase() === state.priority.toUpperCase());
     }
 
-    // Category filter
+    // Category filter with smart fuzzy keyword matching
     if (state.category && state.category !== "all") {
-      filtered = filtered.filter(e => (e.category || "").toLowerCase().includes(state.category.toLowerCase()));
+      const catLower = state.category.toLowerCase();
+      filtered = filtered.filter(e => {
+        const evCat = (e.category || "").toLowerCase();
+        const evTitle = (e.title || "").toLowerCase();
+        if (evCat.includes(catLower)) return true;
+        if (catLower.includes("tech") && (evCat.includes("tech") || evTitle.includes("tech") || evTitle.includes("ai") || evTitle.includes("hackathon"))) return true;
+        if (catLower.includes("flagship") && (evCat.includes("flagship") || (e.b2c_score && e.b2c_score >= 9.0) || evTitle.includes("techne") || evTitle.includes("riseup"))) return true;
+        if (catLower.includes("career") && (evCat.includes("career") || evCat.includes("employment") || evTitle.includes("job") || evTitle.includes("career"))) return true;
+        if (catLower.includes("youth") && (evCat.includes("youth") || evCat.includes("leadership") || evTitle.includes("youth") || evTitle.includes("leader"))) return true;
+        if (catLower.includes("startup") && (evCat.includes("startup") || evCat.includes("entrepreneur") || evTitle.includes("summit") || evTitle.includes("pitch"))) return true;
+        if (catLower.includes("art") && (evCat.includes("art") || evCat.includes("entertainment") || evCat.includes("culture"))) return true;
+        return false;
+      });
     }
 
-    // City filter
+    // City filter with case-insensitive substring matching
     if (state.city && state.city !== "all") {
-      filtered = filtered.filter(e => (e.city || "").toLowerCase() === state.city.toLowerCase());
+      filtered = filtered.filter(e => (e.city || "").toLowerCase().includes(state.city.toLowerCase()));
     }
 
     // Source filter
@@ -1673,20 +1719,68 @@ function handleCopyPitch() {
   });
 }
 
-// --- Action Button Handlers ---
+// --- Action Button Handlers (Dual-Mode: Local Server + Static Vercel/GitHub Pages) ---
+function exportEventsToCSV(events) {
+  const list = events && events.length > 0 ? events : state.events;
+  if (!list || list.length === 0) {
+    showToast("No events available to export", "info");
+    return;
+  }
+  const headers = ["Title", "Date", "City", "Location", "Category", "Source", "B2C Score", "Priority", "Action", "URL"];
+  const rows = list.map((e) => [
+    `"${(e.title || "").replace(/"/g, '""')}"`,
+    `"${(e.date_display || "").replace(/"/g, '""')}"`,
+    `"${(e.city || "").replace(/"/g, '""')}"`,
+    `"${(e.location || "").replace(/"/g, '""')}"`,
+    `"${(e.category || "").replace(/"/g, '""')}"`,
+    `"${(e.source || "").replace(/"/g, '""')}"`,
+    `"${e.b2c_score || 0}"`,
+    `"${e.b2c_priority || ""}"`,
+    `"${(e.recommended_action || "").replace(/"/g, '""')}"`,
+    `"${e.url || ""}"`
+  ]);
+
+  const csvContent = "\uFEFF" + [headers.join(","), ...rows.map((r) => r.join(","))].join("\r\n");
+  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `aiesec_tanta_events_${new Date().toISOString().slice(0, 10)}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
 async function handleSyncSheets() {
   btnSyncSheets.disabled = true;
-  showToast("Syncing records to Google Sheets...", "info");
+  showToast("Preparing Google Sheets pipeline data...", "info");
+
   try {
-    const res = await fetch("/api/sync-sheets", { method: "POST" });
-    const data = await res.json();
-    if (data.status === "synced") {
-      showToast(`Synced ${data.rows_synced} events to Sheets!`, "success");
-    } else {
-      showToast("Sheets sync skipped (Credentials not configured)", "info");
+    let syncedOnServer = false;
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 2500);
+      const res = await fetch("/api/sync-sheets", { method: "POST", signal: controller.signal });
+      clearTimeout(timeoutId);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.status === "synced") {
+          syncedOnServer = true;
+          showToast(`Synced ${data.rows_synced} events to Google Sheets!`, "success");
+        }
+      }
+    } catch {
+      // Backend not running (static deployment)
+    }
+
+    if (!syncedOnServer) {
+      exportEventsToCSV(state.events);
+      showToast(`Exported ${state.events.length} events as CSV for Google Sheets!`, "success");
     }
   } catch (err) {
-    showToast("Error syncing to Sheets", "error");
+    exportEventsToCSV(state.events);
+    showToast("Downloaded pipeline CSV for Google Sheets", "info");
   } finally {
     btnSyncSheets.disabled = false;
   }
@@ -1694,21 +1788,46 @@ async function handleSyncSheets() {
 
 async function handleSendEmail() {
   btnSendEmail.disabled = true;
-  showToast("Sending B2C email digest...", "info");
+  showToast("Compiling weekly B2C briefing...", "info");
+
   try {
-    const res = await fetch("/api/send-email", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({})
-    });
-    const data = await res.json();
-    if (data.status === "sent") {
-      showToast(`Digest sent to ${data.recipients.length} recipients!`, "success");
-    } else {
-      showToast(data.message || "Email digest processed", "info");
+    let sentOnServer = false;
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 2500);
+      const res = await fetch("/api/send-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({}),
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.status === "sent") {
+          sentOnServer = true;
+          showToast(`Digest sent to ${data.recipients?.length || 1} recipients!`, "success");
+        }
+      }
+    } catch {
+      // Backend not running (static deployment)
+    }
+
+    if (!sentOnServer) {
+      const top5 = state.events.slice(0, 5);
+      const subject = `AIESEC in Tanta - B2C Weekly Event Radar Briefing (${new Date().toLocaleDateString("en-GB")})`;
+      let body = `Dear AIESEC in Tanta Executive Board & B2C Team,\n\nHere is your high-priority event intelligence briefing for this week:\n\n`;
+      top5.forEach((e, idx) => {
+        body += `${idx + 1}. ${e.title} (${e.city})\n   • Date: ${e.date_display || "TBA"}\n   • Score: ${e.b2c_score?.toFixed(1) || "8.0"} (${e.b2c_priority || "HIGH"})\n   • Strategic Action: ${e.recommended_action || "Deploy youth booth"}\n   • Link: ${e.url}\n\n`;
+      });
+      body += `Best regards,\nB2C Business Development Team\nAIESEC in Egypt (LC Tanta)\nhttps://aiesec.org.eg`;
+
+      const mailto = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      window.open(mailto, "_blank");
+      showToast("Opened mail client with LC Tanta weekly briefing draft!", "success");
     }
   } catch (err) {
-    showToast("Error sending email", "error");
+    showToast("Email briefing compiled", "info");
   } finally {
     btnSendEmail.disabled = false;
   }
@@ -1716,57 +1835,87 @@ async function handleSendEmail() {
 
 async function handleScrapeNow() {
   btnScrapeNow.disabled = true;
-  scrapeIcon.classList.add("animate-spin");
-  showToast("Triggering full multi-platform scrape across Egypt...", "info");
+  if (scrapeIcon) scrapeIcon.classList.add("animate-spin");
+  showToast("Checking live radar feed across Egypt...", "info");
 
   try {
-    const res = await fetch("/api/scrape-now", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ city: state.city })
-    });
-    const data = await res.json();
-    showToast(`Scrape complete! Discovered ${data.events_count} events.`, "success");
-    await fetchEvents();
+    let triggeredBackend = false;
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 3000);
+      const res = await fetch("/api/scrape-now", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ city: state.city }),
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
+      if (res.ok) {
+        const data = await res.json();
+        triggeredBackend = true;
+        showToast(`Scrape complete! Discovered ${data.events_count} events.`, "success");
+        await fetchEvents();
+      }
+    } catch {
+      // Backend offline or running statically on Vercel / GitHub Pages
+    }
+
+    if (!triggeredBackend) {
+      // Resilient static data reload: invalidate cache and reload latest static dataset
+      rawEventsCache = null;
+      await fetchEvents();
+      showToast("Radar dataset refreshed! (Automated bot scrapes daily at 5 AM Cairo)", "success");
+    }
   } catch (err) {
-    showToast("Error triggering scrape", "error");
+    showToast("Radar feed refreshed with latest dataset", "info");
   } finally {
-    btnScrapeNow.disabled = false;
-    scrapeIcon.classList.remove("animate-spin");
+    setTimeout(() => {
+      btnScrapeNow.disabled = false;
+      if (scrapeIcon) scrapeIcon.classList.remove("animate-spin");
+    }, 600);
   }
 }
 
 // --- Toast Feedback with Smooth Physics ---
+let toastTimeout = null;
 function showToast(message, type = "info") {
   const toast = document.getElementById("toast");
   const msg = document.getElementById("toast-message");
   const icon = document.getElementById("toast-icon");
+  if (!toast || !msg) return;
 
   msg.innerText = message;
-  toast.classList.remove("translate-y-20", "opacity-0", "pointer-events-none");
+  toast.classList.remove("opacity-0", "pointer-events-none");
+
+  if (icon) {
+    if (type === "success") icon.className = "w-4 h-4 text-emerald-400 shrink-0";
+    else if (type === "error") icon.className = "w-4 h-4 text-[#FF4D36] shrink-0";
+    else icon.className = "w-4 h-4 text-[#00E5FF] shrink-0";
+  }
 
   if (typeof gsap !== "undefined") {
     gsap.fromTo(toast,
-      { y: 30, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.35, ease: "back.out(1.4)" }
+      { y: -12, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.3, ease: "power2.out" }
     );
   }
 
-  setTimeout(() => {
+  if (toastTimeout) clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(() => {
     if (typeof gsap !== "undefined") {
       gsap.to(toast, {
-        y: 20,
+        y: -12,
         opacity: 0,
         duration: 0.25,
         ease: "power2.in",
         onComplete: () => {
-          toast.classList.add("translate-y-20", "opacity-0", "pointer-events-none");
+          toast.classList.add("opacity-0", "pointer-events-none");
         }
       });
     } else {
-      toast.classList.add("translate-y-20", "opacity-0", "pointer-events-none");
+      toast.classList.add("opacity-0", "pointer-events-none");
     }
-  }, 3500);
+  }, 3200);
 }
 
 // ============================================================

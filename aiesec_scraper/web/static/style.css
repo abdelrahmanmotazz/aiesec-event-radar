@@ -562,23 +562,87 @@ body::before {
 }
 
 /* ============================================================
-   DYNAMIC THEME ACCENT OVERRIDES
+   DYNAMIC THEME ACCENT SYSTEM (100% Reactive Palette)
    ============================================================ */
+:root {
+  --theme-accent: #037EF3;
+  --theme-accent-glow: rgba(3, 126, 243, 0.45);
+  --theme-accent-subtle: rgba(3, 126, 243, 0.15);
+  --theme-accent-border: rgba(3, 126, 243, 0.4);
+}
 :root[data-theme="gold"] {
+  --theme-accent: #F59E0B;
+  --theme-accent-glow: rgba(245, 158, 11, 0.45);
+  --theme-accent-subtle: rgba(245, 158, 11, 0.15);
+  --theme-accent-border: rgba(245, 158, 11, 0.4);
   --aiesec-blue: #F59E0B;
   --aiesec-blue-glow: #FBBF24;
 }
 :root[data-theme="cyan"] {
+  --theme-accent: #00E5FF;
+  --theme-accent-glow: rgba(0, 229, 255, 0.45);
+  --theme-accent-subtle: rgba(0, 229, 255, 0.15);
+  --theme-accent-border: rgba(0, 229, 255, 0.4);
   --aiesec-blue: #00E5FF;
   --aiesec-blue-glow: #38BDF8;
 }
 :root[data-theme="coral"] {
+  --theme-accent: #FF4D36;
+  --theme-accent-glow: rgba(255, 77, 54, 0.45);
+  --theme-accent-subtle: rgba(255, 77, 54, 0.15);
+  --theme-accent-border: rgba(255, 77, 54, 0.4);
   --aiesec-blue: #FF4D36;
   --aiesec-blue-glow: #FB7185;
 }
 :root[data-theme="emerald"] {
+  --theme-accent: #10B981;
+  --theme-accent-glow: rgba(16, 185, 129, 0.45);
+  --theme-accent-subtle: rgba(16, 185, 129, 0.15);
+  --theme-accent-border: rgba(16, 185, 129, 0.4);
   --aiesec-blue: #10B981;
   --aiesec-blue-glow: #34D399;
+}
+
+/* Dynamically colorize UI elements when theme changes */
+#theme-accent-indicator {
+  background-color: var(--theme-accent) !important;
+  box-shadow: 0 0 10px var(--theme-accent-glow) !important;
+}
+
+.topic-chip.active,
+#btn-view-cards.active-view,
+#btn-view-calendar.active-view,
+.globe-hub-btn.active-hub {
+  background: var(--theme-accent) !important;
+  border-color: var(--theme-accent) !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 16px var(--theme-accent-glow) !important;
+}
+
+.radar-card:hover,
+.spotlight-card:hover {
+  border-color: var(--theme-accent-border) !important;
+  box-shadow: 0 0 28px -4px var(--theme-accent-glow) !important;
+}
+
+.radar-card:hover h3 a {
+  color: var(--theme-accent) !important;
+}
+
+.btn-pitch-event {
+  color: var(--theme-accent) !important;
+  border-color: var(--theme-accent-border) !important;
+}
+
+.btn-pitch-event:hover {
+  background: var(--theme-accent) !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 16px var(--theme-accent-glow) !important;
+}
+
+#drawer-btn-generate {
+  background: linear-gradient(135deg, var(--theme-accent), #0266C8) !important;
+  box-shadow: 0 0 20px var(--theme-accent-glow) !important;
 }
 
 /* ============================================================
@@ -603,12 +667,6 @@ body::before {
   color: #ffffff;
   border-color: rgba(255, 255, 255, 0.22);
 }
-.topic-chip.active {
-  background: linear-gradient(135deg, rgba(3, 126, 243, 0.25), rgba(0, 229, 255, 0.15)) !important;
-  color: #38BDF8 !important;
-  border-color: rgba(56, 189, 248, 0.55) !important;
-  box-shadow: 0 0 16px rgba(3, 126, 243, 0.3);
-}
 
 /* ============================================================
    LINEAR-STYLE SLIDE-OVER INTEL DRAWER
@@ -631,13 +689,26 @@ body::before {
 }
 
 /* ============================================================
-   MOBILE RESPONSIVENESS & BOTTOM NAVIGATION BAR
+   MOBILE RESPONSIVENESS & ZERO-OVERFLOW SAFEGUARDS
    ============================================================ */
+html, body {
+  overflow-x: hidden !important;
+  width: 100%;
+  max-width: 100vw;
+  position: relative;
+}
+
 @media (max-width: 640px) {
   body {
     padding-bottom: 76px !important;
   }
+  
+  /* Canvas touch behavior: allow natural vertical page scroll */
+  #hero-globe-canvas {
+    touch-action: pan-y !important;
+  }
 }
+
 #mobile-bottom-nav {
   padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
 }
