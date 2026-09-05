@@ -15,8 +15,10 @@ __pycache__/
 *$py.class
 .pytest_cache/
 
-# Local Data Exports & Previews
-data/
+# Local Data Exports & Previews (preserve latest seed for cloud deployment)
+data/*
+!data/aiesec_egypt_events_latest.xlsx
+!data/aiesec_egypt_events_latest.csv
 
 # OS Specific
 .DS_Store
