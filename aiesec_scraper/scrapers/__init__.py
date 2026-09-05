@@ -6,6 +6,8 @@ from .allevents import AllEventsScraper
 from .meetup import MeetupScraper
 from .tentimes import TenTimesScraper
 from .social import SocialMediaScraper
+from .ticketsmarche import TicketsMarcheScraper
+from .summits import EgyptSummitsScraper
 
 __all__ = [
     "BaseScraper",
@@ -14,4 +16,7 @@ __all__ = [
     "MeetupScraper",
     "TenTimesScraper",
     "SocialMediaScraper",
+    "TicketsMarcheScraper",
+    "EgyptSummitsScraper",
 ]
+

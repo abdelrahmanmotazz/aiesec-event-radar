@@ -7,7 +7,15 @@ from typing import Dict, List, Optional
 
 from .models import EventRecord
 from .scorers import B2CScorer
-from .scrapers import AllEventsScraper, EventbriteScraper, MeetupScraper, TenTimesScraper, SocialMediaScraper
+from .scrapers import (
+    AllEventsScraper,
+    EgyptSummitsScraper,
+    EventbriteScraper,
+    MeetupScraper,
+    SocialMediaScraper,
+    TenTimesScraper,
+    TicketsMarcheScraper,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -26,7 +34,7 @@ class EventPipeline:
         self.config = config or {}
         self.scorer = B2CScorer(self.config.get("keywords"))
         self.window_months = self.config.get("date_window_months", 6)
-        self.default_cities = self.config.get("default_cities", ["cairo", "alexandria", "giza"])
+        self.default_cities = self.config.get("default_cities", ["tanta", "cairo", "alexandria", "giza", "mansoura"])
 
     def run(self, city: Optional[str] = None, country: str = "egypt") -> List[EventRecord]:
         """
@@ -35,28 +43,40 @@ class EventPipeline:
         """
         raw_events: List[EventRecord] = []
 
-        scrapers = [
-            EventbriteScraper(),
-            AllEventsScraper(),
-            MeetupScraper(),
-            TenTimesScraper(),
-            SocialMediaScraper(),
-        ]
-
         logger.info(f"Starting scraping pipeline for {city or 'Egypt Nationwide'}...")
 
         # If nationwide, scrape country-wide feeds + key hubs
         if not city or city.lower() in ["all", "egypt", "nationwide", "country"]:
-            # Nationwide Eventbrite search
+            # 1. Egypt Flagship Summits (Techne Summit Alexandria/Cairo, RiseUp, IEEE Congress)
+            try:
+                summits_scraper = EgyptSummitsScraper()
+                raw_events.extend(summits_scraper.scrape(city=None, country=country))
+            except Exception as e:
+                logger.error(f"Error in Egypt Summits scrape: {e}")
+
+            # 2. TicketsMarche Nationwide Feed
+            try:
+                tm_scraper = TicketsMarcheScraper()
+                raw_events.extend(tm_scraper.scrape(city=None, country=country))
+            except Exception as e:
+                logger.error(f"Error in TicketsMarche scrape: {e}")
+
+            # 3. Nationwide Eventbrite search
             try:
                 eb = EventbriteScraper()
                 raw_events.extend(eb.scrape(city=None, country=country))
             except Exception as e:
                 logger.error(f"Error in nationwide Eventbrite scrape: {e}")
 
-            # Hub-by-hub scrape for AllEvents, Meetup, Social
+            # 4. Hub-by-hub scrape for AllEvents, Meetup, 10times, Social
+            hub_scrapers = [
+                AllEventsScraper(),
+                MeetupScraper(),
+                TenTimesScraper(),
+                SocialMediaScraper(),
+            ]
             for hub in self.default_cities:
-                for scraper in scrapers:
+                for scraper in hub_scrapers:
                     try:
                         events = scraper.scrape(city=hub, country=country)
                         raw_events.extend(events)
@@ -64,7 +84,16 @@ class EventPipeline:
                         logger.error(f"Error in {scraper.name} scrape for {hub}: {e}")
         else:
             # Single city targeted
-            for scraper in scrapers:
+            city_scrapers = [
+                EgyptSummitsScraper(),
+                TicketsMarcheScraper(),
+                EventbriteScraper(),
+                AllEventsScraper(),
+                MeetupScraper(),
+                TenTimesScraper(),
+                SocialMediaScraper(),
+            ]
+            for scraper in city_scrapers:
                 try:
                     events = scraper.scrape(city=city, country=country)
                     raw_events.extend(events)

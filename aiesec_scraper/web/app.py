@@ -38,14 +38,14 @@ if os.path.exists(STATIC_DIR):
 
 
 def load_initial_events():
-    """Load latest events from local Excel if available, or run initial scrape."""
+    """Load latest events from local Excel if available, and ensure summits & TicketsMarche are seeded."""
     global CACHED_EVENTS
     latest_xlsx = "data/aiesec_egypt_events_latest.xlsx"
+    events = []
     if os.path.exists(latest_xlsx):
         try:
             import pandas as pd
             df = pd.read_excel(latest_xlsx)
-            events = []
             for idx, row in df.iterrows():
                 rec = EventRecord(
                     event_id=f"rec_{idx}",
@@ -66,8 +66,52 @@ def load_initial_events():
                     recommended_action=str(row.get("Recommended B2C Action", "General Monitoring"))
                 )
                 events.append(rec)
-            CACHED_EVENTS = events
-            return
+        except Exception:
+            pass
+
+    # Ensure flagship summits (Techne Summit, RiseUp, etc.) are present
+    existing_titles = {e.title.lower() for e in events}
+    if not any("techne" in t for t in existing_titles):
+        try:
+            from ..scrapers import EgyptSummitsScraper
+            summit_events = EgyptSummitsScraper().scrape(city=None)
+            from ..scorers import B2CScorer
+            scorer = B2CScorer()
+            for ev in summit_events:
+                score, priority, category, tags, action, parallel = scorer.evaluate(ev.title, ev.description, ev.location)
+                ev.b2c_score = score
+                ev.b2c_priority = priority
+                ev.category = category
+                ev.aiesec_tags = tags
+                ev.recommended_action = action
+                ev.parallel_org = parallel
+                events.insert(0, ev)
+        except Exception as e:
+            logger.error(f"Error seeding summits: {e}")
+
+    # Ensure TicketsMarche events are present
+    if not any("ticketsmarche" in e.source.lower() for e in events):
+        try:
+            from ..scrapers import TicketsMarcheScraper
+            tm_events = TicketsMarcheScraper().scrape(city=None)
+            from ..scorers import B2CScorer
+            scorer = B2CScorer()
+            for ev in tm_events:
+                score, priority, category, tags, action, parallel = scorer.evaluate(ev.title, ev.description, ev.location)
+                ev.b2c_score = score
+                ev.b2c_priority = priority
+                ev.category = category
+                ev.aiesec_tags = tags
+                ev.recommended_action = action
+                ev.parallel_org = parallel
+                events.append(ev)
+        except Exception as e:
+            logger.error(f"Error seeding TicketsMarche: {e}")
+
+    CACHED_EVENTS = events
+    if events:
+        try:
+            LOCAL_EXPORTER.export(events)
         except Exception:
             pass
 
@@ -93,6 +137,7 @@ def get_events(
     priority: str = "all",
     category: str = "all",
     city: str = "all",
+    source: str = "all",
     search: str = "",
     clash_only: bool = False,
     partner_only: bool = False
@@ -107,6 +152,10 @@ def get_events(
     # Priority filter
     if priority and priority.upper() != "ALL":
         filtered = [e for e in filtered if e.b2c_priority.upper() == priority.upper()]
+
+    # Source filter
+    if source and source.lower() != "all":
+        filtered = [e for e in filtered if source.lower() in e.source.lower()]
 
     # Category filter
     if category and category.lower() != "all":
@@ -143,7 +192,9 @@ def get_events(
         "total_events": len(CACHED_EVENTS),
         "high_priority": sum(1 for e in CACHED_EVENTS if e.b2c_priority == "HIGH"),
         "clashes": sum(1 for e in CACHED_EVENTS if e.clash_warning),
-        "partner_orgs": sum(1 for e in CACHED_EVENTS if e.parallel_org)
+        "partner_orgs": sum(1 for e in CACHED_EVENTS if e.parallel_org),
+        "summits_count": sum(1 for e in CACHED_EVENTS if "summit" in e.source.lower()),
+        "ticketsmarche_count": sum(1 for e in CACHED_EVENTS if "ticketsmarche" in e.source.lower())
     }
 
     return {

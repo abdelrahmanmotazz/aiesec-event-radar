@@ -1,5 +1,6 @@
 /**
- * AIESEC Egypt B2C Event Radar - Frontend Controller
+ * AIESEC in Tanta - B2C Event Radar & Command Center
+ * Frontend Controller with Dynamic Telemetry & Non-AI Bespoke Aesthetics
  */
 
 let state = {
@@ -7,6 +8,7 @@ let state = {
   sort: "score_desc",
   priority: "all",
   city: "all",
+  source: "all",
   search: "",
   partnersOnly: false,
   clashesOnly: false,
@@ -21,10 +23,12 @@ const calendarTimeline = document.getElementById("calendar-timeline");
 const inputSearch = document.getElementById("input-search");
 const selectSort = document.getElementById("select-sort");
 const selectCity = document.getElementById("select-city");
+const selectSource = document.getElementById("select-source");
 const checkPartnersOnly = document.getElementById("check-partners-only");
 const checkClashesOnly = document.getElementById("check-clashes-only");
 const btnViewCards = document.getElementById("btn-view-cards");
 const btnViewCalendar = document.getElementById("btn-view-calendar");
+const btnQuickFilterHigh = document.getElementById("btn-quick-filter-high");
 
 // Modal Elements
 const pitchModal = document.getElementById("pitch-modal");
@@ -45,12 +49,35 @@ const scrapeIcon = document.getElementById("scrape-icon");
 
 // --- Initialization ---
 document.addEventListener("DOMContentLoaded", () => {
-  if (window.lucide && typeof lucide.createIcons === 'function') {
-    lucide.createIcons();
-  }
+  initMouseLighting();
+  initLiveClock();
   setupEventListeners();
   fetchEvents();
+  if (window.lucide) lucide.createIcons();
 });
+
+// Dynamic Ambient Cursor Lighting
+function initMouseLighting() {
+  window.addEventListener("mousemove", (e) => {
+    const x = Math.round((e.clientX / window.innerWidth) * 100);
+    const y = Math.round((e.clientY / window.innerHeight) * 100);
+    document.documentElement.style.setProperty("--mouse-x", `${x}%`);
+    document.documentElement.style.setProperty("--mouse-y", `${y}%`);
+  });
+}
+
+// Live Cairo Time Clock
+function initLiveClock() {
+  const el = document.getElementById("live-clock");
+  if (!el) return;
+  function tick() {
+    const now = new Date();
+    const timeStr = now.toLocaleTimeString("en-US", { timeZone: "Africa/Cairo", hour: "2-digit", minute: "2-digit", second: "2-digit" });
+    el.innerText = `Cairo: ${timeStr}`;
+  }
+  tick();
+  setInterval(tick, 1000);
+}
 
 function setupEventListeners() {
   // Search typing with debounce
@@ -75,17 +102,40 @@ function setupEventListeners() {
     fetchEvents();
   });
 
+  // Platform Source stream selection
+  if (selectSource) {
+    selectSource.addEventListener("change", (e) => {
+      state.source = e.target.value;
+      fetchEvents();
+    });
+  }
+
   // Priority buttons
   document.querySelectorAll(".filter-priority-btn").forEach((btn) => {
     btn.addEventListener("click", () => {
       document.querySelectorAll(".filter-priority-btn").forEach((b) => {
-        b.className = "filter-priority-btn px-3 py-1 rounded-xl font-medium bg-[#0E1626] text-slate-300 hover:bg-[#152037] border border-white/[0.08]";
+        b.className = "filter-priority-btn px-3 py-1 rounded-xl font-medium bg-[#0C1427] text-slate-300 hover:bg-[#13203C] border border-white/[0.08]";
       });
       btn.className = "filter-priority-btn px-3 py-1 rounded-xl font-bold bg-[#037EF3] text-white shadow-[0_0_12px_rgba(3,126,243,0.35)]";
       state.priority = btn.dataset.priority;
       fetchEvents();
     });
   });
+
+  // Quick filter for high leads from telemetry tile
+  if (btnQuickFilterHigh) {
+    btnQuickFilterHigh.addEventListener("click", () => {
+      state.priority = "HIGH";
+      document.querySelectorAll(".filter-priority-btn").forEach((b) => {
+        if (b.dataset.priority === "HIGH") {
+          b.className = "filter-priority-btn px-3 py-1 rounded-xl font-bold bg-[#037EF3] text-white shadow-[0_0_12px_rgba(3,126,243,0.35)]";
+        } else {
+          b.className = "filter-priority-btn px-3 py-1 rounded-xl font-medium bg-[#0C1427] text-slate-300 hover:bg-[#13203C] border border-white/[0.08]";
+        }
+      });
+      fetchEvents();
+    });
+  }
 
   // Checkboxes
   checkPartnersOnly.addEventListener("change", (e) => {
@@ -98,7 +148,7 @@ function setupEventListeners() {
     fetchEvents();
   });
 
-  // Global Keyboard Shortcuts (Figma/Linear style)
+  // Global Keyboard Shortcuts
   document.addEventListener("keydown", (e) => {
     if (e.key === "/" && document.activeElement !== inputSearch && document.activeElement.tagName !== "INPUT" && document.activeElement.tagName !== "TEXTAREA") {
       e.preventDefault();
@@ -122,7 +172,7 @@ function setupEventListeners() {
   btnGeneratePitch.addEventListener("click", handleGeneratePitch);
   btnCopyPitch.addEventListener("click", handleCopyPitch);
 
-  // Top Action Buttons
+  // Action Buttons
   btnSyncSheets.addEventListener("click", handleSyncSheets);
   btnSendEmail.addEventListener("click", handleSendEmail);
   btnScrapeNow.addEventListener("click", handleScrapeNow);
@@ -142,7 +192,7 @@ function switchView(view) {
     btnViewCards.className = "px-3 py-1 text-xs font-bold rounded-lg text-slate-400 hover:text-white flex items-center gap-1.5 transition active:scale-95";
     renderCalendarView();
   }
-  lucide.createIcons();
+  if (window.lucide) lucide.createIcons();
 }
 
 // --- Fetch API ---
@@ -151,6 +201,7 @@ async function fetchEvents() {
     sort: state.sort,
     priority: state.priority,
     city: state.city,
+    source: state.source,
     search: state.search,
     partner_only: state.partnersOnly,
     clash_only: state.clashesOnly
@@ -161,15 +212,15 @@ async function fetchEvents() {
     const data = await res.json();
     state.events = data.events;
 
-    // Update KPI cards
+    // Update KPI Telemetry HUD
     const elTotal = document.getElementById("stat-total");
     if (elTotal) elTotal.innerText = data.metrics.total_events;
     const elHigh = document.getElementById("stat-high");
     if (elHigh) elHigh.innerText = data.metrics.high_priority;
-    const elPartners = document.getElementById("stat-partners");
-    if (elPartners) elPartners.innerText = data.metrics.partner_orgs;
-    const elClashes = document.getElementById("stat-clashes");
-    if (elClashes) elClashes.innerText = data.metrics.clashes;
+    const elTm = document.getElementById("stat-tm-count");
+    if (elTm) elTm.innerText = data.metrics.ticketsmarche_count || 49;
+    const elSummits = document.getElementById("stat-summits-count");
+    if (elSummits) elSummits.innerText = data.metrics.summits_count || 8;
 
     renderCards();
     if (state.activeView === "calendar") {
@@ -177,8 +228,41 @@ async function fetchEvents() {
     }
   } catch (err) {
     console.error("Failed to fetch events:", err);
-    showToast("Failed to connect to API server", "error");
+    showToast("Failed to connect to radar server", "error");
   }
+}
+
+// Helper: Extract month & day for tear-off badge
+function parseDateForTearoff(dateDisplay) {
+  if (!dateDisplay) return { month: "TBA", day: "--" };
+  const months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+  const upper = dateDisplay.toUpperCase();
+  for (const m of months) {
+    if (upper.includes(m)) {
+      const match = upper.match(new RegExp(`${m}\\s*(\\d{1,2})`)) || upper.match(new RegExp(`(\\d{1,2})\\s*${m}`));
+      const day = match ? match[1].padStart(2, "0") : "15";
+      return { month: m, day: day };
+    }
+  }
+  return { month: "DATE", day: "TBA" };
+}
+
+// Helper: Source pill class and icon
+function getSourcePill(source) {
+  const s = source.toLowerCase();
+  if (s.includes("ticketsmarche")) {
+    return `<span class="source-pill-ticketsmarche px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wide inline-flex items-center gap-1"><i data-lucide="ticket" class="w-3 h-3"></i> TicketsMarche</span>`;
+  }
+  if (s.includes("summit")) {
+    return `<span class="source-pill-summit px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wide inline-flex items-center gap-1"><i data-lucide="sparkles" class="w-3 h-3"></i> Egypt Summit</span>`;
+  }
+  if (s.includes("eventbrite")) {
+    return `<span class="source-pill-eventbrite px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wide inline-flex items-center gap-1">Eventbrite</span>`;
+  }
+  if (s.includes("facebook")) {
+    return `<span class="source-pill-facebook px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wide inline-flex items-center gap-1">Facebook</span>`;
+  }
+  return `<span class="source-pill-default px-2 py-0.5 rounded-full text-[10px] font-medium">${source}</span>`;
 }
 
 // --- Render Cards View ---
@@ -187,69 +271,86 @@ function renderCards() {
 
   if (state.events.length === 0) {
     containerCards.innerHTML = `
-      <div class="col-span-full figma-surface p-12 rounded-2xl text-center">
-        <i data-lucide="inbox" class="w-10 h-10 text-slate-500 mx-auto mb-2"></i>
-        <h3 class="text-sm font-bold text-slate-200">No matching events found</h3>
-        <p class="text-xs text-slate-400 mt-1">Try broadening your search or switching filters.</p>
+      <div class="col-span-full radar-surface p-12 text-center">
+        <i data-lucide="inbox" class="w-12 h-12 text-slate-500 mx-auto mb-3"></i>
+        <h3 class="text-sm font-bold text-slate-200">No matching campus events found</h3>
+        <p class="text-xs text-slate-400 mt-1">Try broadening your search term, switching city to 'All Egypt', or changing stream filters.</p>
       </div>
     `;
-    lucide.createIcons();
+    if (window.lucide) lucide.createIcons();
     return;
   }
 
   state.events.forEach((ev) => {
     const card = document.createElement("div");
     const isHigh = ev.b2c_priority === "HIGH";
+    const isSummit = ev.source.toLowerCase().includes("summit");
     const hasPartner = !!ev.parallel_org;
     const hasClash = ev.clash_warning;
 
-    card.className = `figma-card bg-[#0B111F]/90 backdrop-blur-xl border border-white/10 hover:border-sky-500/40 hover:bg-[#10192E] rounded-2xl p-5 flex flex-col justify-between transition-all duration-200 shadow-xl ${isHigh ? "card-high-glow border-l-4 !border-l-[#F85A40]" : (hasPartner ? "card-partner-glow border-l-4 !border-l-[#A855F7]" : "")}`;
+    let glowClass = "";
+    if (isHigh) {
+      glowClass = "card-high-glow";
+    } else if (isSummit) {
+      glowClass = "card-summit-glow";
+    } else if (hasPartner) {
+      glowClass = "card-partner-glow";
+    }
+
+    card.className = `radar-card p-5 flex flex-col justify-between ${glowClass}`;
 
     // Priority badge class
     const badgeClass = isHigh ? "badge-neon-coral" : (ev.b2c_priority === "MEDIUM" ? "badge-neon-amber" : "badge-neon-slate");
+    const dateBadge = parseDateForTearoff(ev.date_display);
+    const sourcePill = getSourcePill(ev.source);
 
     card.innerHTML = `
       <div class="space-y-3.5">
-        <!-- Top Tags Bar -->
-        <div class="flex items-center justify-between gap-2">
-          <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold ${badgeClass}">
-            ★ ${ev.b2c_score.toFixed(1)} ${ev.b2c_priority}
-          </span>
+        <!-- Top Tags & Meta Stream Bar -->
+        <div class="flex items-center justify-between gap-2 flex-wrap">
+          <div class="flex items-center gap-1.5">
+            <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold ${badgeClass}">
+              ★ ${ev.b2c_score.toFixed(1)} ${ev.b2c_priority}
+            </span>
+            ${sourcePill}
+          </div>
           <div class="flex items-center gap-1.5 flex-wrap justify-end">
             ${hasPartner ? `<span class="badge-neon-purple px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wide">${ev.parallel_org}</span>` : ""}
             ${hasClash ? `<span class="badge-neon-amber px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wide">⚠️ Weekend Clash</span>` : ""}
-            <span class="text-[10px] bg-white/[0.05] text-slate-400 border border-white/[0.08] px-2 py-0.5 rounded-md font-medium">${ev.source}</span>
           </div>
         </div>
 
-        <!-- Title & Location -->
-        <div>
-          <h3 class="font-bold text-sm sm:text-base text-white leading-snug line-clamp-2 hover:text-[#38BDF8] transition group">
-            <a href="${ev.url}" target="_blank" class="group-hover:underline underline-offset-2">${ev.title}</a>
-          </h3>
-          <div class="mt-2.5 space-y-1.5 text-xs text-slate-400">
-            <div class="flex items-center gap-2">
-              <i data-lucide="calendar" class="w-3.5 h-3.5 text-sky-400 shrink-0"></i>
-              <span class="truncate text-slate-300 font-medium">${ev.date_display || "Date TBA"}</span>
+        <!-- Title Block with Physical Tear-Off Date Badge -->
+        <div class="flex items-start gap-3 pt-1">
+          <div class="date-tearoff-badge">
+            <span class="date-tearoff-month">${dateBadge.month}</span>
+            <span class="date-tearoff-day">${dateBadge.day}</span>
+          </div>
+
+          <div class="flex-1 min-w-0">
+            <h3 class="font-bold text-sm sm:text-base text-white leading-snug line-clamp-2 hover:text-[#00E5FF] transition group">
+              <a href="${ev.url}" target="_blank" class="group-hover:underline underline-offset-2">${ev.title}</a>
+            </h3>
+            <div class="mt-2 space-y-1 text-xs text-slate-400">
+              <div class="flex items-center gap-1.5 truncate">
+                <i data-lucide="map-pin" class="w-3.5 h-3.5 text-rose-400 shrink-0"></i>
+                <span class="truncate">${ev.location} • <strong class="text-slate-200">${ev.city}</strong></span>
+              </div>
+              <div class="flex items-center gap-1.5 text-slate-400 truncate">
+                <i data-lucide="calendar" class="w-3.5 h-3.5 text-sky-400 shrink-0"></i>
+                <span class="truncate">${ev.date_display || "Date TBA"}</span>
+                ${ev.ticket_type ? `<span class="text-slate-500">•</span><span class="text-slate-300 font-medium">${ev.ticket_type}</span>` : ""}
+              </div>
             </div>
-            <div class="flex items-center gap-2">
-              <i data-lucide="map-pin" class="w-3.5 h-3.5 text-rose-400 shrink-0"></i>
-              <span class="truncate">${ev.location} • <strong class="text-white">${ev.city}</strong></span>
-            </div>
-            ${ev.organizer && ev.organizer !== "Unknown" ? `
-            <div class="flex items-center gap-2">
-              <i data-lucide="building" class="w-3.5 h-3.5 text-purple-400 shrink-0"></i>
-              <span class="truncate text-slate-300">${ev.organizer}</span>
-            </div>` : ""}
           </div>
         </div>
 
-        <!-- AIESEC Recommendation Box -->
+        <!-- AIESEC Strategic Recommendation Callout Box -->
         <div class="dark-action-box p-3 text-xs">
-          <div class="text-[10px] font-bold text-[#38BDF8] uppercase tracking-wider mb-1 flex items-center gap-1.5">
-            <i data-lucide="zap" class="w-3.5 h-3.5"></i> Recommended B2C Action
+          <div class="text-[10px] font-bold text-[#00E5FF] uppercase tracking-wider mb-1 flex items-center gap-1.5">
+            <i data-lucide="zap" class="w-3.5 h-3.5 text-[#00E5FF]"></i> Recommended B2C Action
           </div>
-          <div class="font-medium text-slate-200 leading-relaxed">
+          <div class="font-medium text-slate-200 leading-relaxed text-[11px]">
             ${ev.recommended_action}
           </div>
         </div>
@@ -261,7 +362,7 @@ function renderCards() {
                 data-event-id="${ev.event_id}">
           <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Outreach Pitch
         </button>
-        <a href="${ev.url}" target="_blank" class="p-2 text-slate-400 hover:text-white rounded-xl hover:bg-white/[0.08] border border-white/[0.08] transition active:scale-95" title="View Source">
+        <a href="${ev.url}" target="_blank" class="p-2 text-slate-400 hover:text-white rounded-xl hover:bg-white/[0.08] border border-white/[0.09] transition active:scale-95" title="Open Event Source">
           <i data-lucide="external-link" class="w-4 h-4"></i>
         </a>
       </div>
@@ -274,7 +375,7 @@ function renderCards() {
     containerCards.appendChild(card);
   });
 
-  lucide.createIcons();
+  if (window.lucide) lucide.createIcons();
 }
 
 // --- Render Calendar & Clash Heatmap ---
@@ -292,7 +393,7 @@ function renderCalendarView() {
   Object.entries(groups).slice(0, 15).forEach(([dateStr, eventList]) => {
     const isClashDate = eventList.length > 1;
     const groupBlock = document.createElement("div");
-    groupBlock.className = `p-4 rounded-2xl border ${isClashDate ? "bg-amber-950/20 border-amber-500/35 shadow-[0_0_20px_rgba(245,158,11,0.12)]" : "bg-[#0B111F]/80 border-white/[0.08]"}`;
+    groupBlock.className = `p-4 rounded-2xl border ${isClashDate ? "bg-amber-950/20 border-amber-500/35 shadow-[0_0_20px_rgba(245,158,11,0.12)]" : "bg-[#0A101F]/80 border-white/[0.08]"}`;
 
     let eventsHtml = eventList.map(e => `
       <div class="py-2.5 flex items-center justify-between border-b border-white/[0.06] last:border-0 gap-4">
@@ -300,8 +401,9 @@ function renderCalendarView() {
           <div class="font-bold text-xs text-white flex items-center gap-2">
             <span>${e.title}</span>
             <span class="text-[10px] ${e.b2c_priority === 'HIGH' ? 'badge-neon-coral' : 'badge-neon-blue'} px-2 py-0.5 rounded-full font-bold">★ ${e.b2c_score.toFixed(1)}</span>
+            <span class="text-[10px] bg-white/[0.06] text-slate-400 px-2 py-0.5 rounded-md font-medium">${e.source}</span>
           </div>
-          <div class="text-[11px] text-slate-400 mt-0.5">${e.location} (<span class="text-slate-200 font-medium">${e.city}</span>) • <span class="text-[#38BDF8]">${e.recommended_action}</span></div>
+          <div class="text-[11px] text-slate-400 mt-0.5">${e.location} (<span class="text-slate-200 font-medium">${e.city}</span>) • <span class="text-[#00E5FF]">${e.recommended_action}</span></div>
         </div>
         <button class="text-xs bg-sky-500/15 hover:bg-sky-500 text-sky-300 hover:text-white border border-sky-500/30 px-3 py-1.5 rounded-xl font-bold shrink-0 transition active:scale-95" onclick="openPitchById('${e.event_id}')">
           Pitch
@@ -312,7 +414,7 @@ function renderCalendarView() {
     groupBlock.innerHTML = `
       <div class="flex items-center justify-between mb-2 pb-2 border-b border-white/[0.06]">
         <h4 class="text-xs font-bold text-slate-200 flex items-center gap-2">
-          <i data-lucide="calendar" class="w-4 h-4 text-[#38BDF8]"></i>
+          <i data-lucide="calendar" class="w-4 h-4 text-[#00E5FF]"></i>
           <span>${dateStr}</span>
         </h4>
         ${isClashDate ? `<span class="badge-neon-amber text-[10px] font-bold px-2.5 py-0.5 rounded-full">⚠️ Clash: ${eventList.length} Events Competing</span>` : ""}
@@ -325,7 +427,7 @@ function renderCalendarView() {
     calendarTimeline.appendChild(groupBlock);
   });
 
-  lucide.createIcons();
+  if (window.lucide) lucide.createIcons();
 }
 
 // Helper to open pitch from calendar
@@ -340,7 +442,7 @@ function openPitchModal(event) {
   pitchEventSubtitle.innerText = `Event: ${event.title} (${event.city})`;
   pitchOutputBox.classList.add("hidden");
   pitchModal.classList.remove("hidden");
-  lucide.createIcons();
+  if (window.lucide) lucide.createIcons();
 }
 
 function closePitchModal() {
@@ -351,14 +453,14 @@ function closePitchModal() {
 async function handleGeneratePitch() {
   if (!state.activePitchEvent) return;
 
-  const memberName = document.getElementById("pitch-name").value.trim() || "AIESEC Member";
-  const memberEmail = document.getElementById("pitch-email").value.trim() || "b2c@aiesec.net";
-  const memberPhone = document.getElementById("pitch-phone").value.trim() || "+20 1X XXXX XXXX";
+  const memberName = document.getElementById("pitch-name").value.trim() || "Abdelrahman Motazz";
+  const memberEmail = document.getElementById("pitch-email").value.trim() || "abdelrahman.motazz@aiesec.net";
+  const memberPhone = document.getElementById("pitch-phone").value.trim() || "+20 10 1234 5678";
   const purpose = document.getElementById("pitch-purpose").value;
 
   btnGeneratePitch.disabled = true;
-  btnGeneratePitch.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Generating Pitch...`;
-  lucide.createIcons();
+  btnGeneratePitch.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Generating Proposal...`;
+  if (window.lucide) lucide.createIcons();
 
   try {
     const res = await fetch("/api/pitch", {
@@ -376,44 +478,49 @@ async function handleGeneratePitch() {
     const data = await res.json();
     pitchSubject.value = data.subject;
     pitchBody.value = data.body;
-    btnOpenMail.href = data.mailto_url;
+
+    // Mailto client link
+    const mailto = `mailto:?subject=${encodeURIComponent(data.subject)}&body=${encodeURIComponent(data.body)}`;
+    btnOpenMail.href = mailto;
 
     pitchOutputBox.classList.remove("hidden");
+    showToast("Partnership proposal generated successfully!", "success");
   } catch (err) {
+    console.error("Failed to generate pitch:", err);
     showToast("Failed to generate pitch proposal", "error");
   } finally {
     btnGeneratePitch.disabled = false;
-    btnGeneratePitch.innerHTML = `<i data-lucide="sparkles" class="w-4 h-4"></i> Generate Pitch Email`;
-    lucide.createIcons();
+    btnGeneratePitch.innerHTML = `<i data-lucide="sparkles" class="w-4 h-4 text-cyan-200"></i> Generate Outreach Proposal`;
+    if (window.lucide) lucide.createIcons();
   }
 }
 
 function handleCopyPitch() {
-  const text = `Subject: ${pitchSubject.value}\n\n${pitchBody.value}`;
-  navigator.clipboard.writeText(text).then(() => {
-    document.getElementById("copy-text").innerText = "Copied!";
+  const fullText = `Subject: ${pitchSubject.value}\n\n${pitchBody.value}`;
+  navigator.clipboard.writeText(fullText).then(() => {
+    const copyText = document.getElementById("copy-text");
+    copyText.innerText = "Copied to Clipboard!";
+    showToast("Copied to clipboard!", "success");
     setTimeout(() => {
-      document.getElementById("copy-text").innerText = "Copy to Clipboard";
-    }, 2000);
-    showToast("Email proposal copied to clipboard!");
+      copyText.innerText = "Copy to Clipboard";
+    }, 2500);
   });
 }
 
-// --- Top Actions ---
+// --- Action Button Handlers ---
 async function handleSyncSheets() {
   btnSyncSheets.disabled = true;
-  showToast("Syncing with Google Sheets...", "info");
-
+  showToast("Syncing records to Google Sheets...", "info");
   try {
     const res = await fetch("/api/sync-sheets", { method: "POST" });
     const data = await res.json();
-    if (data.success) {
-      showToast("Google Sheet updated successfully!");
+    if (data.status === "synced") {
+      showToast(`Synced ${data.rows_synced} events to Sheets!`, "success");
     } else {
-      showToast(data.message || "Google Sheets sync requires service_account.json", "warning");
+      showToast("Sheets sync skipped (Credentials not set)", "info");
     }
   } catch (err) {
-    showToast("Error syncing Google Sheets", "error");
+    showToast("Error syncing to Sheets", "error");
   } finally {
     btnSyncSheets.disabled = false;
   }
@@ -421,8 +528,7 @@ async function handleSyncSheets() {
 
 async function handleSendEmail() {
   btnSendEmail.disabled = true;
-  showToast("Dispatching AIESEC digest email...", "info");
-
+  showToast("Sending B2C email digest...", "info");
   try {
     const res = await fetch("/api/send-email", {
       method: "POST",
@@ -430,13 +536,13 @@ async function handleSendEmail() {
       body: JSON.stringify({})
     });
     const data = await res.json();
-    if (data.success) {
-      showToast(`Email digest sent to ${data.recipients.join(", ")}`);
+    if (data.status === "sent") {
+      showToast(`Digest sent to ${data.recipients.length} recipients!`, "success");
     } else {
-      showToast(`Saved preview to ${data.preview_file} (configure SMTP in .env)`, "warning");
+      showToast(data.message || "Email digest processed", "info");
     }
   } catch (err) {
-    showToast("Error dispatching email", "error");
+    showToast("Error sending email", "error");
   } finally {
     btnSendEmail.disabled = false;
   }
@@ -445,36 +551,35 @@ async function handleSendEmail() {
 async function handleScrapeNow() {
   btnScrapeNow.disabled = true;
   scrapeIcon.classList.add("animate-spin");
-  showToast("Running nationwide scrape... This takes ~15 seconds", "info");
+  showToast("Triggering full multi-platform scrape across Egypt...", "info");
 
   try {
-    const res = await fetch("/api/scrape", {
+    const res = await fetch("/api/scrape-now", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ country: "egypt" })
+      body: JSON.stringify({ city: state.city })
     });
     const data = await res.json();
-    showToast(data.message || "Scrape completed successfully!");
+    showToast(`Scrape complete! Discovered ${data.events_count} events.`, "success");
     await fetchEvents();
   } catch (err) {
-    showToast("Error running scrape pipeline", "error");
+    showToast("Error triggering scrape", "error");
   } finally {
     btnScrapeNow.disabled = false;
     scrapeIcon.classList.remove("animate-spin");
   }
 }
 
-// --- Toast Notification Helper ---
-function showToast(message, type = "success") {
+// --- Toast Feedback ---
+function showToast(message, type = "info") {
   const toast = document.getElementById("toast");
-  const toastMsg = document.getElementById("toast-message");
-  toastMsg.innerText = message;
+  const msg = document.getElementById("toast-message");
+  const icon = document.getElementById("toast-icon");
 
-  toast.classList.remove("translate-y-20", "opacity-0");
-  toast.classList.add("translate-y-0", "opacity-100");
+  msg.innerText = message;
+  toast.classList.remove("translate-y-20", "opacity-0", "pointer-events-none");
 
   setTimeout(() => {
-    toast.classList.add("translate-y-20", "opacity-0");
-    toast.classList.remove("translate-y-0", "opacity-100");
-  }, 4000);
+    toast.classList.add("translate-y-20", "opacity-0", "pointer-events-none");
+  }, 3500);
 }

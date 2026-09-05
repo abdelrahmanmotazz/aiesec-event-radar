@@ -1,22 +1,22 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 :root {
-  --bg-canvas: #060911;
-  --bg-surface: #0B111F;
-  --bg-surface-elevated: #10192E;
-  --bg-card: rgba(13, 20, 36, 0.72);
-  --bg-card-hover: rgba(18, 28, 52, 0.88);
+  --mouse-x: 50%;
+  --mouse-y: 20%;
+  --canvas-bg: #040711;
+  --surface-1: rgba(10, 16, 31, 0.82);
+  --surface-2: rgba(14, 23, 44, 0.92);
+  --surface-input: #0c1427;
   
-  --border-subtle: rgba(255, 255, 255, 0.07);
-  --border-highlight: rgba(255, 255, 255, 0.14);
-  --border-accent-blue: rgba(3, 126, 243, 0.5);
-  --border-accent-coral: rgba(248, 90, 64, 0.5);
-
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-highlight: rgba(255, 255, 255, 0.16);
+  --specular-edge: rgba(255, 255, 255, 0.22);
+  
   --aiesec-blue: #037EF3;
-  --aiesec-cyan: #00D2FF;
-  --aiesec-coral: #F85A40;
-  --aiesec-amber: #F59E0B;
+  --aiesec-cyan: #00E5FF;
+  --aiesec-coral: #FF4D36;
   --aiesec-purple: #A855F7;
+  --aiesec-amber: #F59E0B;
   --aiesec-emerald: #10B981;
 
   --text-primary: #F8FAFC;
@@ -28,96 +28,253 @@
   box-sizing: border-box;
 }
 
-body {
-  background-color: #060911 !important;
-  background-image: 
-    /* Ambient Linear/Figma-style Spotlights */
-    radial-gradient(ellipse 900px 480px at 50% -80px, rgba(3, 126, 243, 0.20), transparent 70%),
-    radial-gradient(ellipse 650px 400px at 90% 120px, rgba(0, 210, 255, 0.09), transparent 70%),
-    radial-gradient(ellipse 700px 500px at 85% 90%, rgba(248, 90, 64, 0.06), transparent 70%),
-    /* Micro Dot Grid */
-    radial-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px);
-  background-size: 100% 100%, 100% 100%, 100% 100%, 32px 32px;
-  background-position: 0 0, 0 0, 0 0, 0 0;
-  background-repeat: no-repeat, no-repeat, no-repeat, repeat;
-  background-attachment: fixed;
+html, body {
+  background-color: var(--canvas-bg) !important;
+  color: var(--text-primary) !important;
   font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  color: #F8FAFC !important;
   min-height: 100vh;
+  margin: 0;
+  padding: 0;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Glassmorphic Surface Base */
+/* Atmospheric Multi-Layer Canvas with Dynamic Spotlight */
+body {
+  background-image: 
+    /* Dynamic cursor-following spotlight */
+    radial-gradient(750px circle at var(--mouse-x, 50%) var(--mouse-y, 25%), rgba(3, 126, 243, 0.18), transparent 75%),
+    /* Ambient Top Halo */
+    radial-gradient(ellipse 1000px 500px at 50% -80px, rgba(0, 229, 255, 0.12), transparent 70%),
+    /* Right Accent Flame */
+    radial-gradient(ellipse 700px 500px at 92% 500px, rgba(255, 77, 54, 0.08), transparent 70%),
+    /* Left Deep Glow */
+    radial-gradient(ellipse 650px 450px at 8% 850px, rgba(168, 85, 247, 0.07), transparent 70%),
+    /* Micro Dot Matrix with radial falloff */
+    radial-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%, 28px 28px;
+  background-position: 0 0, 0 0, 0 0, 0 0, 0 0;
+  background-repeat: no-repeat, no-repeat, no-repeat, no-repeat, repeat;
+  background-attachment: fixed;
+  position: relative;
+}
+
+/* Analog Tactile Noise Texture */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  opacity: 0.025;
+  pointer-events: none;
+  z-index: 99;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+/* ============================================================
+   BESPOKE DOUBLE-BEVEL SPECULAR SURFACES (Non-AI Styling)
+   ============================================================ */
+
 .figma-surface,
+.radar-surface,
 .figma-card,
-.aiesec-card-dark {
-  background: var(--bg-card);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+.radar-card {
+  background: var(--surface-1);
+  backdrop-filter: blur(24px) saturate(190%);
+  -webkit-backdrop-filter: blur(24px) saturate(190%);
   border: 1px solid var(--border-subtle);
-  border-radius: 16px;
-  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.06), 0 8px 30px -4px rgba(0, 0, 0, 0.5);
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  border-radius: 18px;
+  box-shadow: 
+    0 0 0 1px rgba(255, 255, 255, 0.03),
+    inset 0 1px 0 0 var(--specular-edge),
+    inset 0 -1px 0 0 rgba(0, 0, 0, 0.6),
+    0 16px 36px -6px rgba(0, 0, 0, 0.65),
+    0 2px 8px -2px rgba(0, 0, 0, 0.4);
+  transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
   position: relative;
   overflow: hidden;
 }
 
-.figma-surface:hover,
 .figma-card:hover,
-.aiesec-card-dark:hover {
-  background: var(--bg-card-hover);
-  transform: translateY(-3px);
-  border-color: var(--border-accent-blue);
-  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.12), 0 16px 36px -6px rgba(3, 126, 243, 0.22), 0 0 20px rgba(0, 210, 255, 0.09);
+.radar-card:hover {
+  background: var(--surface-2);
+  transform: translateY(-4px);
+  border-color: rgba(56, 189, 248, 0.4);
+  box-shadow: 
+    0 0 0 1px rgba(56, 189, 248, 0.3),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.35),
+    0 24px 48px -8px rgba(0, 0, 0, 0.8),
+    0 0 32px -4px rgba(3, 126, 243, 0.28);
 }
 
-/* Priority Card Accents */
+/* Specular top-edge shine on cards */
+.figma-card::before,
+.radar-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  pointer-events: none;
+}
+
+/* High Priority Lead Spine Glow */
 .card-high-glow {
   border-left: 4px solid var(--aiesec-coral) !important;
+  box-shadow: 
+    0 0 0 1px rgba(255, 77, 54, 0.25),
+    inset 0 1px 0 0 var(--specular-edge),
+    0 16px 36px -6px rgba(0, 0, 0, 0.65),
+    -4px 0 20px -4px rgba(255, 77, 54, 0.35);
 }
 
 .card-high-glow::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background: linear-gradient(90deg, var(--aiesec-coral), transparent);
-  opacity: 0.8;
+  background: linear-gradient(90deg, var(--aiesec-coral), rgba(255, 77, 54, 0.2) 60%, transparent) !important;
+  height: 2px !important;
+  left: 0 !important;
+  right: 0 !important;
 }
 
+/* Partner Org Spine Glow */
 .card-partner-glow {
   border-left: 4px solid var(--aiesec-purple) !important;
+  box-shadow: 
+    0 0 0 1px rgba(168, 85, 247, 0.25),
+    inset 0 1px 0 0 var(--specular-edge),
+    0 16px 36px -6px rgba(0, 0, 0, 0.65),
+    -4px 0 20px -4px rgba(168, 85, 247, 0.35);
 }
 
-/* Glowing Neon Pill Badges */
-.badge-neon-coral {
-  background: rgba(248, 90, 64, 0.14);
+.card-partner-glow::before {
+  background: linear-gradient(90deg, var(--aiesec-purple), rgba(168, 85, 247, 0.2) 60%, transparent) !important;
+  height: 2px !important;
+  left: 0 !important;
+  right: 0 !important;
+}
+
+/* Summit Flagship Spine Glow */
+.card-summit-glow {
+  border-left: 4px solid var(--aiesec-cyan) !important;
+  box-shadow: 
+    0 0 0 1px rgba(0, 229, 255, 0.25),
+    inset 0 1px 0 0 var(--specular-edge),
+    0 16px 36px -6px rgba(0, 0, 0, 0.65),
+    -4px 0 20px -4px rgba(0, 229, 255, 0.35);
+}
+
+.card-summit-glow::before {
+  background: linear-gradient(90deg, var(--aiesec-cyan), rgba(0, 229, 255, 0.2) 60%, transparent) !important;
+  height: 2px !important;
+  left: 0 !important;
+  right: 0 !important;
+}
+
+/* ============================================================
+   CALENDAR TEAR-OFF BADGE (Mini Physical Date Badge)
+   ============================================================ */
+
+.date-tearoff-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: rgba(12, 19, 36, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.15), 0 4px 12px rgba(0, 0, 0, 0.5);
+  flex-shrink: 0;
+  text-align: center;
+}
+
+.date-tearoff-month {
+  font-size: 9px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #38BDF8;
+  line-height: 1;
+  padding-bottom: 2px;
+}
+
+.date-tearoff-day {
+  font-size: 16px;
+  font-weight: 900;
+  color: #FFFFFF;
+  line-height: 1;
+  font-feature-settings: "tnum";
+}
+
+/* ============================================================
+   SOURCE ORIGIN PILLS
+   ============================================================ */
+
+.source-pill-ticketsmarche {
+  background: linear-gradient(135deg, rgba(234, 179, 8, 0.15), rgba(202, 138, 4, 0.08));
+  color: #FACC15;
+  border: 1px solid rgba(250, 204, 21, 0.35);
+  box-shadow: 0 0 10px rgba(234, 179, 8, 0.15);
+}
+
+.source-pill-summit {
+  background: linear-gradient(135deg, rgba(0, 229, 255, 0.15), rgba(3, 126, 243, 0.1));
+  color: #38BDF8;
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  box-shadow: 0 0 10px rgba(0, 229, 255, 0.2);
+}
+
+.source-pill-eventbrite {
+  background: rgba(248, 90, 64, 0.12);
   color: #FF8875;
-  border: 1px solid rgba(248, 90, 64, 0.35);
-  box-shadow: 0 0 12px rgba(248, 90, 64, 0.18);
+  border: 1px solid rgba(248, 90, 64, 0.3);
+}
+
+.source-pill-facebook {
+  background: rgba(59, 130, 246, 0.12);
+  color: #93C5FD;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.source-pill-default {
+  background: rgba(255, 255, 255, 0.06);
+  color: #94A3B8;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* ============================================================
+   GLOWING NEON BADGES
+   ============================================================ */
+
+.badge-neon-coral {
+  background: rgba(255, 77, 54, 0.14);
+  color: #FF8875;
+  border: 1px solid rgba(255, 77, 54, 0.4);
+  box-shadow: 0 0 14px rgba(255, 77, 54, 0.22);
 }
 
 .badge-neon-blue {
   background: rgba(3, 126, 243, 0.14);
   color: #38BDF8;
-  border: 1px solid rgba(56, 189, 248, 0.35);
-  box-shadow: 0 0 12px rgba(3, 126, 243, 0.18);
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  box-shadow: 0 0 14px rgba(3, 126, 243, 0.22);
 }
 
 .badge-neon-purple {
   background: rgba(168, 85, 247, 0.14);
   color: #D8B4FE;
-  border: 1px solid rgba(168, 85, 247, 0.35);
-  box-shadow: 0 0 12px rgba(168, 85, 247, 0.18);
+  border: 1px solid rgba(168, 85, 247, 0.4);
+  box-shadow: 0 0 14px rgba(168, 85, 247, 0.22);
 }
 
 .badge-neon-amber {
   background: rgba(245, 158, 11, 0.14);
   color: #FDE047;
-  border: 1px solid rgba(245, 158, 11, 0.35);
-  box-shadow: 0 0 12px rgba(245, 158, 11, 0.18);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  box-shadow: 0 0 14px rgba(245, 158, 11, 0.22);
 }
 
 .badge-neon-slate {
@@ -126,61 +283,80 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-/* Action callout box */
+/* ============================================================
+   AIESEC B2C STRATEGIC ACTION CALLOUT BOX
+   ============================================================ */
+
 .dark-action-box {
-  background: rgba(16, 25, 46, 0.75);
-  border: 1px solid rgba(56, 189, 248, 0.15);
-  border-left: 3px solid var(--aiesec-blue);
-  border-radius: 10px;
+  background: linear-gradient(180deg, rgba(12, 20, 38, 0.9), rgba(8, 14, 28, 0.95)) !important;
+  border: 1px solid rgba(56, 189, 248, 0.2) !important;
+  border-left: 3px solid var(--aiesec-blue) !important;
+  border-radius: 12px;
+  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.06);
 }
 
-/* Modal Styling */
+/* ============================================================
+   MODAL DIALOG (Sleek Glassmorphic Floating Window)
+   ============================================================ */
+
 .modal-overlay-dark {
-  background: rgba(4, 7, 15, 0.82);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  background: rgba(3, 6, 14, 0.88);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
 }
 
 .modal-dialog-dark {
-  background: #0B1220;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 0 25px 60px -10px rgba(0, 0, 0, 0.85), 0 0 50px rgba(3, 126, 243, 0.18);
+  background: #090F1E;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 
+    0 0 0 1px rgba(255, 255, 255, 0.05),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.25),
+    0 30px 80px -10px rgba(0, 0, 0, 0.9),
+    0 0 60px -10px rgba(3, 126, 243, 0.25);
 }
 
-/* Inputs in Dark Mode */
+/* ============================================================
+   INPUTS & DROPDOWNS IN DARK MODE
+   ============================================================ */
+
 .dark-input,
 .figma-input {
-  background-color: #0E1626 !important;
+  background-color: var(--surface-input) !important;
   border: 1px solid rgba(255, 255, 255, 0.12) !important;
   color: #F8FAFC !important;
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
-  transition: all 0.2s ease;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.4);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .figma-input option {
-  background-color: #0B111F !important;
+  background-color: #090F1E !important;
   color: #F8FAFC !important;
 }
 
 .dark-input:focus,
 .figma-input:focus {
-  border-color: #38BDF8 !important;
-  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2), inset 0 1px 2px rgba(0, 0, 0, 0.3) !important;
+  border-color: #00E5FF !important;
+  box-shadow: 
+    0 0 0 3px rgba(0, 229, 255, 0.22),
+    inset 0 1px 2px rgba(0, 0, 0, 0.4) !important;
   outline: none;
 }
 
-/* Live Pulse Radar Animation */
-@keyframes radar-pulse {
+/* ============================================================
+   RADAR PULSE ANIMATIONS & SCANNER
+   ============================================================ */
+
+@keyframes radar-ping-wave {
   0% {
-    transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+    transform: scale(0.9);
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.8);
   }
   70% {
-    transform: scale(1);
-    box-shadow: 0 0 0 7px rgba(16, 185, 129, 0);
+    transform: scale(1.1);
+    box-shadow: 0 0 0 8px rgba(16, 185, 129, 0);
   }
   100% {
-    transform: scale(0.95);
+    transform: scale(0.9);
     box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
   }
 }
@@ -190,33 +366,49 @@ body {
   height: 8px;
   border-radius: 50%;
   background-color: #10B981;
-  animation: radar-pulse 2s infinite cubic-bezier(0.4, 0, 0.6, 1);
+  animation: radar-ping-wave 2s infinite cubic-bezier(0.4, 0, 0.6, 1);
+  display: inline-block;
 }
 
-/* Custom Scrollbar */
+@keyframes flame-pulse {
+  0%, 100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 4px rgba(255, 77, 54, 0.5));
+  }
+  50% {
+    transform: scale(1.1);
+    filter: drop-shadow(0 0 12px rgba(255, 77, 54, 0.8));
+  }
+}
+
+.flame-animated {
+  animation: flame-pulse 2.2s infinite ease-in-out;
+}
+
+/* Custom Scrollbars */
 ::-webkit-scrollbar {
   width: 7px;
   height: 7px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--bg-canvas);
+  background: var(--canvas-bg);
 }
 ::-webkit-scrollbar-thumb {
-  background: #1E293B;
+  background: #19253d;
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #334155;
+  background: #28395a;
 }
 
-/* Shortcut tag */
+/* Monospace Keyboard Shortcut pill */
 .kbd-shortcut {
   background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.16);
   color: #94A3B8;
-  border-radius: 5px;
-  padding: 1px 6px;
+  border-radius: 6px;
+  padding: 1.5px 7px;
   font-size: 10px;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
