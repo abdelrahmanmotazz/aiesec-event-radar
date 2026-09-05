@@ -1,5 +1,4 @@
-"""FastAPI Web Server for AIESEC Egypt B2C Event Radar & Command Center."""
-
+import logging
 import os
 from typing import Dict, List, Optional
 import uvicorn
@@ -14,6 +13,8 @@ from ..pipeline import EventPipeline
 from ..exporters import GoogleSheetsExporter, LocalExporter
 from ..notifications import EmailNotificationService
 from ..analyzers.pitch_generator import PitchGenerator
+
+logger = logging.getLogger(__name__)
 
 app = FastAPI(title="AIESEC Egypt B2C Event Radar", version="2.0.0")
 
@@ -47,10 +48,14 @@ def load_initial_events():
             import pandas as pd
             df = pd.read_excel(latest_xlsx)
             for idx, row in df.iterrows():
+                src = str(row.get("Platform", "Eventbrite"))
+                # Filter out legacy/stale social media and summit rows from old xlsx so fresh rich feeds populate
+                if any(s in src.lower() for s in ["facebook", "linkedin", "instagram", "telegram", "social media", "summits"]):
+                    continue
                 rec = EventRecord(
                     event_id=f"rec_{idx}",
                     title=str(row.get("Event Title", "")),
-                    source=str(row.get("Platform", "Eventbrite")),
+                    source=src,
                     date_display=str(row.get("Date & Time", "")),
                     location=str(row.get("Venue / Location", "TBA")),
                     city=str(row.get("City", "Egypt")),
@@ -58,6 +63,7 @@ def load_initial_events():
                     url=str(row.get("Event Link", "#")),
                     ticket_type=str(row.get("Pricing / Ticket", "Unknown")),
                     organizer=str(row.get("Organizer", "Unknown")),
+                    description=str(row.get("Description", "")) if str(row.get("Description", "")) not in ["nan", "None"] else "",
                     category=str(row.get("Primary Category", "General")),
                     parallel_org=str(row.get("Student Org / Partner")) if str(row.get("Student Org / Partner")) not in ["Independent", "nan", "None"] else None,
                     b2c_score=float(row.get("B2C Score (1-10)", 5.0)),
@@ -66,34 +72,26 @@ def load_initial_events():
                     recommended_action=str(row.get("Recommended B2C Action", "General Monitoring"))
                 )
                 events.append(rec)
-        except Exception:
-            pass
-
-    # Ensure flagship summits (Techne Summit, RiseUp, etc.) are present and categorized
-    for e in events:
-        if any(k in e.title.lower() for k in ["techne", "riseup", "career summit", "she can", "delta youth", "enactus egypt national", "ieee egypt national"]):
-            e.category = "Flagship Summits"
-            e.b2c_priority = "HIGH"
-            e.b2c_score = 10.0
-
-    existing_titles = {e.title.lower() for e in events}
-    if not any("techne" in t for t in existing_titles):
-        try:
-            from ..scrapers import EgyptSummitsScraper
-            summit_events = EgyptSummitsScraper().scrape(city=None)
-            from ..scorers import B2CScorer
-            scorer = B2CScorer()
-            for ev in summit_events:
-                score, priority, category, tags, action, parallel = scorer.evaluate(ev.title, ev.description, ev.location)
-                ev.b2c_score = 10.0
-                ev.b2c_priority = "HIGH"
-                ev.category = "Flagship Summits"
-                ev.aiesec_tags = tags
-                ev.recommended_action = action
-                ev.parallel_org = parallel
-                events.insert(0, ev)
         except Exception as e:
-            logger.error(f"Error seeding summits: {e}")
+            logger.error(f"Error loading initial events from excel: {e}")
+
+    # Ensure flagship summits (Techne Summit, RiseUp, etc.) are present with enriched descriptions
+    try:
+        from ..scrapers import EgyptSummitsScraper
+        from ..scorers import B2CScorer
+        scorer = B2CScorer()
+        summit_events = EgyptSummitsScraper().scrape(city=None)
+        for s in reversed(summit_events):
+            score, priority, category, tags, action, parallel = scorer.evaluate(s.title, s.description, s.location)
+            s.b2c_score = 10.0
+            s.b2c_priority = "HIGH"
+            s.category = "Flagship Summits"
+            s.aiesec_tags = tags
+            s.recommended_action = action
+            s.parallel_org = parallel
+            events.insert(0, s)
+    except Exception as e:
+        logger.error(f"Error seeding summits: {e}")
 
     # Ensure TicketsMarche events are present
     if not any("ticketsmarche" in e.source.lower() for e in events):
@@ -114,25 +112,24 @@ def load_initial_events():
         except Exception as e:
             logger.error(f"Error seeding TicketsMarche: {e}")
 
-    # Ensure multi-network Social Media feeds are seeded
-    if not any(k in e.source.lower() for e in events for k in ["facebook", "linkedin", "instagram", "telegram"]):
-        try:
-            from ..scrapers import SocialMediaScraper
-            social_events = SocialMediaScraper().scrape(city=None)
-            from ..scorers import B2CScorer
-            scorer = B2CScorer()
-            for ev in social_events:
-                score, priority, category, tags, action, parallel = scorer.evaluate(ev.title, ev.description, ev.location)
-                ev.b2c_score = score
-                ev.b2c_priority = priority
-                if not ev.category or ev.category == "General":
-                    ev.category = category
-                ev.aiesec_tags = tags
-                ev.recommended_action = action
-                ev.parallel_org = parallel
-                events.append(ev)
-        except Exception as e:
-            logger.error(f"Error seeding social media: {e}")
+    # Ensure multi-network Social Media feeds are seeded with enriched specific descriptions
+    try:
+        from ..scrapers import SocialMediaScraper
+        social_events = SocialMediaScraper().scrape(city=None)
+        from ..scorers import B2CScorer
+        scorer = B2CScorer()
+        for soc in social_events:
+            score, priority, category, tags, action, parallel = scorer.evaluate(soc.title, soc.description, soc.location)
+            soc.b2c_score = score
+            soc.b2c_priority = priority
+            if not soc.category or soc.category == "General":
+                soc.category = category
+            soc.aiesec_tags = tags
+            soc.recommended_action = action
+            soc.parallel_org = parallel
+            events.append(soc)
+    except Exception as e:
+        logger.error(f"Error seeding social media: {e}")
 
     CACHED_EVENTS = events
     if events:
@@ -145,6 +142,14 @@ def load_initial_events():
 @app.on_event("startup")
 def startup_event():
     load_initial_events()
+
+
+# Seed CACHED_EVENTS on initial module load
+if not CACHED_EVENTS:
+    try:
+        load_initial_events()
+    except Exception:
+        pass
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -181,7 +186,11 @@ def get_events(
 
     # Source filter
     if source and source.lower() != "all":
-        filtered = [e for e in filtered if source.lower() in e.source.lower()]
+        s_low = source.lower()
+        if s_low == "social":
+            filtered = [e for e in filtered if any(k in e.source.lower() for k in ["facebook", "linkedin", "instagram", "telegram"])]
+        else:
+            filtered = [e for e in filtered if s_low in e.source.lower()]
 
     # Category filter
     if category and category.lower() != "all":

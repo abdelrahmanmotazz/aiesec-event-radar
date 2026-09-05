@@ -51,6 +51,7 @@ class EventRecord(BaseModel):
             self.recommended_action,
             self.organizer,
             self.url,
+            self.description,
         ]
 
     @classmethod
@@ -72,6 +73,7 @@ class EventRecord(BaseModel):
             "Recommended B2C Action",
             "Organizer",
             "Event Link",
+            "Description",
         ]
 
     def to_api_dict(self) -> Dict[str, Any]:

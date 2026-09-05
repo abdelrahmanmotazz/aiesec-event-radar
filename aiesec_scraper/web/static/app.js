@@ -376,7 +376,19 @@ function renderCards() {
                 ${ev.ticket_type ? `<span class="text-slate-500">•</span><span class="text-slate-300 font-medium">${ev.ticket_type}</span>` : ""}
               </div>
             </div>
+        </div>
+
+        <!-- Specific Event Intelligence Briefing Box -->
+        <div class="event-desc-box p-3 text-xs bg-[#080E1D]/90 border border-white/[0.08] rounded-2xl shadow-inner space-y-1">
+          <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center justify-between">
+            <span class="flex items-center gap-1.5 text-sky-400">
+              <i data-lucide="file-text" class="w-3.5 h-3.5"></i> Event Intelligence Briefing
+            </span>
+            <span class="text-[9px] text-slate-500 font-mono font-medium tracking-tight">Granular Details</span>
           </div>
+          <p class="text-slate-300 text-[11px] leading-relaxed line-clamp-3 hover:line-clamp-none transition-all duration-300 cursor-pointer" title="Click or hover to expand full briefing">
+            ${ev.description || "No specific briefing available."}
+          </p>
         </div>
 
         <!-- AIESEC Strategic Recommendation Callout Box -->
@@ -474,6 +486,10 @@ window.openPitchById = function(eventId) {
 function openPitchModal(event) {
   state.activePitchEvent = event;
   pitchEventSubtitle.innerText = `Event: ${event.title} (${event.city})`;
+  const briefingEl = document.getElementById("pitch-event-desc-text");
+  if (briefingEl) {
+    briefingEl.innerText = event.description || "No specific briefing available for this event.";
+  }
   pitchOutputBox.classList.add("hidden");
   pitchModal.classList.remove("hidden");
   if (window.lucide) lucide.createIcons();

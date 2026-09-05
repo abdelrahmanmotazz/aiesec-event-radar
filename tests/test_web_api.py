@@ -38,3 +38,27 @@ def test_api_pitch_generation():
     assert "body" in data
     assert "Karim Mostafa" in data["body"]
     assert "mailto:" in data["mailto_url"]
+
+
+def test_api_events_social_filter():
+    response = client.get("/api/events?source=social")
+    assert response.status_code == 200
+    data = response.json()
+    assert len(data["events"]) > 0
+    social_sources = ["facebook", "linkedin", "instagram", "telegram", "social media", "social"]
+    for ev in data["events"]:
+        assert any(s in ev["source"].lower() for s in social_sources)
+        assert len(ev["description"]) >= 100
+        assert ev["b2c_score"] > 0
+
+
+def test_api_events_summits_filter():
+    response = client.get("/api/events?source=summits")
+    assert response.status_code == 200
+    data = response.json()
+    assert len(data["events"]) >= 5
+    for ev in data["events"]:
+        assert ev["category"] == "Flagship Summits"
+        assert len(ev["description"]) >= 100
+        assert ev["b2c_score"] >= 9.0
+
