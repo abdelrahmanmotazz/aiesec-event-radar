@@ -48,14 +48,23 @@
     }
   </script>
   
+  <!-- Three.js (WebGL 3D Holographic Graphics Engine) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <!-- GSAP (GreenSock Physics & Timeline Animations) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
   <!-- Lucide Icons CDN -->
   <script src="https://unpkg.com/lucide@latest"></script>
-  <link rel="stylesheet" href="/static/style.css?v=5.1">
+  <link rel="stylesheet" href="/static/style.css?v=6.0">
 </head>
-<body class="dark min-h-screen flex flex-col antialiased bg-[#030712] text-slate-100 selection:bg-[#037EF3]/30 selection:text-white">
+<body class="dark min-h-screen flex flex-col antialiased bg-[#030712] text-slate-100 selection:bg-[#037EF3]/30 selection:text-white relative overflow-x-hidden">
+
+  <!-- Interactive Three.js 3D Holographic Particle Radar Canvas -->
+  <canvas id="threejs-radar-canvas"></canvas>
 
   <!-- Top Floating Frosted Navigation Bar -->
-  <header class="bg-[#060B18]/85 backdrop-blur-2xl border-b border-white/[0.08] sticky top-0 z-30 shadow-2xl">
+  <header class="bg-[#060B18]/85 backdrop-blur-2xl border-b border-white/[0.08] sticky top-0 z-30 shadow-2xl relative">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
       
       <!-- Brand, LC Identifier & Telemetry -->
@@ -408,7 +417,7 @@
     <span id="toast-message">Action processed</span>
   </div>
 
-  <script src="/static/app.js?v=5.1"></script>
+  <script src="/static/app.js?v=6.0"></script>
   <script>
     if (window.lucide && typeof lucide.createIcons === 'function') {
       lucide.createIcons();

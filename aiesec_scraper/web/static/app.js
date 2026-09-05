@@ -1,8 +1,27 @@
 /**
- * AIESEC in Tanta - B2C Event Radar & Command Center
- * Frontend Controller with Fluid Physics, Dynamic Telemetry & World-Class SaaS Aesthetics
+ * @fileoverview AIESEC in Tanta - B2C Event Radar & Command Center
+ * Modern Frontend Controller integrating Three.js 3D WebGL, GSAP Motion Choreography,
+ * Dynamic Telemetry, and World-Class SaaS Aesthetics.
+ *
+ * @typedef {Object} EventRecord
+ * @property {string} event_id
+ * @property {string} title
+ * @property {string} date_display
+ * @property {string} location
+ * @property {string} city
+ * @property {string} category
+ * @property {string} source
+ * @property {string} url
+ * @property {number} b2c_score
+ * @property {string} b2c_priority
+ * @property {string} description
+ * @property {string} recommended_action
+ * @property {string} [parallel_org]
+ * @property {boolean} [clash_warning]
+ * @property {string} [ticket_type]
  */
 
+/** @type {{ events: EventRecord[], sort: string, priority: string, category: string, city: string, source: string, search: string, partnersOnly: boolean, clashesOnly: boolean, activePitchEvent: EventRecord|null, activeView: 'cards'|'calendar' }} */
 let state = {
   events: [],
   sort: "score_desc",
@@ -14,7 +33,7 @@ let state = {
   partnersOnly: false,
   clashesOnly: false,
   activePitchEvent: null,
-  activeView: "cards" // "cards" or "calendar"
+  activeView: "cards"
 };
 
 // DOM Elements
@@ -52,6 +71,7 @@ const scrapeIcon = document.getElementById("scrape-icon");
 
 // --- Initialization ---
 document.addEventListener("DOMContentLoaded", () => {
+  initThreeRadar();
   initSmoothMouseLighting();
   initLiveClock();
   setupEventListeners();
@@ -59,7 +79,170 @@ document.addEventListener("DOMContentLoaded", () => {
   if (window.lucide) lucide.createIcons();
 });
 
-// Hardware-Accelerated Fluid Ambient Cursor Lighting with rAF
+// ============================================================
+// THREE.JS 3D HOLOGRAPHIC PARTICLE RADAR (WebGL Spatial Depth)
+// ============================================================
+function initThreeRadar() {
+  const canvas = document.getElementById("threejs-radar-canvas");
+  if (!canvas || typeof THREE === "undefined") return;
+
+  try {
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.z = 240;
+
+    const renderer = new THREE.WebGLRenderer({
+      canvas: canvas,
+      alpha: true,
+      antialias: true,
+      powerPreference: "high-performance"
+    });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    // Create 3D Holographic Particle Sphere (Radar Core)
+    const particleCount = 750;
+    const geometry = new THREE.BufferGeometry();
+    const positions = new Float32Array(particleCount * 3);
+    const colors = new Float32Array(particleCount * 3);
+
+    const colorBlue = new THREE.Color(0x037ef3);
+    const colorCyan = new THREE.Color(0x00e5ff);
+
+    const radius = 95;
+    for (let i = 0; i < particleCount; i++) {
+      const phi = Math.acos(-1 + (2 * i) / particleCount);
+      const theta = Math.sqrt(particleCount * Math.PI) * phi;
+
+      const x = radius * Math.cos(theta) * Math.sin(phi);
+      const y = radius * Math.sin(theta) * Math.sin(phi);
+      const z = radius * Math.cos(phi);
+
+      positions[i * 3] = x + (Math.random() - 0.5) * 6;
+      positions[i * 3 + 1] = y + (Math.random() - 0.5) * 6;
+      positions[i * 3 + 2] = z + (Math.random() - 0.5) * 6;
+
+      const mixedColor = colorBlue.clone().lerp(colorCyan, Math.random());
+      colors[i * 3] = mixedColor.r;
+      colors[i * 3 + 1] = mixedColor.g;
+      colors[i * 3 + 2] = mixedColor.b;
+    }
+
+    geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+    geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+
+    const material = new THREE.PointsMaterial({
+      size: 2.2,
+      vertexColors: true,
+      transparent: true,
+      opacity: 0.85,
+      blending: THREE.AdditiveBlending
+    });
+
+    const particleGlobe = new THREE.Points(geometry, material);
+    scene.add(particleGlobe);
+
+    // Outer Orbital Radar Rings
+    const ringGroup = new THREE.Group();
+    for (let r = 0; r < 2; r++) {
+      const ringGeo = new THREE.RingGeometry(110 + r * 22, 111 + r * 22, 64);
+      const ringMat = new THREE.MeshBasicMaterial({
+        color: r === 0 ? 0x037ef3 : 0x00e5ff,
+        side: THREE.DoubleSide,
+        transparent: true,
+        opacity: 0.22 - r * 0.08,
+        blending: THREE.AdditiveBlending
+      });
+      const ring = new THREE.Mesh(ringGeo, ringMat);
+      ring.rotation.x = Math.PI / 2.3 + (r * 0.2);
+      ringGroup.add(ring);
+    }
+    scene.add(ringGroup);
+
+    // Mouse Tracking Parallax
+    let targetRotX = 0;
+    let targetRotY = 0;
+    window.addEventListener("mousemove", (e) => {
+      const normX = (e.clientX / window.innerWidth) * 2 - 1;
+      const normY = -(e.clientY / window.innerHeight) * 2 + 1;
+      targetRotY = normX * 0.35;
+      targetRotX = normY * 0.25;
+    }, { passive: true });
+
+    // Render Animation Loop
+    function animate() {
+      requestAnimationFrame(animate);
+
+      particleGlobe.rotation.y += 0.0022;
+      ringGroup.rotation.z += 0.0016;
+
+      scene.rotation.y += (targetRotY - scene.rotation.y) * 0.04;
+      scene.rotation.x += (targetRotX - scene.rotation.x) * 0.04;
+
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    // Window Resize Support
+    window.addEventListener("resize", () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+  } catch (err) {
+    console.warn("Three.js WebGL canvas initialization bypassed:", err);
+  }
+}
+
+// ============================================================
+// GSAP ANIMATIONS & MOTION CHOREOGRAPHY
+// ============================================================
+
+/**
+ * Animate numerical counter using GSAP with smooth easing
+ * @param {HTMLElement} el
+ * @param {number} targetVal
+ * @param {number} [duration=1.2]
+ */
+function animateCounter(el, targetVal, duration = 1.2) {
+  if (!el) return;
+  const endNum = parseInt(targetVal) || 0;
+  if (window.gsap) {
+    const currentNum = parseInt(el.innerText) || 0;
+    const counterObj = { val: currentNum };
+    gsap.to(counterObj, {
+      val: endNum,
+      duration: duration,
+      ease: "power2.out",
+      onUpdate: () => {
+        el.innerText = Math.round(counterObj.val);
+      }
+    });
+  } else {
+    el.innerText = endNum;
+  }
+}
+
+/**
+ * Initialize Framer-style magnetic physics on interactive CTA buttons
+ */
+function initMagneticButtons() {
+  if (typeof gsap === "undefined") return;
+  const targets = document.querySelectorAll(".btn-pitch-event, #btn-scrape-now, #btn-filter-flagship-badge");
+  targets.forEach((btn) => {
+    btn.addEventListener("mousemove", (e) => {
+      const rect = btn.getBoundingClientRect();
+      const x = (e.clientX - rect.left - rect.width / 2) * 0.22;
+      const y = (e.clientY - rect.top - rect.height / 2) * 0.22;
+      gsap.to(btn, { x: x, y: y, duration: 0.25, ease: "power2.out" });
+    });
+    btn.addEventListener("mouseleave", () => {
+      gsap.to(btn, { x: 0, y: 0, duration: 0.55, ease: "elastic.out(1, 0.4)" });
+    });
+  });
+}
+
+// Hardware-Accelerated Ambient Cursor Lighting with rAF
 function initSmoothMouseLighting() {
   let targetX = 50;
   let targetY = 20;
@@ -73,7 +256,6 @@ function initSmoothMouseLighting() {
 
     if (!ticking) {
       window.requestAnimationFrame(() => {
-        // Smooth lerp damping for organic fluid feel
         currentX += (targetX - currentX) * 0.18;
         currentY += (targetY - currentY) * 0.18;
         document.documentElement.style.setProperty("--mouse-x", `${currentX.toFixed(1)}%`);
@@ -274,13 +456,15 @@ async function fetchEvents() {
     const data = await res.json();
     state.events = data.events;
 
-    // Update KPI Telemetry HUD
+    // Animate KPI Telemetry HUD with GSAP counter interpolation
     const elTotal = document.getElementById("stat-total");
-    if (elTotal) elTotal.innerText = data.metrics.total_events;
+    animateCounter(elTotal, data.metrics.total_events);
+
     const elHigh = document.getElementById("stat-high");
-    if (elHigh) elHigh.innerText = data.metrics.high_priority;
+    animateCounter(elHigh, data.metrics.high_priority);
+
     const elFlagship = document.getElementById("stat-flagship-count");
-    if (elFlagship) elFlagship.innerText = data.metrics.flagship_count || 10;
+    animateCounter(elFlagship, data.metrics.flagship_count || 10);
 
     renderCards();
     if (state.activeView === "calendar") {
@@ -334,7 +518,7 @@ function getSourcePill(source) {
   return `<span class="source-pill-default px-2 py-0.5 rounded-full text-[10px] font-medium">${source}</span>`;
 }
 
-// --- Render Cards View ---
+// --- Render Cards View with GSAP Stagger Entrance ---
 function renderCards() {
   containerCards.innerHTML = "";
 
@@ -350,7 +534,7 @@ function renderCards() {
     return;
   }
 
-  state.events.forEach((ev, idx) => {
+  state.events.forEach((ev) => {
     const card = document.createElement("div");
     const isHigh = ev.b2c_priority === "HIGH";
     const isFlagship = (ev.category && ev.category.toLowerCase().includes("flagship")) || ev.source.toLowerCase().includes("summit") || ev.title.toLowerCase().includes("techne") || ev.title.toLowerCase().includes("riseup");
@@ -458,6 +642,20 @@ function renderCards() {
     containerCards.appendChild(card);
   });
 
+  // Trigger GSAP Stagger Entrance for Cards
+  if (typeof gsap !== "undefined") {
+    gsap.from("#container-cards > .radar-card", {
+      opacity: 0,
+      y: 20,
+      stagger: 0.035,
+      duration: 0.45,
+      ease: "power2.out",
+      clearProps: "all"
+    });
+  }
+
+  initMagneticButtons();
+
   if (window.lucide) lucide.createIcons();
 }
 
@@ -519,7 +717,7 @@ window.openPitchById = function(eventId) {
   if (ev) openPitchModal(ev);
 };
 
-// --- Modal Logic ---
+// --- Modal Logic with GSAP Scale Physics ---
 function openPitchModal(event) {
   state.activePitchEvent = event;
   pitchEventSubtitle.innerText = `Target Event: ${event.title} (${event.city})`;
@@ -529,10 +727,38 @@ function openPitchModal(event) {
   }
   pitchOutputBox.classList.add("hidden");
   pitchModal.classList.remove("hidden");
+
+  // GSAP Spring Pop Modal Entrance
+  if (typeof gsap !== "undefined") {
+    const dialog = pitchModal.querySelector(".modal-dialog-dark");
+    if (dialog) {
+      gsap.fromTo(dialog, 
+        { scale: 0.92, opacity: 0, y: 15 },
+        { scale: 1, opacity: 1, y: 0, duration: 0.35, ease: "back.out(1.4)" }
+      );
+    }
+  }
+
   if (window.lucide) lucide.createIcons();
 }
 
 function closePitchModal() {
+  if (typeof gsap !== "undefined") {
+    const dialog = pitchModal.querySelector(".modal-dialog-dark");
+    if (dialog) {
+      gsap.to(dialog, {
+        scale: 0.94,
+        opacity: 0,
+        duration: 0.2,
+        ease: "power2.in",
+        onComplete: () => {
+          pitchModal.classList.add("hidden");
+          state.activePitchEvent = null;
+        }
+      });
+      return;
+    }
+  }
   pitchModal.classList.add("hidden");
   state.activePitchEvent = null;
 }
@@ -571,6 +797,11 @@ async function handleGeneratePitch() {
     btnOpenMail.href = mailto;
 
     pitchOutputBox.classList.remove("hidden");
+
+    if (typeof gsap !== "undefined") {
+      gsap.from(pitchOutputBox, { opacity: 0, y: 12, duration: 0.35, ease: "power2.out" });
+    }
+
     showToast("Partnership proposal generated successfully!", "success");
   } catch (err) {
     console.error("Failed to generate pitch:", err);
@@ -666,7 +897,26 @@ function showToast(message, type = "info") {
   msg.innerText = message;
   toast.classList.remove("translate-y-20", "opacity-0", "pointer-events-none");
 
+  if (typeof gsap !== "undefined") {
+    gsap.fromTo(toast,
+      { y: 30, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.35, ease: "back.out(1.4)" }
+    );
+  }
+
   setTimeout(() => {
-    toast.classList.add("translate-y-20", "opacity-0", "pointer-events-none");
+    if (typeof gsap !== "undefined") {
+      gsap.to(toast, {
+        y: 20,
+        opacity: 0,
+        duration: 0.25,
+        ease: "power2.in",
+        onComplete: () => {
+          toast.classList.add("translate-y-20", "opacity-0", "pointer-events-none");
+        }
+      });
+    } else {
+      toast.classList.add("translate-y-20", "opacity-0", "pointer-events-none");
+    }
   }, 3500);
 }
