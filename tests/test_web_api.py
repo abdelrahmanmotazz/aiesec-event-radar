@@ -10,7 +10,7 @@ client = TestClient(app)
 def test_dashboard_root_html():
     response = client.get("/")
     assert response.status_code == 200
-    assert "AIESEC in Egypt" in response.text
+    assert "AIESEC in Tanta" in response.text
     assert "B2C RADAR" in response.text
 
 

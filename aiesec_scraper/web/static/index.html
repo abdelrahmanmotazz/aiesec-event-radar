@@ -36,20 +36,18 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
       
       <!-- Brand & Status -->
-      <div class="flex items-center space-x-3">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#037EF3] via-[#00A3FF] to-[#00D2FF] p-[1px] shadow-[0_0_20px_rgba(3,126,243,0.35)] shrink-0">
-          <div class="w-full h-full bg-[#081120] rounded-[11px] flex items-center justify-center font-black text-xl text-transparent bg-clip-text bg-gradient-to-tr from-white to-blue-200">
-            A
-          </div>
-        </div>
-        <div>
+      <div class="flex items-center space-x-3.5">
+        <a href="/" class="flex items-center shrink-0">
+          <img src="/static/aiesec-logo.svg" alt="AIESEC Logo" class="h-8 sm:h-9 w-auto hover:brightness-110 transition drop-shadow-[0_0_15px_rgba(3,126,243,0.4)]">
+        </a>
+        <div class="border-l border-white/10 pl-3">
           <div class="flex items-center gap-2">
-            <h1 class="font-extrabold text-base sm:text-lg tracking-tight text-white">AIESEC in Egypt</h1>
+            <h1 class="font-extrabold text-base sm:text-lg tracking-tight text-white">AIESEC in Tanta</h1>
             <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-500/10 text-sky-400 border border-sky-500/25 uppercase tracking-wider">
               <span class="radar-live-dot"></span> B2C RADAR v2.0
             </span>
           </div>
-          <p class="text-[11px] text-slate-400 font-medium hidden sm:block">Campus Events, Lead Gen & Partnership Command Center</p>
+          <p class="text-[11px] text-slate-400 font-medium hidden sm:block">AIESEC in Egypt • Campus Events, Lead Gen & Partnership Command Center</p>
         </div>
       </div>
 
@@ -92,62 +90,34 @@
   <!-- Main Content Container -->
   <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
 
-    <!-- Executive KPI Metric Summary Cards (Figma Component Style) -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+    <!-- Executive KPI Metric Summary Cards (2-Card Focus Layout) -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
       
       <!-- Total Events -->
-      <div class="figma-surface p-4 flex flex-col justify-between">
+      <div class="figma-surface p-5 flex flex-col justify-between">
         <div class="flex items-center justify-between">
           <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Total Events</span>
-          <div class="w-8 h-8 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-[#38BDF8] shadow-[0_0_12px_rgba(56,189,248,0.15)]">
-            <i data-lucide="calendar" class="w-4 h-4"></i>
+          <div class="w-9 h-9 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-[#38BDF8] shadow-[0_0_12px_rgba(56,189,248,0.15)]">
+            <i data-lucide="calendar" class="w-4.5 h-4.5"></i>
           </div>
         </div>
-        <div class="mt-3 flex items-baseline justify-between">
-          <div class="text-3xl font-extrabold text-white tracking-tight" id="stat-total">0</div>
-          <span class="text-[10px] font-semibold text-sky-400 bg-sky-500/10 px-2 py-0.5 rounded-full border border-sky-500/20">6M Pipeline</span>
+        <div class="mt-4 flex items-baseline justify-between">
+          <div class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight" id="stat-total">0</div>
+          <span class="text-[11px] font-semibold text-sky-400 bg-sky-500/10 px-2.5 py-0.5 rounded-full border border-sky-500/20">6-Month Horizon</span>
         </div>
       </div>
 
       <!-- High Priority Leads -->
-      <div class="figma-surface p-4 flex flex-col justify-between">
+      <div class="figma-surface p-5 flex flex-col justify-between">
         <div class="flex items-center justify-between">
           <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">High Priority Leads</span>
-          <div class="w-8 h-8 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center text-[#F85A40] shadow-[0_0_12px_rgba(248,90,64,0.15)]">
-            <i data-lucide="flame" class="w-4 h-4"></i>
+          <div class="w-9 h-9 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center text-[#F85A40] shadow-[0_0_12px_rgba(248,90,64,0.15)]">
+            <i data-lucide="flame" class="w-4.5 h-4.5"></i>
           </div>
         </div>
-        <div class="mt-3 flex items-baseline justify-between">
-          <div class="text-3xl font-extrabold text-[#FF8875] tracking-tight" id="stat-high">0</div>
-          <span class="text-[10px] font-semibold text-[#FF8875] bg-red-500/10 px-2 py-0.5 rounded-full border border-red-500/20">Score ≥ 8.5</span>
-        </div>
-      </div>
-
-      <!-- Youth Orgs -->
-      <div class="figma-surface p-4 flex flex-col justify-between">
-        <div class="flex items-center justify-between">
-          <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Youth Orgs</span>
-          <div class="w-8 h-8 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-[#C084FC] shadow-[0_0_12px_rgba(168,85,247,0.15)]">
-            <i data-lucide="users" class="w-4 h-4"></i>
-          </div>
-        </div>
-        <div class="mt-3 flex items-baseline justify-between">
-          <div class="text-3xl font-extrabold text-purple-300 tracking-tight" id="stat-partners">0</div>
-          <span class="text-[10px] font-semibold text-purple-300 bg-purple-500/10 px-2 py-0.5 rounded-full border border-purple-500/20">IEEE / Enactus</span>
-        </div>
-      </div>
-
-      <!-- Weekend Clashes -->
-      <div class="figma-surface p-4 flex flex-col justify-between">
-        <div class="flex items-center justify-between">
-          <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Weekend Clashes</span>
-          <div class="w-8 h-8 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-[#FCD34D] shadow-[0_0_12px_rgba(245,158,11,0.15)]">
-            <i data-lucide="alert-triangle" class="w-4 h-4"></i>
-          </div>
-        </div>
-        <div class="mt-3 flex items-baseline justify-between">
-          <div class="text-3xl font-extrabold text-amber-400 tracking-tight" id="stat-clashes">0</div>
-          <span class="text-[10px] font-semibold text-amber-300 bg-amber-500/10 px-2 py-0.5 rounded-full border border-amber-500/20">Conflict Risk</span>
+        <div class="mt-4 flex items-baseline justify-between">
+          <div class="text-3xl sm:text-4xl font-extrabold text-[#FF8875] tracking-tight" id="stat-high">0</div>
+          <span class="text-[11px] font-semibold text-[#FF8875] bg-red-500/10 px-2.5 py-0.5 rounded-full border border-red-500/20">Actionable Score ≥ 8.5</span>
         </div>
       </div>
 
@@ -194,6 +164,7 @@
         <span class="font-bold text-slate-400 mr-1">City:</span>
         <select id="select-city" class="figma-input py-1 px-3 rounded-xl font-medium text-slate-200 mr-3 cursor-pointer">
           <option value="all">All Egypt (Nationwide)</option>
+          <option value="tanta">Tanta</option>
           <option value="cairo">Cairo</option>
           <option value="alexandria">Alexandria</option>
           <option value="giza">Giza</option>

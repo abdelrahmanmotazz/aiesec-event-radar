@@ -159,10 +159,14 @@ async function fetchEvents() {
     state.events = data.events;
 
     // Update KPI cards
-    document.getElementById("stat-total").innerText = data.metrics.total_events;
-    document.getElementById("stat-high").innerText = data.metrics.high_priority;
-    document.getElementById("stat-partners").innerText = data.metrics.partner_orgs;
-    document.getElementById("stat-clashes").innerText = data.metrics.clashes;
+    const elTotal = document.getElementById("stat-total");
+    if (elTotal) elTotal.innerText = data.metrics.total_events;
+    const elHigh = document.getElementById("stat-high");
+    if (elHigh) elHigh.innerText = data.metrics.high_priority;
+    const elPartners = document.getElementById("stat-partners");
+    if (elPartners) elPartners.innerText = data.metrics.partner_orgs;
+    const elClashes = document.getElementById("stat-clashes");
+    if (elClashes) elClashes.innerText = data.metrics.clashes;
 
     renderCards();
     if (state.activeView === "calendar") {
