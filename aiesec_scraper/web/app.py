@@ -69,7 +69,13 @@ def load_initial_events():
         except Exception:
             pass
 
-    # Ensure flagship summits (Techne Summit, RiseUp, etc.) are present
+    # Ensure flagship summits (Techne Summit, RiseUp, etc.) are present and categorized
+    for e in events:
+        if any(k in e.title.lower() for k in ["techne", "riseup", "career summit", "she can", "delta youth", "enactus egypt national", "ieee egypt national"]):
+            e.category = "Flagship Summits"
+            e.b2c_priority = "HIGH"
+            e.b2c_score = 10.0
+
     existing_titles = {e.title.lower() for e in events}
     if not any("techne" in t for t in existing_titles):
         try:
@@ -79,9 +85,9 @@ def load_initial_events():
             scorer = B2CScorer()
             for ev in summit_events:
                 score, priority, category, tags, action, parallel = scorer.evaluate(ev.title, ev.description, ev.location)
-                ev.b2c_score = score
-                ev.b2c_priority = priority
-                ev.category = category
+                ev.b2c_score = 10.0
+                ev.b2c_priority = "HIGH"
+                ev.category = "Flagship Summits"
                 ev.aiesec_tags = tags
                 ev.recommended_action = action
                 ev.parallel_org = parallel
@@ -107,6 +113,26 @@ def load_initial_events():
                 events.append(ev)
         except Exception as e:
             logger.error(f"Error seeding TicketsMarche: {e}")
+
+    # Ensure multi-network Social Media feeds are seeded
+    if not any(k in e.source.lower() for e in events for k in ["facebook", "linkedin", "instagram", "telegram"]):
+        try:
+            from ..scrapers import SocialMediaScraper
+            social_events = SocialMediaScraper().scrape(city=None)
+            from ..scorers import B2CScorer
+            scorer = B2CScorer()
+            for ev in social_events:
+                score, priority, category, tags, action, parallel = scorer.evaluate(ev.title, ev.description, ev.location)
+                ev.b2c_score = score
+                ev.b2c_priority = priority
+                if not ev.category or ev.category == "General":
+                    ev.category = category
+                ev.aiesec_tags = tags
+                ev.recommended_action = action
+                ev.parallel_org = parallel
+                events.append(ev)
+        except Exception as e:
+            logger.error(f"Error seeding social media: {e}")
 
     CACHED_EVENTS = events
     if events:
@@ -193,8 +219,9 @@ def get_events(
         "high_priority": sum(1 for e in CACHED_EVENTS if e.b2c_priority == "HIGH"),
         "clashes": sum(1 for e in CACHED_EVENTS if e.clash_warning),
         "partner_orgs": sum(1 for e in CACHED_EVENTS if e.parallel_org),
-        "summits_count": sum(1 for e in CACHED_EVENTS if "summit" in e.source.lower()),
-        "ticketsmarche_count": sum(1 for e in CACHED_EVENTS if "ticketsmarche" in e.source.lower())
+        "flagship_count": sum(1 for e in CACHED_EVENTS if "flagship" in e.category.lower() or "summit" in e.source.lower()),
+        "ticketsmarche_count": sum(1 for e in CACHED_EVENTS if "ticketsmarche" in e.source.lower()),
+        "social_count": sum(1 for e in CACHED_EVENTS if any(k in e.source.lower() for k in ["facebook", "linkedin", "instagram", "telegram"]))
     }
 
     return {

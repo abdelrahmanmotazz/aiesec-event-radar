@@ -139,12 +139,15 @@
         </div>
 
         <div class="mt-4 pt-3 border-t border-white/[0.06] flex items-center justify-between flex-wrap gap-2 text-xs">
-          <div class="flex items-center gap-2">
-            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-yellow-500/15 text-yellow-400 border border-yellow-500/30">
-              <i data-lucide="ticket" class="w-3 h-3 inline mr-1"></i> TicketsMarche: <strong id="stat-tm-count">49</strong>
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/15 text-amber-300 border border-amber-500/35 flex items-center gap-1 shadow-[0_0_10px_rgba(245,158,11,0.15)]">
+              <i data-lucide="crown" class="w-3 h-3 inline text-amber-400"></i> Flagship Summits: <strong id="stat-flagship-count">10</strong>
             </span>
-            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-cyan-500/15 text-cyan-300 border border-cyan-500/30">
-              <i data-lucide="sparkles" class="w-3 h-3 inline mr-1"></i> Techne & Summits: <strong id="stat-summits-count">8</strong>
+            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-yellow-500/15 text-yellow-400 border border-yellow-500/35 flex items-center gap-1">
+              <i data-lucide="ticket" class="w-3 h-3 inline"></i> TicketsMarche: <strong id="stat-tm-count">49</strong>
+            </span>
+            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-sky-500/15 text-sky-300 border border-sky-500/35 flex items-center gap-1">
+              <i data-lucide="share-2" class="w-3 h-3 inline"></i> Social Channels: <strong id="stat-social-count">24</strong>
             </span>
           </div>
           <span class="text-[11px] font-semibold text-slate-400">6-Month Horizon</span>
@@ -169,9 +172,14 @@
 
         <div class="mt-4 pt-3 border-t border-white/[0.06] flex items-center justify-between flex-wrap gap-2 text-xs">
           <span class="text-slate-400 text-[11px]">Immediate conversion targets (Techne, Career Fairs, Youth Summits)</span>
-          <button id="btn-quick-filter-high" class="px-2.5 py-1 rounded-lg bg-[#FF4D36]/20 hover:bg-[#FF4D36] text-[#FF8875] hover:text-white border border-[#FF4D36]/40 text-[11px] font-bold transition active:scale-95">
-            View High Leads
-          </button>
+          <div class="flex items-center gap-2">
+            <button id="btn-quick-filter-flagship" class="px-2.5 py-1 rounded-lg bg-amber-500/20 hover:bg-amber-500 text-amber-300 hover:text-white border border-amber-500/40 text-[11px] font-bold transition active:scale-95 flex items-center gap-1">
+              <i data-lucide="crown" class="w-3 h-3 text-amber-300"></i> Flagship Summits
+            </button>
+            <button id="btn-quick-filter-high" class="px-2.5 py-1 rounded-lg bg-[#FF4D36]/20 hover:bg-[#FF4D36] text-[#FF8875] hover:text-white border border-[#FF4D36]/40 text-[11px] font-bold transition active:scale-95">
+              View High Leads
+            </button>
+          </div>
         </div>
       </div>
 
@@ -231,17 +239,33 @@
           <option value="hurghada">Hurghada</option>
         </select>
 
+        <!-- Category Selector -->
+        <span class="font-bold text-slate-400 mx-1 flex items-center gap-1">
+          <i data-lucide="tag" class="w-3.5 h-3.5 text-amber-400"></i> Category:
+        </span>
+        <select id="select-category" class="figma-input py-1 px-3 rounded-xl font-medium text-slate-200 mr-2 cursor-pointer outline-none">
+          <option value="all">All Categories</option>
+          <option value="Flagship Summits">👑 Flagship Summits (Techne, RiseUp)</option>
+          <option value="Career Fair & Employment">💼 Career Fair & Employment</option>
+          <option value="Technology & Hackathons">💻 Technology & Hackathons</option>
+          <option value="Youth Leadership & Student Orgs">🌱 Youth Leadership & Student Orgs</option>
+          <option value="Arts & Entertainment">🎭 Arts & Entertainment</option>
+        </select>
+
         <!-- Platform Source Selector -->
         <span class="font-bold text-slate-400 mx-1 flex items-center gap-1">
           <i data-lucide="layers" class="w-3.5 h-3.5 text-sky-400"></i> Stream:
         </span>
         <select id="select-source" class="figma-input py-1 px-3 rounded-xl font-medium text-slate-200 mr-2 cursor-pointer outline-none">
           <option value="all">All Streams</option>
-          <option value="summit">Techne & Flagship Summits</option>
-          <option value="ticketsmarche">TicketsMarche</option>
-          <option value="eventbrite">Eventbrite</option>
-          <option value="allevents">AllEvents</option>
-          <option value="social">Facebook & Social</option>
+          <option value="summit">👑 Flagship Summits</option>
+          <option value="ticketsmarche">🎟️ TicketsMarche</option>
+          <option value="facebook">📘 Facebook Events</option>
+          <option value="linkedin">💼 LinkedIn Announcements</option>
+          <option value="instagram">📸 Instagram Channels</option>
+          <option value="telegram">✈️ Telegram Broadcasts</option>
+          <option value="eventbrite">🎫 Eventbrite</option>
+          <option value="allevents">🌐 AllEvents</option>
         </select>
 
         <!-- Priority Chips -->

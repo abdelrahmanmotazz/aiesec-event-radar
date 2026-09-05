@@ -1,16 +1,15 @@
-"""Egypt Flagship Summits Scraper: Techne Summit, RiseUp, IEEE Congress, and National Youth Summits."""
+"""Egypt Flagship Summits Scraper: Techne Summit, RiseUp, IEEE Congress, AUC Forums, and National Youth Summits."""
 
 import logging
 from datetime import datetime, timedelta
 from typing import List, Optional
-from bs4 import BeautifulSoup
 
 from .base import BaseScraper
 from ..models import EventRecord
 
 logger = logging.getLogger(__name__)
 
-# Registry of Egypt's Flagship Annual Summits & Campus Conferences
+# Registry of Egypt's Flagship Annual Summits & Campus Conferences (All categorized as Flagship Summits)
 SUMMITS_CATALOG = [
     {
         "id": "summit_techne_alex_2026",
@@ -21,7 +20,7 @@ SUMMITS_CATALOG = [
         "date_display": "Oct 03 - 05, 2026 · 09:00 AM",
         "location": "Bibliotheca Alexandrina",
         "city": "Alexandria",
-        "category": "Technology & Entrepreneurship",
+        "category": "Flagship Summits",
         "ticket_type": "Student / Attendee Passes",
         "parallel_org": "Techne Global",
         "description": "The Mediterranean's largest technology, startup, and talent gathering at Bibliotheca Alexandrina with 45,000+ attendees, youth innovators, international speakers, and university delegations.",
@@ -36,7 +35,7 @@ SUMMITS_CATALOG = [
         "date_display": "Sep 26 - 27, 2026 · 10:00 AM",
         "location": "The Nile Ritz-Carlton",
         "city": "Cairo",
-        "category": "Corporate Innovation & Youth Startups",
+        "category": "Flagship Summits",
         "ticket_type": "Summit Registration",
         "parallel_org": "Techne Global",
         "description": "Flagship Cairo edition convening 10,000+ youth, founders, investors, and corporate decision-makers during Egypt Innovation Week.",
@@ -51,7 +50,7 @@ SUMMITS_CATALOG = [
         "date_display": "Nov 14 - 16, 2026 · 09:30 AM",
         "location": "Grand Egyptian Museum (GEM)",
         "city": "Giza",
-        "category": "Entrepreneurship & Innovation",
+        "category": "Flagship Summits",
         "ticket_type": "Student / General Ticket",
         "parallel_org": "RiseUp Community",
         "description": "MENA's premier entrepreneurship marathon bringing together thousands of student founders, changemakers, and youth leaders at the iconic Grand Egyptian Museum.",
@@ -66,7 +65,7 @@ SUMMITS_CATALOG = [
         "date_display": "Oct 18 - 19, 2026 · 09:00 AM",
         "location": "The Greek Campus, Downtown",
         "city": "Cairo",
-        "category": "Career Fair & Youth Employment",
+        "category": "Flagship Summits",
         "ticket_type": "Free / Registration Required",
         "parallel_org": None,
         "description": "Massive employment and career exploration summit attended by 20,000+ university undergraduates and fresh graduates seeking professional opportunities.",
@@ -81,7 +80,7 @@ SUMMITS_CATALOG = [
         "date_display": "Sep 19 - 20, 2026 · 09:00 AM",
         "location": "Cairo University Faculty of Engineering",
         "city": "Cairo",
-        "category": "STEM & Student Leadership",
+        "category": "Flagship Summits",
         "ticket_type": "Free / Student Pass",
         "parallel_org": "IEEE",
         "description": "National gathering of 35+ IEEE university student branches across Egypt showcasing student engineering projects, robotics, and leadership summits.",
@@ -96,7 +95,7 @@ SUMMITS_CATALOG = [
         "date_display": "Sep 29 - 30, 2026 · 10:00 AM",
         "location": "Intercontinental Citystars",
         "city": "Cairo",
-        "category": "Social Impact & Leadership",
+        "category": "Flagship Summits",
         "ticket_type": "Invitation / Registration",
         "parallel_org": "Enactus",
         "description": "National showdown of 50+ university teams presenting high-impact social entrepreneurship solutions addressing the UN Sustainable Development Goals.",
@@ -111,7 +110,7 @@ SUMMITS_CATALOG = [
         "date_display": "Oct 24 - 25, 2026 · 10:00 AM",
         "location": "Tanta University Convention Center",
         "city": "Tanta",
-        "category": "Campus Leadership & Innovation",
+        "category": "Flagship Summits",
         "ticket_type": "Free for Students",
         "parallel_org": None,
         "description": "The Gharbia and Delta region's central student conference connecting students from Tanta, Mansoura, and Kafr El-Sheikh with career readiness, technology, and civil society.",
@@ -126,11 +125,41 @@ SUMMITS_CATALOG = [
         "date_display": "Nov 28, 2026 · 09:00 AM",
         "location": "The Greek Campus West (Mall of Arabia)",
         "city": "Giza",
-        "category": "Women in Leadership & Entrepreneurship",
+        "category": "Flagship Summits",
         "ticket_type": "Standard Ticket",
         "parallel_org": "Entreprenelle",
         "description": "The largest female empowerment and entrepreneurship summit in the MENA region, drawing 7,000+ ambitious women, university students, and professionals.",
         "recommended_action": "Promote AIESEC SDG 5 Gender Equality volunteer projects & female youth leadership opportunities."
+    },
+    {
+        "id": "summit_auc_leadership_2026",
+        "title": "AUC Campus Leadership & Global Careers Forum",
+        "organizer": "American University in Cairo (AUC)",
+        "url": "https://www.aucegypt.edu/events",
+        "start_date": datetime(2026, 10, 12, 11, 0),
+        "date_display": "Oct 12 - 13, 2026 · 11:00 AM",
+        "location": "AUC New Cairo & Bassily Auditorium",
+        "city": "Cairo",
+        "category": "Flagship Summits",
+        "ticket_type": "Open to University Students",
+        "parallel_org": None,
+        "description": "AUC's flagship annual conference bringing together top-tier university undergraduates, student union leaders, and international exchange recruiters.",
+        "recommended_action": "High-conversion campus recruitment for AIESEC Global Volunteer & Global Talent exchanges."
+    },
+    {
+        "id": "summit_greek_campus_expo_2026",
+        "title": "The Greek Campus Innovation & Startup Expo",
+        "organizer": "The Greek Campus Cairo",
+        "url": "https://thegreekcampus.com/",
+        "start_date": datetime(2026, 11, 6, 10, 0),
+        "date_display": "Nov 06 - 07, 2026 · 10:00 AM",
+        "location": "The Greek Campus, Downtown Cairo",
+        "city": "Cairo",
+        "category": "Flagship Summits",
+        "ticket_type": "Student & Visitor Passes",
+        "parallel_org": None,
+        "description": "Downtown Cairo's premier startup campus holding annual showcases for tech innovators, campus creators, and youth leadership initiatives.",
+        "recommended_action": "Deploy AIESEC partnership desk & pitch startup founders on hiring international tech talent."
     }
 ]
 
@@ -138,7 +167,7 @@ SUMMITS_CATALOG = [
 class EgyptSummitsScraper(BaseScraper):
     """
     Scraper and catalog monitor for Egypt's flagship national summits,
-    student congresses, and youth tech festivals (Techne Summit, RiseUp, IEEE, Enactus).
+    student congresses, and youth tech festivals (Techne Summit, RiseUp, IEEE, Enactus, AUC).
     """
 
     name: str = "Egypt Flagship Summits"
@@ -175,7 +204,7 @@ class EgyptSummitsScraper(BaseScraper):
                 ticket_type=s["ticket_type"],
                 organizer=s["organizer"],
                 parallel_org=s.get("parallel_org"),
-                category=s.get("category"),
+                category="Flagship Summits",
                 description=s["description"],
                 recommended_action=s.get("recommended_action")
             )

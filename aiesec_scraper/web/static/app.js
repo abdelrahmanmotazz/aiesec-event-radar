@@ -7,6 +7,7 @@ let state = {
   events: [],
   sort: "score_desc",
   priority: "all",
+  category: "all",
   city: "all",
   source: "all",
   search: "",
@@ -22,6 +23,7 @@ const containerCalendar = document.getElementById("container-calendar");
 const calendarTimeline = document.getElementById("calendar-timeline");
 const inputSearch = document.getElementById("input-search");
 const selectSort = document.getElementById("select-sort");
+const selectCategory = document.getElementById("select-category");
 const selectCity = document.getElementById("select-city");
 const selectSource = document.getElementById("select-source");
 const checkPartnersOnly = document.getElementById("check-partners-only");
@@ -29,6 +31,7 @@ const checkClashesOnly = document.getElementById("check-clashes-only");
 const btnViewCards = document.getElementById("btn-view-cards");
 const btnViewCalendar = document.getElementById("btn-view-calendar");
 const btnQuickFilterHigh = document.getElementById("btn-quick-filter-high");
+const btnQuickFilterFlagship = document.getElementById("btn-quick-filter-flagship");
 
 // Modal Elements
 const pitchModal = document.getElementById("pitch-modal");
@@ -106,6 +109,23 @@ function setupEventListeners() {
   if (selectSource) {
     selectSource.addEventListener("change", (e) => {
       state.source = e.target.value;
+      fetchEvents();
+    });
+  }
+
+  // Category selection
+  if (selectCategory) {
+    selectCategory.addEventListener("change", (e) => {
+      state.category = e.target.value;
+      fetchEvents();
+    });
+  }
+
+  // Quick filter for flagship summits
+  if (btnQuickFilterFlagship) {
+    btnQuickFilterFlagship.addEventListener("click", () => {
+      state.category = "Flagship Summits";
+      if (selectCategory) selectCategory.value = "Flagship Summits";
       fetchEvents();
     });
   }
@@ -200,6 +220,7 @@ async function fetchEvents() {
   const params = new URLSearchParams({
     sort: state.sort,
     priority: state.priority,
+    category: state.category,
     city: state.city,
     source: state.source,
     search: state.search,
@@ -219,8 +240,10 @@ async function fetchEvents() {
     if (elHigh) elHigh.innerText = data.metrics.high_priority;
     const elTm = document.getElementById("stat-tm-count");
     if (elTm) elTm.innerText = data.metrics.ticketsmarche_count || 49;
-    const elSummits = document.getElementById("stat-summits-count");
-    if (elSummits) elSummits.innerText = data.metrics.summits_count || 8;
+    const elFlagship = document.getElementById("stat-flagship-count");
+    if (elFlagship) elFlagship.innerText = data.metrics.flagship_count || 10;
+    const elSocial = document.getElementById("stat-social-count");
+    if (elSocial) elSocial.innerText = data.metrics.social_count || 24;
 
     renderCards();
     if (state.activeView === "calendar") {
@@ -253,14 +276,23 @@ function getSourcePill(source) {
   if (s.includes("ticketsmarche")) {
     return `<span class="source-pill-ticketsmarche px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wide inline-flex items-center gap-1"><i data-lucide="ticket" class="w-3 h-3"></i> TicketsMarche</span>`;
   }
-  if (s.includes("summit")) {
+  if (s.includes("summit") || s.includes("techne") || s.includes("flagship")) {
     return `<span class="source-pill-summit px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wide inline-flex items-center gap-1"><i data-lucide="sparkles" class="w-3 h-3"></i> Egypt Summit</span>`;
+  }
+  if (s.includes("linkedin")) {
+    return `<span class="source-pill-linkedin px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wide inline-flex items-center gap-1"><i data-lucide="briefcase" class="w-3 h-3"></i> LinkedIn</span>`;
+  }
+  if (s.includes("instagram")) {
+    return `<span class="source-pill-instagram px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wide inline-flex items-center gap-1"><i data-lucide="camera" class="w-3 h-3"></i> Instagram</span>`;
+  }
+  if (s.includes("telegram")) {
+    return `<span class="source-pill-telegram px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wide inline-flex items-center gap-1"><i data-lucide="send" class="w-3 h-3"></i> Telegram</span>`;
+  }
+  if (s.includes("facebook")) {
+    return `<span class="source-pill-facebook px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wide inline-flex items-center gap-1"><i data-lucide="share-2" class="w-3 h-3"></i> Facebook</span>`;
   }
   if (s.includes("eventbrite")) {
     return `<span class="source-pill-eventbrite px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wide inline-flex items-center gap-1">Eventbrite</span>`;
-  }
-  if (s.includes("facebook")) {
-    return `<span class="source-pill-facebook px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wide inline-flex items-center gap-1">Facebook</span>`;
   }
   return `<span class="source-pill-default px-2 py-0.5 rounded-full text-[10px] font-medium">${source}</span>`;
 }
@@ -284,15 +316,16 @@ function renderCards() {
   state.events.forEach((ev) => {
     const card = document.createElement("div");
     const isHigh = ev.b2c_priority === "HIGH";
+    const isFlagship = (ev.category && ev.category.toLowerCase().includes("flagship")) || ev.source.toLowerCase().includes("summit") || ev.title.toLowerCase().includes("techne") || ev.title.toLowerCase().includes("riseup");
     const isSummit = ev.source.toLowerCase().includes("summit");
     const hasPartner = !!ev.parallel_org;
     const hasClash = ev.clash_warning;
 
     let glowClass = "";
-    if (isHigh) {
-      glowClass = "card-high-glow";
-    } else if (isSummit) {
+    if (isFlagship) {
       glowClass = "card-summit-glow";
+    } else if (isHigh) {
+      glowClass = "card-high-glow";
     } else if (hasPartner) {
       glowClass = "card-partner-glow";
     }
@@ -315,6 +348,7 @@ function renderCards() {
             ${sourcePill}
           </div>
           <div class="flex items-center gap-1.5 flex-wrap justify-end">
+            ${isFlagship ? `<span class="badge-flagship-gold px-2.5 py-0.5 rounded-full text-[10px] inline-flex items-center gap-1">👑 Flagship</span>` : ""}
             ${hasPartner ? `<span class="badge-neon-purple px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wide">${ev.parallel_org}</span>` : ""}
             ${hasClash ? `<span class="badge-neon-amber px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wide">⚠️ Weekend Clash</span>` : ""}
           </div>

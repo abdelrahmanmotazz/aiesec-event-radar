@@ -16,6 +16,16 @@ PARALLEL_ORG_PATTERNS = {
 }
 
 DEFAULT_KEYWORD_RULES = {
+    "Flagship Summits": {
+        "weight": 10,
+        "action": "Major National Activation: Deploy LC Delegation, Booth Presence & Global Volunteer Recruitment",
+        "terms": [
+            "techne", "techne summit", "riseup", "riseup summit", "career summit",
+            "egypt career summit", "youth summit", "national congress", "she can",
+            "she can summit", "national exposition", "delta youth", "innovation week",
+            "cairo ict", "seamless"
+        ]
+    },
     "Career & Recruitment Fairs": {
         "weight": 10,
         "action": "Booth Booking & Direct Lead Generation for Global Talent / Teacher",
@@ -163,7 +173,7 @@ class B2CScorer:
         if detected_org:
             all_matched_tags = [t for t in all_matched_tags if t.lower() != detected_org.lower()]
             all_matched_tags.insert(0, detected_org)
-            if primary_category != "Career & Recruitment Fairs":
+            if primary_category not in ["Flagship Summits", "Career & Recruitment Fairs"]:
                 primary_category = "Parallel Student Org / Youth Initiative"
                 primary_action = f"Partner Outreach with {detected_org}: Joint Activation / PR Collaboration"
 
