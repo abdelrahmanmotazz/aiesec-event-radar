@@ -1212,7 +1212,7 @@ async function fetchEvents() {
     if (!res.ok) throw new Error(`HTTP error ${res.status}`);
     const data = await res.json();
     if (!data || !data.events) throw new Error("Static JSON payload returned");
-    state.events = data.events;
+    state.events = deduplicateClientEvents(data.events);
 
     // Animate KPI Telemetry HUD with GSAP counter interpolation
     const elTotal = document.getElementById("stat-total");
@@ -1234,6 +1234,69 @@ async function fetchEvents() {
   }
 }
 
+/**
+ * Client-Side Deduplication Safeguard:
+ * Guarantees that no duplicate event ID, canonical URL, or duplicate title+date is ever rendered.
+ */
+function deduplicateClientEvents(eventsList) {
+  if (!Array.isArray(eventsList)) return [];
+  const unique = [];
+  const seenIds = new Set();
+  const seenUrls = new Set();
+  const seenTitles = [];
+
+  for (const ev of eventsList) {
+    if (!ev || !ev.title || typeof ev.title !== "string") continue;
+    const titleClean = ev.title.trim();
+    if (titleClean.length < 3 || titleClean.toLowerCase() === "null" || titleClean.toLowerCase() === "none") continue;
+
+    // Check ID
+    if (ev.event_id && seenIds.has(ev.event_id)) continue;
+
+    // Check Canonical URL
+    let canonUrl = "";
+    if (ev.url && typeof ev.url === "string") {
+      canonUrl = ev.url.split("?")[0].split("#")[0].replace(/\/+$/, "").toLowerCase();
+      if (canonUrl && seenUrls.has(canonUrl)) continue;
+    }
+
+    // Check Normalized Title Tokens
+    const normTitle = titleClean.toLowerCase()
+      .replace(/[^\w\s]/g, " ")
+      .split(/\s+/)
+      .filter(w => !["the", "a", "an", "in", "at", "and", "of", "to", "for", "tickets", "ticket", "egypt", "live"].includes(w) && w.length > 1)
+      .join(" ");
+
+    let isDuplicate = false;
+    if (normTitle.length >= 4) {
+      for (const t of seenTitles) {
+        if (t.normTitle === normTitle) {
+          if (ev.start_date && t.startDate) {
+            const d1 = new Date(ev.start_date).getTime();
+            const d2 = new Date(t.startDate).getTime();
+            if (Math.abs(d1 - d2) <= 4 * 86400000) {
+              isDuplicate = true;
+              break;
+            }
+          } else {
+            isDuplicate = true;
+            break;
+          }
+        }
+      }
+    }
+
+    if (isDuplicate) continue;
+
+    if (ev.event_id) seenIds.add(ev.event_id);
+    if (canonUrl) seenUrls.add(canonUrl);
+    seenTitles.push({ normTitle, startDate: ev.start_date });
+    unique.push(ev);
+  }
+
+  return unique;
+}
+
 // In-memory cache of static events.json
 let rawEventsCache = null;
 
@@ -1242,7 +1305,8 @@ async function loadStaticEventsFallback() {
     if (!rawEventsCache) {
       const res = await fetch("events.json");
       if (!res.ok) throw new Error("Could not load events.json");
-      rawEventsCache = await res.json();
+      const loaded = await res.json();
+      rawEventsCache = deduplicateClientEvents(loaded);
     }
 
     let filtered = [...rawEventsCache];
@@ -1407,7 +1471,7 @@ function renderCards() {
       glowClass = "card-partner-glow";
     }
 
-    card.className = `radar-card spotlight-card p-5 flex flex-col justify-between ${glowClass}`;
+    card.className = `radar-card spotlight-card p-5 sm:p-6 flex flex-col justify-between h-full ${glowClass}`;
 
     // Priority badge class
     const badgeClass = isHigh ? "badge-neon-coral" : (ev.b2c_priority === "MEDIUM" ? "badge-neon-amber" : "badge-neon-slate");
@@ -1457,7 +1521,7 @@ function renderCards() {
         </div>
 
         <!-- Specific Event Intelligence Briefing Box -->
-        <div class="event-desc-box p-3 text-xs space-y-1">
+        <div class="event-desc-box p-3.5 text-xs space-y-1.5 my-1">
           <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center justify-between">
             <span class="flex items-center gap-1.5 text-sky-400">
               <i data-lucide="file-text" class="w-3.5 h-3.5"></i> Event Intelligence Briefing
@@ -1470,7 +1534,7 @@ function renderCards() {
         </div>
 
         <!-- AIESEC Strategic Recommendation Callout Box -->
-        <div class="dark-action-box p-3 text-xs">
+        <div class="dark-action-box p-3.5 text-xs mt-1">
           <div class="text-[10px] font-bold text-[#00E5FF] uppercase tracking-wider mb-1 flex items-center gap-1.5 font-display">
             <i data-lucide="zap" class="w-3.5 h-3.5 text-[#00E5FF]"></i> Recommended B2C Action
           </div>
@@ -1480,13 +1544,13 @@ function renderCards() {
         </div>
       </div>
 
-      <!-- Action Footer -->
-      <div class="pt-3 mt-3 border-t border-white/[0.07] flex items-center justify-between gap-2">
-        <button class="btn-pitch-event flex-1 py-2 px-3 bg-gradient-to-r from-[#037EF3]/20 to-[#0266C8]/20 hover:from-[#037EF3] hover:to-[#0266C8] text-[#38BDF8] hover:text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 border border-[#38BDF8]/30 hover:border-transparent shadow-[0_0_12px_rgba(3,126,243,0.15)] active:scale-95"
+      <!-- Action Footer (mt-auto guarantees aligned bottom across grid cards) -->
+      <div class="pt-3.5 mt-auto border-t border-white/[0.08] flex items-center justify-between gap-2.5">
+        <button class="btn-pitch-event flex-1 py-2.5 px-3.5 bg-gradient-to-r from-[#037EF3]/20 to-[#0266C8]/20 hover:from-[#037EF3] hover:to-[#0266C8] text-[#38BDF8] hover:text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 border border-[#38BDF8]/30 hover:border-transparent shadow-[0_0_12px_rgba(3,126,243,0.15)] active:scale-95"
                 data-event-id="${ev.event_id}">
           <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Outreach Pitch
         </button>
-        <a href="${ev.url}" target="_blank" class="p-2 text-slate-400 hover:text-white rounded-xl hover:bg-white/[0.08] border border-white/[0.09] transition active:scale-95" title="Open Event Link">
+        <a href="${ev.url}" target="_blank" class="p-2.5 text-slate-400 hover:text-white rounded-xl hover:bg-white/[0.08] border border-white/[0.09] transition active:scale-95 flex items-center justify-center shrink-0" title="Open Event Link">
           <i data-lucide="external-link" class="w-4 h-4"></i>
         </a>
       </div>

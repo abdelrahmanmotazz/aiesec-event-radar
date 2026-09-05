@@ -52,7 +52,9 @@ class AllEventsScraper(BaseScraper):
                             a_el = card.select_one("a.event-card-link, a[href*='allevents.in/']")
                             link = a_el.get("href") if a_el else None
 
-                        if not title or not link:
+                        if not title or not isinstance(title, str) or len(title.strip()) < 3 or title.strip().lower() in ["null", "none", "event"]:
+                            continue
+                        if not link:
                             continue
 
                         event_id = f"ae_{eid or hash(link) & 0xffffffff}"

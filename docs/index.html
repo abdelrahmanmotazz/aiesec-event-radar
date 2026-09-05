@@ -165,7 +165,7 @@
   </header>
 
   <!-- Main Content Container -->
-  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-28 sm:pb-12 space-y-6 sm:space-y-8">
 
     <!-- ============================================================
          EXECUTIVE HERO BENTO GRID (Three.js 3D Radar + Telemetry Hub)
@@ -176,7 +176,7 @@
       <div class="lg:col-span-3 flex flex-col gap-5 justify-between">
         
         <!-- Tile 1: Total Events Monitored with Floating Crown & Flagship Pill -->
-        <div class="radar-surface spotlight-card p-5 flex-1 flex flex-col justify-between cursor-pointer group hover:border-sky-500/40 transition" id="tile-total-radar" title="Click to view all events">
+        <div class="radar-surface spotlight-card p-5 sm:p-6 flex-1 flex flex-col justify-between cursor-pointer group hover:border-sky-500/40 transition" id="tile-total-radar" title="Click to view all events">
           <div class="flex items-center justify-between">
             <div class="w-10 h-10 rounded-2xl bg-amber-500/10 border border-amber-500/25 flex items-center justify-center text-amber-400 shadow-[0_0_16px_rgba(245,158,11,0.25)] group-hover:scale-105 transition">
               <i data-lucide="crown" class="w-5 h-5"></i>
@@ -185,14 +185,14 @@
           </div>
 
           <div class="my-3">
-            <div class="text-4xl sm:text-5xl font-black text-white tracking-tight font-display" id="stat-total">283</div>
+            <div class="text-4xl sm:text-5xl font-black text-white tracking-tight font-display" id="stat-total">308</div>
             <div class="text-xs font-semibold text-slate-400 mt-1 flex items-center gap-1.5">
               <span>Total Events Monitored</span>
             </div>
           </div>
 
           <div class="pt-3 border-t border-white/[0.06]">
-            <button id="btn-filter-flagship-badge" class="w-full px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-500/35 flex items-center justify-between shadow-[0_0_12px_rgba(245,158,11,0.18)] transition active:scale-95" title="Click to filter Flagship Summits">
+            <button id="btn-filter-flagship-badge" class="w-full px-3 py-2 rounded-xl text-xs font-bold bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-500/35 flex items-center justify-between shadow-[0_0_12px_rgba(245,158,11,0.18)] transition active:scale-95" title="Click to filter Flagship Summits">
               <span class="flex items-center gap-1.5">
                 <i data-lucide="crown" class="w-3.5 h-3.5 text-amber-400"></i>
                 <span>Flagship Summits</span>
@@ -203,7 +203,7 @@
         </div>
 
         <!-- Tile 2: High Priority Lead Focus Card with Center Flame -->
-        <div class="radar-surface spotlight-card p-5 flex-1 flex flex-col justify-between card-high-glow">
+        <div class="radar-surface spotlight-card p-5 sm:p-6 flex-1 flex flex-col justify-between card-high-glow">
           <div class="flex items-center justify-between">
             <span class="text-[10px] font-bold text-[#FF8875] uppercase tracking-wider flex items-center gap-1.5">
               <span>High Priority B2C</span>
@@ -234,7 +234,7 @@
             </div>
           </div>
 
-          <button id="btn-quick-filter-high" class="w-full py-1.5 px-3 rounded-xl bg-[#FF4D36]/20 hover:bg-[#FF4D36] text-[#FF8875] hover:text-white border border-[#FF4D36]/40 text-xs font-bold transition active:scale-95 text-center">
+          <button id="btn-quick-filter-high" class="w-full py-2 px-3 rounded-xl bg-[#FF4D36]/20 hover:bg-[#FF4D36] text-[#FF8875] hover:text-white border border-[#FF4D36]/40 text-xs font-bold transition active:scale-95 text-center">
             View High Leads
           </button>
         </div>
@@ -242,7 +242,7 @@
       </div>
 
       <!-- Center Column (6 cols on lg): 3D Holographic Particle Globe & Interactive Calendar -->
-      <div class="lg:col-span-6 radar-surface p-5 flex flex-col justify-between">
+      <div class="lg:col-span-6 radar-surface p-5 sm:p-6 flex flex-col justify-between">
         
         <!-- Header of 3D Globe Card -->
         <div class="flex items-center justify-between mb-2">
@@ -342,10 +342,10 @@
       <div class="lg:col-span-3 flex flex-col gap-5 justify-between">
         
         <!-- Tile 3: Recommended B2C Action -->
-        <div class="radar-surface spotlight-card p-5 flex-1 flex flex-col justify-between border-l-4 border-l-[#037EF3]">
+        <div class="radar-surface spotlight-card p-5 sm:p-6 flex-1 flex flex-col justify-between border-l-4 border-l-[#037EF3]">
           <div>
             <div class="flex items-center gap-2 mb-2">
-              <div class="w-7 h-7 rounded-xl bg-[#037EF3]/20 flex items-center justify-center text-[#38BDF8]">
+              <div class="w-8 h-8 rounded-xl bg-[#037EF3]/20 flex items-center justify-center text-[#38BDF8]">
                 <i data-lucide="zap" class="w-4 h-4"></i>
               </div>
               <h4 class="font-extrabold text-xs text-white uppercase tracking-wider font-display">Recommended B2C Action</h4>
@@ -355,13 +355,13 @@
             </p>
           </div>
 
-          <button id="btn-hero-launch-pitch" class="mt-3 w-full py-2 px-3 rounded-xl bg-[#037EF3]/20 hover:bg-[#037EF3] text-[#38BDF8] hover:text-white border border-[#037EF3]/40 text-xs font-bold transition flex items-center justify-center gap-1.5 active:scale-95 shadow-[0_0_14px_rgba(3,126,243,0.2)]">
+          <button id="btn-hero-launch-pitch" class="mt-4 w-full py-2.5 px-3 rounded-xl bg-[#037EF3]/20 hover:bg-[#037EF3] text-[#38BDF8] hover:text-white border border-[#037EF3]/40 text-xs font-bold transition flex items-center justify-center gap-1.5 active:scale-95 shadow-[0_0_14px_rgba(3,126,243,0.2)]">
             <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Launch Outreach Pitch →
           </button>
         </div>
 
-        <!-- Tile 4: Campus Reach & Sparkline Trends -->
-        <div class="radar-surface spotlight-card p-5 flex-1 flex flex-col justify-between">
+        <!-- Tile 4: Campus Reach & Sparkline Trends with Live Activity -->
+        <div class="radar-surface spotlight-card p-5 sm:p-6 flex-1 flex flex-col justify-between">
           <div>
             <div class="flex items-center justify-between text-xs mb-2">
               <div>
@@ -376,7 +376,7 @@
 
             <!-- Glowing SVG Sparkline Curve -->
             <div class="py-1">
-              <svg viewBox="0 0 300 70" class="w-full h-14 overflow-visible">
+              <svg viewBox="0 0 300 70" class="w-full h-12 overflow-visible">
                 <defs>
                   <linearGradient id="sparkGradient" x1="0" y1="0" x2="1" y2="0">
                     <stop offset="0%" stop-color="#037EF3" />
@@ -396,30 +396,12 @@
             </div>
           </div>
 
-          <div class="flex items-center justify-between text-[9px] text-slate-500 font-mono border-t border-white/[0.05] pt-2">
-            <span>JAN</span><span>APR</span><span>JUL</span><span>OCT</span><span>DEC</span>
-          </div>
-        </div>
-
-        <!-- Tile 5: Event Intelligence Feed Summary -->
-        <div class="radar-surface p-4 text-xs space-y-2">
-          <div class="flex items-center justify-between">
-            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5 text-sky-400">
-              <i data-lucide="activity" class="w-3.5 h-3.5"></i> Live Intelligence
-            </span>
-            <span class="text-[9px] text-slate-500 font-mono">Stream Feed</span>
-          </div>
-          <div class="p-2 rounded-xl bg-white/[0.03] border border-white/[0.05] flex items-center justify-between">
-            <div>
-              <div class="text-[11px] font-bold text-white truncate max-w-[130px]">Techne Summit '26</div>
-              <div class="text-[10px] text-slate-400">12,000+ Attendees</div>
+          <div class="mt-2 pt-2 border-t border-white/[0.06] flex items-center justify-between text-xs">
+            <div class="flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span class="text-[11px] font-bold text-slate-300">Live Pulse: 308 Verified</span>
             </div>
-            <div class="flex items-end gap-1 h-5">
-              <span class="w-1.5 h-3 bg-sky-500/60 rounded-full"></span>
-              <span class="w-1.5 h-4 bg-sky-400 rounded-full"></span>
-              <span class="w-1.5 h-2 bg-sky-500/40 rounded-full"></span>
-              <span class="w-1.5 h-5 bg-[#00E5FF] rounded-full"></span>
-            </div>
+            <span class="text-[10px] text-sky-400 font-mono font-semibold">Tanta Hub Active</span>
           </div>
         </div>
 
@@ -431,37 +413,37 @@
     <div class="radar-surface p-4 sm:p-5 space-y-3.5">
       
       <!-- Topic & Category Chip Carousel -->
-      <div class="flex items-center gap-1.5 sm:gap-2 overflow-x-auto pb-1 scrollbar-none text-xs font-semibold select-none" id="topic-chips-carousel">
+      <div class="flex items-center gap-1.5 sm:gap-2 overflow-x-auto py-2 px-1 scrollbar-none text-xs font-semibold select-none" id="topic-chips-carousel">
         <span class="text-[10px] uppercase font-bold text-slate-400 shrink-0 mr-1 flex items-center gap-1">
           <i data-lucide="sparkles" class="w-3 h-3 text-sky-400"></i> Topic:
         </span>
-        <button class="topic-chip active px-3 py-1 rounded-full bg-[#037EF3] text-white border border-[#037EF3] transition active:scale-95 shrink-0 shadow-[0_0_12px_rgba(3,126,243,0.35)]" data-topic="all">
+        <button class="topic-chip active px-3.5 py-1.5 rounded-full bg-[#037EF3] text-white border border-[#037EF3] transition active:scale-95 shrink-0 shadow-[0_0_12px_rgba(3,126,243,0.35)]" data-topic="all">
           All Events
         </button>
-        <button class="topic-chip px-3 py-1 rounded-full bg-white/[0.05] hover:bg-white/[0.1] text-amber-300 border border-amber-500/30 transition active:scale-95 shrink-0" data-topic="Flagship Summits">
+        <button class="topic-chip px-3.5 py-1.5 rounded-full bg-white/[0.05] hover:bg-white/[0.1] text-amber-300 border border-amber-500/30 transition active:scale-95 shrink-0" data-topic="Flagship Summits">
           👑 Flagship Summits
         </button>
-        <button class="topic-chip px-3 py-1 rounded-full bg-white/[0.05] hover:bg-white/[0.1] text-sky-300 border border-sky-500/30 transition active:scale-95 shrink-0" data-topic="Technology">
+        <button class="topic-chip px-3.5 py-1.5 rounded-full bg-white/[0.05] hover:bg-white/[0.1] text-sky-300 border border-sky-500/30 transition active:scale-95 shrink-0" data-topic="Technology">
           💻 Tech & AI
         </button>
-        <button class="topic-chip px-3 py-1 rounded-full bg-white/[0.05] hover:bg-white/[0.1] text-emerald-300 border border-emerald-500/30 transition active:scale-95 shrink-0" data-topic="Career & Business">
+        <button class="topic-chip px-3.5 py-1.5 rounded-full bg-white/[0.05] hover:bg-white/[0.1] text-emerald-300 border border-emerald-500/30 transition active:scale-95 shrink-0" data-topic="Career & Business">
           💼 Career Fairs
         </button>
-        <button class="topic-chip px-3 py-1 rounded-full bg-white/[0.05] hover:bg-white/[0.1] text-purple-300 border border-purple-500/30 transition active:scale-95 shrink-0" data-topic="Youth & Leadership">
+        <button class="topic-chip px-3.5 py-1.5 rounded-full bg-white/[0.05] hover:bg-white/[0.1] text-purple-300 border border-purple-500/30 transition active:scale-95 shrink-0" data-topic="Youth & Leadership">
           🌱 Youth Leadership
         </button>
-        <button class="topic-chip px-3 py-1 rounded-full bg-white/[0.05] hover:bg-white/[0.1] text-rose-300 border border-rose-500/30 transition active:scale-95 shrink-0" data-topic="Startup & Entrepreneurship">
+        <button class="topic-chip px-3.5 py-1.5 rounded-full bg-white/[0.05] hover:bg-white/[0.1] text-rose-300 border border-rose-500/30 transition active:scale-95 shrink-0" data-topic="Startup & Entrepreneurship">
           🚀 Startup Summits
         </button>
-        <button class="topic-chip px-3 py-1 rounded-full bg-white/[0.05] hover:bg-white/[0.1] text-cyan-300 border border-cyan-500/30 transition active:scale-95 shrink-0" data-topic="Engineering & STEM">
+        <button class="topic-chip px-3.5 py-1.5 rounded-full bg-white/[0.05] hover:bg-white/[0.1] text-cyan-300 border border-cyan-500/30 transition active:scale-95 shrink-0" data-topic="Engineering & STEM">
           ⚡ Hackathons & STEM
         </button>
-        <button class="topic-chip px-3 py-1 rounded-full bg-white/[0.05] hover:bg-white/[0.1] text-indigo-300 border border-indigo-500/30 transition active:scale-95 shrink-0" data-topic="Culture & Arts">
+        <button class="topic-chip px-3.5 py-1.5 rounded-full bg-white/[0.05] hover:bg-white/[0.1] text-indigo-300 border border-indigo-500/30 transition active:scale-95 shrink-0" data-topic="Culture & Arts">
           🎭 Cultural Exchange
         </button>
       </div>
 
-      <div class="flex flex-col md:flex-row gap-3 items-center justify-between pt-1 border-t border-white/[0.06]">
+      <div class="flex flex-col md:flex-row gap-3.5 items-center justify-between pt-3 border-t border-white/[0.06]">
         
         <!-- Search Command Bar -->
         <div class="relative w-full md:w-96">
@@ -472,10 +454,10 @@
         </div>
 
         <!-- Sorting & Views -->
-        <div class="flex items-center gap-3 w-full md:w-auto justify-end">
+        <div class="flex items-center gap-3 w-full md:w-auto justify-end flex-wrap">
           <div class="flex items-center gap-2 text-xs font-semibold text-slate-300">
             <span class="text-slate-400">Sort:</span>
-            <select id="select-sort" class="figma-input py-1.5 px-3 rounded-xl text-xs font-semibold cursor-pointer outline-none">
+            <select id="select-sort" class="figma-input py-2 px-3 rounded-xl text-xs font-semibold cursor-pointer outline-none">
               <option value="score_desc">Highest Score to Lowest</option>
               <option value="score_asc">Lowest Score to Highest</option>
               <option value="date_asc">Soonest Date First</option>
@@ -485,10 +467,10 @@
 
           <!-- View Switcher Segmented Control -->
           <div class="flex bg-[#050A16] p-1 rounded-xl border border-white/[0.08]">
-            <button id="btn-view-cards" class="px-3 py-1 text-xs font-bold rounded-lg bg-[#037EF3] text-white shadow-sm flex items-center gap-1.5 transition active:scale-95">
+            <button id="btn-view-cards" class="px-3 py-1.5 text-xs font-bold rounded-lg bg-[#037EF3] text-white shadow-sm flex items-center gap-1.5 transition active:scale-95">
               <i data-lucide="layout-grid" class="w-3.5 h-3.5"></i> Cards
             </button>
-            <button id="btn-view-calendar" class="px-3 py-1 text-xs font-bold rounded-lg text-slate-400 hover:text-white flex items-center gap-1.5 transition active:scale-95">
+            <button id="btn-view-calendar" class="px-3 py-1.5 text-xs font-bold rounded-lg text-slate-400 hover:text-white flex items-center gap-1.5 transition active:scale-95">
               <i data-lucide="calendar-range" class="w-3.5 h-3.5"></i> Conflict Radar
             </button>
           </div>
@@ -496,75 +478,88 @@
       </div>
 
       <!-- Filter Controls & Chips -->
-      <div class="flex flex-wrap items-center gap-2 pt-3 border-t border-white/[0.06] text-xs">
+      <div class="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-white/[0.06] text-xs">
         
-        <!-- City Selector -->
-        <span class="font-bold text-slate-400 mr-1 flex items-center gap-1">
-          <i data-lucide="map-pin" class="w-3.5 h-3.5 text-rose-400"></i> City:
-        </span>
-        <select id="select-city" class="figma-input py-1 px-3 rounded-xl font-medium text-slate-200 mr-2 cursor-pointer outline-none">
-          <option value="all">All Egypt (Nationwide)</option>
-          <option value="tanta">📍 Tanta (Local Hub)</option>
-          <option value="cairo">Cairo</option>
-          <option value="alexandria">Alexandria</option>
-          <option value="giza">Giza</option>
-          <option value="mansoura">Mansoura</option>
-          <option value="assiut">Assiut</option>
-          <option value="hurghada">Hurghada</option>
-        </select>
+        <div class="flex flex-wrap items-center gap-2.5 sm:gap-3">
+          <!-- City Selector -->
+          <div class="flex items-center gap-1.5">
+            <span class="font-bold text-slate-400 flex items-center gap-1">
+              <i data-lucide="map-pin" class="w-3.5 h-3.5 text-rose-400"></i> City:
+            </span>
+            <select id="select-city" class="figma-input py-1.5 px-3 rounded-xl font-medium text-slate-200 cursor-pointer outline-none">
+              <option value="all">All Egypt (Nationwide)</option>
+              <option value="tanta">📍 Tanta (Local Hub)</option>
+              <option value="cairo">Cairo</option>
+              <option value="alexandria">Alexandria</option>
+              <option value="giza">Giza</option>
+              <option value="mansoura">Mansoura</option>
+              <option value="assiut">Assiut</option>
+              <option value="hurghada">Hurghada</option>
+            </select>
+          </div>
 
-        <!-- Category Selector -->
-        <span class="font-bold text-slate-400 mx-1 flex items-center gap-1">
-          <i data-lucide="tag" class="w-3.5 h-3.5 text-amber-400"></i> Category:
-        </span>
-        <select id="select-category" class="figma-input py-1 px-3 rounded-xl font-medium text-slate-200 mr-2 cursor-pointer outline-none">
-          <option value="all">All Categories</option>
-          <option value="Flagship Summits">👑 Flagship Summits (Techne, RiseUp)</option>
-          <option value="Career Fair & Employment">💼 Career Fair & Employment</option>
-          <option value="Technology & Hackathons">💻 Technology & Hackathons</option>
-          <option value="Youth Leadership & Student Orgs">🌱 Youth Leadership & Student Orgs</option>
-          <option value="Arts & Entertainment">🎭 Arts & Entertainment</option>
-        </select>
+          <!-- Category Selector -->
+          <div class="flex items-center gap-1.5">
+            <span class="font-bold text-slate-400 flex items-center gap-1">
+              <i data-lucide="tag" class="w-3.5 h-3.5 text-amber-400"></i> Category:
+            </span>
+            <select id="select-category" class="figma-input py-1.5 px-3 rounded-xl font-medium text-slate-200 cursor-pointer outline-none">
+              <option value="all">All Categories</option>
+              <option value="Flagship Summits">👑 Flagship Summits (Techne, RiseUp)</option>
+              <option value="Career Fair & Employment">💼 Career Fair & Employment</option>
+              <option value="Technology & Hackathons">💻 Technology & Hackathons</option>
+              <option value="Youth Leadership & Student Orgs">🌱 Youth Leadership & Student Orgs</option>
+              <option value="Arts & Entertainment">🎭 Arts & Entertainment</option>
+            </select>
+          </div>
 
-        <!-- Platform Source Selector -->
-        <span class="font-bold text-slate-400 mx-1 flex items-center gap-1">
-          <i data-lucide="layers" class="w-3.5 h-3.5 text-sky-400"></i> Stream:
-        </span>
-        <select id="select-source" class="figma-input py-1 px-3 rounded-xl font-medium text-slate-200 mr-2 cursor-pointer outline-none">
-          <option value="all">All Streams</option>
-          <option value="summit">👑 Flagship Summits</option>
-          <option value="ticketsmarche">🎟️ TicketsMarche</option>
-          <option value="facebook">📘 Facebook Events</option>
-          <option value="linkedin">💼 LinkedIn Announcements</option>
-          <option value="instagram">📸 Instagram Channels</option>
-          <option value="telegram">✈️ Telegram Broadcasts</option>
-          <option value="eventbrite">🎫 Eventbrite</option>
-          <option value="allevents">🌐 AllEvents</option>
-        </select>
-
-        <!-- Priority Chips -->
-        <span class="font-bold text-slate-400 mx-1">Priority:</span>
-        <button class="filter-priority-btn px-3 py-1 rounded-xl font-bold bg-[#037EF3] text-white shadow-[0_0_12px_rgba(3,126,243,0.35)]" data-priority="all">All</button>
-        <button class="filter-priority-btn px-3 py-1 rounded-xl font-medium bg-[#080D1D] text-slate-300 hover:bg-[#111A30] border border-white/[0.08]" data-priority="HIGH">High (≥8.5)</button>
-        <button class="filter-priority-btn px-3 py-1 rounded-xl font-medium bg-[#080D1D] text-slate-300 hover:bg-[#111A30] border border-white/[0.08]" data-priority="MEDIUM">Medium</button>
-        <button class="filter-priority-btn px-3 py-1 rounded-xl font-medium bg-[#080D1D] text-slate-300 hover:bg-[#111A30] border border-white/[0.08]" data-priority="LOW">Low</button>
-
-        <!-- Quick Toggles -->
-        <div class="ml-auto flex items-center gap-3">
-          <label class="flex items-center gap-1.5 cursor-pointer font-semibold text-purple-300 select-none hover:text-purple-200 transition">
-            <input type="checkbox" id="check-partners-only" class="rounded bg-[#080D1D] border-purple-500/40 text-purple-600 focus:ring-0">
-            <span>Youth Orgs (IEEE/Enactus)</span>
-          </label>
-          <label class="flex items-center gap-1.5 cursor-pointer font-semibold text-amber-300 select-none hover:text-amber-200 transition">
-            <input type="checkbox" id="check-clashes-only" class="rounded bg-[#080D1D] border-amber-500/40 text-amber-500 focus:ring-0">
-            <span>Clashes Only</span>
-          </label>
+          <!-- Platform Source Selector -->
+          <div class="flex items-center gap-1.5">
+            <span class="font-bold text-slate-400 flex items-center gap-1">
+              <i data-lucide="layers" class="w-3.5 h-3.5 text-sky-400"></i> Stream:
+            </span>
+            <select id="select-source" class="figma-input py-1.5 px-3 rounded-xl font-medium text-slate-200 cursor-pointer outline-none">
+              <option value="all">All Streams</option>
+              <option value="summit">👑 Flagship Summits</option>
+              <option value="ticketsmarche">🎟️ TicketsMarche</option>
+              <option value="facebook">📘 Facebook Events</option>
+              <option value="linkedin">💼 LinkedIn Announcements</option>
+              <option value="instagram">📸 Instagram Channels</option>
+              <option value="telegram">✈️ Telegram Broadcasts</option>
+              <option value="eventbrite">🎫 Eventbrite</option>
+              <option value="allevents">🌐 AllEvents</option>
+            </select>
+          </div>
         </div>
+
+        <div class="flex flex-wrap items-center gap-3">
+          <!-- Priority Chips -->
+          <div class="flex items-center gap-1.5">
+            <span class="font-bold text-slate-400 mr-0.5">Priority:</span>
+            <button class="filter-priority-btn px-3 py-1 rounded-xl font-bold bg-[#037EF3] text-white shadow-[0_0_12px_rgba(3,126,243,0.35)]" data-priority="all">All</button>
+            <button class="filter-priority-btn px-3 py-1 rounded-xl font-medium bg-[#080D1D] text-slate-300 hover:bg-[#111A30] border border-white/[0.08]" data-priority="HIGH">High</button>
+            <button class="filter-priority-btn px-3 py-1 rounded-xl font-medium bg-[#080D1D] text-slate-300 hover:bg-[#111A30] border border-white/[0.08]" data-priority="MEDIUM">Medium</button>
+            <button class="filter-priority-btn px-3 py-1 rounded-xl font-medium bg-[#080D1D] text-slate-300 hover:bg-[#111A30] border border-white/[0.08]" data-priority="LOW">Low</button>
+          </div>
+
+          <!-- Quick Toggles -->
+          <div class="flex items-center gap-3 border-l border-white/10 pl-3">
+            <label class="flex items-center gap-1.5 cursor-pointer font-semibold text-purple-300 select-none hover:text-purple-200 transition">
+              <input type="checkbox" id="check-partners-only" class="rounded bg-[#080D1D] border-purple-500/40 text-purple-600 focus:ring-0">
+              <span>Youth Orgs</span>
+            </label>
+            <label class="flex items-center gap-1.5 cursor-pointer font-semibold text-amber-300 select-none hover:text-amber-200 transition">
+              <input type="checkbox" id="check-clashes-only" class="rounded bg-[#080D1D] border-amber-500/40 text-amber-500 focus:ring-0">
+              <span>Clashes</span>
+            </label>
+          </div>
+        </div>
+
       </div>
     </div>
 
     <!-- View A: Event Cards Grid -->
-    <div id="container-cards" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+    <div id="container-cards" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <!-- Dynamically rendered by app.js -->
     </div>
 

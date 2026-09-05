@@ -20,6 +20,22 @@ from .scrapers import (
 logger = logging.getLogger(__name__)
 
 
+def normalize_event_url(url: str) -> str:
+    """Strip query parameters and anchors for canonical URL matching."""
+    if not url:
+        return ""
+    return url.split("?")[0].split("#")[0].rstrip("/").lower()
+
+
+def are_dates_compatible(d1: Optional[datetime], d2: Optional[datetime]) -> bool:
+    """Check if two event dates are within a 4-day proximity window or both TBA."""
+    if not d1 and not d2:
+        return True
+    if not d1 or not d2:
+        return True
+    return abs((d1 - d2).total_seconds()) <= (4 * 86400)
+
+
 def clean_title_for_comparison(title: str) -> str:
     """Normalize event title for deduplication comparison."""
     cleaned = re.sub(r"[^\w\s]", "", title.lower())
@@ -152,24 +168,73 @@ class EventPipeline:
         return valid
 
     def _deduplicate(self, events: List[EventRecord]) -> List[EventRecord]:
-        """Merge identical events appearing across multiple platforms using cryptographic fingerprinting."""
+        """
+        Merge identical events appearing across multiple platforms or scraped
+        under multiple city queries using multi-layer identity resolution:
+        1. Exact event_id match.
+        2. Canonical URL match.
+        3. Token-normalized title match within 4-day date proximity.
+        """
         unique: List[EventRecord] = []
-        seen_signatures: Dict[str, EventRecord] = {}
+        seen_ids: Dict[str, EventRecord] = {}
+        seen_urls: Dict[str, EventRecord] = {}
+        seen_title_buckets: List[Dict] = []
 
         for ev in events:
-            date_part = ev.start_date.strftime("%Y-%m-%d") if ev.start_date else "tba"
-            sig = compute_event_fingerprint(ev.title, ev.city, date_part)
+            # Drop invalid, blank, or placeholder events
+            title_clean = (ev.title or "").strip()
+            if not title_clean or len(title_clean) < 3 or title_clean.lower() in ["null", "none", "event", "untitled"]:
+                continue
 
-            if sig in seen_signatures:
-                existing = seen_signatures[sig]
-                if ev.source not in existing.source:
-                    existing.source = f"{existing.source}, {ev.source}"
-                if len(ev.description) > len(existing.description):
-                    existing.description = ev.description
-                if ev.parallel_org and not existing.parallel_org:
-                    existing.parallel_org = ev.parallel_org
+            matched_existing: Optional[EventRecord] = None
+
+            # 1. Match by exact event_id
+            if ev.event_id and ev.event_id in seen_ids:
+                matched_existing = seen_ids[ev.event_id]
+
+            # 2. Match by canonical URL
+            canon_url = normalize_event_url(ev.url)
+            if not matched_existing and canon_url and canon_url in seen_urls:
+                matched_existing = seen_urls[canon_url]
+
+            # 3. Match by normalized title tokens + date window
+            norm_title = clean_title_for_comparison(title_clean)
+            if not matched_existing and len(norm_title) >= 4:
+                for bucket in seen_title_buckets:
+                    if norm_title == bucket["norm_title"] and are_dates_compatible(ev.start_date, bucket["start_date"]):
+                        matched_existing = bucket["record"]
+                        break
+
+            if matched_existing:
+                # Merge intelligence
+                if ev.source and ev.source not in matched_existing.source:
+                    matched_existing.source = f"{matched_existing.source}, {ev.source}"
+                if len(ev.description or "") > len(matched_existing.description or ""):
+                    matched_existing.description = ev.description
+                if ev.parallel_org and not matched_existing.parallel_org:
+                    matched_existing.parallel_org = ev.parallel_org
+                # Prioritize specific city over general "Egypt"
+                if matched_existing.city.lower() in ["egypt", "all egypt", "nationwide"] and ev.city.lower() not in ["egypt", "all egypt", "nationwide"]:
+                    matched_existing.city = ev.city
+                # Keep highest B2C score
+                if (ev.b2c_score or 0) > (matched_existing.b2c_score or 0):
+                    matched_existing.b2c_score = ev.b2c_score
+                    matched_existing.b2c_priority = ev.b2c_priority
+                # Union tags
+                existing_tags_set = set(t.lower() for t in matched_existing.aiesec_tags)
+                for t in ev.aiesec_tags:
+                    if t.lower() not in existing_tags_set:
+                        matched_existing.aiesec_tags.append(t)
+                        existing_tags_set.add(t.lower())
             else:
-                seen_signatures[sig] = ev
+                seen_ids[ev.event_id] = ev
+                if canon_url:
+                    seen_urls[canon_url] = ev
+                seen_title_buckets.append({
+                    "norm_title": norm_title,
+                    "start_date": ev.start_date,
+                    "record": ev
+                })
                 unique.append(ev)
 
         return unique
