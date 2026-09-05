@@ -1,6 +1,6 @@
 /**
  * AIESEC in Tanta - B2C Event Radar & Command Center
- * Frontend Controller with Dynamic Telemetry & Non-AI Bespoke Aesthetics
+ * Frontend Controller with Fluid Physics, Dynamic Telemetry & World-Class SaaS Aesthetics
  */
 
 let state = {
@@ -52,30 +52,52 @@ const scrapeIcon = document.getElementById("scrape-icon");
 
 // --- Initialization ---
 document.addEventListener("DOMContentLoaded", () => {
-  initMouseLighting();
+  initSmoothMouseLighting();
   initLiveClock();
   setupEventListeners();
   fetchEvents();
   if (window.lucide) lucide.createIcons();
 });
 
-// Dynamic Ambient Cursor Lighting
-function initMouseLighting() {
+// Hardware-Accelerated Fluid Ambient Cursor Lighting with rAF
+function initSmoothMouseLighting() {
+  let targetX = 50;
+  let targetY = 20;
+  let currentX = 50;
+  let currentY = 20;
+  let ticking = false;
+
   window.addEventListener("mousemove", (e) => {
-    const x = Math.round((e.clientX / window.innerWidth) * 100);
-    const y = Math.round((e.clientY / window.innerHeight) * 100);
-    document.documentElement.style.setProperty("--mouse-x", `${x}%`);
-    document.documentElement.style.setProperty("--mouse-y", `${y}%`);
-  });
+    targetX = Math.round((e.clientX / window.innerWidth) * 100);
+    targetY = Math.round((e.clientY / window.innerHeight) * 100);
+
+    if (!ticking) {
+      window.requestAnimationFrame(() => {
+        // Smooth lerp damping for organic fluid feel
+        currentX += (targetX - currentX) * 0.18;
+        currentY += (targetY - currentY) * 0.18;
+        document.documentElement.style.setProperty("--mouse-x", `${currentX.toFixed(1)}%`);
+        document.documentElement.style.setProperty("--mouse-y", `${currentY.toFixed(1)}%`);
+        ticking = false;
+      });
+      ticking = true;
+    }
+  }, { passive: true });
 }
 
-// Live Cairo Time Clock
+// Live Cairo Time Clock (Africa/Cairo timezone)
 function initLiveClock() {
   const el = document.getElementById("live-clock");
   if (!el) return;
   function tick() {
     const now = new Date();
-    const timeStr = now.toLocaleTimeString("en-US", { timeZone: "Africa/Cairo", hour: "2-digit", minute: "2-digit", second: "2-digit" });
+    const timeStr = now.toLocaleTimeString("en-US", { 
+      timeZone: "Africa/Cairo", 
+      hour: "2-digit", 
+      minute: "2-digit", 
+      second: "2-digit",
+      hour12: true 
+    });
     el.innerText = `Cairo: ${timeStr}`;
   }
   tick();
@@ -83,14 +105,14 @@ function initLiveClock() {
 }
 
 function setupEventListeners() {
-  // Search typing with debounce
+  // Search typing with smooth debounce
   let searchTimeout = null;
   inputSearch.addEventListener("input", (e) => {
     clearTimeout(searchTimeout);
     searchTimeout = setTimeout(() => {
       state.search = e.target.value.trim();
       fetchEvents();
-    }, 250);
+    }, 200);
   });
 
   // Sorting
@@ -141,7 +163,7 @@ function setupEventListeners() {
   document.querySelectorAll(".filter-priority-btn").forEach((btn) => {
     btn.addEventListener("click", () => {
       document.querySelectorAll(".filter-priority-btn").forEach((b) => {
-        b.className = "filter-priority-btn px-3 py-1 rounded-xl font-medium bg-[#0C1427] text-slate-300 hover:bg-[#13203C] border border-white/[0.08]";
+        b.className = "filter-priority-btn px-3 py-1 rounded-xl font-medium bg-[#080D1D] text-slate-300 hover:bg-[#111A30] border border-white/[0.08]";
       });
       btn.className = "filter-priority-btn px-3 py-1 rounded-xl font-bold bg-[#037EF3] text-white shadow-[0_0_12px_rgba(3,126,243,0.35)]";
       state.priority = btn.dataset.priority;
@@ -157,7 +179,7 @@ function setupEventListeners() {
         if (b.dataset.priority === "HIGH") {
           b.className = "filter-priority-btn px-3 py-1 rounded-xl font-bold bg-[#037EF3] text-white shadow-[0_0_12px_rgba(3,126,243,0.35)]";
         } else {
-          b.className = "filter-priority-btn px-3 py-1 rounded-xl font-medium bg-[#0C1427] text-slate-300 hover:bg-[#13203C] border border-white/[0.08]";
+          b.className = "filter-priority-btn px-3 py-1 rounded-xl font-medium bg-[#080D1D] text-slate-300 hover:bg-[#111A30] border border-white/[0.08]";
         }
       });
       fetchEvents();
@@ -245,12 +267,8 @@ async function fetchEvents() {
     if (elTotal) elTotal.innerText = data.metrics.total_events;
     const elHigh = document.getElementById("stat-high");
     if (elHigh) elHigh.innerText = data.metrics.high_priority;
-    const elTm = document.getElementById("stat-tm-count");
-    if (elTm) elTm.innerText = data.metrics.ticketsmarche_count || 49;
     const elFlagship = document.getElementById("stat-flagship-count");
     if (elFlagship) elFlagship.innerText = data.metrics.flagship_count || 10;
-    const elSocial = document.getElementById("stat-social-count");
-    if (elSocial) elSocial.innerText = data.metrics.social_count || 24;
 
     renderCards();
     if (state.activeView === "calendar") {
@@ -284,7 +302,7 @@ function getSourcePill(source) {
     return `<span class="source-pill-ticketsmarche px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wide inline-flex items-center gap-1"><i data-lucide="ticket" class="w-3 h-3"></i> TicketsMarche</span>`;
   }
   if (s.includes("summit") || s.includes("techne") || s.includes("flagship")) {
-    return `<span class="source-pill-summit px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wide inline-flex items-center gap-1"><i data-lucide="sparkles" class="w-3 h-3"></i> Egypt Summit</span>`;
+    return `<span class="source-pill-summit px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wide inline-flex items-center gap-1"><i data-lucide="crown" class="w-3 h-3"></i> Flagship Summit</span>`;
   }
   if (s.includes("linkedin")) {
     return `<span class="source-pill-linkedin px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wide inline-flex items-center gap-1"><i data-lucide="briefcase" class="w-3 h-3"></i> LinkedIn</span>`;
@@ -312,19 +330,18 @@ function renderCards() {
     containerCards.innerHTML = `
       <div class="col-span-full radar-surface p-12 text-center">
         <i data-lucide="inbox" class="w-12 h-12 text-slate-500 mx-auto mb-3"></i>
-        <h3 class="text-sm font-bold text-slate-200">No matching campus events found</h3>
-        <p class="text-xs text-slate-400 mt-1">Try broadening your search term, switching city to 'All Egypt', or changing stream filters.</p>
+        <h3 class="text-sm font-bold text-slate-200 font-display">No matching campus events found</h3>
+        <p class="text-xs text-slate-400 mt-1">Try broadening your search term, switching city to 'All Egypt', or resetting filters.</p>
       </div>
     `;
     if (window.lucide) lucide.createIcons();
     return;
   }
 
-  state.events.forEach((ev) => {
+  state.events.forEach((ev, idx) => {
     const card = document.createElement("div");
     const isHigh = ev.b2c_priority === "HIGH";
     const isFlagship = (ev.category && ev.category.toLowerCase().includes("flagship")) || ev.source.toLowerCase().includes("summit") || ev.title.toLowerCase().includes("techne") || ev.title.toLowerCase().includes("riseup");
-    const isSummit = ev.source.toLowerCase().includes("summit");
     const hasPartner = !!ev.parallel_org;
     const hasClash = ev.clash_warning;
 
@@ -363,45 +380,45 @@ function renderCards() {
 
         <!-- Title Block with Physical Tear-Off Date Badge -->
         <div class="flex items-start gap-3 pt-1">
-          <div class="date-tearoff-badge shrink-0">
+          <div class="date-tearoff-badge shrink-0" title="${ev.date_display || 'Date TBA'}">
             <span class="date-tearoff-month">${dateBadge.month}</span>
             <span class="date-tearoff-day">${dateBadge.day}</span>
           </div>
 
           <div class="flex-1 min-w-0">
-            <h3 class="font-extrabold text-base text-white leading-snug line-clamp-2 hover:text-[#00E5FF] transition group">
+            <h3 class="font-extrabold text-base text-white leading-snug line-clamp-2 hover:text-[#00E5FF] transition group font-display">
               <a href="${ev.url}" target="_blank" class="group-hover:underline underline-offset-2">${ev.title}</a>
             </h3>
             <div class="mt-1.5 space-y-1 text-xs text-slate-400">
               <div class="flex items-center gap-1.5 truncate">
                 <i data-lucide="map-pin" class="w-3.5 h-3.5 text-rose-400 shrink-0"></i>
-                <span class="truncate">${ev.location} • <strong class="text-slate-200">${ev.city}</strong></span>
+                <span class="truncate">${ev.location} • <strong class="text-slate-200 font-semibold">${ev.city}</strong></span>
               </div>
               <div class="flex items-center gap-1.5 text-slate-400 truncate">
                 <i data-lucide="calendar" class="w-3.5 h-3.5 text-sky-400 shrink-0"></i>
                 <span class="truncate">${ev.date_display || "Date TBA"}</span>
-                ${ev.ticket_type ? `<span class="text-slate-500">•</span><span class="text-slate-300 font-medium">${ev.ticket_type}</span>` : ""}
+                ${ev.ticket_type ? `<span class="text-slate-600">•</span><span class="text-slate-300 font-medium">${ev.ticket_type}</span>` : ""}
               </div>
             </div>
           </div>
         </div>
 
         <!-- Specific Event Intelligence Briefing Box -->
-        <div class="event-desc-box p-3 text-xs bg-[#080E1D]/90 border border-white/[0.08] rounded-2xl shadow-inner space-y-1">
+        <div class="event-desc-box p-3 text-xs space-y-1">
           <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center justify-between">
             <span class="flex items-center gap-1.5 text-sky-400">
               <i data-lucide="file-text" class="w-3.5 h-3.5"></i> Event Intelligence Briefing
             </span>
-            <span class="text-[9px] text-slate-500 font-mono font-medium tracking-tight">Granular Details</span>
+            <span class="text-[9px] text-slate-500 font-mono-code font-medium">Granular Details</span>
           </div>
-          <p class="text-slate-300 text-[11px] leading-relaxed line-clamp-3 hover:line-clamp-none transition-all duration-300 cursor-pointer" title="Click or hover to expand full briefing">
+          <p class="text-slate-300 text-[11px] leading-relaxed line-clamp-3 hover:line-clamp-none transition-all duration-300 cursor-pointer" title="Hover to view full briefing">
             ${ev.description || "No specific briefing available."}
           </p>
         </div>
 
         <!-- AIESEC Strategic Recommendation Callout Box -->
         <div class="dark-action-box p-3 text-xs">
-          <div class="text-[10px] font-bold text-[#00E5FF] uppercase tracking-wider mb-1 flex items-center gap-1.5">
+          <div class="text-[10px] font-bold text-[#00E5FF] uppercase tracking-wider mb-1 flex items-center gap-1.5 font-display">
             <i data-lucide="zap" class="w-3.5 h-3.5 text-[#00E5FF]"></i> Recommended B2C Action
           </div>
           <div class="font-medium text-slate-200 leading-relaxed text-[11px]">
@@ -416,7 +433,7 @@ function renderCards() {
                 data-event-id="${ev.event_id}">
           <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Outreach Pitch
         </button>
-        <a href="${ev.url}" target="_blank" class="p-2 text-slate-400 hover:text-white rounded-xl hover:bg-white/[0.08] border border-white/[0.09] transition active:scale-95" title="Open Event Source">
+        <a href="${ev.url}" target="_blank" class="p-2 text-slate-400 hover:text-white rounded-xl hover:bg-white/[0.08] border border-white/[0.09] transition active:scale-95" title="Open Event Link">
           <i data-lucide="external-link" class="w-4 h-4"></i>
         </a>
       </div>
@@ -432,7 +449,7 @@ function renderCards() {
   if (window.lucide) lucide.createIcons();
 }
 
-// --- Render Calendar & Clash Heatmap ---
+// --- Render Calendar & Conflict Radar ---
 function renderCalendarView() {
   calendarTimeline.innerHTML = "";
 
@@ -447,12 +464,12 @@ function renderCalendarView() {
   Object.entries(groups).slice(0, 15).forEach(([dateStr, eventList]) => {
     const isClashDate = eventList.length > 1;
     const groupBlock = document.createElement("div");
-    groupBlock.className = `p-4 rounded-2xl border ${isClashDate ? "bg-amber-950/20 border-amber-500/35 shadow-[0_0_20px_rgba(245,158,11,0.12)]" : "bg-[#0A101F]/80 border-white/[0.08]"}`;
+    groupBlock.className = `p-4 rounded-2xl border ${isClashDate ? "bg-amber-950/20 border-amber-500/35 shadow-[0_0_20px_rgba(245,158,11,0.12)]" : "bg-[#0A1020]/80 border-white/[0.08]"}`;
 
     let eventsHtml = eventList.map(e => `
       <div class="py-2.5 flex items-center justify-between border-b border-white/[0.06] last:border-0 gap-4">
         <div>
-          <div class="font-bold text-xs text-white flex items-center gap-2">
+          <div class="font-bold text-xs text-white flex items-center gap-2 font-display">
             <span>${e.title}</span>
             <span class="text-[10px] ${e.b2c_priority === 'HIGH' ? 'badge-neon-coral' : 'badge-neon-blue'} px-2 py-0.5 rounded-full font-bold">★ ${e.b2c_score.toFixed(1)}</span>
             <span class="text-[10px] bg-white/[0.06] text-slate-400 px-2 py-0.5 rounded-md font-medium">${e.source}</span>
@@ -467,7 +484,7 @@ function renderCalendarView() {
 
     groupBlock.innerHTML = `
       <div class="flex items-center justify-between mb-2 pb-2 border-b border-white/[0.06]">
-        <h4 class="text-xs font-bold text-slate-200 flex items-center gap-2">
+        <h4 class="text-xs font-bold text-slate-200 flex items-center gap-2 font-display">
           <i data-lucide="calendar" class="w-4 h-4 text-[#00E5FF]"></i>
           <span>${dateStr}</span>
         </h4>
@@ -493,7 +510,7 @@ window.openPitchById = function(eventId) {
 // --- Modal Logic ---
 function openPitchModal(event) {
   state.activePitchEvent = event;
-  pitchEventSubtitle.innerText = `Event: ${event.title} (${event.city})`;
+  pitchEventSubtitle.innerText = `Target Event: ${event.title} (${event.city})`;
   const briefingEl = document.getElementById("pitch-event-desc-text");
   if (briefingEl) {
     briefingEl.innerText = event.description || "No specific briefing available for this event.";
@@ -575,7 +592,7 @@ async function handleSyncSheets() {
     if (data.status === "synced") {
       showToast(`Synced ${data.rows_synced} events to Sheets!`, "success");
     } else {
-      showToast("Sheets sync skipped (Credentials not set)", "info");
+      showToast("Sheets sync skipped (Credentials not configured)", "info");
     }
   } catch (err) {
     showToast("Error syncing to Sheets", "error");
@@ -628,7 +645,7 @@ async function handleScrapeNow() {
   }
 }
 
-// --- Toast Feedback ---
+// --- Toast Feedback with Smooth Physics ---
 function showToast(message, type = "info") {
   const toast = document.getElementById("toast");
   const msg = document.getElementById("toast-message");
