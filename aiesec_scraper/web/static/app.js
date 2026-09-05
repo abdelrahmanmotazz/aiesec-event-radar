@@ -76,9 +76,9 @@ function setupEventListeners() {
   document.querySelectorAll(".filter-priority-btn").forEach((btn) => {
     btn.addEventListener("click", () => {
       document.querySelectorAll(".filter-priority-btn").forEach((b) => {
-        b.className = "filter-priority-btn px-3 py-1 rounded-lg font-medium bg-[#0F1D36] text-slate-300 hover:bg-[#162A4E] border border-slate-700/60";
+        b.className = "filter-priority-btn px-3 py-1 rounded-xl font-medium bg-[#0E1626] text-slate-300 hover:bg-[#152037] border border-white/[0.08]";
       });
-      btn.className = "filter-priority-btn px-3 py-1 rounded-lg font-bold bg-[#037EF3] text-white shadow-[0_0_10px_rgba(3,126,243,0.3)]";
+      btn.className = "filter-priority-btn px-3 py-1 rounded-xl font-bold bg-[#037EF3] text-white shadow-[0_0_12px_rgba(3,126,243,0.35)]";
       state.priority = btn.dataset.priority;
       fetchEvents();
     });
@@ -93,6 +93,18 @@ function setupEventListeners() {
   checkClashesOnly.addEventListener("change", (e) => {
     state.clashesOnly = e.target.checked;
     fetchEvents();
+  });
+
+  // Global Keyboard Shortcuts (Figma/Linear style)
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "/" && document.activeElement !== inputSearch && document.activeElement.tagName !== "INPUT" && document.activeElement.tagName !== "TEXTAREA") {
+      e.preventDefault();
+      inputSearch.focus();
+      inputSearch.select();
+    }
+    if (e.key === "Escape" && !pitchModal.classList.contains("hidden")) {
+      closePitchModal();
+    }
   });
 
   // View Switcher
@@ -118,13 +130,13 @@ function switchView(view) {
   if (view === "cards") {
     containerCards.classList.remove("hidden");
     containerCalendar.classList.add("hidden");
-    btnViewCards.className = "px-3 py-1 text-xs font-bold rounded-md bg-[#037EF3] text-white shadow-sm flex items-center gap-1 transition";
-    btnViewCalendar.className = "px-3 py-1 text-xs font-bold rounded-md text-slate-400 hover:text-white flex items-center gap-1 transition";
+    btnViewCards.className = "px-3 py-1 text-xs font-bold rounded-lg bg-[#037EF3] text-white shadow-sm flex items-center gap-1.5 transition active:scale-95";
+    btnViewCalendar.className = "px-3 py-1 text-xs font-bold rounded-lg text-slate-400 hover:text-white flex items-center gap-1.5 transition active:scale-95";
   } else {
     containerCards.classList.add("hidden");
     containerCalendar.classList.remove("hidden");
-    btnViewCalendar.className = "px-3 py-1 text-xs font-bold rounded-md bg-[#037EF3] text-white shadow-sm flex items-center gap-1 transition";
-    btnViewCards.className = "px-3 py-1 text-xs font-bold rounded-md text-slate-400 hover:text-white flex items-center gap-1 transition";
+    btnViewCalendar.className = "px-3 py-1 text-xs font-bold rounded-lg bg-[#037EF3] text-white shadow-sm flex items-center gap-1.5 transition active:scale-95";
+    btnViewCards.className = "px-3 py-1 text-xs font-bold rounded-lg text-slate-400 hover:text-white flex items-center gap-1.5 transition active:scale-95";
     renderCalendarView();
   }
   lucide.createIcons();
@@ -168,8 +180,8 @@ function renderCards() {
 
   if (state.events.length === 0) {
     containerCards.innerHTML = `
-      <div class="col-span-full aiesec-card-dark p-12 rounded-xl text-center border border-slate-800">
-        <i data-lucide="inbox" class="w-10 h-10 text-slate-600 mx-auto mb-2"></i>
+      <div class="col-span-full figma-surface p-12 rounded-2xl text-center">
+        <i data-lucide="inbox" class="w-10 h-10 text-slate-500 mx-auto mb-2"></i>
         <h3 class="text-sm font-bold text-slate-200">No matching events found</h3>
         <p class="text-xs text-slate-400 mt-1">Try broadening your search or switching filters.</p>
       </div>
@@ -184,41 +196,41 @@ function renderCards() {
     const hasPartner = !!ev.parallel_org;
     const hasClash = ev.clash_warning;
 
-    card.className = `aiesec-card-dark p-5 flex flex-col justify-between ${isHigh ? "card-high-glow" : (hasPartner ? "card-partner-glow" : "")}`;
+    card.className = `figma-card p-5 flex flex-col justify-between ${isHigh ? "card-high-glow" : (hasPartner ? "card-partner-glow" : "")}`;
 
     // Priority badge class
     const badgeClass = isHigh ? "badge-neon-coral" : (ev.b2c_priority === "MEDIUM" ? "badge-neon-amber" : "badge-neon-slate");
 
     card.innerHTML = `
-      <div class="space-y-3">
+      <div class="space-y-3.5">
         <!-- Top Tags Bar -->
         <div class="flex items-center justify-between gap-2">
           <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold ${badgeClass}">
             ★ ${ev.b2c_score.toFixed(1)} ${ev.b2c_priority}
           </span>
           <div class="flex items-center gap-1.5 flex-wrap justify-end">
-            ${hasPartner ? `<span class="badge-neon-purple px-2 py-0.5 rounded-full text-[10px] font-bold">${ev.parallel_org}</span>` : ""}
-            ${hasClash ? `<span class="badge-neon-amber px-2 py-0.5 rounded-full text-[10px] font-bold">⚠️ Weekend Clash</span>` : ""}
-            <span class="text-[10px] bg-slate-800/80 text-slate-400 border border-slate-700/50 px-2 py-0.5 rounded font-medium">${ev.source}</span>
+            ${hasPartner ? `<span class="badge-neon-purple px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wide">${ev.parallel_org}</span>` : ""}
+            ${hasClash ? `<span class="badge-neon-amber px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wide">⚠️ Weekend Clash</span>` : ""}
+            <span class="text-[10px] bg-white/[0.05] text-slate-400 border border-white/[0.08] px-2 py-0.5 rounded-md font-medium">${ev.source}</span>
           </div>
         </div>
 
         <!-- Title & Location -->
         <div>
-          <h3 class="font-bold text-sm text-white leading-snug line-clamp-2 hover:text-[#38BDF8] transition">
-            <a href="${ev.url}" target="_blank">${ev.title}</a>
+          <h3 class="font-bold text-sm sm:text-base text-white leading-snug line-clamp-2 hover:text-[#38BDF8] transition group">
+            <a href="${ev.url}" target="_blank" class="group-hover:underline underline-offset-2">${ev.title}</a>
           </h3>
           <div class="mt-2.5 space-y-1.5 text-xs text-slate-400">
-            <div class="flex items-center gap-1.5">
+            <div class="flex items-center gap-2">
               <i data-lucide="calendar" class="w-3.5 h-3.5 text-sky-400 shrink-0"></i>
               <span class="truncate text-slate-300 font-medium">${ev.date_display || "Date TBA"}</span>
             </div>
-            <div class="flex items-center gap-1.5">
+            <div class="flex items-center gap-2">
               <i data-lucide="map-pin" class="w-3.5 h-3.5 text-rose-400 shrink-0"></i>
               <span class="truncate">${ev.location} • <strong class="text-white">${ev.city}</strong></span>
             </div>
             ${ev.organizer && ev.organizer !== "Unknown" ? `
-            <div class="flex items-center gap-1.5">
+            <div class="flex items-center gap-2">
               <i data-lucide="building" class="w-3.5 h-3.5 text-purple-400 shrink-0"></i>
               <span class="truncate text-slate-300">${ev.organizer}</span>
             </div>` : ""}
@@ -227,23 +239,23 @@ function renderCards() {
 
         <!-- AIESEC Recommendation Box -->
         <div class="dark-action-box p-3 text-xs">
-          <div class="text-[10px] font-bold text-[#38BDF8] uppercase tracking-wider mb-1 flex items-center gap-1">
-            <i data-lucide="zap" class="w-3 h-3"></i> Recommended B2C Action
+          <div class="text-[10px] font-bold text-[#38BDF8] uppercase tracking-wider mb-1 flex items-center gap-1.5">
+            <i data-lucide="zap" class="w-3.5 h-3.5"></i> Recommended B2C Action
           </div>
-          <div class="font-medium text-slate-200">
+          <div class="font-medium text-slate-200 leading-relaxed">
             ${ev.recommended_action}
           </div>
         </div>
       </div>
 
       <!-- Action Footer -->
-      <div class="pt-3 mt-3 border-t border-slate-800/70 flex items-center justify-between gap-2">
-        <button class="btn-pitch-event flex-1 py-1.5 px-3 bg-[#037EF3]/20 hover:bg-[#037EF3] text-[#38BDF8] hover:text-white rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 border border-[#38BDF8]/30 hover:border-transparent shadow-[0_0_10px_rgba(3,126,243,0.15)]"
+      <div class="pt-3 mt-3 border-t border-white/[0.07] flex items-center justify-between gap-2">
+        <button class="btn-pitch-event flex-1 py-2 px-3 bg-gradient-to-r from-[#037EF3]/20 to-[#0266C8]/20 hover:from-[#037EF3] hover:to-[#0266C8] text-[#38BDF8] hover:text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 border border-[#38BDF8]/30 hover:border-transparent shadow-[0_0_12px_rgba(3,126,243,0.15)] active:scale-95"
                 data-event-id="${ev.event_id}">
           <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Outreach Pitch
         </button>
-        <a href="${ev.url}" target="_blank" class="p-2 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800/60 border border-slate-700/40 transition" title="View Source">
-          <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+        <a href="${ev.url}" target="_blank" class="p-2 text-slate-400 hover:text-white rounded-xl hover:bg-white/[0.08] border border-white/[0.08] transition active:scale-95" title="View Source">
+          <i data-lucide="external-link" class="w-4 h-4"></i>
         </a>
       </div>
     `;
@@ -273,10 +285,10 @@ function renderCalendarView() {
   Object.entries(groups).slice(0, 15).forEach(([dateStr, eventList]) => {
     const isClashDate = eventList.length > 1;
     const groupBlock = document.createElement("div");
-    groupBlock.className = `p-4 rounded-xl border ${isClashDate ? "bg-amber-950/20 border-amber-500/40 shadow-[0_0_15px_rgba(245,158,11,0.1)]" : "bg-[#0B1528]/80 border-slate-800"}`;
+    groupBlock.className = `p-4 rounded-2xl border ${isClashDate ? "bg-amber-950/20 border-amber-500/35 shadow-[0_0_20px_rgba(245,158,11,0.12)]" : "bg-[#0B111F]/80 border-white/[0.08]"}`;
 
     let eventsHtml = eventList.map(e => `
-      <div class="py-2.5 flex items-center justify-between border-b border-slate-800/60 last:border-0 gap-4">
+      <div class="py-2.5 flex items-center justify-between border-b border-white/[0.06] last:border-0 gap-4">
         <div>
           <div class="font-bold text-xs text-white flex items-center gap-2">
             <span>${e.title}</span>
@@ -284,21 +296,21 @@ function renderCalendarView() {
           </div>
           <div class="text-[11px] text-slate-400 mt-0.5">${e.location} (<span class="text-slate-200 font-medium">${e.city}</span>) • <span class="text-[#38BDF8]">${e.recommended_action}</span></div>
         </div>
-        <button class="text-xs bg-[#037EF3]/20 hover:bg-[#037EF3] text-[#38BDF8] hover:text-white border border-[#38BDF8]/40 px-3 py-1 rounded-lg font-bold shrink-0 transition" onclick="openPitchById('${e.event_id}')">
+        <button class="text-xs bg-sky-500/15 hover:bg-sky-500 text-sky-300 hover:text-white border border-sky-500/30 px-3 py-1.5 rounded-xl font-bold shrink-0 transition active:scale-95" onclick="openPitchById('${e.event_id}')">
           Pitch
         </button>
       </div>
     `).join("");
 
     groupBlock.innerHTML = `
-      <div class="flex items-center justify-between mb-2 pb-2 border-b border-slate-800/50">
+      <div class="flex items-center justify-between mb-2 pb-2 border-b border-white/[0.06]">
         <h4 class="text-xs font-bold text-slate-200 flex items-center gap-2">
           <i data-lucide="calendar" class="w-4 h-4 text-[#38BDF8]"></i>
           <span>${dateStr}</span>
         </h4>
-        ${isClashDate ? `<span class="badge-neon-amber text-[10px] font-bold px-2 py-0.5 rounded-full">⚠️ Clash: ${eventList.length} Events Competing</span>` : ""}
+        ${isClashDate ? `<span class="badge-neon-amber text-[10px] font-bold px-2.5 py-0.5 rounded-full">⚠️ Clash: ${eventList.length} Events Competing</span>` : ""}
       </div>
-      <div class="divide-y divide-slate-800/60">
+      <div class="divide-y divide-white/[0.06]">
         ${eventsHtml}
       </div>
     `;
