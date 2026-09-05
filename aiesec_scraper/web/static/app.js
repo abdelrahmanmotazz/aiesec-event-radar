@@ -753,6 +753,7 @@ async function fetchEvents() {
     const res = await fetch(`/api/events?${params}`);
     if (!res.ok) throw new Error(`HTTP error ${res.status}`);
     const data = await res.json();
+    if (!data || !data.events) throw new Error("Static JSON payload returned");
     state.events = data.events;
 
     // Animate KPI Telemetry HUD with GSAP counter interpolation
