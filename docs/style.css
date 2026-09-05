@@ -561,3 +561,84 @@ body::before {
   border-radius: 9999px;
 }
 
+/* ============================================================
+   DYNAMIC THEME ACCENT OVERRIDES
+   ============================================================ */
+:root[data-theme="gold"] {
+  --aiesec-blue: #F59E0B;
+  --aiesec-blue-glow: #FBBF24;
+}
+:root[data-theme="cyan"] {
+  --aiesec-blue: #00E5FF;
+  --aiesec-blue-glow: #38BDF8;
+}
+:root[data-theme="coral"] {
+  --aiesec-blue: #FF4D36;
+  --aiesec-blue-glow: #FB7185;
+}
+:root[data-theme="emerald"] {
+  --aiesec-blue: #10B981;
+  --aiesec-blue-glow: #34D399;
+}
+
+/* ============================================================
+   TOPIC CHIPS HORIZONTAL CAROUSEL
+   ============================================================ */
+#topic-chips-carousel::-webkit-scrollbar {
+  display: none;
+}
+#topic-chips-carousel {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.topic-chip {
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+}
+.topic-chip:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.22);
+}
+.topic-chip.active {
+  background: linear-gradient(135deg, rgba(3, 126, 243, 0.25), rgba(0, 229, 255, 0.15)) !important;
+  color: #38BDF8 !important;
+  border-color: rgba(56, 189, 248, 0.55) !important;
+  box-shadow: 0 0 16px rgba(3, 126, 243, 0.3);
+}
+
+/* ============================================================
+   LINEAR-STYLE SLIDE-OVER INTEL DRAWER
+   ============================================================ */
+#event-detail-drawer {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+#event-detail-drawer.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+#drawer-panel {
+  transform: translateX(100%);
+  transition: transform 0.38s cubic-bezier(0.16, 1, 0.3, 1);
+}
+#event-detail-drawer.active #drawer-panel {
+  transform: translateX(0);
+}
+
+/* ============================================================
+   MOBILE RESPONSIVENESS & BOTTOM NAVIGATION BAR
+   ============================================================ */
+@media (max-width: 640px) {
+  body {
+    padding-bottom: 76px !important;
+  }
+}
+#mobile-bottom-nav {
+  padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
+}
+

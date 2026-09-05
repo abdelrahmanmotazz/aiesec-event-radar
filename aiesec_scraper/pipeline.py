@@ -1,5 +1,5 @@
-"""Event Pipeline: Orchestration, Date Filtering (6 Months), Clash Detection, and Deduplication."""
-
+import concurrent.futures
+import hashlib
 import logging
 import re
 from datetime import datetime, timedelta
@@ -27,6 +27,23 @@ def clean_title_for_comparison(title: str) -> str:
     return " ".join(tokens)
 
 
+def compute_event_fingerprint(title: str, city: str, date_str: str) -> str:
+    """Compute SHA-256 fingerprint for O(1) instant deduplication across platforms."""
+    clean_title = clean_title_for_comparison(title)
+    clean_city = (city or "egypt").strip().lower()
+    raw = f"{clean_title}|{clean_city}|{date_str}"
+    return hashlib.sha256(raw.encode("utf-8")).hexdigest()[:16]
+
+
+def _safe_scrape_task(scraper, city: Optional[str], country: str) -> List[EventRecord]:
+    """Worker task for multithreaded parallel scraper execution."""
+    try:
+        return scraper.scrape(city=city, country=country)
+    except Exception as e:
+        logger.error(f"Error in concurrent {scraper.name} scrape for {city or 'nationwide'}: {e}")
+        return []
+
+
 class EventPipeline:
     """End-to-end ingestion, scoring, clash detection, and deduplication pipeline."""
 
@@ -38,67 +55,48 @@ class EventPipeline:
 
     def run(self, city: Optional[str] = None, country: str = "egypt") -> List[EventRecord]:
         """
-        Executes the scraping run across all platforms, enriches records with AIESEC B2C
-        scoring, filters to the 6-month window, applies clash detection, and deduplicates.
+        Executes high-throughput concurrent scraping across all discovery engines,
+        enriches records with AIESEC B2C scoring, applies 6-month filtering,
+        clash detection, and cryptographic deduplication.
         """
         raw_events: List[EventRecord] = []
+        logger.info(f"Starting concurrent scraping pipeline for {city or 'Egypt Nationwide'}...")
 
-        logger.info(f"Starting scraping pipeline for {city or 'Egypt Nationwide'}...")
+        # Multithreaded concurrent scraping
+        with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
+            tasks = []
 
-        # If nationwide, scrape country-wide feeds + key hubs
-        if not city or city.lower() in ["all", "egypt", "nationwide", "country"]:
-            # 1. Egypt Flagship Summits (Techne Summit Alexandria/Cairo, RiseUp, IEEE Congress)
-            try:
-                summits_scraper = EgyptSummitsScraper()
-                raw_events.extend(summits_scraper.scrape(city=None, country=country))
-            except Exception as e:
-                logger.error(f"Error in Egypt Summits scrape: {e}")
+            # Nationwide Scrapes
+            if not city or city.lower() in ["all", "egypt", "nationwide", "country"]:
+                tasks.append(executor.submit(_safe_scrape_task, EgyptSummitsScraper(), None, country))
+                tasks.append(executor.submit(_safe_scrape_task, TicketsMarcheScraper(), None, country))
+                tasks.append(executor.submit(_safe_scrape_task, EventbriteScraper(), None, country))
 
-            # 2. TicketsMarche Nationwide Feed
-            try:
-                tm_scraper = TicketsMarcheScraper()
-                raw_events.extend(tm_scraper.scrape(city=None, country=country))
-            except Exception as e:
-                logger.error(f"Error in TicketsMarche scrape: {e}")
+                hub_scrapers_classes = [AllEventsScraper, MeetupScraper, TenTimesScraper, SocialMediaScraper]
+                for hub in self.default_cities:
+                    for cls in hub_scrapers_classes:
+                        tasks.append(executor.submit(_safe_scrape_task, cls(), hub, country))
+            else:
+                # Single city targeted
+                city_scrapers = [
+                    EgyptSummitsScraper(),
+                    TicketsMarcheScraper(),
+                    EventbriteScraper(),
+                    AllEventsScraper(),
+                    MeetupScraper(),
+                    TenTimesScraper(),
+                    SocialMediaScraper(),
+                ]
+                for scraper in city_scrapers:
+                    tasks.append(executor.submit(_safe_scrape_task, scraper, city, country))
 
-            # 3. Nationwide Eventbrite search
-            try:
-                eb = EventbriteScraper()
-                raw_events.extend(eb.scrape(city=None, country=country))
-            except Exception as e:
-                logger.error(f"Error in nationwide Eventbrite scrape: {e}")
-
-            # 4. Hub-by-hub scrape for AllEvents, Meetup, 10times, Social
-            hub_scrapers = [
-                AllEventsScraper(),
-                MeetupScraper(),
-                TenTimesScraper(),
-                SocialMediaScraper(),
-            ]
-            for hub in self.default_cities:
-                for scraper in hub_scrapers:
-                    try:
-                        events = scraper.scrape(city=hub, country=country)
-                        raw_events.extend(events)
-                    except Exception as e:
-                        logger.error(f"Error in {scraper.name} scrape for {hub}: {e}")
-        else:
-            # Single city targeted
-            city_scrapers = [
-                EgyptSummitsScraper(),
-                TicketsMarcheScraper(),
-                EventbriteScraper(),
-                AllEventsScraper(),
-                MeetupScraper(),
-                TenTimesScraper(),
-                SocialMediaScraper(),
-            ]
-            for scraper in city_scrapers:
+            for future in concurrent.futures.as_completed(tasks):
                 try:
-                    events = scraper.scrape(city=city, country=country)
-                    raw_events.extend(events)
+                    results = future.result()
+                    if results:
+                        raw_events.extend(results)
                 except Exception as e:
-                    logger.error(f"Error in {scraper.name} scrape for {city}: {e}")
+                    logger.error(f"Error retrieving worker scrape result: {e}")
 
         logger.info(f"Collected {len(raw_events)} raw events. Applying 6-month filter & B2C scoring...")
 
@@ -154,14 +152,13 @@ class EventPipeline:
         return valid
 
     def _deduplicate(self, events: List[EventRecord]) -> List[EventRecord]:
-        """Merge identical events appearing across multiple platforms."""
+        """Merge identical events appearing across multiple platforms using cryptographic fingerprinting."""
         unique: List[EventRecord] = []
         seen_signatures: Dict[str, EventRecord] = {}
 
         for ev in events:
-            clean_title = clean_title_for_comparison(ev.title)
             date_part = ev.start_date.strftime("%Y-%m-%d") if ev.start_date else "tba"
-            sig = f"{clean_title}_{date_part}"
+            sig = compute_event_fingerprint(ev.title, ev.city, date_part)
 
             if sig in seen_signatures:
                 existing = seen_signatures[sig]

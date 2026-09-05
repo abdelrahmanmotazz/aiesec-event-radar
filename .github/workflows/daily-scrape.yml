@@ -1,0 +1,39 @@
+﻿name: Daily AIESEC Radar Scrape & Vercel Sync
+
+on:
+  schedule:
+    # Runs everyday at 03:00 UTC (05:00 AM Cairo Time)
+    - cron: '0 3 * * *'
+  workflow_dispatch: # Allows manual run button from GitHub Actions tab
+
+jobs:
+  scrape-and-sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run Scraping Pipeline
+        run: |
+          python -c "from aiesec_scraper.web.app import load_initial_events, CACHED_EVENTS; import json; load_initial_events(); json_data = json.dumps([e.model_dump(mode='json') for e in CACHED_EVENTS], indent=2, ensure_ascii=False); open('events.json', 'w', encoding='utf-8').write(json_data); open('docs/events.json', 'w', encoding='utf-8').write(json_data); open('aiesec_scraper/web/static/events.json', 'w', encoding='utf-8').write(json_data); print(f'Successfully updated {len(CACHED_EVENTS)} events across all targets')"
+
+      - name: Commit & Push Changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add events.json docs/events.json aiesec_scraper/web/static/events.json data/
+          git diff --staged --quiet || (git commit -m "chore(auto-sync): daily event radar refresh [skip ci]" && git push)

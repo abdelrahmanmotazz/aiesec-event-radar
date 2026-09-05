@@ -21,7 +21,7 @@
  * @property {string} [ticket_type]
  */
 
-/** @type {{ events: EventRecord[], sort: string, priority: string, category: string, city: string, source: string, search: string, partnersOnly: boolean, clashesOnly: boolean, activePitchEvent: EventRecord|null, activeView: 'cards'|'calendar' }} */
+/** @type {{ events: EventRecord[], sort: string, priority: string, category: string, city: string, source: string, search: string, partnersOnly: boolean, clashesOnly: boolean, activePitchEvent: EventRecord|null, activeDrawerEvent: EventRecord|null, activeTopic: string, currentTheme: string, activeView: 'cards'|'calendar' }} */
 let state = {
   events: [],
   sort: "score_desc",
@@ -33,6 +33,9 @@ let state = {
   partnersOnly: false,
   clashesOnly: false,
   activePitchEvent: null,
+  activeDrawerEvent: null,
+  activeTopic: "all",
+  currentTheme: "blue",
   activeView: "cards"
 };
 
@@ -71,6 +74,9 @@ const scrapeIcon = document.getElementById("scrape-icon");
 
 // --- Initialization ---
 document.addEventListener("DOMContentLoaded", () => {
+  initThemeAccent();
+  initTopicChips();
+  initEventDrawer();
   initThreeRadar();
   initSmoothMouseLighting();
   initLiveClock();
@@ -151,6 +157,7 @@ function initThreeRadar() {
     }
     partGeo.setAttribute("position", new THREE.BufferAttribute(positions, 3));
     partGeo.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+    const basePositions = new Float32Array(positions);
 
     const partMat = new THREE.PointsMaterial({
       size: 2.2,
@@ -295,8 +302,11 @@ function initThreeRadar() {
       }
     }
 
-    // Expose controller for external city selection synchronization
+    // Expose controller for external city selection synchronization & dynamic theme adaptation
     globeController.focusCity = rotateToCity;
+    globeController.updateThemeColor = (hexColor) => {
+      if (wireframeMat) wireframeMat.color.setHex(hexColor);
+    };
 
     // Connect Hub Button Clicks
     cityButtons.forEach(btn => {
@@ -377,15 +387,15 @@ function initThreeRadar() {
       }
     }, { passive: true });
 
-    // Drag to rotate interactively
+    // Drag and Touch Orbit Controls (Desktop Mouse & Mobile Touchscreen)
     let isDragging = false;
     let dragMoved = false;
-    let prevMousePos = { x: 0, y: 0 };
+    let prevPos = { x: 0, y: 0 };
 
     container.addEventListener("mousedown", (e) => {
       isDragging = true;
       dragMoved = false;
-      prevMousePos = { x: e.clientX, y: e.clientY };
+      prevPos = { x: e.clientX, y: e.clientY };
     });
 
     window.addEventListener("mouseup", () => {
@@ -394,15 +404,40 @@ function initThreeRadar() {
 
     window.addEventListener("mousemove", (e) => {
       if (!isDragging) return;
-      const deltaX = e.clientX - prevMousePos.x;
-      const deltaY = e.clientY - prevMousePos.y;
+      const deltaX = e.clientX - prevPos.x;
+      const deltaY = e.clientY - prevPos.y;
       if (Math.abs(deltaX) > 3 || Math.abs(deltaY) > 3) dragMoved = true;
 
       globeGroup.rotation.y += deltaX * 0.01;
       globeGroup.rotation.x += deltaY * 0.01;
 
-      prevMousePos = { x: e.clientX, y: e.clientY };
+      prevPos = { x: e.clientX, y: e.clientY };
     });
+
+    // Touch Support for Mobile Viewports
+    container.addEventListener("touchstart", (e) => {
+      if (e.touches && e.touches.length === 1) {
+        isDragging = true;
+        dragMoved = false;
+        prevPos = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+      }
+    }, { passive: true });
+
+    window.addEventListener("touchend", () => {
+      isDragging = false;
+    });
+
+    container.addEventListener("touchmove", (e) => {
+      if (!isDragging || !e.touches || e.touches.length !== 1) return;
+      const deltaX = e.touches[0].clientX - prevPos.x;
+      const deltaY = e.touches[0].clientY - prevPos.y;
+      if (Math.abs(deltaX) > 3 || Math.abs(deltaY) > 3) dragMoved = true;
+
+      globeGroup.rotation.y += deltaX * 0.012;
+      globeGroup.rotation.x += deltaY * 0.012;
+
+      prevPos = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    }, { passive: true });
 
     // Click on Canvas Pin Trigger
     container.addEventListener("click", () => {
@@ -428,9 +463,27 @@ function initThreeRadar() {
       }
     });
 
-    // Render Animation Loop
+    // Render Animation Loop with 3D Holographic Particle Wave Flow
+    let waveClock = 0;
     function animate() {
       requestAnimationFrame(animate);
+      waveClock += 0.022;
+
+      // Subtle dynamic 3D undulating wave oscillation across particles
+      if (partGeo && partGeo.attributes && partGeo.attributes.position) {
+        const posArr = partGeo.attributes.position.array;
+        for (let i = 0; i < particleCount; i++) {
+          const i3 = i * 3;
+          const bx = basePositions[i3];
+          const by = basePositions[i3 + 1];
+          const bz = basePositions[i3 + 2];
+          const wave = 1.0 + 0.038 * Math.sin(waveClock * 2.2 + (by * 0.09) + (bx * 0.07));
+          posArr[i3] = bx * wave;
+          posArr[i3 + 1] = by * wave;
+          posArr[i3 + 2] = bz * wave;
+        }
+        partGeo.attributes.position.needsUpdate = true;
+      }
 
       if (!isDragging) {
         wireframeGlobe.rotation.y += 0.002;
@@ -748,8 +801,11 @@ function setupEventListeners() {
       inputSearch.focus();
       inputSearch.select();
     }
-    if (e.key === "Escape" && !pitchModal.classList.contains("hidden")) {
-      closePitchModal();
+    if (e.key === "Escape") {
+      if (!pitchModal.classList.contains("hidden")) {
+        closePitchModal();
+      }
+      closeEventDrawer();
     }
   });
 
@@ -832,6 +888,276 @@ function switchView(view) {
     renderCalendarView();
   }
   if (window.lucide) lucide.createIcons();
+}
+
+// ============================================================
+// THEME ACCENT CONTROLLER
+// ============================================================
+const THEME_ACCENTS = {
+  blue: { hex: 0x037ef3, css: "#037EF3" },
+  gold: { hex: 0xf59e0b, css: "#F59E0B" },
+  cyan: { hex: 0x00e5ff, css: "#00E5FF" },
+  coral: { hex: 0xff4d36, css: "#FF4D36" },
+  emerald: { hex: 0x10b981, css: "#10B981" }
+};
+
+function setTheme(themeName) {
+  if (!THEME_ACCENTS[themeName]) themeName = "blue";
+  state.currentTheme = themeName;
+  if (themeName === "blue") {
+    document.documentElement.removeAttribute("data-theme");
+  } else {
+    document.documentElement.setAttribute("data-theme", themeName);
+  }
+  try {
+    localStorage.setItem("aiesec_theme", themeName);
+  } catch (e) {
+    console.warn("Could not save theme to localStorage:", e);
+  }
+
+  const indicator = document.getElementById("theme-accent-indicator");
+  if (indicator) {
+    indicator.style.backgroundColor = THEME_ACCENTS[themeName].css;
+    indicator.style.boxShadow = `0 0 8px ${THEME_ACCENTS[themeName].css}`;
+  }
+
+  if (typeof globeController !== "undefined" && typeof globeController.updateThemeColor === "function") {
+    globeController.updateThemeColor(THEME_ACCENTS[themeName].hex);
+  }
+}
+
+function initThemeAccent() {
+  let saved = "blue";
+  try {
+    saved = localStorage.getItem("aiesec_theme") || "blue";
+  } catch (e) {
+    saved = "blue";
+  }
+  setTheme(saved);
+
+  const btnTheme = document.getElementById("btn-theme-accent");
+  const menuTheme = document.getElementById("menu-theme-accent");
+  if (btnTheme && menuTheme) {
+    btnTheme.addEventListener("click", (e) => {
+      e.stopPropagation();
+      menuTheme.classList.toggle("hidden");
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!btnTheme.contains(e.target) && !menuTheme.contains(e.target)) {
+        menuTheme.classList.add("hidden");
+      }
+    });
+
+    document.querySelectorAll(".theme-accent-item").forEach((item) => {
+      item.addEventListener("click", () => {
+        const t = item.dataset.theme;
+        setTheme(t);
+        menuTheme.classList.add("hidden");
+        showToast(`Theme accent updated: ${item.innerText.trim()}`, "info");
+      });
+    });
+  }
+}
+
+// ============================================================
+// TOPIC CHIPS HORIZONTAL CAROUSEL CONTROLLER
+// ============================================================
+function initTopicChips() {
+  const chips = document.querySelectorAll(".topic-chip");
+  if (!chips || chips.length === 0) return;
+
+  chips.forEach((chip) => {
+    chip.addEventListener("click", () => {
+      chips.forEach((c) => c.classList.remove("active"));
+      chip.classList.add("active");
+
+      const topic = chip.dataset.topic;
+      state.activeTopic = topic;
+
+      if (topic === "all") {
+        state.category = "all";
+        state.priority = "all";
+        state.city = "all";
+        if (selectCategory) selectCategory.value = "all";
+        if (selectCity) selectCity.value = "all";
+      } else if (topic === "flagship") {
+        state.category = "Flagship Summits";
+        state.city = "all";
+        if (selectCategory) selectCategory.value = "Flagship Summits";
+      } else if (topic === "tech") {
+        state.category = "Tech & Innovation";
+        state.city = "all";
+        if (selectCategory) selectCategory.value = "Tech & Innovation";
+      } else if (topic === "career") {
+        state.category = "Career & Employment";
+        state.city = "all";
+        if (selectCategory) selectCategory.value = "Career & Employment";
+      } else if (topic === "leadership") {
+        state.category = "Youth Leadership";
+        state.city = "all";
+        if (selectCategory) selectCategory.value = "Youth Leadership";
+      } else if (topic === "competition") {
+        state.category = "Startup Competition";
+        state.city = "all";
+        if (selectCategory) selectCategory.value = "Startup Competition";
+      } else if (topic === "tanta") {
+        state.city = "tanta";
+        if (selectCity) selectCity.value = "tanta";
+        if (typeof globeController !== "undefined" && typeof globeController.focusCity === "function") {
+          globeController.focusCity("tanta");
+        }
+      } else if (topic === "alex") {
+        state.city = "alexandria";
+        if (selectCity) selectCity.value = "alexandria";
+        if (typeof globeController !== "undefined" && typeof globeController.focusCity === "function") {
+          globeController.focusCity("alexandria");
+        }
+      }
+
+      fetchEvents();
+      showToast(`Filter applied: ${chip.innerText.trim()}`, "info");
+    });
+  });
+}
+
+// ============================================================
+// LINEAR-STYLE SLIDE-OVER EVENT INTEL DRAWER
+// ============================================================
+function openEventDrawer(ev) {
+  if (!ev) return;
+  state.activeDrawerEvent = ev;
+
+  const drawer = document.getElementById("event-detail-drawer");
+  const badgeEl = document.getElementById("drawer-badge");
+  const titleEl = document.getElementById("drawer-title");
+  const cityEl = document.getElementById("drawer-city");
+  const dateEl = document.getElementById("drawer-date");
+  const scoreEl = document.getElementById("drawer-score");
+  const priorityEl = document.getElementById("drawer-priority");
+  const sourceEl = document.getElementById("drawer-source");
+  const descEl = document.getElementById("drawer-description");
+  const actionEl = document.getElementById("drawer-action");
+  const linkEl = document.getElementById("drawer-event-link");
+  const outputEl = document.getElementById("drawer-pitch-output");
+
+  if (badgeEl) badgeEl.innerText = ev.category || "Youth Summit";
+  if (titleEl) titleEl.innerText = ev.title;
+  if (cityEl) cityEl.innerHTML = `<i data-lucide="map-pin" class="w-3.5 h-3.5"></i> ${ev.city || "Egypt"}`;
+  if (dateEl) dateEl.innerText = ev.date_display || "Upcoming";
+  if (scoreEl) scoreEl.innerText = ev.b2c_score ? ev.b2c_score.toFixed(1) : "8.0";
+  if (priorityEl) {
+    priorityEl.innerText = ev.b2c_priority || "HIGH";
+    priorityEl.className = ev.b2c_priority === "HIGH" ? "text-xl font-black text-[#FF4D36] font-display" : "text-xl font-black text-sky-400 font-display";
+  }
+  if (sourceEl) sourceEl.innerText = ev.source || "Flagship Radar";
+  if (descEl) descEl.innerText = ev.description || "Intelligence briefing pending verification.";
+  if (actionEl) actionEl.innerText = ev.recommended_action || "Deploy student activation booth & PR outreach.";
+  if (linkEl) linkEl.href = ev.url || "#";
+  if (outputEl) outputEl.classList.add("hidden");
+
+  if (drawer) {
+    drawer.classList.add("active");
+  }
+  if (window.lucide) lucide.createIcons();
+}
+
+function closeEventDrawer() {
+  const drawer = document.getElementById("event-detail-drawer");
+  if (drawer) drawer.classList.remove("active");
+  state.activeDrawerEvent = null;
+}
+
+window.openEventDrawerById = function(eventId) {
+  const ev = state.events.find((e) => e.event_id === eventId);
+  if (ev) openEventDrawer(ev);
+};
+
+async function handleGenerateDrawerPitch() {
+  if (!state.activeDrawerEvent) return;
+
+  const btnGen = document.getElementById("drawer-btn-generate");
+  const name = document.getElementById("drawer-pitch-name").value.trim() || "Abdelrahman Motazz";
+  const email = document.getElementById("drawer-pitch-email").value.trim() || "abdelrahman.motazz@aiesec.net";
+  const purpose = document.getElementById("drawer-pitch-purpose").value;
+
+  btnGen.disabled = true;
+  btnGen.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Generating Proposal...`;
+  if (window.lucide) lucide.createIcons();
+
+  try {
+    let data;
+    try {
+      const res = await fetch("/api/pitch", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          event_id: state.activeDrawerEvent.event_id,
+          member_name: name,
+          member_email: email,
+          member_phone: "+20 10 1234 5678",
+          purpose: purpose
+        })
+      });
+      if (!res.ok) throw new Error("API not available");
+      data = await res.json();
+    } catch (apiErr) {
+      data = generateClientPitch(state.activeDrawerEvent, name, email, "+20 10 1234 5678", purpose);
+    }
+
+    const subInput = document.getElementById("drawer-pitch-subject");
+    const bodyInput = document.getElementById("drawer-pitch-body");
+    const outputBox = document.getElementById("drawer-pitch-output");
+    const mailBtn = document.getElementById("drawer-btn-mail");
+
+    if (subInput) subInput.value = data.subject;
+    if (bodyInput) bodyInput.value = data.body;
+    if (mailBtn) mailBtn.href = `mailto:?subject=${encodeURIComponent(data.subject)}&body=${encodeURIComponent(data.body)}`;
+    if (outputBox) {
+      outputBox.classList.remove("hidden");
+      if (typeof gsap !== "undefined") {
+        gsap.from(outputBox, { opacity: 0, y: 10, duration: 0.3, ease: "power2.out" });
+      }
+    }
+    showToast("Outreach proposal ready!", "success");
+  } catch (err) {
+    showToast("Failed to generate proposal", "error");
+  } finally {
+    btnGen.disabled = false;
+    btnGen.innerHTML = `<i data-lucide="sparkles" class="w-4 h-4 text-cyan-200"></i> Generate Partnership Pitch`;
+    if (window.lucide) lucide.createIcons();
+  }
+}
+
+function handleCopyDrawerPitch() {
+  const subInput = document.getElementById("drawer-pitch-subject");
+  const bodyInput = document.getElementById("drawer-pitch-body");
+  const copyBtn = document.getElementById("drawer-btn-copy");
+  if (!subInput || !bodyInput) return;
+
+  const fullText = `Subject: ${subInput.value}\n\n${bodyInput.value}`;
+  navigator.clipboard.writeText(fullText).then(() => {
+    if (copyBtn) copyBtn.innerHTML = `<i data-lucide="check" class="w-3.5 h-3.5 text-emerald-400"></i> <span>Copied!</span>`;
+    showToast("Drawer pitch copied to clipboard!", "success");
+    setTimeout(() => {
+      if (copyBtn) copyBtn.innerHTML = `<i data-lucide="copy" class="w-3.5 h-3.5"></i> <span>Copy Pitch</span>`;
+      if (window.lucide) lucide.createIcons();
+    }, 2500);
+  });
+}
+
+function initEventDrawer() {
+  const btnClose = document.getElementById("btn-close-drawer");
+  const backdrop = document.getElementById("drawer-backdrop");
+  const btnDone = document.getElementById("drawer-btn-done");
+  const btnGen = document.getElementById("drawer-btn-generate");
+  const btnCopy = document.getElementById("drawer-btn-copy");
+
+  if (btnClose) btnClose.addEventListener("click", closeEventDrawer);
+  if (backdrop) backdrop.addEventListener("click", closeEventDrawer);
+  if (btnDone) btnDone.addEventListener("click", closeEventDrawer);
+  if (btnGen) btnGen.addEventListener("click", handleGenerateDrawerPitch);
+  if (btnCopy) btnCopy.addEventListener("click", handleCopyDrawerPitch);
 }
 
 // --- Fetch API ---
@@ -1120,9 +1446,18 @@ function renderCards() {
       </div>
     `;
 
-    // Attach click for pitch button
+    // Clicking card opens the Linear-style Slide-Over Drawer
+    card.addEventListener("click", (e) => {
+      if (e.target.closest("a") || e.target.closest("button")) return;
+      openEventDrawer(ev);
+    });
+
+    // Attach click for pitch button (opens drawer directly for integrated workflow)
     const pitchBtn = card.querySelector(".btn-pitch-event");
-    pitchBtn.addEventListener("click", () => openPitchModal(ev));
+    pitchBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      openEventDrawer(ev);
+    });
 
     containerCards.appendChild(card);
   });
@@ -1162,7 +1497,7 @@ function renderCalendarView() {
     groupBlock.className = `p-4 rounded-2xl border ${isClashDate ? "bg-amber-950/20 border-amber-500/35 shadow-[0_0_20px_rgba(245,158,11,0.12)]" : "bg-[#0A1020]/80 border-white/[0.08]"}`;
 
     let eventsHtml = eventList.map(e => `
-      <div class="py-2.5 flex items-center justify-between border-b border-white/[0.06] last:border-0 gap-4">
+      <div class="py-2.5 flex items-center justify-between border-b border-white/[0.06] last:border-0 gap-4 cursor-pointer hover:bg-white/[0.03] px-2 rounded-xl transition" onclick="openEventDrawerById('${e.event_id}')">
         <div>
           <div class="font-bold text-xs text-white flex items-center gap-2 font-display">
             <span>${e.title}</span>
@@ -1171,8 +1506,8 @@ function renderCalendarView() {
           </div>
           <div class="text-[11px] text-slate-400 mt-0.5">${e.location} (<span class="text-slate-200 font-medium">${e.city}</span>) • <span class="text-[#00E5FF]">${e.recommended_action}</span></div>
         </div>
-        <button class="text-xs bg-sky-500/15 hover:bg-sky-500 text-sky-300 hover:text-white border border-sky-500/30 px-3 py-1.5 rounded-xl font-bold shrink-0 transition active:scale-95" onclick="openPitchById('${e.event_id}')">
-          Pitch
+        <button class="text-xs bg-sky-500/15 hover:bg-sky-500 text-sky-300 hover:text-white border border-sky-500/30 px-3 py-1.5 rounded-xl font-bold shrink-0 transition active:scale-95 flex items-center gap-1.5" onclick="event.stopPropagation(); openEventDrawerById('${e.event_id}')">
+          <i data-lucide="sparkles" class="w-3 h-3 text-cyan-300"></i> Intel & Pitch
         </button>
       </div>
     `).join("");
