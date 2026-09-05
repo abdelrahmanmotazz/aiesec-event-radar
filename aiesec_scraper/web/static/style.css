@@ -515,3 +515,49 @@ body::before {
   will-change: transform;
   transform-style: preserve-3d;
 }
+
+/* ============================================================
+   LINEAR & VERCEL CURSOR SPOTLIGHT BORDER GLOW
+   ============================================================ */
+.spotlight-card {
+  position: relative;
+  border: 1px solid var(--border-subtle);
+  overflow: hidden;
+}
+
+.spotlight-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(450px circle at var(--card-mouse-x, -999px) var(--card-mouse-y, -999px), rgba(56, 189, 248, 0.14), transparent 45%);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  z-index: 2;
+}
+
+.spotlight-card:hover::after {
+  opacity: 1;
+}
+
+/* Command Palette Item Hover & Key Navigation */
+.cmd-palette-item {
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.cmd-palette-item.active,
+.cmd-palette-item:hover {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+  border-color: rgba(56, 189, 248, 0.35) !important;
+}
+
+#command-palette-results::-webkit-scrollbar {
+  width: 5px;
+}
+
+#command-palette-results::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 9999px;
+}
+

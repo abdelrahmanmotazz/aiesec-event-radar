@@ -91,6 +91,12 @@
 
       <!-- Quick Action Buttons -->
       <div class="flex items-center space-x-2">
+        <button id="btn-open-cmd-palette" class="flex items-center gap-1.5 sm:gap-2 bg-white/[0.05] hover:bg-white/[0.1] text-slate-300 hover:text-white border border-white/10 hover:border-white/20 text-xs font-semibold px-2.5 sm:px-3 py-2 rounded-xl transition shadow-sm active:scale-95 group" title="Open Command Palette (Ctrl+K)">
+          <i data-lucide="search" class="w-3.5 h-3.5 text-sky-400 group-hover:scale-110 transition-transform"></i>
+          <span class="hidden sm:inline">Command</span>
+          <kbd class="hidden sm:inline-flex items-center px-1.5 py-0.5 text-[9px] font-mono text-slate-400 bg-white/10 rounded border border-white/10">⌘K</kbd>
+        </button>
+
         <button id="btn-sync-sheets" class="flex items-center gap-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 hover:border-emerald-500/50 text-xs font-semibold px-3 py-2 rounded-xl transition shadow-sm active:scale-95">
           <i data-lucide="sheet" class="w-4 h-4"></i>
           <span class="hidden md:inline">Sync Sheets</span>
@@ -137,7 +143,7 @@
       <div class="lg:col-span-3 flex flex-col gap-5 justify-between">
         
         <!-- Tile 1: Total Events Monitored with Floating Crown & Flagship Pill -->
-        <div class="radar-surface p-5 flex-1 flex flex-col justify-between cursor-pointer group hover:border-sky-500/40 transition" id="tile-total-radar" title="Click to view all events">
+        <div class="radar-surface spotlight-card p-5 flex-1 flex flex-col justify-between cursor-pointer group hover:border-sky-500/40 transition" id="tile-total-radar" title="Click to view all events">
           <div class="flex items-center justify-between">
             <div class="w-10 h-10 rounded-2xl bg-amber-500/10 border border-amber-500/25 flex items-center justify-center text-amber-400 shadow-[0_0_16px_rgba(245,158,11,0.25)] group-hover:scale-105 transition">
               <i data-lucide="crown" class="w-5 h-5"></i>
@@ -164,7 +170,7 @@
         </div>
 
         <!-- Tile 2: High Priority Lead Focus Card with Center Flame -->
-        <div class="radar-surface p-5 flex-1 flex flex-col justify-between card-high-glow">
+        <div class="radar-surface spotlight-card p-5 flex-1 flex flex-col justify-between card-high-glow">
           <div class="flex items-center justify-between">
             <span class="text-[10px] font-bold text-[#FF8875] uppercase tracking-wider flex items-center gap-1.5">
               <span>High Priority B2C</span>
@@ -303,7 +309,7 @@
       <div class="lg:col-span-3 flex flex-col gap-5 justify-between">
         
         <!-- Tile 3: Recommended B2C Action -->
-        <div class="radar-surface p-5 flex-1 flex flex-col justify-between border-l-4 border-l-[#037EF3]">
+        <div class="radar-surface spotlight-card p-5 flex-1 flex flex-col justify-between border-l-4 border-l-[#037EF3]">
           <div>
             <div class="flex items-center gap-2 mb-2">
               <div class="w-7 h-7 rounded-xl bg-[#037EF3]/20 flex items-center justify-center text-[#38BDF8]">
@@ -322,7 +328,7 @@
         </div>
 
         <!-- Tile 4: Campus Reach & Sparkline Trends -->
-        <div class="radar-surface p-5 flex-1 flex flex-col justify-between">
+        <div class="radar-surface spotlight-card p-5 flex-1 flex flex-col justify-between">
           <div>
             <div class="flex items-center justify-between text-xs mb-2">
               <div>
@@ -606,6 +612,59 @@
       </div>
 
     </div>
+  <!-- Command Palette Modal (Ctrl+K / Cmd+K) -->
+  <div id="command-palette-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-start justify-center pt-[10vh] sm:pt-[14vh] px-4 transition-all">
+    <div id="command-palette-container" class="w-full max-w-2xl bg-[#090F1F]/95 border border-white/20 rounded-2xl shadow-[0_25px_80px_rgba(0,0,0,0.9)] overflow-hidden flex flex-col max-h-[75vh]">
+      
+      <!-- Palette Search Header -->
+      <div class="p-3.5 sm:p-4 border-b border-white/10 flex items-center gap-3 bg-white/[0.02]">
+        <i data-lucide="search" class="w-5 h-5 text-sky-400 shrink-0"></i>
+        <input id="command-palette-input" type="text" autocomplete="off" spellcheck="false"
+               placeholder="Search events, cities, flagships, or actions... (ESC to close)" 
+               class="w-full bg-transparent text-sm sm:text-base text-white placeholder-slate-400 focus:outline-none font-medium">
+        <kbd class="px-2 py-0.5 text-[10px] font-mono text-slate-400 bg-white/10 rounded border border-white/10 shrink-0">ESC</kbd>
+      </div>
+
+      <!-- Palette Results Scroll Area -->
+      <div id="command-palette-results" class="overflow-y-auto p-2 sm:p-3 space-y-1 divide-y divide-white/[0.04]">
+        <!-- Dynamic Quick Actions & Matched Events injected by JS -->
+      </div>
+
+      <!-- Palette Footer Hints -->
+      <div class="px-4 py-2.5 bg-white/[0.02] border-t border-white/10 flex items-center justify-between text-[11px] text-slate-400">
+        <div class="flex items-center gap-3">
+          <span class="flex items-center gap-1"><kbd class="px-1.5 py-0.5 bg-white/10 rounded font-mono text-[10px] text-slate-300">↑↓</kbd> Navigate</span>
+          <span class="flex items-center gap-1"><kbd class="px-1.5 py-0.5 bg-white/10 rounded font-mono text-[10px] text-slate-300">↵</kbd> Select</span>
+          <span class="flex items-center gap-1"><kbd class="px-1.5 py-0.5 bg-white/10 rounded font-mono text-[10px] text-slate-300">ESC</kbd> Close</span>
+        </div>
+        <span class="text-sky-400/80 font-mono text-[10px] uppercase tracking-wider font-semibold">AIESEC Command Radar</span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Mobile Bottom Quick Navigation Bar (md:hidden) -->
+  <div class="md:hidden fixed bottom-3 inset-x-3 z-40 bg-[#0A1020]/95 backdrop-blur-2xl border border-white/15 rounded-2xl shadow-2xl px-3 py-2 flex items-center justify-around">
+    <button id="mobile-btn-cmd" class="flex flex-col items-center gap-0.5 text-slate-300 hover:text-sky-400 transition active:scale-95">
+      <i data-lucide="search" class="w-4 h-4 text-sky-400"></i>
+      <span class="text-[9px] font-semibold">Search</span>
+    </button>
+    <button id="mobile-btn-flagships" class="flex flex-col items-center gap-0.5 text-slate-300 hover:text-amber-400 transition active:scale-95">
+      <i data-lucide="crown" class="w-4 h-4 text-amber-400"></i>
+      <span class="text-[9px] font-semibold">Flagships</span>
+    </button>
+    <button id="mobile-btn-tanta" class="flex flex-col items-center gap-0.5 text-slate-300 hover:text-sky-400 transition active:scale-95">
+      <i data-lucide="map-pin" class="w-4 h-4 text-sky-400"></i>
+      <span class="text-[9px] font-semibold">Tanta</span>
+    </button>
+    <button id="mobile-btn-view" class="flex flex-col items-center gap-0.5 text-slate-300 hover:text-purple-400 transition active:scale-95">
+      <i data-lucide="calendar" class="w-4 h-4 text-purple-400"></i>
+      <span class="text-[9px] font-semibold">View</span>
+    </button>
+    <button id="mobile-btn-top" class="flex flex-col items-center gap-0.5 text-slate-300 hover:text-white transition active:scale-95">
+      <i data-lucide="arrow-up" class="w-4 h-4"></i>
+      <span class="text-[9px] font-semibold">Top</span>
+    </button>
   </div>
 
   <!-- Toast Notification -->

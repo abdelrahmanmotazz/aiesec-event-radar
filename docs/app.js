@@ -513,15 +513,19 @@ function initMagneticButtons() {
   });
 }
 
-// Hardware-Accelerated Ambient Cursor Lighting with rAF
+// Hardware-Accelerated Ambient Cursor Lighting & Linear-Style Card Spotlight with rAF
 function initSmoothMouseLighting() {
   let targetX = 50;
   let targetY = 20;
   let currentX = 50;
   let currentY = 20;
+  let mouseClientX = -999;
+  let mouseClientY = -999;
   let ticking = false;
 
   window.addEventListener("mousemove", (e) => {
+    mouseClientX = e.clientX;
+    mouseClientY = e.clientY;
     targetX = Math.round((e.clientX / window.innerWidth) * 100);
     targetY = Math.round((e.clientY / window.innerHeight) * 100);
 
@@ -531,6 +535,19 @@ function initSmoothMouseLighting() {
         currentY += (targetY - currentY) * 0.18;
         document.documentElement.style.setProperty("--mouse-x", `${currentX.toFixed(1)}%`);
         document.documentElement.style.setProperty("--mouse-y", `${currentY.toFixed(1)}%`);
+
+        // Update spotlight cards in viewport proximity
+        const spotlightCards = document.querySelectorAll(".spotlight-card");
+        spotlightCards.forEach((card) => {
+          const rect = card.getBoundingClientRect();
+          const cx = mouseClientX - rect.left;
+          const cy = mouseClientY - rect.top;
+          if (cx >= -60 && cx <= rect.width + 60 && cy >= -60 && cy <= rect.height + 60) {
+            card.style.setProperty("--card-mouse-x", `${cx}px`);
+            card.style.setProperty("--card-mouse-y", `${cy}px`);
+          }
+        });
+
         ticking = false;
       });
       ticking = true;
@@ -690,7 +707,42 @@ function setupEventListeners() {
   });
 
   // Global Keyboard Shortcuts
+  // Command Palette & Global Keyboard Shortcuts
   document.addEventListener("keydown", (e) => {
+    // Ctrl+K / Cmd+K toggle palette
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+      e.preventDefault();
+      toggleCommandPalette();
+      return;
+    }
+
+    const cmdModal = document.getElementById("command-palette-modal");
+    if (cmdModal && !cmdModal.classList.contains("hidden")) {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        closeCommandPalette();
+      } else if (e.key === "ArrowDown") {
+        e.preventDefault();
+        if (cmdItems.length > 0) {
+          cmdActiveIndex = (cmdActiveIndex + 1) % cmdItems.length;
+          updateCommandPaletteActiveItem();
+        }
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        if (cmdItems.length > 0) {
+          cmdActiveIndex = (cmdActiveIndex - 1 + cmdItems.length) % cmdItems.length;
+          updateCommandPaletteActiveItem();
+        }
+      } else if (e.key === "Enter") {
+        e.preventDefault();
+        if (cmdItems[cmdActiveIndex]) {
+          cmdItems[cmdActiveIndex].run();
+          closeCommandPalette();
+        }
+      }
+      return;
+    }
+
     if (e.key === "/" && document.activeElement !== inputSearch && document.activeElement.tagName !== "INPUT" && document.activeElement.tagName !== "TEXTAREA") {
       e.preventDefault();
       inputSearch.focus();
@@ -699,6 +751,52 @@ function setupEventListeners() {
     if (e.key === "Escape" && !pitchModal.classList.contains("hidden")) {
       closePitchModal();
     }
+  });
+
+  // Command Palette DOM triggers
+  const btnOpenCmd = document.getElementById("btn-open-cmd-palette");
+  const cmdModal = document.getElementById("command-palette-modal");
+  const cmdInput = document.getElementById("command-palette-input");
+  if (btnOpenCmd) btnOpenCmd.addEventListener("click", openCommandPalette);
+  if (cmdInput) cmdInput.addEventListener("input", (e) => renderCommandPaletteResults(e.target.value));
+  if (cmdModal) {
+    cmdModal.addEventListener("click", (e) => {
+      if (e.target === cmdModal) closeCommandPalette();
+    });
+  }
+
+  // Mobile Bottom Bar Triggers
+  const mobileBtnCmd = document.getElementById("mobile-btn-cmd");
+  const mobileBtnFlagships = document.getElementById("mobile-btn-flagships");
+  const mobileBtnTanta = document.getElementById("mobile-btn-tanta");
+  const mobileBtnView = document.getElementById("mobile-btn-view");
+  const mobileBtnTop = document.getElementById("mobile-btn-top");
+
+  if (mobileBtnCmd) mobileBtnCmd.addEventListener("click", openCommandPalette);
+  if (mobileBtnFlagships) mobileBtnFlagships.addEventListener("click", () => {
+    selectCategory.value = "Flagship Summits";
+    selectCategory.dispatchEvent(new Event("change"));
+    showToast("Filtered by Flagships", "info");
+  });
+  if (mobileBtnTanta) mobileBtnTanta.addEventListener("click", () => {
+    selectCity.value = "tanta";
+    selectCity.dispatchEvent(new Event("change"));
+    if (typeof globeController !== "undefined" && typeof globeController.focusCity === "function") {
+      globeController.focusCity("tanta");
+    }
+    showToast("Focused Tanta Hub", "info");
+  });
+  if (mobileBtnView) mobileBtnView.addEventListener("click", () => {
+    if (state.activeView === "cards") {
+      switchView("calendar");
+      showToast("Switched to Calendar", "info");
+    } else {
+      switchView("cards");
+      showToast("Switched to Cards", "info");
+    }
+  });
+  if (mobileBtnTop) mobileBtnTop.addEventListener("click", () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
   });
 
   // View Switcher
@@ -937,7 +1035,7 @@ function renderCards() {
       glowClass = "card-partner-glow";
     }
 
-    card.className = `radar-card p-5 flex flex-col justify-between ${glowClass}`;
+    card.className = `radar-card spotlight-card p-5 flex flex-col justify-between ${glowClass}`;
 
     // Priority badge class
     const badgeClass = isHigh ? "badge-neon-coral" : (ev.b2c_priority === "MEDIUM" ? "badge-neon-amber" : "badge-neon-slate");
@@ -1335,3 +1433,249 @@ function showToast(message, type = "info") {
     }
   }, 3500);
 }
+
+// ============================================================
+// COMMAND PALETTE (CTRL+K / CMD+K) CONTROLLER
+// ============================================================
+let cmdActiveIndex = 0;
+let cmdItems = [];
+
+function toggleCommandPalette() {
+  const modal = document.getElementById("command-palette-modal");
+  if (!modal) return;
+  if (modal.classList.contains("hidden")) {
+    openCommandPalette();
+  } else {
+    closeCommandPalette();
+  }
+}
+
+function openCommandPalette() {
+  const modal = document.getElementById("command-palette-modal");
+  const input = document.getElementById("command-palette-input");
+  if (!modal || !input) return;
+
+  modal.classList.remove("hidden");
+  input.value = "";
+  cmdActiveIndex = 0;
+  renderCommandPaletteResults("");
+  input.focus();
+
+  if (typeof gsap !== "undefined") {
+    gsap.fromTo("#command-palette-container",
+      { scale: 0.95, opacity: 0, y: -20 },
+      { scale: 1, opacity: 1, y: 0, duration: 0.25, ease: "power2.out" }
+    );
+  }
+}
+
+function closeCommandPalette() {
+  const modal = document.getElementById("command-palette-modal");
+  if (!modal) return;
+  modal.classList.add("hidden");
+}
+
+function updateCommandPaletteActiveItem() {
+  const items = document.querySelectorAll(".cmd-palette-item");
+  items.forEach((item, idx) => {
+    if (idx === cmdActiveIndex) {
+      item.classList.add("active");
+      item.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    } else {
+      item.classList.remove("active");
+    }
+  });
+}
+
+function renderCommandPaletteResults(query) {
+  const resultsContainer = document.getElementById("command-palette-results");
+  if (!resultsContainer) return;
+  const q = (query || "").trim().toLowerCase();
+  cmdItems = [];
+
+  const actions = [
+    {
+      icon: "crown",
+      iconColor: "text-amber-400",
+      title: "Filter Flagship Summits",
+      desc: "Techne Alexandria/Cairo, RiseUp, National Student Summits",
+      run: () => {
+        selectCategory.value = "Flagship Summits";
+        selectCategory.dispatchEvent(new Event("change"));
+        showToast("Filtered by Flagship Summits", "info");
+      }
+    },
+    {
+      icon: "flame",
+      iconColor: "text-rose-400",
+      title: "Show High-Priority Leads (Score ≥ 8.5)",
+      desc: "Top conversion recruitment opportunities",
+      run: () => {
+        btnQuickFilterHigh.click();
+      }
+    },
+    {
+      icon: "map-pin",
+      iconColor: "text-sky-400",
+      title: "Focus Tanta / Delta Campus Hub",
+      desc: "Primary LC recruitment operations",
+      run: () => {
+        selectCity.value = "tanta";
+        selectCity.dispatchEvent(new Event("change"));
+        if (typeof globeController !== "undefined" && typeof globeController.focusCity === "function") {
+          globeController.focusCity("tanta");
+        }
+        showToast("Centered radar on Tanta Hub", "info");
+      }
+    },
+    {
+      icon: "map-pin",
+      iconColor: "text-sky-400",
+      title: "Focus Cairo University Hub",
+      desc: "Capital student summits & tech events",
+      run: () => {
+        selectCity.value = "cairo";
+        selectCity.dispatchEvent(new Event("change"));
+        if (typeof globeController !== "undefined" && typeof globeController.focusCity === "function") {
+          globeController.focusCity("cairo");
+        }
+        showToast("Centered radar on Cairo Hub", "info");
+      }
+    },
+    {
+      icon: "map-pin",
+      iconColor: "text-sky-400",
+      title: "Focus Alexandria Campus Hub",
+      desc: "Mediterranean youth summits & Techne",
+      run: () => {
+        selectCity.value = "alexandria";
+        selectCity.dispatchEvent(new Event("change"));
+        if (typeof globeController !== "undefined" && typeof globeController.focusCity === "function") {
+          globeController.focusCity("alexandria");
+        }
+        showToast("Centered radar on Alexandria Hub", "info");
+      }
+    },
+    {
+      icon: "calendar",
+      iconColor: "text-purple-400",
+      title: "Switch to Calendar Timeline View",
+      desc: "Inspect upcoming peak clashes across weeks",
+      run: () => {
+        switchView("calendar");
+      }
+    },
+    {
+      icon: "layout-grid",
+      iconColor: "text-blue-400",
+      title: "Switch to Event Cards Grid",
+      desc: "Browse cards with 1-click pitch generator",
+      run: () => {
+        switchView("cards");
+      }
+    },
+    {
+      icon: "sheet",
+      iconColor: "text-emerald-400",
+      title: "Download Excel Spreadsheet (.xlsx)",
+      desc: "Export formatted intelligence spreadsheet",
+      run: () => {
+        window.location.href = "/api/export/excel";
+        showToast("Downloading Excel spreadsheet...", "success");
+      }
+    }
+  ];
+
+  const matchedActions = actions.filter(a => !q || a.title.toLowerCase().includes(q) || a.desc.toLowerCase().includes(q));
+
+  const eventsPool = (state.events && state.events.length > 0) ? state.events : (rawEventsCache || []);
+  const matchedEvents = q ? eventsPool.filter(e => 
+    (e.title && e.title.toLowerCase().includes(q)) || 
+    (e.city && e.city.toLowerCase().includes(q)) || 
+    (e.organizer && e.organizer.toLowerCase().includes(q))
+  ).slice(0, 6) : [];
+
+  let html = "";
+
+  if (matchedActions.length > 0) {
+    html += `<div class="px-2 py-1 text-[10px] font-bold tracking-wider text-slate-400 uppercase">Commands & Quick Actions</div>`;
+    matchedActions.forEach((act) => {
+      const idx = cmdItems.length;
+      cmdItems.push(act);
+      html += `
+        <div class="cmd-palette-item flex items-center justify-between p-2.5 rounded-xl cursor-pointer border border-transparent ${idx === cmdActiveIndex ? 'active' : ''}" data-cmd-idx="${idx}">
+          <div class="flex items-center gap-3">
+            <div class="w-7 h-7 rounded-lg bg-white/[0.06] border border-white/10 flex items-center justify-center shrink-0">
+              <i data-lucide="${act.icon}" class="w-4 h-4 ${act.iconColor}"></i>
+            </div>
+            <div>
+              <div class="text-xs font-bold text-white">${act.title}</div>
+              <div class="text-[11px] text-slate-400">${act.desc}</div>
+            </div>
+          </div>
+          <span class="text-[10px] font-mono text-slate-500">Action</span>
+        </div>
+      `;
+    });
+  }
+
+  if (matchedEvents.length > 0) {
+    html += `<div class="px-2 pt-3 pb-1 text-[10px] font-bold tracking-wider text-slate-400 uppercase">Matching Campus Events</div>`;
+    matchedEvents.forEach((ev) => {
+      const idx = cmdItems.length;
+      const act = {
+        title: ev.title,
+        run: () => {
+          state.search = ev.title;
+          inputSearch.value = ev.title;
+          fetchEvents();
+          showToast(`Filtered for: ${ev.title}`, "info");
+        }
+      };
+      cmdItems.push(act);
+      html += `
+        <div class="cmd-palette-item flex items-center justify-between p-2.5 rounded-xl cursor-pointer border border-transparent ${idx === cmdActiveIndex ? 'active' : ''}" data-cmd-idx="${idx}">
+          <div class="flex items-center gap-3 min-w-0">
+            <div class="w-7 h-7 rounded-lg bg-blue-500/10 border border-blue-500/30 flex items-center justify-center shrink-0">
+              <i data-lucide="ticket" class="w-4 h-4 text-sky-400"></i>
+            </div>
+            <div class="min-w-0">
+              <div class="text-xs font-bold text-white truncate">${ev.title}</div>
+              <div class="text-[11px] text-slate-400 flex items-center gap-2">
+                <span>📍 ${ev.city || 'Egypt'}</span>
+                <span>•</span>
+                <span>📅 ${ev.date_display || 'Upcoming'}</span>
+              </div>
+            </div>
+          </div>
+          <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-blue-500/20 text-sky-400 border border-sky-500/30 shrink-0">
+            ★ ${ev.b2c_score?.toFixed(1) || '8.0'}
+          </span>
+        </div>
+      `;
+    });
+  }
+
+  if (cmdItems.length === 0) {
+    html = `
+      <div class="p-8 text-center text-slate-400 text-xs">
+        <i data-lucide="compass" class="w-8 h-8 mx-auto mb-2 text-slate-500"></i>
+        No commands or events matching "${query}"
+      </div>
+    `;
+  }
+
+  resultsContainer.innerHTML = html;
+  if (window.lucide) lucide.createIcons();
+
+  resultsContainer.querySelectorAll(".cmd-palette-item").forEach(el => {
+    el.addEventListener("click", () => {
+      const idx = parseInt(el.getAttribute("data-cmd-idx"));
+      if (cmdItems[idx]) {
+        cmdItems[idx].run();
+        closeCommandPalette();
+      }
+    });
+  });
+}
+
