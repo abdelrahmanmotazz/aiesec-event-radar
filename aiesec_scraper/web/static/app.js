@@ -122,12 +122,19 @@ function setupEventListeners() {
   }
 
   // Quick filter for flagship summits
+  const handleFlagshipFilter = () => {
+    state.category = "Flagship Summits";
+    if (selectCategory) selectCategory.value = "Flagship Summits";
+    fetchEvents();
+  };
+
   if (btnQuickFilterFlagship) {
-    btnQuickFilterFlagship.addEventListener("click", () => {
-      state.category = "Flagship Summits";
-      if (selectCategory) selectCategory.value = "Flagship Summits";
-      fetchEvents();
-    });
+    btnQuickFilterFlagship.addEventListener("click", handleFlagshipFilter);
+  }
+
+  const tileFlagshipRadar = document.getElementById("tile-flagship-radar");
+  if (tileFlagshipRadar) {
+    tileFlagshipRadar.addEventListener("click", handleFlagshipFilter);
   }
 
   // Priority buttons
@@ -356,16 +363,16 @@ function renderCards() {
 
         <!-- Title Block with Physical Tear-Off Date Badge -->
         <div class="flex items-start gap-3 pt-1">
-          <div class="date-tearoff-badge">
+          <div class="date-tearoff-badge shrink-0">
             <span class="date-tearoff-month">${dateBadge.month}</span>
             <span class="date-tearoff-day">${dateBadge.day}</span>
           </div>
 
           <div class="flex-1 min-w-0">
-            <h3 class="font-bold text-sm sm:text-base text-white leading-snug line-clamp-2 hover:text-[#00E5FF] transition group">
+            <h3 class="font-extrabold text-base text-white leading-snug line-clamp-2 hover:text-[#00E5FF] transition group">
               <a href="${ev.url}" target="_blank" class="group-hover:underline underline-offset-2">${ev.title}</a>
             </h3>
-            <div class="mt-2 space-y-1 text-xs text-slate-400">
+            <div class="mt-1.5 space-y-1 text-xs text-slate-400">
               <div class="flex items-center gap-1.5 truncate">
                 <i data-lucide="map-pin" class="w-3.5 h-3.5 text-rose-400 shrink-0"></i>
                 <span class="truncate">${ev.location} • <strong class="text-slate-200">${ev.city}</strong></span>
@@ -376,6 +383,7 @@ function renderCards() {
                 ${ev.ticket_type ? `<span class="text-slate-500">•</span><span class="text-slate-300 font-medium">${ev.ticket_type}</span>` : ""}
               </div>
             </div>
+          </div>
         </div>
 
         <!-- Specific Event Intelligence Briefing Box -->
