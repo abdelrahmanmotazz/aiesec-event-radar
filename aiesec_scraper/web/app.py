@@ -162,6 +162,31 @@ def get_dashboard_root():
     return "<h1>AIESEC Egypt B2C Event Radar</h1><p>Dashboard static files initializing...</p>"
 
 
+@app.get("/style.css")
+def get_style_css():
+    return FileResponse(os.path.join(STATIC_DIR, "style.css"), media_type="text/css")
+
+
+@app.get("/app.js")
+def get_app_js():
+    return FileResponse(os.path.join(STATIC_DIR, "app.js"), media_type="application/javascript")
+
+
+@app.get("/aiesec-logo.svg")
+def get_aiesec_logo():
+    return FileResponse(os.path.join(STATIC_DIR, "aiesec-logo.svg"), media_type="image/svg+xml")
+
+
+@app.get("/events.json")
+def get_events_json():
+    json_path = os.path.join(STATIC_DIR, "events.json")
+    if not os.path.exists(json_path) and CACHED_EVENTS:
+        import json
+        with open(json_path, "w", encoding="utf-8") as f:
+            json.dump([e.model_dump(mode="json") for e in CACHED_EVENTS], f, ensure_ascii=False, indent=2)
+    return FileResponse(json_path, media_type="application/json")
+
+
 @app.get("/api/events")
 def get_events(
     sort: str = Query("score_desc", pattern="^(score_desc|score_asc|date_asc|date_desc)$"),
