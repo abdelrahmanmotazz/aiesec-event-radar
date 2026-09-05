@@ -1,9 +1,28 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en" class="dark bg-[#060911]">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AIESEC Egypt B2C Event Radar & Command Center</title>
+  <!-- Critical Dark Mode Fallback Styles -->
+  <style>
+    html, body {
+      background-color: #060911 !important;
+      color: #F8FAFC !important;
+      min-height: 100vh;
+      margin: 0;
+      padding: 0;
+    }
+    .figma-surface, .figma-card {
+      background-color: #0B111F !important;
+      border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    }
+    .figma-input {
+      background-color: #0E1626 !important;
+      color: #F8FAFC !important;
+      border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    }
+  </style>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -27,9 +46,9 @@
   </script>
   <!-- Lucide Icons CDN -->
   <script src="https://unpkg.com/lucide@latest"></script>
-  <link rel="stylesheet" href="/static/style.css">
+  <link rel="stylesheet" href="/static/style.css?v=3.2">
 </head>
-<body class="min-h-screen flex flex-col antialiased text-slate-100 selection:bg-[#037EF3]/30 selection:text-white">
+<body class="dark min-h-screen flex flex-col antialiased bg-[#060911] text-slate-100 selection:bg-[#037EF3]/30 selection:text-white">
 
   <!-- Top Floating Frosted Navigation Bar -->
   <header class="bg-[#0B111F]/80 backdrop-blur-xl border-b border-white/[0.08] sticky top-0 z-30 shadow-2xl">
@@ -94,11 +113,11 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
       
       <!-- Total Events -->
-      <div class="figma-surface p-5 flex flex-col justify-between">
+      <div class="figma-surface bg-[#0B111F]/90 backdrop-blur-xl border border-white/10 rounded-2xl p-5 flex flex-col justify-between shadow-xl">
         <div class="flex items-center justify-between">
           <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Total Events</span>
           <div class="w-9 h-9 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-[#38BDF8] shadow-[0_0_12px_rgba(56,189,248,0.15)]">
-            <i data-lucide="calendar" class="w-4.5 h-4.5"></i>
+            <i data-lucide="calendar" class="w-5 h-5"></i>
           </div>
         </div>
         <div class="mt-4 flex items-baseline justify-between">
@@ -108,11 +127,11 @@
       </div>
 
       <!-- High Priority Leads -->
-      <div class="figma-surface p-5 flex flex-col justify-between">
+      <div class="figma-surface bg-[#0B111F]/90 backdrop-blur-xl border border-white/10 rounded-2xl p-5 flex flex-col justify-between shadow-xl">
         <div class="flex items-center justify-between">
           <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">High Priority Leads</span>
           <div class="w-9 h-9 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center text-[#F85A40] shadow-[0_0_12px_rgba(248,90,64,0.15)]">
-            <i data-lucide="flame" class="w-4.5 h-4.5"></i>
+            <i data-lucide="flame" class="w-5 h-5"></i>
           </div>
         </div>
         <div class="mt-4 flex items-baseline justify-between">
@@ -124,14 +143,14 @@
     </div>
 
     <!-- Command-Style Toolbar & Filters -->
-    <div class="figma-surface p-4 space-y-4">
+    <div class="figma-surface bg-[#0B111F]/90 backdrop-blur-xl border border-white/10 rounded-2xl p-4 space-y-4 shadow-xl">
       <div class="flex flex-col md:flex-row gap-3 items-center justify-between">
         
         <!-- Search Command Bar -->
         <div class="relative w-full md:w-96">
           <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-3"></i>
           <input id="input-search" type="text" placeholder="Search events, universities, topics..." 
-                 class="w-full pl-9 pr-10 py-2 figma-input rounded-xl text-xs font-medium focus:ring-2 focus:ring-[#38BDF8] transition placeholder:text-slate-500">
+                 class="w-full pl-9 pr-10 py-2 figma-input bg-[#0E1626] border border-white/10 text-white placeholder-slate-500 rounded-xl text-xs font-medium focus:ring-2 focus:ring-[#38BDF8] focus:border-transparent outline-none transition">
           <kbd class="kbd-shortcut absolute right-3 top-2.5" title="Press / to focus search">/</kbd>
         </div>
 
@@ -139,7 +158,7 @@
         <div class="flex items-center gap-3 w-full md:w-auto justify-end">
           <div class="flex items-center gap-2 text-xs font-semibold text-slate-300">
             <span class="text-slate-400">Sort:</span>
-            <select id="select-sort" class="figma-input py-1.5 px-3 rounded-xl text-xs font-semibold text-slate-200 cursor-pointer">
+            <select id="select-sort" class="figma-input bg-[#0E1626] border border-white/10 text-slate-200 py-1.5 px-3 rounded-xl text-xs font-semibold cursor-pointer outline-none">
               <option value="score_desc">Highest Score to Lowest</option>
               <option value="score_asc">Lowest Score to Highest</option>
               <option value="date_asc">Soonest Date First</option>
@@ -162,7 +181,7 @@
       <!-- Filter Controls & Chips -->
       <div class="flex flex-wrap items-center gap-2 pt-3 border-t border-white/[0.06] text-xs">
         <span class="font-bold text-slate-400 mr-1">City:</span>
-        <select id="select-city" class="figma-input py-1 px-3 rounded-xl font-medium text-slate-200 mr-3 cursor-pointer">
+        <select id="select-city" class="figma-input bg-[#0E1626] border border-white/10 text-slate-200 py-1 px-3 rounded-xl font-medium mr-3 cursor-pointer outline-none">
           <option value="all">All Egypt (Nationwide)</option>
           <option value="tanta">Tanta</option>
           <option value="cairo">Cairo</option>
@@ -242,21 +261,21 @@
           <div>
             <label class="block font-semibold text-slate-300 mb-1">Your Name</label>
             <input type="text" id="pitch-name" value="Abdelrahman Motazz" placeholder="e.g. Abdelrahman Motazz" 
-                   class="w-full px-3.5 py-2 figma-input rounded-xl focus:outline-none">
+                   class="w-full px-3.5 py-2 figma-input bg-[#0E1626] border border-white/10 text-white rounded-xl focus:outline-none">
           </div>
           <div>
             <label class="block font-semibold text-slate-300 mb-1">Your AIESEC Email</label>
             <input type="email" id="pitch-email" value="abdelrahman.motazz@aiesec.net" placeholder="e.g. name@aiesec.net" 
-                   class="w-full px-3.5 py-2 figma-input rounded-xl focus:outline-none">
+                   class="w-full px-3.5 py-2 figma-input bg-[#0E1626] border border-white/10 text-white rounded-xl focus:outline-none">
           </div>
           <div>
             <label class="block font-semibold text-slate-300 mb-1">Phone / WhatsApp Number</label>
             <input type="text" id="pitch-phone" value="+20 10 1234 5678" placeholder="+20 1X XXXX XXXX" 
-                   class="w-full px-3.5 py-2 figma-input rounded-xl focus:outline-none">
+                   class="w-full px-3.5 py-2 figma-input bg-[#0E1626] border border-white/10 text-white rounded-xl focus:outline-none">
           </div>
           <div>
             <label class="block font-semibold text-slate-300 mb-1">Collaboration Purpose</label>
-            <select id="pitch-purpose" class="w-full px-3.5 py-2 figma-input rounded-xl font-medium focus:outline-none cursor-pointer">
+            <select id="pitch-purpose" class="w-full px-3.5 py-2 figma-input bg-[#0E1626] border border-white/10 text-white rounded-xl font-medium focus:outline-none cursor-pointer">
               <option value="event_collaboration">Event Collaboration & Booth Presence</option>
               <option value="pr_collaboration">PR & Social Media Cross-Promotion</option>
             </select>
@@ -303,6 +322,11 @@
     <span id="toast-message">Action processed</span>
   </div>
 
-  <script src="/static/app.js"></script>
+  <script src="/static/app.js?v=3.2"></script>
+  <script>
+    if (window.lucide && typeof lucide.createIcons === 'function') {
+      lucide.createIcons();
+    }
+  </script>
 </body>
 </html>

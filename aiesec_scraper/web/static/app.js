@@ -45,6 +45,9 @@ const scrapeIcon = document.getElementById("scrape-icon");
 
 // --- Initialization ---
 document.addEventListener("DOMContentLoaded", () => {
+  if (window.lucide && typeof lucide.createIcons === 'function') {
+    lucide.createIcons();
+  }
   setupEventListeners();
   fetchEvents();
 });
@@ -200,7 +203,7 @@ function renderCards() {
     const hasPartner = !!ev.parallel_org;
     const hasClash = ev.clash_warning;
 
-    card.className = `figma-card p-5 flex flex-col justify-between ${isHigh ? "card-high-glow" : (hasPartner ? "card-partner-glow" : "")}`;
+    card.className = `figma-card bg-[#0B111F]/90 backdrop-blur-xl border border-white/10 hover:border-sky-500/40 hover:bg-[#10192E] rounded-2xl p-5 flex flex-col justify-between transition-all duration-200 shadow-xl ${isHigh ? "card-high-glow border-l-4 !border-l-[#F85A40]" : (hasPartner ? "card-partner-glow border-l-4 !border-l-[#A855F7]" : "")}`;
 
     // Priority badge class
     const badgeClass = isHigh ? "badge-neon-coral" : (ev.b2c_priority === "MEDIUM" ? "badge-neon-amber" : "badge-neon-slate");

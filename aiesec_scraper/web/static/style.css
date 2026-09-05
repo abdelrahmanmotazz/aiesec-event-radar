@@ -29,7 +29,7 @@
 }
 
 body {
-  background-color: var(--bg-canvas);
+  background-color: #060911 !important;
   background-image: 
     /* Ambient Linear/Figma-style Spotlights */
     radial-gradient(ellipse 900px 480px at 50% -80px, rgba(3, 126, 243, 0.20), transparent 70%),
@@ -42,13 +42,14 @@ body {
   background-repeat: no-repeat, no-repeat, no-repeat, repeat;
   background-attachment: fixed;
   font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  color: var(--text-primary);
+  color: #F8FAFC !important;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
 }
 
 /* Glassmorphic Surface Base */
 .figma-surface,
+.figma-card,
 .aiesec-card-dark {
   background: var(--bg-card);
   backdrop-filter: blur(16px);
@@ -62,6 +63,7 @@ body {
 }
 
 .figma-surface:hover,
+.figma-card:hover,
 .aiesec-card-dark:hover {
   background: var(--bg-card-hover);
   transform: translateY(-3px);
@@ -148,17 +150,22 @@ body {
 /* Inputs in Dark Mode */
 .dark-input,
 .figma-input {
-  background: rgba(14, 22, 38, 0.85);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #F8FAFC;
+  background-color: #0E1626 !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  color: #F8FAFC !important;
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
   transition: all 0.2s ease;
 }
 
+.figma-input option {
+  background-color: #0B111F !important;
+  color: #F8FAFC !important;
+}
+
 .dark-input:focus,
 .figma-input:focus {
-  border-color: #38BDF8;
-  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2), inset 0 1px 2px rgba(0, 0, 0, 0.3);
+  border-color: #38BDF8 !important;
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2), inset 0 1px 2px rgba(0, 0, 0, 0.3) !important;
   outline: none;
 }
 
