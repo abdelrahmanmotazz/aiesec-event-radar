@@ -602,6 +602,32 @@ body::before {
   --aiesec-blue: #10B981;
   --aiesec-blue-glow: #34D399;
 }
+:root[data-theme="purple"] {
+  --theme-accent: #A855F7;
+  --theme-accent-glow: rgba(168, 85, 247, 0.45);
+  --theme-accent-subtle: rgba(168, 85, 247, 0.15);
+  --theme-accent-border: rgba(168, 85, 247, 0.4);
+  --aiesec-blue: #A855F7;
+  --aiesec-blue-glow: #C084FC;
+}
+:root[data-theme="crimson"] {
+  --theme-accent: #F43F5E;
+  --theme-accent-glow: rgba(244, 63, 94, 0.45);
+  --theme-accent-subtle: rgba(244, 63, 94, 0.15);
+  --theme-accent-border: rgba(244, 63, 94, 0.4);
+  --aiesec-blue: #F43F5E;
+  --aiesec-blue-glow: #FB7185;
+}
+
+/* Canvas Background Contrast Mode */
+:root[data-canvas="obsidian"] {
+  --canvas-base: #010409 !important;
+  --canvas-surface: rgba(5, 9, 20, 0.92) !important;
+  --canvas-elevated: rgba(10, 16, 32, 0.96) !important;
+}
+:root[data-canvas="obsidian"] body {
+  background-color: #010409 !important;
+}
 
 /* Dynamically colorize UI elements when theme changes */
 #theme-accent-indicator {
@@ -863,6 +889,127 @@ body::before {
 
 .radar-table tr.radar-table-row.row-priority-high:hover {
   background: rgba(255, 77, 54, 0.08);
+}
+
+/* ============================================================
+   FEATURE B: TACTICAL TARGET LOCK-ON & HUD RETICLE INTERACTIONS
+   ============================================================ */
+.radar-card {
+  position: relative;
+  overflow: hidden;
+}
+
+/* HUD Reticle Corner Brackets */
+.hud-reticle-bracket {
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  border-color: var(--theme-accent, #00E5FF);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 15;
+}
+
+.hud-reticle-tl {
+  top: 7px;
+  left: 7px;
+  border-top: 2px solid;
+  border-left: 2px solid;
+  transform: translate(3px, 3px);
+}
+
+.hud-reticle-tr {
+  top: 7px;
+  right: 7px;
+  border-top: 2px solid;
+  border-right: 2px solid;
+  transform: translate(-3px, 3px);
+}
+
+.hud-reticle-bl {
+  bottom: 7px;
+  left: 7px;
+  border-bottom: 2px solid;
+  border-left: 2px solid;
+  transform: translate(3px, -3px);
+}
+
+.hud-reticle-br {
+  bottom: 7px;
+  right: 7px;
+  border-bottom: 2px solid;
+  border-right: 2px solid;
+  transform: translate(-3px, -3px);
+}
+
+/* Snap reticle brackets into corners on card hover */
+.radar-card:hover .hud-reticle-bracket,
+.spotlight-card:hover .hud-reticle-bracket {
+  opacity: 0.95;
+  transform: translate(0, 0);
+  filter: drop-shadow(0 0 5px var(--theme-accent-glow, #00E5FF));
+}
+
+/* HUD Vertical Scan Sweep Line */
+.hud-scan-line {
+  position: absolute;
+  top: -10px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent 5%, var(--theme-accent, #00E5FF) 50%, #00E5FF 70%, transparent 95%);
+  box-shadow: 0 0 10px var(--theme-accent, #00E5FF);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 12;
+}
+
+@keyframes hudSweepCycle {
+  0% {
+    top: -4px;
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.85;
+  }
+  80% {
+    opacity: 0.85;
+  }
+  100% {
+    top: 100%;
+    opacity: 0;
+  }
+}
+
+.radar-card:hover .hud-scan-line {
+  animation: hudSweepCycle 1.6s cubic-bezier(0.2, 0.8, 0.4, 1) infinite;
+}
+
+/* Holographic Target Lock Badge */
+.hud-target-pill {
+  position: absolute;
+  top: 8px;
+  right: 18px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--theme-accent, #38BDF8);
+  background: rgba(3, 7, 18, 0.88);
+  border: 1px solid var(--theme-accent-border, rgba(56, 189, 248, 0.3));
+  border-radius: 4px;
+  padding: 1px 5px;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: all 0.25s ease;
+  pointer-events: none;
+  z-index: 14;
+}
+
+.radar-card:hover .hud-target-pill {
+  opacity: 0.95;
+  transform: translateY(0);
 }
 
 

@@ -36,6 +36,9 @@ let state = {
   activeDrawerEvent: null,
   activeTopic: "all",
   currentTheme: "blue",
+  canvasMode: "nebula",
+  activeSpatialMode: "globe",
+  activeIntents: null,
   activeView: "cards"
 };
 
@@ -125,6 +128,133 @@ function initThreeRadar() {
 
     const globeGroup = new THREE.Group();
     scene.add(globeGroup);
+
+    // ----------------------------------------------------
+    // FEATURE A: 3D ENTITY NETWORK MESH (Knowledge Graph)
+    // ----------------------------------------------------
+    const networkMeshGroup = new THREE.Group();
+    networkMeshGroup.visible = false;
+    scene.add(networkMeshGroup);
+
+    const interactiveMeshNodes = [];
+    const entityNodes = [
+      { id: "aiesec-core", name: "AIESEC in Egypt (Tanta)", type: "National Youth Hub", city: "tanta", x: 0, y: 0, z: 0, radius: 7.5, color: 0x00e5ff, isCore: true, desc: "Leadership Pipeline & Global Talent Dispatch" },
+      { id: "univ-tanta", name: "Tanta University", type: "Delta Campus Hub", city: "tanta", x: -38, y: 18, z: 12, radius: 5.0, color: 0x037ef3, desc: "Gharbia Academic Anchor • 100k+ Undergrads" },
+      { id: "univ-cairo", name: "Cairo University", type: "Capital Campus Hub", city: "cairo", x: 38, y: 20, z: -15, radius: 5.2, color: 0x00e5ff, desc: "Flagship Campus • Giza/Cairo Student Gateway" },
+      { id: "univ-alex", name: "Alexandria University", type: "Coastal Campus Hub", city: "alexandria", x: -28, y: -28, z: 18, radius: 5.0, color: 0x38bdf8, desc: "Mediterranean Coast • Techne Summit Partner" },
+      { id: "univ-mansoura", name: "Mansoura University", type: "Delta Campus Hub", city: "mansoura", x: 32, y: -24, z: 20, radius: 4.6, color: 0xa855f7, desc: "Eastern Delta Anchor • Medical & Engineering" },
+      { id: "univ-ainshams", name: "Ain Shams University", type: "Capital Campus Hub", city: "cairo", x: 14, y: 38, z: -20, radius: 4.6, color: 0x10b981, desc: "Cairo Tech Hub • Engineering & Youth Talent" },
+      { id: "univ-assiut", name: "Assiut University", type: "Upper Egypt Hub", city: "assiut", x: -14, y: 38, z: 24, radius: 4.4, color: 0xf59e0b, desc: "Upper Egypt Regional Academic Center" },
+      { id: "summit-techne", name: "Techne Summit", type: "Flagship Partner", query: "Techne", x: -55, y: -8, z: -16, radius: 6.2, color: 0xf59e0b, isFlagship: true, desc: "Mediterranean's Premier Tech & Startup Summit" },
+      { id: "summit-riseup", name: "RiseUp Summit", type: "Flagship Partner", query: "RiseUp", x: 52, y: -12, z: -24, radius: 6.2, color: 0xf43f5e, isFlagship: true, desc: "MENA Innovation & Entrepreneurship Flagship" },
+      { id: "org-ieee", name: "IEEE Egypt Section", type: "Student Organization", query: "IEEE", x: -44, y: 34, z: -18, radius: 4.2, color: 0x037ef3, desc: "Engineering Student Branches Across Campuses" },
+      { id: "org-enactus", name: "Enactus Egypt", type: "Student Organization", query: "Enactus", x: 44, y: 30, z: 18, radius: 4.2, color: 0xfbbf24, desc: "Social Entrepreneurship & Campus Projects" },
+      { id: "org-gdg", name: "Google Dev Groups", type: "Tech Community", query: "GDG", x: 8, y: -46, z: -10, radius: 4.2, color: 0x06b6d4, desc: "Developer Student Clubs & Tech Summits" }
+    ];
+
+    const nodeMap = new Map();
+    let coreNodeMesh = null;
+
+    entityNodes.forEach(nData => {
+      const pos = new THREE.Vector3(nData.x, nData.y, nData.z);
+      const geo = new THREE.SphereGeometry(nData.radius, 16, 16);
+      const mat = new THREE.MeshBasicMaterial({
+        color: nData.color,
+        blending: THREE.AdditiveBlending,
+        transparent: true,
+        opacity: nData.isCore ? 0.95 : 0.85
+      });
+      const nodeMesh = new THREE.Mesh(geo, mat);
+      nodeMesh.position.copy(pos);
+      nodeMesh.userData = { node: nData };
+
+      // Halo ring around node
+      const haloGeo = new THREE.RingGeometry(nData.radius * 1.25, nData.radius * 1.5, 24);
+      const haloMat = new THREE.MeshBasicMaterial({
+        color: nData.color,
+        side: THREE.DoubleSide,
+        transparent: true,
+        opacity: nData.isCore ? 0.65 : 0.35,
+        blending: THREE.AdditiveBlending
+      });
+      const halo = new THREE.Mesh(haloGeo, haloMat);
+      halo.position.copy(pos);
+      halo.lookAt(0, 0, 100);
+      networkMeshGroup.add(halo);
+      nodeMesh.userData.halo = halo;
+
+      if (nData.isCore) coreNodeMesh = nodeMesh;
+
+      networkMeshGroup.add(nodeMesh);
+      interactiveMeshNodes.push(nodeMesh);
+      nodeMap.set(nData.id, nodeMesh);
+    });
+
+    // Edges
+    const entityEdges = [
+      ["aiesec-core", "univ-tanta"],
+      ["aiesec-core", "univ-cairo"],
+      ["aiesec-core", "univ-alex"],
+      ["aiesec-core", "univ-mansoura"],
+      ["aiesec-core", "univ-ainshams"],
+      ["aiesec-core", "univ-assiut"],
+      ["aiesec-core", "summit-techne"],
+      ["aiesec-core", "summit-riseup"],
+      ["aiesec-core", "org-ieee"],
+      ["aiesec-core", "org-enactus"],
+      ["univ-alex", "summit-techne"],
+      ["univ-tanta", "summit-techne"],
+      ["univ-mansoura", "summit-techne"],
+      ["univ-cairo", "summit-riseup"],
+      ["univ-ainshams", "summit-riseup"],
+      ["univ-cairo", "org-ieee"],
+      ["univ-ainshams", "org-ieee"],
+      ["univ-tanta", "org-ieee"],
+      ["univ-cairo", "org-enactus"],
+      ["univ-tanta", "org-enactus"],
+      ["univ-cairo", "org-gdg"],
+      ["univ-alex", "org-gdg"]
+    ];
+
+    const edgePairs = [];
+    entityEdges.forEach(([fromId, toId]) => {
+      const nFrom = nodeMap.get(fromId);
+      const nTo = nodeMap.get(toId);
+      if (!nFrom || !nTo) return;
+
+      const edgeGeo = new THREE.BufferGeometry().setFromPoints([nFrom.position, nTo.position]);
+      const edgeMat = new THREE.LineBasicMaterial({
+        color: fromId === "aiesec-core" ? 0x00e5ff : 0x037ef3,
+        transparent: true,
+        opacity: fromId === "aiesec-core" ? 0.35 : 0.18,
+        blending: THREE.AdditiveBlending
+      });
+      const edgeLine = new THREE.Line(edgeGeo, edgeMat);
+      networkMeshGroup.add(edgeLine);
+      edgePairs.push({ from: nFrom.position, to: nTo.position });
+    });
+
+    // Flowing Data Signal Pulses on Edges
+    const pulseCount = 14;
+    const pulseGeo = new THREE.SphereGeometry(1.2, 8, 8);
+    const pulseMat = new THREE.MeshBasicMaterial({
+      color: 0x00e5ff,
+      blending: THREE.AdditiveBlending,
+      transparent: true,
+      opacity: 0.9
+    });
+    const pulseMeshes = [];
+    for (let p = 0; p < pulseCount; p++) {
+      const pMesh = new THREE.Mesh(pulseGeo, pulseMat);
+      const edgeIndex = p % edgePairs.length;
+      pMesh.userData = {
+        edgeIndex: edgeIndex,
+        progress: Math.random(),
+        speed: 0.005 + Math.random() * 0.007
+      };
+      networkMeshGroup.add(pMesh);
+      pulseMeshes.push(pMesh);
+    }
 
     // 1. Holographic Wireframe Sphere
     const globeRadius = 58;
@@ -307,11 +437,50 @@ function initThreeRadar() {
       }
     }
 
+    // Spatial Mode Switcher (Globe vs Entity Network Mesh)
+    const btnSpatialGlobe = document.getElementById("btn-spatial-globe");
+    const btnSpatialMesh = document.getElementById("btn-spatial-mesh");
+    const spatialTitle = document.getElementById("spatial-card-title");
+
+    function setSpatialMode(mode) {
+      state.activeSpatialMode = mode;
+      if (mode === "mesh") {
+        if (btnSpatialMesh) btnSpatialMesh.className = "px-2 py-0.5 rounded-md bg-[#037EF3] text-white shadow-sm transition active:scale-95 flex items-center gap-1";
+        if (btnSpatialGlobe) btnSpatialGlobe.className = "px-2 py-0.5 rounded-md text-slate-400 hover:text-white transition active:scale-95 flex items-center gap-1";
+        if (spatialTitle) spatialTitle.innerText = "AIESEC Knowledge Mesh (3D Entity Network)";
+        if (statusPill) statusPill.innerText = "12 Entity Nodes Active";
+
+        globeGroup.visible = false;
+        networkMeshGroup.visible = true;
+        if (typeof gsap !== "undefined") {
+          gsap.fromTo(networkMeshGroup.scale, { x: 0.8, y: 0.8, z: 0.8 }, { x: 1, y: 1, z: 1, duration: 0.45, ease: "back.out(1.2)" });
+        }
+        showToast("Switched to 3D Entity Knowledge Mesh", "info");
+      } else {
+        if (btnSpatialGlobe) btnSpatialGlobe.className = "px-2 py-0.5 rounded-md bg-[#037EF3] text-white shadow-sm transition active:scale-95 flex items-center gap-1";
+        if (btnSpatialMesh) btnSpatialMesh.className = "px-2 py-0.5 rounded-md text-slate-400 hover:text-white transition active:scale-95 flex items-center gap-1";
+        if (spatialTitle) spatialTitle.innerText = "Egypt Campus Radar Grid (3D Spatial Feed)";
+        if (statusPill) statusPill.innerText = state.city === "all" ? "6 Active Hubs" : `Selected: ${state.city}`;
+
+        networkMeshGroup.visible = false;
+        globeGroup.visible = true;
+        if (typeof gsap !== "undefined") {
+          gsap.fromTo(globeGroup.scale, { x: 0.8, y: 0.8, z: 0.8 }, { x: 1, y: 1, z: 1, duration: 0.45, ease: "back.out(1.2)" });
+        }
+        showToast("Switched to 3D Geospatial Globe", "info");
+      }
+    }
+
+    if (btnSpatialGlobe) btnSpatialGlobe.addEventListener("click", () => setSpatialMode("globe"));
+    if (btnSpatialMesh) btnSpatialMesh.addEventListener("click", () => setSpatialMode("mesh"));
+
     // Expose controller for external city selection synchronization & dynamic theme adaptation
     globeController.focusCity = rotateToCity;
     globeController.updateThemeColor = (hexColor) => {
       if (wireframeMat) wireframeMat.color.setHex(hexColor);
+      if (coreNodeMesh && coreNodeMesh.material) coreNodeMesh.material.color.setHex(hexColor);
     };
+    globeController.setSpatialMode = setSpatialMode;
 
     // Connect Hub Button Clicks
     cityButtons.forEach(btn => {
@@ -337,25 +506,23 @@ function initThreeRadar() {
       targetRotY = nx * 0.6;
       targetRotX = 0.2 + ny * 0.3;
 
-      // Raycast against pins
+      const isMeshMode = state.activeSpatialMode === "mesh";
+      const targetObjects = isMeshMode ? interactiveMeshNodes : interactivePins;
+
+      // Raycast against interactive objects
       raycaster.setFromCamera(mouseNorm, camera);
-      const hits = raycaster.intersectObjects(interactivePins, false);
+      const hits = raycaster.intersectObjects(targetObjects, false);
 
       if (hits.length > 0) {
-        const pin = hits[0].object;
-        const hub = pin.userData.hub;
+        const hitObj = hits[0].object;
 
-        if (hoveredPin !== pin) {
+        if (hoveredPin !== hitObj) {
           if (hoveredPin) hoveredPin.scale.set(1, 1, 1);
-          hoveredPin = pin;
-          pin.scale.set(1.45, 1.45, 1.45);
+          hoveredPin = hitObj;
+          hitObj.scale.set(1.4, 1.4, 1.4);
         }
 
         canvas.style.cursor = "pointer";
-
-        // Calculate dynamic stats
-        const cityEvents = state.events.filter(ev => ev.city.toLowerCase().includes(hub.cityKey.toLowerCase()));
-        const flagshipEvents = cityEvents.filter(ev => (ev.category && ev.category.toLowerCase().includes("flagship")) || ev.title.toLowerCase().includes("techne") || ev.title.toLowerCase().includes("riseup"));
 
         // Position & populate tooltip
         if (tooltip) {
@@ -363,16 +530,27 @@ function initThreeRadar() {
           const tooltipCount = document.getElementById("globe-tooltip-count");
           const tooltipFlagships = document.getElementById("globe-tooltip-flagships");
 
-          if (tooltipCity) tooltipCity.innerText = `📍 ${hub.name}`;
-          if (tooltipCount) tooltipCount.innerText = `${cityEvents.length} Events`;
-          if (tooltipFlagships) {
-            tooltipFlagships.innerText = flagshipEvents.length > 0 
-              ? `👑 ${flagshipEvents.length} Flagship (${flagshipEvents[0].title.split(" 202")[0]})` 
-              : "Campus Lead Pipeline";
+          if (isMeshMode) {
+            const node = hitObj.userData.node;
+            if (tooltipCity) tooltipCity.innerText = node.isCore ? "🌐 " + node.name : (node.isFlagship ? "👑 " + node.name : "🏛️ " + node.name);
+            if (tooltipCount) tooltipCount.innerText = node.type;
+            if (tooltipFlagships) tooltipFlagships.innerText = node.desc;
+          } else {
+            const hub = hitObj.userData.hub;
+            const cityEvents = state.events.filter(ev => ev.city.toLowerCase().includes(hub.cityKey.toLowerCase()));
+            const flagshipEvents = cityEvents.filter(ev => (ev.category && ev.category.toLowerCase().includes("flagship")) || ev.title.toLowerCase().includes("techne") || ev.title.toLowerCase().includes("riseup"));
+
+            if (tooltipCity) tooltipCity.innerText = `📍 ${hub.name}`;
+            if (tooltipCount) tooltipCount.innerText = `${cityEvents.length} Events`;
+            if (tooltipFlagships) {
+              tooltipFlagships.innerText = flagshipEvents.length > 0 
+                ? `👑 ${flagshipEvents.length} Flagship (${flagshipEvents[0].title.split(" 202")[0]})` 
+                : "Campus Lead Pipeline";
+            }
           }
 
           const worldPos = new THREE.Vector3();
-          pin.getWorldPosition(worldPos);
+          hitObj.getWorldPosition(worldPos);
           worldPos.project(camera);
 
           const screenX = (worldPos.x * 0.5 + 0.5) * rect.width;
@@ -413,8 +591,13 @@ function initThreeRadar() {
       const deltaY = e.clientY - prevPos.y;
       if (Math.abs(deltaX) > 3 || Math.abs(deltaY) > 3) dragMoved = true;
 
-      globeGroup.rotation.y += deltaX * 0.01;
-      globeGroup.rotation.x += deltaY * 0.01;
+      if (state.activeSpatialMode === "mesh") {
+        networkMeshGroup.rotation.y += deltaX * 0.01;
+        networkMeshGroup.rotation.x += deltaY * 0.01;
+      } else {
+        globeGroup.rotation.y += deltaX * 0.01;
+        globeGroup.rotation.x += deltaY * 0.01;
+      }
 
       prevPos = { x: e.clientX, y: e.clientY };
     });
@@ -437,11 +620,13 @@ function initThreeRadar() {
       const deltaX = e.touches[0].clientX - prevPos.x;
       const deltaY = e.touches[0].clientY - prevPos.y;
 
-      // Only orbit globe horizontally if swipe is predominantly horizontal,
-      // allowing natural vertical page scrolling on mobile devices!
       if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 2) {
         dragMoved = true;
-        globeGroup.rotation.y += deltaX * 0.012;
+        if (state.activeSpatialMode === "mesh") {
+          networkMeshGroup.rotation.y += deltaX * 0.012;
+        } else {
+          globeGroup.rotation.y += deltaX * 0.012;
+        }
       }
 
       prevPos = { x: e.touches[0].clientX, y: e.touches[0].clientY };
@@ -450,24 +635,50 @@ function initThreeRadar() {
     // Click on Canvas Pin Trigger
     container.addEventListener("click", () => {
       if (dragMoved) return; // Ignore drag end click
+      const isMeshMode = state.activeSpatialMode === "mesh";
+      const targetObjects = isMeshMode ? interactiveMeshNodes : interactivePins;
+
       raycaster.setFromCamera(mouseNorm, camera);
-      const hits = raycaster.intersectObjects(interactivePins, false);
+      const hits = raycaster.intersectObjects(targetObjects, false);
 
       if (hits.length > 0) {
-        const pin = hits[0].object;
-        const hub = pin.userData.hub;
-        const bRing = pin.userData.beaconRing;
+        const hitObj = hits[0].object;
 
-        // Animate beacon ring ripple
-        if (typeof gsap !== "undefined" && bRing) {
-          gsap.fromTo(bRing.scale, 
-            { x: 1, y: 1 }, 
-            { x: 3.2, y: 3.2, duration: 0.65, ease: "power2.out", onComplete: () => bRing.scale.set(1, 1, 1) }
-          );
+        if (isMeshMode) {
+          const node = hitObj.userData.node;
+          if (node.isCore) {
+            if (selectCity) selectCity.value = "all";
+            state.city = "all";
+            if (selectCategory) selectCategory.value = "all";
+            state.category = "all";
+            if (inputSearch) inputSearch.value = "";
+            state.search = "";
+            fetchEvents();
+            showToast("Radar reset to full national network", "info");
+          } else if (node.city) {
+            filterByCity(node.city, node.name);
+          } else if (node.query) {
+            if (inputSearch) inputSearch.value = node.query;
+            state.search = node.query;
+            fetchEvents();
+            showToast(`Filtered radar for ${node.name}`, "info");
+          }
+        } else {
+          const pin = hitObj;
+          const hub = pin.userData.hub;
+          const bRing = pin.userData.beaconRing;
+
+          // Animate beacon ring ripple
+          if (typeof gsap !== "undefined" && bRing) {
+            gsap.fromTo(bRing.scale, 
+              { x: 1, y: 1 }, 
+              { x: 3.2, y: 3.2, duration: 0.65, ease: "power2.out", onComplete: () => bRing.scale.set(1, 1, 1) }
+            );
+          }
+
+          rotateToCity(hub.cityKey);
+          filterByCity(hub.cityKey, hub.name);
         }
-
-        rotateToCity(hub.cityKey);
-        filterByCity(hub.cityKey, hub.name);
       }
     });
 
@@ -477,31 +688,63 @@ function initThreeRadar() {
       requestAnimationFrame(animate);
       waveClock += 0.022;
 
-      // Subtle dynamic 3D undulating wave oscillation across particles
-      if (partGeo && partGeo.attributes && partGeo.attributes.position) {
-        const posArr = partGeo.attributes.position.array;
-        for (let i = 0; i < particleCount; i++) {
-          const i3 = i * 3;
-          const bx = basePositions[i3];
-          const by = basePositions[i3 + 1];
-          const bz = basePositions[i3 + 2];
-          const wave = 1.0 + 0.038 * Math.sin(waveClock * 2.2 + (by * 0.09) + (bx * 0.07));
-          posArr[i3] = bx * wave;
-          posArr[i3 + 1] = by * wave;
-          posArr[i3 + 2] = bz * wave;
+      if (state.activeSpatialMode === "mesh") {
+        if (!isDragging) {
+          networkMeshGroup.rotation.y += 0.002;
+          networkMeshGroup.rotation.x += 0.0006;
+          networkMeshGroup.rotation.y += (targetRotY - networkMeshGroup.rotation.y) * 0.035;
+          networkMeshGroup.rotation.x += (targetRotX - networkMeshGroup.rotation.x) * 0.035;
         }
-        partGeo.attributes.position.needsUpdate = true;
-      }
 
-      if (!isDragging) {
-        wireframeGlobe.rotation.y += 0.002;
-        particleMesh.rotation.y += 0.002;
+        // Pulse data packets along edges
+        pulseMeshes.forEach(pMesh => {
+          pMesh.userData.progress += pMesh.userData.speed;
+          if (pMesh.userData.progress > 1) pMesh.userData.progress = 0;
+          const pair = edgePairs[pMesh.userData.edgeIndex];
+          if (pair) {
+            pMesh.position.lerpVectors(pair.from, pair.to, pMesh.userData.progress);
+          }
+        });
 
-        ringGroup.rotation.z += 0.0035;
-        ringGroup.rotation.y += 0.0018;
+        // Core node pulsating breathing effect
+        if (coreNodeMesh) {
+          const pulseScale = 1.0 + 0.08 * Math.sin(waveClock * 2.5);
+          coreNodeMesh.scale.set(pulseScale, pulseScale, pulseScale);
+        }
 
-        globeGroup.rotation.y += (targetRotY - globeGroup.rotation.y) * 0.035;
-        globeGroup.rotation.x += (targetRotX - globeGroup.rotation.x) * 0.035;
+        // Orient halos towards camera
+        interactiveMeshNodes.forEach(n => {
+          if (n.userData && n.userData.halo) {
+            n.userData.halo.quaternion.copy(camera.quaternion);
+          }
+        });
+      } else {
+        // Subtle dynamic 3D undulating wave oscillation across particles
+        if (partGeo && partGeo.attributes && partGeo.attributes.position) {
+          const posArr = partGeo.attributes.position.array;
+          for (let i = 0; i < particleCount; i++) {
+            const i3 = i * 3;
+            const bx = basePositions[i3];
+            const by = basePositions[i3 + 1];
+            const bz = basePositions[i3 + 2];
+            const wave = 1.0 + 0.038 * Math.sin(waveClock * 2.2 + (by * 0.09) + (bx * 0.07));
+            posArr[i3] = bx * wave;
+            posArr[i3 + 1] = by * wave;
+            posArr[i3 + 2] = bz * wave;
+          }
+          partGeo.attributes.position.needsUpdate = true;
+        }
+
+        if (!isDragging) {
+          wireframeGlobe.rotation.y += 0.002;
+          particleMesh.rotation.y += 0.002;
+
+          ringGroup.rotation.z += 0.0035;
+          ringGroup.rotation.y += 0.0018;
+
+          globeGroup.rotation.y += (targetRotY - globeGroup.rotation.y) * 0.035;
+          globeGroup.rotation.x += (targetRotX - globeGroup.rotation.x) * 0.035;
+        }
       }
 
       renderer.render(scene, camera);
@@ -635,15 +878,236 @@ function initLiveClock() {
   setInterval(tick, 1000);
 }
 
+// ============================================================
+// FEATURE E: NATURAL LANGUAGE "ASK RADAR" PARSING & BADGE CONTROLLER
+// ============================================================
+function parseNaturalLanguageQuery(rawQuery) {
+  if (!rawQuery || typeof rawQuery !== "string") return null;
+  const q = rawQuery.trim();
+  if (q.length < 3) return null;
+
+  const intents = {
+    raw: rawQuery,
+    city: null,
+    category: null,
+    priority: null,
+    isFree: false,
+    hasClash: false,
+    month: null,
+    residualQuery: ""
+  };
+
+  let recognizedCount = 0;
+  let remaining = q.toLowerCase();
+
+  // 1. City extraction
+  if (/\b(tanta)\b/i.test(remaining)) {
+    intents.city = "tanta";
+    remaining = remaining.replace(/\b(in\s+)?tanta\b/gi, " ");
+    recognizedCount++;
+  } else if (/\b(cairo)\b/i.test(remaining)) {
+    intents.city = "cairo";
+    remaining = remaining.replace(/\b(in\s+)?cairo\b/gi, " ");
+    recognizedCount++;
+  } else if (/\b(alex|alexandria)\b/i.test(remaining)) {
+    intents.city = "alexandria";
+    remaining = remaining.replace(/\b(in\s+)?(alex|alexandria)\b/gi, " ");
+    recognizedCount++;
+  } else if (/\b(mansoura)\b/i.test(remaining)) {
+    intents.city = "mansoura";
+    remaining = remaining.replace(/\b(in\s+)?mansoura\b/gi, " ");
+    recognizedCount++;
+  } else if (/\b(assiut|asyut)\b/i.test(remaining)) {
+    intents.city = "assiut";
+    remaining = remaining.replace(/\b(in\s+)?(assiut|asyut)\b/gi, " ");
+    recognizedCount++;
+  } else if (/\b(giza)\b/i.test(remaining)) {
+    intents.city = "giza";
+    remaining = remaining.replace(/\b(in\s+)?giza\b/gi, " ");
+    recognizedCount++;
+  }
+
+  // 2. Category extraction
+  if (/\b(hackathon|hackathons|tech|stem|ai|coding|software|developer)\b/i.test(remaining)) {
+    intents.category = "Technology & Hackathons";
+    remaining = remaining.replace(/\b(hackathons?|tech|stem|ai|coding|software|developer)\b/gi, " ");
+    recognizedCount++;
+  } else if (/\b(career|job|jobs|employment|internship|internships|fair|fairs)\b/i.test(remaining)) {
+    intents.category = "Career Fair & Employment";
+    remaining = remaining.replace(/\b(career|jobs?|employment|internships?|fairs?)\b/gi, " ");
+    recognizedCount++;
+  } else if (/\b(summit|summits|flagship|flagships)\b/i.test(remaining)) {
+    intents.category = "Flagship Summits";
+    remaining = remaining.replace(/\b(summits?|flagships?)\b/gi, " ");
+    recognizedCount++;
+  } else if (/\b(youth|leadership|student\s*org)\b/i.test(remaining)) {
+    intents.category = "Youth Leadership & Student Orgs";
+    remaining = remaining.replace(/\b(youth|leadership|student\s*org)\b/gi, " ");
+    recognizedCount++;
+  }
+
+  // 3. Free admission
+  if (/\b(free|zero\s*cost|no\s*ticket|complimentary)\b/i.test(remaining)) {
+    intents.isFree = true;
+    remaining = remaining.replace(/\b(free|zero\s*cost|no\s*ticket|complimentary)\b/gi, " ");
+    recognizedCount++;
+  }
+
+  // 4. High Priority
+  if (/\b(high|urgent|top|best|priority|recommended)\b/i.test(remaining)) {
+    intents.priority = "HIGH";
+    remaining = remaining.replace(/\b(high|urgent|top|best|priority|recommended)\b/gi, " ");
+    recognizedCount++;
+  }
+
+  // 5. Clashes / Conflicts
+  if (/\b(clash|clashes|conflict|conflicts|overlap|competing)\b/i.test(remaining)) {
+    intents.hasClash = true;
+    remaining = remaining.replace(/\b(clash(es)?|conflicts?|overlap|competing)\b/gi, " ");
+    recognizedCount++;
+  }
+
+  // 6. Month / Timeline
+  const months = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december", "jan", "feb", "mar", "apr", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
+  for (const m of months) {
+    const rx = new RegExp(`\\b(in\\s+)?${m}\\b`, "i");
+    if (rx.test(remaining)) {
+      intents.month = m.slice(0, 3).toUpperCase();
+      remaining = remaining.replace(rx, " ");
+      recognizedCount++;
+      break;
+    }
+  }
+
+  // Clean remaining stop words
+  remaining = remaining.replace(/\b(in|at|for|the|a|an|events?|opportunities|radar|show|me|find|all|any)\b/gi, " ").trim();
+  intents.residualQuery = remaining.replace(/\s+/g, " ").trim();
+
+  return recognizedCount > 0 ? intents : null;
+}
+
+function renderSearchIntentPills(intents) {
+  const container = document.getElementById("search-intent-pills");
+  if (!container) return;
+
+  if (!intents) {
+    container.innerHTML = "";
+    container.classList.add("hidden");
+    return;
+  }
+
+  const chips = [];
+
+  if (intents.city) {
+    chips.push(`
+      <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-[#00E5FF]/15 text-[#38BDF8] border border-[#00E5FF]/30 font-semibold shadow-sm">
+        <span>📍 ${intents.city.toUpperCase()}</span>
+        <button type="button" class="btn-clear-intent hover:text-white ml-1 font-bold" data-intent-key="city" title="Remove filter">✕</button>
+      </span>
+    `);
+  }
+
+  if (intents.category) {
+    chips.push(`
+      <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-[#A855F7]/15 text-[#C084FC] border border-[#A855F7]/30 font-semibold shadow-sm">
+        <span>🏷️ ${intents.category}</span>
+        <button type="button" class="btn-clear-intent hover:text-white ml-1 font-bold" data-intent-key="category" title="Remove filter">✕</button>
+      </span>
+    `);
+  }
+
+  if (intents.isFree) {
+    chips.push(`
+      <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 font-semibold shadow-sm">
+        <span>🎟️ Free Admission</span>
+        <button type="button" class="btn-clear-intent hover:text-white ml-1 font-bold" data-intent-key="isFree" title="Remove filter">✕</button>
+      </span>
+    `);
+  }
+
+  if (intents.priority) {
+    chips.push(`
+      <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-rose-500/15 text-rose-300 border border-rose-500/30 font-semibold shadow-sm">
+        <span>★ High Priority</span>
+        <button type="button" class="btn-clear-intent hover:text-white ml-1 font-bold" data-intent-key="priority" title="Remove filter">✕</button>
+      </span>
+    `);
+  }
+
+  if (intents.hasClash) {
+    chips.push(`
+      <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-amber-500/15 text-amber-300 border border-amber-500/30 font-semibold shadow-sm">
+        <span>⚠️ Clashes Only</span>
+        <button type="button" class="btn-clear-intent hover:text-white ml-1 font-bold" data-intent-key="hasClash" title="Remove filter">✕</button>
+      </span>
+    `);
+  }
+
+  if (intents.month) {
+    chips.push(`
+      <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-blue-500/15 text-blue-300 border border-blue-500/30 font-semibold shadow-sm">
+        <span>📅 ${intents.month}</span>
+        <button type="button" class="btn-clear-intent hover:text-white ml-1 font-bold" data-intent-key="month" title="Remove filter">✕</button>
+      </span>
+    `);
+  }
+
+  if (chips.length > 0) {
+    chips.push(`
+      <button type="button" id="btn-clear-all-intents" class="text-[10px] text-slate-400 hover:text-white underline font-medium ml-1">
+        Clear All
+      </button>
+    `);
+    container.innerHTML = `<span class="text-slate-400 text-[9px] uppercase tracking-wider font-bold">Ask Radar:</span> ` + chips.join("");
+    container.classList.remove("hidden");
+
+    // Clear individual intent button handlers
+    container.querySelectorAll(".btn-clear-intent").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const key = btn.dataset.intentKey;
+        if (state.activeIntents) {
+          state.activeIntents[key] = key === "isFree" || key === "hasClash" ? false : null;
+          const hasAny = Boolean(state.activeIntents.city || state.activeIntents.category || state.activeIntents.isFree || state.activeIntents.priority || state.activeIntents.hasClash || state.activeIntents.month);
+          if (!hasAny) {
+            state.activeIntents = null;
+          }
+          renderSearchIntentPills(state.activeIntents);
+          fetchEvents();
+        }
+      });
+    });
+
+    const clearAll = document.getElementById("btn-clear-all-intents");
+    if (clearAll) {
+      clearAll.addEventListener("click", (e) => {
+        e.stopPropagation();
+        state.activeIntents = null;
+        renderSearchIntentPills(null);
+        inputSearch.value = "";
+        state.search = "";
+        fetchEvents();
+      });
+    }
+  } else {
+    container.innerHTML = "";
+    container.classList.add("hidden");
+  }
+}
+
 function setupEventListeners() {
-  // Search typing with smooth debounce
+  // Natural Language "Ask Radar" & Search typing with smooth debounce
   let searchTimeout = null;
   inputSearch.addEventListener("input", (e) => {
     clearTimeout(searchTimeout);
+    const rawVal = e.target.value;
     searchTimeout = setTimeout(() => {
-      state.search = e.target.value.trim();
+      const intents = parseNaturalLanguageQuery(rawVal);
+      state.activeIntents = intents;
+      renderSearchIntentPills(intents);
+      state.search = rawVal.trim();
       fetchEvents();
-    }, 200);
+    }, 180);
   });
 
   // Sorting
@@ -809,6 +1273,12 @@ function setupEventListeners() {
       inputSearch.focus();
       inputSearch.select();
     }
+    // Global Keyboard Shortcut 'T': Cycle theme accents instantly
+    if (e.key.toLowerCase() === "t" && !["INPUT", "TEXTAREA"].includes(document.activeElement?.tagName)) {
+      e.preventDefault();
+      cycleNextTheme();
+      return;
+    }
     if (e.key === "Escape") {
       if (!pitchModal.classList.contains("hidden")) {
         closePitchModal();
@@ -948,41 +1418,51 @@ function switchView(view) {
 // THEME ACCENT CONTROLLER
 // ============================================================
 const THEME_ACCENTS = {
-  blue: { hex: 0x037ef3, css: "#037EF3", glow: "rgba(3, 126, 243, 0.45)", border: "rgba(3, 126, 243, 0.4)" },
-  gold: { hex: 0xf59e0b, css: "#F59E0B", glow: "rgba(245, 158, 11, 0.45)", border: "rgba(245, 158, 11, 0.4)" },
-  cyan: { hex: 0x00e5ff, css: "#00E5FF", glow: "rgba(0, 229, 255, 0.45)", border: "rgba(0, 229, 255, 0.4)" },
-  coral: { hex: 0xff4d36, css: "#FF4D36", glow: "rgba(255, 77, 54, 0.45)", border: "rgba(255, 77, 54, 0.4)" },
-  emerald: { hex: 0x10b981, css: "#10B981", glow: "rgba(16, 185, 129, 0.45)", border: "rgba(16, 185, 129, 0.4)" }
+  blue: { name: "Electric Blue", hex: 0x037ef3, css: "#037EF3", glow: "rgba(3, 126, 243, 0.45)", border: "rgba(3, 126, 243, 0.4)" },
+  gold: { name: "Sunlight Gold", hex: 0xf59e0b, css: "#F59E0B", glow: "rgba(245, 158, 11, 0.45)", border: "rgba(245, 158, 11, 0.4)" },
+  cyan: { name: "Neon Cyan", hex: 0x00e5ff, css: "#00E5FF", glow: "rgba(0, 229, 255, 0.45)", border: "rgba(0, 229, 255, 0.4)" },
+  coral: { name: "Sunset Coral", hex: 0xff4d36, css: "#FF4D36", glow: "rgba(255, 77, 54, 0.45)", border: "rgba(255, 77, 54, 0.4)" },
+  emerald: { name: "Emerald Green", hex: 0x10b981, css: "#10B981", glow: "rgba(16, 185, 129, 0.45)", border: "rgba(16, 185, 129, 0.4)" },
+  purple: { name: "Synthwave Violet", hex: 0xa855f7, css: "#A855F7", glow: "rgba(168, 85, 247, 0.45)", border: "rgba(168, 85, 247, 0.4)" },
+  crimson: { name: "Crimson Stealth", hex: 0xf43f5e, css: "#F43F5E", glow: "rgba(244, 63, 94, 0.45)", border: "rgba(244, 63, 94, 0.4)" }
 };
 
-function setTheme(themeName) {
-  if (!THEME_ACCENTS[themeName]) themeName = "blue";
-  state.currentTheme = themeName;
-  const tObj = THEME_ACCENTS[themeName];
+const THEME_CYCLE_KEYS = Object.keys(THEME_ACCENTS);
 
+function applyThemeTokens(themeName) {
+  const tObj = THEME_ACCENTS[themeName] || THEME_ACCENTS.blue;
   if (themeName === "blue") {
     document.documentElement.removeAttribute("data-theme");
   } else {
     document.documentElement.setAttribute("data-theme", themeName);
   }
 
-  // Directly assign CSS custom variables on root for instantaneous visual reactivity
   document.documentElement.style.setProperty("--theme-accent", tObj.css);
   document.documentElement.style.setProperty("--theme-accent-glow", tObj.glow);
   document.documentElement.style.setProperty("--theme-accent-border", tObj.border);
   document.documentElement.style.setProperty("--aiesec-blue", tObj.css);
   document.documentElement.style.setProperty("--aiesec-blue-glow", tObj.css);
 
-  try {
-    localStorage.setItem("aiesec_theme", themeName);
-  } catch (e) {
-    console.warn("Could not save theme to localStorage:", e);
-  }
-
   const indicator = document.getElementById("theme-accent-indicator");
   if (indicator) {
     indicator.style.backgroundColor = tObj.css;
     indicator.style.boxShadow = `0 0 10px ${tObj.glow}`;
+  }
+
+  if (typeof globeController !== "undefined" && typeof globeController.updateThemeColor === "function") {
+    globeController.updateThemeColor(tObj.hex);
+  }
+}
+
+function setTheme(themeName) {
+  if (!THEME_ACCENTS[themeName]) themeName = "blue";
+  state.currentTheme = themeName;
+  applyThemeTokens(themeName);
+
+  try {
+    localStorage.setItem("aiesec_theme", themeName);
+  } catch (e) {
+    console.warn("Could not save theme to localStorage:", e);
   }
 
   // Update checkmarks in dropdown
@@ -994,24 +1474,70 @@ function setTheme(themeName) {
       else check.classList.add("hidden");
     }
   });
+}
 
-  // Re-color Three.js 3D globe wireframe in real-time
-  if (typeof globeController !== "undefined" && typeof globeController.updateThemeColor === "function") {
-    globeController.updateThemeColor(tObj.hex);
+function previewTheme(themeName) {
+  if (THEME_ACCENTS[themeName]) {
+    applyThemeTokens(themeName);
+  }
+}
+
+function revertThemePreview() {
+  applyThemeTokens(state.currentTheme);
+}
+
+function cycleNextTheme() {
+  const currentIdx = THEME_CYCLE_KEYS.indexOf(state.currentTheme);
+  const nextIdx = (currentIdx + 1) % THEME_CYCLE_KEYS.length;
+  const nextTheme = THEME_CYCLE_KEYS[nextIdx];
+  setTheme(nextTheme);
+  showToast(`Theme: ${THEME_ACCENTS[nextTheme].name} (Press T to cycle)`, "info");
+}
+
+function setCanvasContrast(mode) {
+  state.canvasMode = mode;
+  if (mode === "obsidian") {
+    document.documentElement.setAttribute("data-canvas", "obsidian");
+  } else {
+    document.documentElement.removeAttribute("data-canvas");
+  }
+  try {
+    localStorage.setItem("aiesec_canvas_mode", mode);
+  } catch (e) {}
+
+  const btnNebula = document.getElementById("btn-canvas-nebula");
+  const btnObsidian = document.getElementById("btn-canvas-obsidian");
+  if (btnNebula && btnObsidian) {
+    if (mode === "obsidian") {
+      btnObsidian.className = "px-2 py-1 rounded-lg text-[10px] font-bold bg-[#037EF3]/20 text-[#38BDF8] border border-[#037EF3]/30 transition active:scale-95 text-center";
+      btnNebula.className = "px-2 py-1 rounded-lg text-[10px] font-bold bg-white/[0.05] text-slate-300 hover:text-white border border-white/10 transition active:scale-95 text-center";
+    } else {
+      btnNebula.className = "px-2 py-1 rounded-lg text-[10px] font-bold bg-[#037EF3]/20 text-[#38BDF8] border border-[#037EF3]/30 transition active:scale-95 text-center";
+      btnObsidian.className = "px-2 py-1 rounded-lg text-[10px] font-bold bg-white/[0.05] text-slate-300 hover:text-white border border-white/10 transition active:scale-95 text-center";
+    }
   }
 }
 
 function initThemeAccent() {
   let saved = "blue";
+  let savedCanvas = "nebula";
   try {
     saved = localStorage.getItem("aiesec_theme") || "blue";
+    savedCanvas = localStorage.getItem("aiesec_canvas_mode") || "nebula";
   } catch (e) {
     saved = "blue";
   }
   setTheme(saved);
+  setCanvasContrast(savedCanvas);
 
   const btnTheme = document.getElementById("btn-theme-accent");
   const menuTheme = document.getElementById("menu-theme-accent");
+  const btnNebula = document.getElementById("btn-canvas-nebula");
+  const btnObsidian = document.getElementById("btn-canvas-obsidian");
+
+  if (btnNebula) btnNebula.addEventListener("click", () => setCanvasContrast("nebula"));
+  if (btnObsidian) btnObsidian.addEventListener("click", () => setCanvasContrast("obsidian"));
+
   if (btnTheme && menuTheme) {
     btnTheme.addEventListener("click", (e) => {
       e.stopPropagation();
@@ -1021,6 +1547,7 @@ function initThemeAccent() {
     document.addEventListener("click", (e) => {
       if (!btnTheme.contains(e.target) && !menuTheme.contains(e.target)) {
         menuTheme.classList.add("hidden");
+        revertThemePreview();
       }
     });
 
@@ -1030,7 +1557,16 @@ function initThemeAccent() {
         const t = item.dataset.theme;
         setTheme(t);
         menuTheme.classList.add("hidden");
-        showToast(`Theme accent updated: ${item.innerText.trim()}`, "info");
+        showToast(`Theme: ${THEME_ACCENTS[t]?.name || t}`, "info");
+      });
+
+      // Live hover preview
+      item.addEventListener("mouseenter", () => {
+        const t = item.dataset.theme;
+        previewTheme(t);
+      });
+      item.addEventListener("mouseleave", () => {
+        revertThemePreview();
       });
     });
   }
@@ -1250,6 +1786,12 @@ async function fetchEvents() {
     clash_only: state.clashesOnly
   });
 
+  if (state.activeIntents) {
+    if (state.activeIntents.city && state.city === "all") params.set("city", state.activeIntents.city);
+    if (state.activeIntents.category && state.category === "all") params.set("category", state.activeIntents.category);
+    if (state.activeIntents.priority && state.priority === "all") params.set("priority", state.activeIntents.priority);
+  }
+
   try {
     const res = await fetch(`/api/events?${params}`);
     if (!res.ok) throw new Error(`HTTP error ${res.status}`);
@@ -1390,8 +1932,53 @@ async function loadStaticEventsFallback() {
       filtered = filtered.filter(e => (e.source || "").toLowerCase().includes(state.source.toLowerCase()));
     }
 
-    // Search filter
-    if (state.search && state.search.trim()) {
+    // Search filter & Natural Language Intent Filtering (Ask Radar)
+    if (state.activeIntents) {
+      const it = state.activeIntents;
+      if (it.city) {
+        filtered = filtered.filter(e => (e.city || "").toLowerCase().includes(it.city.toLowerCase()));
+      }
+      if (it.category) {
+        const catTarget = it.category.toLowerCase();
+        filtered = filtered.filter(e => {
+          const evCat = (e.category || "").toLowerCase();
+          const evTitle = (e.title || "").toLowerCase();
+          if (evCat.includes(catTarget)) return true;
+          if (catTarget.includes("tech") && (evCat.includes("tech") || evTitle.includes("tech") || evTitle.includes("ai") || evTitle.includes("hackathon"))) return true;
+          if (catTarget.includes("flagship") && (evCat.includes("flagship") || (e.b2c_score && e.b2c_score >= 9.0) || evTitle.includes("techne") || evTitle.includes("riseup"))) return true;
+          if (catTarget.includes("career") && (evCat.includes("career") || evCat.includes("employment") || evTitle.includes("job") || evTitle.includes("career"))) return true;
+          if (catTarget.includes("youth") && (evCat.includes("youth") || evCat.includes("leadership") || evTitle.includes("youth") || evTitle.includes("leader"))) return true;
+          return false;
+        });
+      }
+      if (it.isFree) {
+        filtered = filtered.filter(e => {
+          const t = (e.ticket_type || "").toLowerCase();
+          const desc = (e.description || "").toLowerCase();
+          return t.includes("free") || desc.includes("free") || !t || t.includes("zero");
+        });
+      }
+      if (it.priority) {
+        filtered = filtered.filter(e => (e.b2c_priority || "").toUpperCase() === it.priority.toUpperCase());
+      }
+      if (it.hasClash) {
+        filtered = filtered.filter(e => Boolean(e.clash_warning));
+      }
+      if (it.month) {
+        filtered = filtered.filter(e => {
+          const dateStr = (e.date_display || "").toUpperCase();
+          return dateStr.includes(it.month);
+        });
+      }
+      if (it.residualQuery) {
+        const rq = it.residualQuery.toLowerCase();
+        filtered = filtered.filter(e =>
+          (e.title || "").toLowerCase().includes(rq) ||
+          (e.description || "").toLowerCase().includes(rq) ||
+          (e.location || "").toLowerCase().includes(rq)
+        );
+      }
+    } else if (state.search && state.search.trim()) {
       const q = state.search.toLowerCase();
       filtered = filtered.filter(e =>
         (e.title || "").toLowerCase().includes(q) ||
@@ -1530,6 +2117,14 @@ function renderCards() {
     const sourcePill = getSourcePill(ev.source);
 
     card.innerHTML = `
+      <!-- Tactical Target Lock-On HUD Reticles (Feature B) -->
+      <div class="hud-reticle-bracket hud-reticle-tl"></div>
+      <div class="hud-reticle-bracket hud-reticle-tr"></div>
+      <div class="hud-reticle-bracket hud-reticle-bl"></div>
+      <div class="hud-reticle-bracket hud-reticle-br"></div>
+      <div class="hud-scan-line"></div>
+      <div class="hud-target-pill">LOCK ${ev.event_id ? ev.event_id.slice(-4).toUpperCase() : 'B2C'}</div>
+
       <div class="space-y-3.5">
         <!-- Top Tags & Meta Stream Bar -->
         <div class="flex items-center justify-between gap-2 flex-wrap">
