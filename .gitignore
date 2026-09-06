@@ -23,3 +23,8 @@ data/*
 # OS Specific
 .DS_Store
 Thumbs.db
+
+# Build Artifacts & Distribution
+*.egg-info/
+build/
+dist/

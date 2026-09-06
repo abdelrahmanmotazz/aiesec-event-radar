@@ -20,11 +20,19 @@ dependencies = [
     "gspread>=6.0.0",
     "google-auth>=2.20.0",
     "python-dateutil>=2.8.2",
+    "fastapi>=0.110.0",
+    "uvicorn>=0.28.0",
+    "google-genai>=0.1.0",
     "pytest>=8.0.0",
 ]
 
 [project.scripts]
 aiesec-scraper = "aiesec_scraper.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["aiesec_scraper*"]
+exclude = ["data*", "docs*", "tests*", "scripts*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

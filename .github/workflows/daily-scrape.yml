@@ -42,6 +42,7 @@ jobs:
           git add events.json docs/events.json aiesec_scraper/web/static/events.json data/
           if ! git diff --staged --quiet; then
             git commit -m "chore(auto-sync): daily event radar refresh [$(date +'%Y-%m-%d')]"
+            git pull --rebase origin main
             git push origin main
           else
             echo "Radar database is already up to date. No changes detected."
