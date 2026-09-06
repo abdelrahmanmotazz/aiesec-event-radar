@@ -84,3 +84,23 @@ def test_api_leads_search():
     assert "sponsorship" in first_lead["role_category"]
 
 
+def test_api_stats():
+    response = client.get("/api/stats")
+    assert response.status_code == 200
+    data = response.json()
+    assert data["success"] is True
+    assert "total_events" in data
+    assert "high_priority" in data
+    assert "flagship_events" in data
+
+
+def test_api_exports():
+    res_csv = client.get("/api/export/csv")
+    assert res_csv.status_code == 200
+    assert "text/csv" in res_csv.headers.get("content-type", "")
+
+    res_xlsx = client.get("/api/export/excel")
+    assert res_xlsx.status_code == 200
+    assert len(res_xlsx.content) > 1000
+
+

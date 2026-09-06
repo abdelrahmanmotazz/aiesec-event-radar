@@ -1,3 +1,4 @@
+from contextlib import asynccontextmanager
 import logging
 import os
 from datetime import datetime
@@ -18,7 +19,14 @@ from ..analyzers.pitch_generator import PitchGenerator
 
 logger = logging.getLogger(__name__)
 
-app = FastAPI(title="AIESEC Egypt B2C Event Radar", version="2.0.0")
+
+@asynccontextmanager
+async def lifespan(app_instance: FastAPI):
+    load_initial_events()
+    yield
+
+
+app = FastAPI(title="AIESEC Egypt B2C Event Radar", version="2.0.0", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
@@ -139,11 +147,6 @@ def load_initial_events():
             LOCAL_EXPORTER.export(events)
         except Exception:
             pass
-
-
-@app.on_event("startup")
-def startup_event():
-    load_initial_events()
 
 
 # Seed CACHED_EVENTS on initial module load
@@ -269,9 +272,9 @@ def get_events(
 
 class PitchRequest(BaseModel):
     event_id: str
-    member_name: str
-    member_email: str
-    member_phone: str
+    member_name: str = "Abdelrahman Motazz"
+    member_email: str = "abdelrahman.motazz@aiesec.net"
+    member_phone: str = "+20 10 1234 5678"
     purpose: str = "event_collaboration"
     custom_notes: Optional[str] = None
 
@@ -322,6 +325,7 @@ def verify_event_proof(req: ProofVerifyRequest):
     return {
         "event_id": req.event_id,
         "is_verified": True,
+        "is_valid": True,
         "proof_url": proof_url,
         "proof_domain": domain,
         "proof_type": target_event.proof_type if target_event else "Official Announcement Post",
@@ -491,16 +495,39 @@ def search_event_leads(req: LeadSearchRequest):
     }
 
 
+@app.get("/api/stats")
+def get_stats():
+    """Return high-level radar statistics."""
+    total = len(CACHED_EVENTS)
+    high = sum(1 for e in CACHED_EVENTS if (e.b2c_priority or "").upper() == "HIGH")
+    medium = sum(1 for e in CACHED_EVENTS if (e.b2c_priority or "").upper() == "MEDIUM")
+    low = sum(1 for e in CACHED_EVENTS if (e.b2c_priority or "").upper() == "LOW")
+    flagships = sum(1 for e in CACHED_EVENTS if (e.category or "").lower().startswith("flagship") or (e.b2c_score and e.b2c_score >= 9.5))
+    tanta = sum(1 for e in CACHED_EVENTS if "tanta" in (e.city or "").lower())
+    return {
+        "success": True,
+        "total_events": total,
+        "high_priority": high,
+        "medium_priority": medium,
+        "low_priority": low,
+        "flagship_events": flagships,
+        "tanta_events": tanta,
+    }
+
+
 class ScrapeRequest(BaseModel):
     city: Optional[str] = None
     country: str = "egypt"
 
 
 @app.post("/api/scrape")
-def trigger_scrape(req: ScrapeRequest):
+@app.post("/api/scrape-now")
+def trigger_scrape(req: Optional[ScrapeRequest] = None):
     """Trigger a live scrape across event discovery platforms."""
     global CACHED_EVENTS
-    events = PIPELINE.run(city=req.city, country=req.country)
+    city = req.city if req else None
+    country = req.country if req else "egypt"
+    events = PIPELINE.run(city=city, country=country)
     CACHED_EVENTS = events
     LOCAL_EXPORTER.export(events)
     return {
