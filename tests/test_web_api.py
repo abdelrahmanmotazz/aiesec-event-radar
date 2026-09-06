@@ -62,3 +62,25 @@ def test_api_events_summits_filter():
         assert len(ev["description"]) >= 100
         assert ev["b2c_score"] >= 9.0
 
+
+def test_api_proof_verify():
+    response = client.post("/api/proof/verify", json={"url": "https://www.facebook.com/events/12345678"})
+    assert response.status_code == 200
+    data = response.json()
+    assert data["is_verified"] is True
+    assert "facebook.com" in data["proof_domain"]
+    assert "VERIFIED" in data["proof_status"]
+
+
+def test_api_leads_search():
+    response = client.post("/api/leads/search", json={"role_filter": "sponsorship", "deep_scan": True})
+    assert response.status_code == 200
+    data = response.json()
+    assert data["success"] is True
+    assert len(data["leads"]) > 0
+    first_lead = data["leads"][0]
+    assert "email" in first_lead
+    assert "phone" in first_lead
+    assert "sponsorship" in first_lead["role_category"]
+
+

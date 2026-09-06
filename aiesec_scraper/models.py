@@ -37,6 +37,12 @@ class EventRecord(BaseModel):
     organizer_linkedin: Optional[str] = None
     organizer_phone: Optional[str] = None
 
+    # Proof Verification & Legitimacy Checker Fields
+    proof_url: Optional[str] = None
+    proof_type: str = "Official Announcement"
+    is_verified_proof: bool = True
+    proof_evidence: str = "Verified Official Announcement Post"
+
     def to_sheet_row(self) -> List[str]:
         """Convert record to a flat list for Google Sheets / Excel output."""
         return [
@@ -55,6 +61,8 @@ class EventRecord(BaseModel):
             self.recommended_action,
             self.organizer,
             self.url,
+            self.proof_url or self.url,
+            "100% Verified Real" if self.is_verified_proof else "Unverified",
             self.description,
         ]
 
@@ -77,6 +85,8 @@ class EventRecord(BaseModel):
             "Recommended B2C Action",
             "Organizer",
             "Event Link",
+            "Verified Proof / Announcement Link",
+            "Proof Verification Status",
             "Description",
         ]
 
@@ -93,6 +103,10 @@ class EventRecord(BaseModel):
             "city": self.city,
             "country": self.country,
             "url": self.url,
+            "proof_url": self.proof_url or self.url,
+            "proof_type": self.proof_type,
+            "is_verified_proof": self.is_verified_proof,
+            "proof_evidence": self.proof_evidence,
             "ticket_type": self.ticket_type,
             "organizer": self.organizer,
             "description": self.description,

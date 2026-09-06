@@ -205,6 +205,13 @@
           </div>
         </div>
 
+        <!-- Smart Autonomous Lead Hunter AI Button -->
+        <button id="btn-open-lead-hunter" class="flex items-center gap-1.5 bg-gradient-to-r from-amber-500/20 via-orange-500/20 to-amber-600/20 hover:from-amber-500/30 hover:to-orange-500/30 text-amber-300 border border-amber-500/40 hover:border-amber-400 text-xs font-bold px-2.5 sm:px-3 py-2 rounded-xl transition shadow-[0_0_15px_rgba(245,158,11,0.2)] active:scale-95 group shrink-0" title="Autonomous Lead Hunter AI: Discover Organizers & Key Contacts">
+          <i data-lucide="crosshair" class="w-3.5 h-3.5 text-amber-400 group-hover:rotate-45 transition-transform"></i>
+          <span class="hidden sm:inline">Lead Hunter</span>
+          <span class="px-1.5 py-0.2 rounded-md bg-amber-500/30 text-[9px] font-black uppercase text-amber-200">AI</span>
+        </button>
+
         <button id="btn-open-cmd-palette" class="hidden sm:flex items-center gap-1.5 bg-white/[0.05] hover:bg-white/[0.1] text-slate-300 hover:text-white border border-white/10 hover:border-white/20 text-xs font-semibold px-2 sm:px-3 py-2 rounded-xl transition shadow-sm active:scale-95 group" title="Open Command Palette (Ctrl+K)">
           <i data-lucide="search" class="w-3.5 h-3.5 text-sky-400 group-hover:scale-110 transition-transform"></i>
           <span class="hidden sm:inline">Command</span>
@@ -903,6 +910,51 @@
             </div>
           </div>
 
+          <!-- Event Authenticity & Proof Checker (Real Post & Announcement Proof Engine) -->
+          <div id="drawer-proof-checker-box" class="p-3.5 rounded-2xl bg-gradient-to-br from-emerald-500/[0.08] to-emerald-950/[0.2] border border-emerald-500/25 space-y-2.5">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <div class="w-7 h-7 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0 shadow-[0_0_12px_rgba(16,185,129,0.3)]">
+                  <i data-lucide="shield-check" class="w-4 h-4"></i>
+                </div>
+                <div>
+                  <h4 class="text-xs font-black text-white font-display flex items-center gap-1.5">
+                    Event Authenticity & Proof Checker
+                  </h4>
+                  <p class="text-[10px] text-emerald-300 font-medium">Verified Active Announcement Proof</p>
+                </div>
+              </div>
+              <span id="drawer-proof-status-badge" class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 flex items-center gap-1">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span>100% Real Event</span>
+              </span>
+            </div>
+
+            <!-- Proof Details Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+              <div class="p-2 rounded-xl bg-black/40 border border-white/[0.06]">
+                <span class="text-[9px] font-bold text-slate-400 uppercase block">Proof Type</span>
+                <span id="drawer-proof-type" class="text-[11px] font-semibold text-slate-200">Official Social Post Announcement</span>
+              </div>
+              <div class="p-2 rounded-xl bg-black/40 border border-white/[0.06]">
+                <span class="text-[9px] font-bold text-slate-400 uppercase block">Verification Source</span>
+                <span id="drawer-proof-source" class="text-[11px] font-semibold text-slate-200">Official Event Platform</span>
+              </div>
+            </div>
+
+            <!-- Announcement Post Direct Link Action -->
+            <div class="pt-1 flex items-center gap-2">
+              <a id="drawer-proof-link" href="#" target="_blank" class="flex-1 py-2 px-3 rounded-xl bg-emerald-500/20 hover:bg-emerald-500 text-emerald-300 hover:text-white border border-emerald-500/40 text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-[0_0_12px_rgba(16,185,129,0.2)] active:scale-95">
+                <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                <span>Open Announcement Post Proof ↗</span>
+              </a>
+              <button id="drawer-btn-ping-proof" class="py-2 px-3 rounded-xl bg-white/[0.06] hover:bg-white/[0.12] text-slate-300 hover:text-white border border-white/10 text-xs font-semibold transition active:scale-95 flex items-center gap-1" title="Ping proof link">
+                <i data-lucide="activity" class="w-3.5 h-3.5 text-emerald-400"></i>
+                <span id="drawer-ping-text">Check URL</span>
+              </button>
+            </div>
+          </div>
+
           <!-- Description -->
           <div class="space-y-2">
             <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
@@ -927,7 +979,7 @@
               <span id="drawer-organizer-name" class="font-bold text-white font-display">Organizing Committee</span>
             </div>
 
-            <!-- 4-Channel Outreach Quick Launch Grid -->
+            <!-- 4-Channel Outreach Quick Launch Grid with Authentic Brand Logos -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1" id="drawer-organizer-channels">
               <!-- Email Pitch -->
               <a id="drawer-contact-email" href="#" class="flex items-center gap-2.5 p-2 rounded-xl bg-white/[0.04] hover:bg-sky-500/15 border border-white/10 hover:border-sky-500/30 transition group cursor-pointer">
@@ -940,10 +992,12 @@
                 </div>
               </a>
 
-              <!-- LinkedIn Scout -->
+              <!-- LinkedIn Scout (Official LinkedIn SVG Logo) -->
               <a id="drawer-contact-linkedin" href="#" target="_blank" class="flex items-center gap-2.5 p-2 rounded-xl bg-white/[0.04] hover:bg-blue-600/15 border border-white/10 hover:border-blue-500/30 transition group cursor-pointer">
-                <div class="w-7 h-7 rounded-lg bg-blue-600/20 text-blue-300 flex items-center justify-center shrink-0 group-hover:scale-105 transition">
-                  <i data-lucide="linkedin" class="w-3.5 h-3.5"></i>
+                <div class="w-7 h-7 rounded-lg bg-[#0A66C2]/20 text-[#0A66C2] flex items-center justify-center shrink-0 group-hover:scale-105 transition">
+                  <svg class="w-3.5 h-3.5 fill-[#0A66C2]" viewBox="0 0 24 24">
+                    <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.2V10.9H6.46M7.83 6.64a1.64 1.64 0 1 0 0 3.28 1.64 1.64 0 0 0 0-3.28Z"/>
+                  </svg>
                 </div>
                 <div class="min-w-0">
                   <div class="text-[10px] font-bold text-slate-400 uppercase">LinkedIn</div>
@@ -951,10 +1005,14 @@
                 </div>
               </a>
 
-              <!-- Instagram DM -->
+              <!-- Instagram DM (Official Instagram SVG Logo) -->
               <a id="drawer-contact-instagram" href="#" class="flex items-center gap-2.5 p-2 rounded-xl bg-white/[0.04] hover:bg-pink-500/15 border border-white/10 hover:border-pink-500/30 transition group cursor-pointer">
-                <div class="w-7 h-7 rounded-lg bg-pink-500/20 text-pink-300 flex items-center justify-center shrink-0 group-hover:scale-105 transition">
-                  <i data-lucide="instagram" class="w-3.5 h-3.5"></i>
+                <div class="w-7 h-7 rounded-lg bg-[#E1306C]/20 text-[#E1306C] flex items-center justify-center shrink-0 group-hover:scale-105 transition">
+                  <svg class="w-3.5 h-3.5 text-[#E1306C] fill-none stroke-current stroke-2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                  </svg>
                 </div>
                 <div class="min-w-0">
                   <div class="text-[10px] font-bold text-slate-400 uppercase">Instagram DM</div>
@@ -962,16 +1020,26 @@
                 </div>
               </a>
 
-              <!-- WhatsApp Direct / Phone -->
+              <!-- WhatsApp Direct / Phone (Official WhatsApp SVG Logo) -->
               <a id="drawer-contact-phone" href="#" class="flex items-center gap-2.5 p-2 rounded-xl bg-white/[0.04] hover:bg-emerald-500/15 border border-white/10 hover:border-emerald-500/30 transition group cursor-pointer">
-                <div class="w-7 h-7 rounded-lg bg-emerald-500/20 text-emerald-300 flex items-center justify-center shrink-0 group-hover:scale-105 transition">
-                  <i data-lucide="phone-call" class="w-3.5 h-3.5"></i>
+                <div class="w-7 h-7 rounded-lg bg-[#25D366]/20 text-[#25D366] flex items-center justify-center shrink-0 group-hover:scale-105 transition">
+                  <svg class="w-3.5 h-3.5 fill-[#25D366]" viewBox="0 0 24 24">
+                    <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2m.01 1.67c2.2 0 4.26.86 5.82 2.42a8.23 8.23 0 0 1 2.41 5.83c0 4.54-3.7 8.24-8.24 8.24-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.2 8.2 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24m4.52 11.66c-.25-.13-1.47-.72-1.7-.81-.23-.08-.39-.13-.56.13-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.13-1.06-.39-2.02-1.25-.75-.67-1.26-1.5-1.4-1.75-.15-.25-.02-.39.11-.51.11-.11.25-.29.37-.44.13-.14.17-.25.25-.42.08-.17.04-.31-.02-.44-.06-.13-.56-1.35-.77-1.85-.2-.49-.41-.42-.56-.43h-.48c-.17 0-.44.06-.67.31-.23.25-.88.86-.88 2.1 0 1.23.9 2.43 1.02 2.6.13.17 1.77 2.7 4.29 3.78.6.26 1.07.41 1.44.53.6.19 1.15.16 1.58.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.15-1.18-.06-.12-.22-.19-.47-.32"/>
+                  </svg>
                 </div>
                 <div class="min-w-0">
                   <div class="text-[10px] font-bold text-slate-400 uppercase">WhatsApp / Call</div>
                   <div id="drawer-contact-phone-val" class="text-[11px] font-semibold text-slate-200 truncate">+20 Contact</div>
                 </div>
               </a>
+            </div>
+
+            <!-- Launch Lead Hunter for This Event -->
+            <div class="pt-1.5">
+              <button id="drawer-btn-lead-hunt" class="w-full py-2 px-3 rounded-xl bg-gradient-to-r from-amber-500/20 to-orange-500/20 hover:from-amber-500/30 hover:to-orange-500/30 text-amber-300 border border-amber-500/40 text-xs font-bold transition flex items-center justify-center gap-2 active:scale-95 shadow-[0_0_14px_rgba(245,158,11,0.2)]">
+                <i data-lucide="crosshair" class="w-3.5 h-3.5 text-amber-400"></i>
+                <span>Scout All Event Leads (OC, BD & PR)</span>
+              </button>
             </div>
           </div>
 
@@ -1089,6 +1157,114 @@
       </div>
 
     </div>
+  <!-- Smart Autonomous Lead Hunter AI Modal Console -->
+  <div id="lead-hunter-modal" class="fixed inset-0 z-50 bg-black/85 hidden flex items-center justify-center p-3 sm:p-6 transition-all" role="dialog" aria-modal="true">
+    <div id="lead-hunter-container" class="w-full max-w-4xl bg-[#080D1D] border border-amber-500/30 rounded-3xl shadow-[0_25px_90px_rgba(0,0,0,0.95)] overflow-hidden flex flex-col max-h-[90vh]">
+      
+      <!-- Lead Hunter Header -->
+      <div class="p-4 sm:p-5 border-b border-white/10 flex items-center justify-between bg-gradient-to-r from-amber-500/10 via-orange-500/5 to-transparent shrink-0">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-2xl bg-amber-500/20 border border-amber-500/40 text-amber-400 flex items-center justify-center shrink-0 shadow-[0_0_20px_rgba(245,158,11,0.3)]">
+            <i data-lucide="crosshair" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h2 class="text-base sm:text-lg font-black text-white font-display">Smart Lead Hunter AI</h2>
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-500/25 text-amber-300 border border-amber-500/40 uppercase tracking-wider">Autonomous Scout</span>
+            </div>
+            <p class="text-xs text-slate-400">Discover Organizing Committees, Sponsorship Heads & Key Event Leads with Verified Contacts</p>
+          </div>
+        </div>
+        <button id="btn-close-lead-hunter" class="w-9 h-9 rounded-xl bg-white/[0.08] hover:bg-white/[0.18] border border-white/10 flex items-center justify-center text-slate-300 hover:text-white transition active:scale-95" aria-label="Close Lead Hunter">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <!-- Lead Hunter Controls Toolbar -->
+      <div class="p-4 border-b border-white/10 bg-white/[0.02] space-y-3 shrink-0">
+        <div class="grid grid-cols-1 sm:grid-cols-12 gap-3">
+          <!-- Event Scope Selector -->
+          <div class="sm:col-span-6">
+            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Target Event Scope</label>
+            <select id="lead-hunt-event-select" class="w-full p-2.5 bg-[#050A16] border border-white/15 rounded-xl text-white text-xs outline-none focus:border-amber-400 cursor-pointer font-medium">
+              <option value="all">⚡ Global Deep Scan: All 300 Monitored Events</option>
+            </select>
+          </div>
+
+          <!-- Keyword / Entity Filter -->
+          <div class="sm:col-span-6">
+            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Filter Leads or University</label>
+            <div class="relative">
+              <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-2.5"></i>
+              <input id="lead-hunt-search-input" type="text" placeholder="Search name, entity, university, city..." 
+                     class="w-full pl-9 pr-3 py-2 bg-[#050A16] border border-white/15 rounded-xl text-white text-xs outline-none focus:border-amber-400">
+            </div>
+          </div>
+        </div>
+
+        <!-- Role Category Quick Filter Tabs & Scan Action -->
+        <div class="flex items-center justify-between gap-3 flex-wrap pt-1">
+          <div class="flex items-center gap-1.5 flex-wrap" id="lead-role-tabs">
+            <button data-role="all" class="lead-role-tab px-3 py-1.5 rounded-lg text-xs font-bold transition active:scale-95 bg-amber-500/25 text-amber-300 border border-amber-500/40">
+              All Roles (<span id="count-role-all">0</span>)
+            </button>
+            <button data-role="sponsorship" class="lead-role-tab px-3 py-1.5 rounded-lg text-xs font-semibold transition active:scale-95 bg-white/[0.04] text-slate-400 hover:text-white border border-white/10">
+              🤝 Sponsorship & BD
+            </button>
+            <button data-role="leadership" class="lead-role-tab px-3 py-1.5 rounded-lg text-xs font-semibold transition active:scale-95 bg-white/[0.04] text-slate-400 hover:text-white border border-white/10">
+              👑 OC Presidents
+            </button>
+            <button data-role="marketing" class="lead-role-tab px-3 py-1.5 rounded-lg text-xs font-semibold transition active:scale-95 bg-white/[0.04] text-slate-400 hover:text-white border border-white/10">
+              📢 Marketing & PR
+            </button>
+            <button data-role="delegate_relations" class="lead-role-tab px-3 py-1.5 rounded-lg text-xs font-semibold transition active:scale-95 bg-white/[0.04] text-slate-400 hover:text-white border border-white/10">
+              🎓 Youth Delegates
+            </button>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <button id="btn-run-deep-scan" class="px-4 py-2 bg-gradient-to-r from-amber-500 to-orange-600 hover:brightness-110 text-slate-950 font-black text-xs rounded-xl shadow-[0_0_18px_rgba(245,158,11,0.4)] flex items-center gap-1.5 transition active:scale-95">
+              <i data-lucide="zap" class="w-4 h-4 fill-current"></i>
+              <span>Launch Deep Scan</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Real-Time Progress Telemetry Bar (Visible During Scan) -->
+        <div id="lead-scan-progress-box" class="hidden space-y-1.5 pt-2 border-t border-white/[0.06]">
+          <div class="flex items-center justify-between text-[11px]">
+            <span id="lead-scan-status-text" class="text-amber-300 font-mono flex items-center gap-1.5">
+              <i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin"></i> Initializing Deep Neural Lead Miner...
+            </span>
+            <span id="lead-scan-pct" class="text-slate-400 font-mono font-bold">0%</span>
+          </div>
+          <div class="w-full bg-white/10 h-1.5 rounded-full overflow-hidden">
+            <div id="lead-scan-progress-bar" class="h-full bg-gradient-to-r from-amber-400 to-orange-500 transition-all duration-300 w-0"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Discovered Leads Scrollable Grid -->
+      <div id="lead-hunter-results-grid" class="p-4 sm:p-5 overflow-y-auto flex-1 grid grid-cols-1 md:grid-cols-2 gap-3.5" style="overscroll-behavior-y: contain; -webkit-overflow-scrolling: touch;">
+        <!-- Injected dynamically by JS -->
+      </div>
+
+      <!-- Lead Hunter Footer Controls -->
+      <div class="p-4 bg-white/[0.02] border-t border-white/10 flex items-center justify-between flex-wrap gap-2 text-xs shrink-0">
+        <div class="flex items-center gap-2 text-slate-400">
+          <span>Found <strong id="lead-hunter-total-count" class="text-amber-400 font-black">0</strong> Verified Event Leads</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <button id="btn-export-leads-csv" class="px-3 py-1.5 rounded-xl bg-white/[0.06] hover:bg-white/[0.12] text-slate-200 border border-white/10 font-bold flex items-center gap-1.5 transition active:scale-95">
+            <i data-lucide="download" class="w-3.5 h-3.5 text-sky-400"></i> Export Leads (CSV)
+          </button>
+          <button id="btn-copy-all-lead-emails" class="px-3.5 py-1.5 rounded-xl bg-amber-500/20 hover:bg-amber-500 text-amber-300 hover:text-slate-950 border border-amber-500/40 font-bold flex items-center gap-1.5 transition active:scale-95">
+            <i data-lucide="copy" class="w-3.5 h-3.5"></i> Copy All Emails
+          </button>
+        </div>
+      </div>
+
+    </div>
   </div>
 
   <!-- Mobile Bottom Quick Navigation Bar (md:hidden) -->
@@ -1096,6 +1272,10 @@
     <button id="mobile-btn-cmd" class="flex flex-col items-center gap-0.5 text-slate-300 hover:text-sky-400 transition active:scale-95">
       <i data-lucide="search" class="w-4 h-4 text-sky-400"></i>
       <span class="text-[9px] font-semibold">Search</span>
+    </button>
+    <button id="mobile-btn-lead-hunt" class="flex flex-col items-center gap-0.5 text-slate-300 hover:text-amber-400 transition active:scale-95">
+      <i data-lucide="crosshair" class="w-4 h-4 text-amber-400"></i>
+      <span class="text-[9px] font-semibold">Leads</span>
     </button>
     <button id="mobile-btn-flagships" class="flex flex-col items-center gap-0.5 text-slate-300 hover:text-amber-400 transition active:scale-95">
       <i data-lucide="crown" class="w-4 h-4 text-amber-400"></i>
