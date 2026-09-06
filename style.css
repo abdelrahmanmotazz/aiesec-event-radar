@@ -892,12 +892,52 @@ body::before {
 }
 
 /* ============================================================
-   FEATURE B: TACTICAL TARGET LOCK-ON & HUD RETICLE INTERACTIONS
+   FEATURE 1: 3D HOLOGRAPHIC CARD TILT & IRIDESCENT SHEEN
    ============================================================ */
+#container-cards {
+  perspective: 1400px;
+}
+
 .radar-card {
   position: relative;
   overflow: hidden;
+  transform-style: preserve-3d;
+  will-change: transform;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease, border-color 0.3s ease;
 }
+
+/* Prismatic Holographic Iridescent Sheen Layer */
+.holographic-sheen {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 10;
+  opacity: 0;
+  mix-blend-mode: color-dodge;
+  background: radial-gradient(
+    circle 450px at var(--sheen-x, 50%) var(--sheen-y, 50%),
+    rgba(255, 255, 255, 0.24) 0%,
+    var(--theme-accent-subtle, rgba(0, 229, 255, 0.16)) 28%,
+    rgba(168, 85, 247, 0.09) 55%,
+    transparent 80%
+  );
+  transition: opacity 0.35s ease;
+}
+
+.radar-card:hover .holographic-sheen {
+  opacity: 1;
+}
+
+.radar-card:hover {
+  box-shadow: 
+    0 24px 48px -12px rgba(0, 0, 0, 0.75),
+    0 0 28px var(--theme-accent-glow, rgba(3, 126, 243, 0.22));
+}
+
+/* ============================================================
+   FEATURE B: TACTICAL TARGET LOCK-ON & HUD RETICLE INTERACTIONS
+   ============================================================ */
 
 /* HUD Reticle Corner Brackets */
 .hud-reticle-bracket {

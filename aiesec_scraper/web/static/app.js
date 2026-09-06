@@ -86,6 +86,8 @@ document.addEventListener("DOMContentLoaded", () => {
   initTopicChips();
   initEventDrawer();
   initThreeRadar();
+  initAmbientCosmicDust();
+  initCardTiltPhysics();
   initSmoothMouseLighting();
   initLiveClock();
   setupEventListeners();
@@ -879,6 +881,278 @@ function initLiveClock() {
 }
 
 // ============================================================
+// FEATURE 6: INTERACTIVE MOUSE-REPELLENT COSMIC DUST MATRIX
+// ============================================================
+let cosmicDustController = {
+  updateTheme: null
+};
+
+function initAmbientCosmicDust() {
+  const canvas = document.getElementById("threejs-radar-canvas");
+  if (!canvas) return;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return;
+
+  let width = 0;
+  let height = 0;
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+  function resize() {
+    width = window.innerWidth;
+    height = window.innerHeight;
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
+    canvas.style.width = `${width}px`;
+    canvas.style.height = `${height}px`;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  resize();
+
+  // Particle population
+  const isMobile = window.innerWidth < 768;
+  const particleCount = isMobile ? 42 : 80;
+  const particles = [];
+
+  const THEME_DUST_PALETTES = {
+    blue: ["#00E5FF", "#037EF3", "#38BDF8", "#93C5FD"],
+    gold: ["#F59E0B", "#FBBF24", "#FCD34D", "#D97706"],
+    cyan: ["#00E5FF", "#06B6D4", "#22D3EE", "#67E8F9"],
+    coral: ["#FF4D36", "#FB7185", "#F43F5E", "#FDA4AF"],
+    emerald: ["#10B981", "#34D399", "#6EE7B7", "#059669"],
+    purple: ["#A855F7", "#C084FC", "#E879F9", "#7E22CE"],
+    crimson: ["#F43F5E", "#FB7185", "#E11D48", "#FDA4AF"]
+  };
+
+  let activeColors = THEME_DUST_PALETTES[state.currentTheme] || THEME_DUST_PALETTES.blue;
+
+  cosmicDustController.updateTheme = (themeName) => {
+    activeColors = THEME_DUST_PALETTES[themeName] || THEME_DUST_PALETTES.blue;
+    particles.forEach(p => {
+      p.color = activeColors[Math.floor(Math.random() * activeColors.length)];
+    });
+  };
+
+  for (let i = 0; i < particleCount; i++) {
+    particles.push({
+      x: Math.random() * width,
+      y: Math.random() * height,
+      vx: (Math.random() - 0.5) * 0.2,
+      vy: -(0.12 + Math.random() * 0.3),
+      ambientVx: (Math.random() - 0.5) * 0.18,
+      ambientVy: -(0.08 + Math.random() * 0.22),
+      radius: 0.8 + Math.random() * 1.8,
+      baseAlpha: 0.2 + Math.random() * 0.55,
+      pulsePhase: Math.random() * Math.PI * 2,
+      pulseSpeed: 0.015 + Math.random() * 0.025,
+      color: activeColors[Math.floor(Math.random() * activeColors.length)]
+    });
+  }
+
+  // Mouse & Touch Tracking for dynamic repulsion
+  const mouse = { x: -2000, y: -2000, active: false };
+
+  window.addEventListener("mousemove", (e) => {
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
+    mouse.active = true;
+  }, { passive: true });
+
+  window.addEventListener("touchmove", (e) => {
+    if (e.touches && e.touches.length > 0) {
+      mouse.x = e.touches[0].clientX;
+      mouse.y = e.touches[0].clientY;
+      mouse.active = true;
+    }
+  }, { passive: true });
+
+  window.addEventListener("touchend", () => {
+    mouse.active = false;
+  });
+
+  window.addEventListener("mouseleave", () => {
+    mouse.active = false;
+  });
+
+  let resizeTimer = null;
+  window.addEventListener("resize", () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(resize, 200);
+  });
+
+  // Animation Loop with tab throttle
+  let isRunning = true;
+  document.addEventListener("visibilitychange", () => {
+    isRunning = !document.hidden;
+  });
+
+  const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  function renderDust() {
+    if (isRunning) {
+      ctx.clearRect(0, 0, width, height);
+
+      const isObsidian = state.canvasMode === "obsidian";
+      const repelRadius = isMobile ? 95 : 145;
+      const repelStrength = isMobile ? 1.5 : 2.2;
+
+      // 1. Update and draw dust particles
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
+
+        if (!prefersReduced) {
+          // Repulsion physics from cursor
+          if (mouse.active) {
+            const dx = p.x - mouse.x;
+            const dy = p.y - mouse.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+
+            if (dist < repelRadius && dist > 1) {
+              const force = (1 - dist / repelRadius) * repelStrength;
+              const angle = Math.atan2(dy, dx);
+              p.vx += Math.cos(angle) * force;
+              p.vy += Math.sin(angle) * force;
+            }
+          }
+
+          p.vx *= 0.94;
+          p.vy *= 0.94;
+
+          p.x += p.vx + p.ambientVx;
+          p.y += p.vy + p.ambientVy;
+
+          if (p.x < -20) p.x = width + 20;
+          else if (p.x > width + 20) p.x = -20;
+          if (p.y < -20) p.y = height + 20;
+          else if (p.y > height + 20) p.y = -20;
+        }
+
+        p.pulsePhase += p.pulseSpeed;
+        const alpha = Math.max(0.08, Math.min(0.85, p.baseAlpha + Math.sin(p.pulsePhase) * 0.2));
+        const drawColor = isObsidian ? "#E2E8F0" : p.color;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fillStyle = drawColor;
+        ctx.globalAlpha = isObsidian ? alpha * 0.85 : alpha * 0.65;
+        ctx.fill();
+
+        if (p.radius > 1.5) {
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.radius * 2.2, 0, Math.PI * 2);
+          ctx.fillStyle = drawColor;
+          ctx.globalAlpha = alpha * 0.15;
+          ctx.fill();
+        }
+      }
+
+      // 2. Interconnecting neural constellation lines
+      const maxConnectDist = isMobile ? 55 : 85;
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const p1 = particles[i];
+          const p2 = particles[j];
+          const dx = p1.x - p2.x;
+          const dy = p1.y - p2.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+
+          if (dist < maxConnectDist) {
+            const lineAlpha = (1 - dist / maxConnectDist) * (isObsidian ? 0.08 : 0.13);
+            ctx.beginPath();
+            ctx.moveTo(p1.x, p1.y);
+            ctx.lineTo(p2.x, p2.y);
+            ctx.strokeStyle = activeColors[0];
+            ctx.globalAlpha = lineAlpha;
+            ctx.lineWidth = 0.55;
+            ctx.stroke();
+          }
+        }
+      }
+
+      ctx.globalAlpha = 1.0;
+    }
+    requestAnimationFrame(renderDust);
+  }
+  requestAnimationFrame(renderDust);
+}
+
+// ============================================================
+// FEATURE 1: 3D HOLOGRAPHIC CARD TILT & IRIDESCENT SHEEN CONTROLLER
+// ============================================================
+function initCardTiltPhysics() {
+  const container = document.getElementById("container-cards");
+  if (!container) return;
+
+  let activeCard = null;
+
+  container.addEventListener("mousemove", (e) => {
+    const card = e.target.closest(".radar-card");
+    if (!card) {
+      if (activeCard) {
+        resetCardTilt(activeCard);
+        activeCard = null;
+      }
+      return;
+    }
+
+    if (activeCard && activeCard !== card) {
+      resetCardTilt(activeCard);
+    }
+    activeCard = card;
+
+    const rect = card.getBoundingClientRect();
+    const cx = e.clientX - rect.left;
+    const cy = e.clientY - rect.top;
+
+    const nx = (cx / rect.width) * 2 - 1; // -1 to 1
+    const ny = (cy / rect.height) * 2 - 1;
+
+    const maxTilt = 7.0; // max degrees
+    const tiltX = (-ny * maxTilt).toFixed(2);
+    const tiltY = (nx * maxTilt).toFixed(2);
+
+    card.style.transition = "none";
+    card.style.transform = `perspective(1100px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) scale3d(1.018, 1.018, 1.018)`;
+    card.style.setProperty("--sheen-x", `${cx}px`);
+    card.style.setProperty("--sheen-y", `${cy}px`);
+  });
+
+  container.addEventListener("mouseleave", () => {
+    if (activeCard) {
+      resetCardTilt(activeCard);
+      activeCard = null;
+    }
+  });
+
+  function resetCardTilt(card) {
+    card.style.transition = "transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease";
+    card.style.transform = "perspective(1100px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)";
+  }
+
+  // Mobile Gyroscope Parallax Physics (DeviceOrientation API)
+  if (window.DeviceOrientationEvent && "ontouchstart" in window) {
+    window.addEventListener("deviceorientation", (e) => {
+      if (e.gamma == null || e.beta == null) return;
+      const gamma = Math.max(-20, Math.min(20, e.gamma)); // left to right tilt
+      const beta = Math.max(-20, Math.min(20, e.beta - 45)); // holding tilt
+
+      const cards = document.querySelectorAll(".radar-card");
+      cards.forEach((c) => {
+        const rect = c.getBoundingClientRect();
+        if (rect.top < window.innerHeight && rect.bottom > 0) {
+          const tiltY = (gamma * 0.22).toFixed(2);
+          const tiltX = (-beta * 0.22).toFixed(2);
+          c.style.transform = `perspective(1000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
+          const sheenX = ((gamma + 20) / 40) * rect.width;
+          const sheenY = ((beta + 20) / 40) * rect.height;
+          c.style.setProperty("--sheen-x", `${sheenX}px`);
+          c.style.setProperty("--sheen-y", `${sheenY}px`);
+        }
+      });
+    }, { passive: true });
+  }
+}
+
+// ============================================================
 // FEATURE E: NATURAL LANGUAGE "ASK RADAR" PARSING & BADGE CONTROLLER
 // ============================================================
 function parseNaturalLanguageQuery(rawQuery) {
@@ -1451,6 +1725,10 @@ function applyThemeTokens(themeName) {
 
   if (typeof globeController !== "undefined" && typeof globeController.updateThemeColor === "function") {
     globeController.updateThemeColor(tObj.hex);
+  }
+
+  if (typeof cosmicDustController !== "undefined" && typeof cosmicDustController.updateTheme === "function") {
+    cosmicDustController.updateTheme(themeName);
   }
 }
 
@@ -2117,6 +2395,9 @@ function renderCards() {
     const sourcePill = getSourcePill(ev.source);
 
     card.innerHTML = `
+      <!-- Prismatic Holographic Iridescent Sheen (Feature 1) -->
+      <div class="holographic-sheen"></div>
+
       <!-- Tactical Target Lock-On HUD Reticles (Feature B) -->
       <div class="hud-reticle-bracket hud-reticle-tl"></div>
       <div class="hud-reticle-bracket hud-reticle-tr"></div>
