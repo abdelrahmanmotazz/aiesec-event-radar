@@ -35,3 +35,26 @@ def test_negative_control_casual_post():
     casual_post = "Had a great cup of coffee this morning with friends in Zamalek. Weather is lovely today!"
     assert analyzer.is_event_post(casual_post) is False
     assert analyzer.analyze(casual_post)["is_event"] is False
+
+
+def test_registration_link_extraction():
+    analyzer = CaptionAnalyzer()
+    post_with_form = (
+        "IEEE CUSB Annual Robotics Challenge 2026! Applications are open now.\n"
+        "Fill the form to register your team: https://forms.gle/xYz987AbCdEf\n"
+        "Venue: Cairo University Engineering Quad."
+    )
+    assert analyzer.is_event_post(post_with_form) is True
+    analysis = analyzer.analyze(post_with_form)
+    assert analysis["is_event"] is True
+    assert analysis["registration_url"] == "https://forms.gle/xYz987AbCdEf"
+
+
+def test_franco_and_student_union_caption():
+    analyzer = CaptionAnalyzer()
+    franco_caption = "Tanta University Student Union bootcamp! segel now el link fel bio for free admission."
+    assert analyzer.is_event_post(franco_caption) is True
+    analysis = analyzer.analyze(franco_caption)
+    assert analysis["is_event"] is True
+    assert analysis["city"] == "Tanta"
+

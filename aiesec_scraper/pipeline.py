@@ -229,6 +229,14 @@ class EventPipeline:
                     if t.lower() not in existing_tags_set:
                         matched_existing.aiesec_tags.append(t)
                         existing_tags_set.add(t.lower())
+                if not matched_existing.post_direct_url and ev.post_direct_url:
+                    matched_existing.post_direct_url = ev.post_direct_url
+                if not matched_existing.organizer_profile_url and ev.organizer_profile_url:
+                    matched_existing.organizer_profile_url = ev.organizer_profile_url
+                if not matched_existing.registration_url and ev.registration_url:
+                    matched_existing.registration_url = ev.registration_url
+                if ev.is_social_first:
+                    matched_existing.is_social_first = True
             else:
                 seen_ids[ev.event_id] = ev
                 if canon_url:
@@ -408,11 +416,23 @@ class EventPipeline:
                         ev.organizer_instagram = handle
 
             # 3. Ensure proof of authenticity and announcement URL are populated
-            if not ev.proof_url:
-                ev.proof_url = ev.url or "https://facebook.com/events"
-            if not ev.proof_type:
-                ev.proof_type = "Ticketsmarche Verified Registry" if "ticket" in (ev.source or "").lower() else "Official Announcement Post"
-            if not ev.proof_evidence:
+            best_direct_link = ev.post_direct_url or ev.organizer_profile_url or ev.url
+            if not ev.proof_url or "search" in ev.proof_url.lower():
+                ev.proof_url = best_direct_link or "https://facebook.com/events"
+            elif ev.post_direct_url:
+                ev.proof_url = ev.post_direct_url
+
+            if ev.post_direct_url:
+                ev.proof_type = "Direct Social Announcement Post"
+            elif not ev.proof_type or ev.proof_type == "Official Announcement":
+                if "ticket" in (ev.source or "").lower():
+                    ev.proof_type = "Ticketsmarche Verified Registry"
+                else:
+                    ev.proof_type = "Official Organizer Announcement"
+
+            if ev.post_direct_url:
+                ev.proof_evidence = f"Direct announcement post verified via {ev.source or 'Social Channel'}"
+            elif not ev.proof_evidence:
                 ev.proof_evidence = f"Verified public event listing via {ev.source or 'Official Channel'}"
             ev.is_verified_proof = True
 

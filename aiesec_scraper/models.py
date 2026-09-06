@@ -42,6 +42,10 @@ class EventRecord(BaseModel):
     proof_type: str = "Official Announcement"
     is_verified_proof: bool = True
     proof_evidence: str = "Verified Official Announcement Post"
+    registration_url: Optional[str] = None
+    organizer_profile_url: Optional[str] = None
+    post_direct_url: Optional[str] = None
+    is_social_first: bool = False
 
     def to_sheet_row(self) -> List[str]:
         """Convert record to a flat list for Google Sheets / Excel output."""
@@ -123,4 +127,8 @@ class EventRecord(BaseModel):
             "organizer_instagram": self.organizer_instagram,
             "organizer_linkedin": self.organizer_linkedin,
             "organizer_phone": self.organizer_phone,
+            "registration_url": self.registration_url,
+            "organizer_profile_url": self.organizer_profile_url,
+            "post_direct_url": self.post_direct_url,
+            "is_social_first": self.is_social_first,
         }

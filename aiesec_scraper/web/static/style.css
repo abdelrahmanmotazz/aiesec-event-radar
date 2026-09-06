@@ -1448,6 +1448,20 @@ html, body {
   opacity: 0.85;
 }
 
+.laser-border-beam.beam-social {
+  --beam-c1: #00E5FF;
+  --beam-c2: #38BDF8;
+  opacity: 0.85;
+}
+
+.badge-social-first {
+  background: rgba(0, 229, 255, 0.15);
+  color: #00E5FF;
+  border: 1px solid rgba(0, 229, 255, 0.35);
+  box-shadow: 0 0 10px rgba(0, 229, 255, 0.2);
+  letter-spacing: 0.02em;
+}
+
 .laser-border-beam.beam-default {
   --beam-c1: var(--theme-accent, var(--solar-beam-1, #00E5FF));
   --beam-c2: var(--theme-accent-glow, var(--solar-beam-2, #38BDF8));

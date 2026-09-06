@@ -32,6 +32,7 @@ let state = {
   search: "",
   partnersOnly: false,
   clashesOnly: false,
+  socialOnly: false,
   activePitchEvent: null,
   activeDrawerEvent: null,
   activeTopic: "all",
@@ -57,6 +58,7 @@ const selectCity = document.getElementById("select-city");
 const selectSource = document.getElementById("select-source");
 const checkPartnersOnly = document.getElementById("check-partners-only");
 const checkClashesOnly = document.getElementById("check-clashes-only");
+const checkSocialOnly = document.getElementById("check-social-only");
 const btnViewCards = document.getElementById("btn-view-cards");
 const btnViewTable = document.getElementById("btn-view-table");
 const btnViewCalendar = document.getElementById("btn-view-calendar");
@@ -1694,6 +1696,13 @@ function setupEventListeners() {
   }
 
   // Checkboxes
+  if (checkSocialOnly) {
+    checkSocialOnly.addEventListener("change", (e) => {
+      state.socialOnly = e.target.checked;
+      fetchEvents();
+    });
+  }
+
   checkPartnersOnly.addEventListener("change", (e) => {
     state.partnersOnly = e.target.checked;
     fetchEvents();
@@ -2091,9 +2100,18 @@ function initTopicChips() {
         state.category = "all";
         state.priority = "all";
         state.city = "all";
+        state.socialOnly = false;
+        if (checkSocialOnly) checkSocialOnly.checked = false;
         if (selectCategory) selectCategory.value = "all";
         if (selectCity) selectCity.value = "all";
+      } else if (lower.includes("social")) {
+        state.socialOnly = true;
+        if (checkSocialOnly) checkSocialOnly.checked = true;
+        state.category = "all";
+        if (selectCategory) selectCategory.value = "all";
       } else if (lower.includes("flagship")) {
+        state.socialOnly = false;
+        if (checkSocialOnly) checkSocialOnly.checked = false;
         state.category = "Flagship Summits";
         if (selectCategory) selectCategory.value = "Flagship Summits";
       } else if (lower.includes("tech") || lower.includes("stem") || lower.includes("hack")) {
@@ -2343,18 +2361,50 @@ function openEventDrawer(ev) {
   const proofTypeEl = document.getElementById("drawer-proof-type");
   const proofSourceEl = document.getElementById("drawer-proof-source");
   const proofLinkEl = document.getElementById("drawer-proof-link");
+  const proofLinkText = document.getElementById("drawer-proof-link-text");
+  const orgProfileLink = document.getElementById("drawer-organizer-profile-link");
+  const regFormLink = document.getElementById("drawer-registration-form-link");
   const pingBtn = document.getElementById("drawer-btn-ping-proof");
   const pingText = document.getElementById("drawer-ping-text");
   const leadHuntBtn = document.getElementById("drawer-btn-lead-hunt");
 
-  const proofUrl = ev.proof_url || ev.url || "https://facebook.com/events";
-  const proofType = ev.proof_type || (ev.source.toLowerCase().includes("ticket") ? "Ticketsmarche Verified Registry" : "Official Event Announcement Post");
+  const directPostUrl = ev.post_direct_url || (ev.proof_url && !ev.proof_url.includes("search") ? ev.proof_url : null);
+  const orgProfileUrl = ev.organizer_profile_url || null;
+  const regUrl = ev.registration_url || null;
+  const proofUrl = directPostUrl || orgProfileUrl || ev.proof_url || ev.url || "https://facebook.com/events";
+  const proofType = ev.proof_type || (ev.is_social_first ? "Direct Social Announcement Post" : (ev.source.toLowerCase().includes("ticket") ? "Ticketsmarche Verified Registry" : "Official Event Announcement Post"));
 
   if (proofTypeEl) proofTypeEl.innerText = proofType;
   if (proofSourceEl) proofSourceEl.innerText = `${ev.source} Official Channel`;
   if (proofLinkEl) {
     proofLinkEl.href = proofUrl;
     proofLinkEl.setAttribute("title", `Direct Proof URL: ${proofUrl}`);
+  }
+  if (proofLinkText) {
+    proofLinkText.innerText = directPostUrl ? "Open Announcement Post Proof ↗" : "Open Verification Link ↗";
+  }
+
+  // Multi-Channel Proof Hub: Organizer Profile & Registration Form Buttons
+  if (orgProfileLink) {
+    if (orgProfileUrl) {
+      orgProfileLink.href = orgProfileUrl;
+      orgProfileLink.classList.remove("hidden");
+      orgProfileLink.classList.add("flex");
+    } else {
+      orgProfileLink.classList.add("hidden");
+      orgProfileLink.classList.remove("flex");
+    }
+  }
+
+  if (regFormLink) {
+    if (regUrl) {
+      regFormLink.href = regUrl;
+      regFormLink.classList.remove("hidden");
+      regFormLink.classList.add("flex");
+    } else {
+      regFormLink.classList.add("hidden");
+      regFormLink.classList.remove("flex");
+    }
   }
 
   if (pingBtn) {
@@ -2370,6 +2420,20 @@ function openEventDrawer(ev) {
           const data = await res.json();
           showToast(`Verified Live! ${data.proof_domain} is active & confirmed real.`, "success");
           if (pingText) pingText.innerText = "200 OK";
+          if (data.post_direct_url && proofLinkEl) {
+            proofLinkEl.href = data.post_direct_url;
+            if (proofLinkText) proofLinkText.innerText = "Open Announcement Post Proof ↗";
+          }
+          if (data.organizer_account_url && orgProfileLink) {
+            orgProfileLink.href = data.organizer_account_url;
+            orgProfileLink.classList.remove("hidden");
+            orgProfileLink.classList.add("flex");
+          }
+          if (data.registration_url && regFormLink) {
+            regFormLink.href = data.registration_url;
+            regFormLink.classList.remove("hidden");
+            regFormLink.classList.add("flex");
+          }
         } else {
           showToast("Proof URL checked: Active and accessible.", "success");
           if (pingText) pingText.innerText = "Verified";
@@ -2610,7 +2674,8 @@ async function fetchEvents() {
     source: state.source,
     search: state.search,
     partner_only: state.partnersOnly,
-    clash_only: state.clashesOnly
+    clash_only: state.clashesOnly,
+    social_only: state.socialOnly
   });
 
   if (state.activeIntents) {
@@ -2825,6 +2890,11 @@ async function loadStaticEventsFallback() {
       filtered = filtered.filter(e => e.clash_warning);
     }
 
+    // Social First only
+    if (state.socialOnly) {
+      filtered = filtered.filter(e => e.is_social_first || ["facebook", "linkedin", "instagram", "telegram"].some(s => (e.source || "").toLowerCase().includes(s)));
+    }
+
     // Sorting
     if (state.sort === "score_desc") {
       filtered.sort((a, b) => (b.b2c_score || 0) - (a.b2c_score || 0));
@@ -2940,6 +3010,8 @@ function renderCards() {
     } else if (hasPartner) {
       glowClass = "card-partner-glow";
       beamClass = "beam-partner";
+    } else if (ev.is_social_first) {
+      beamClass = "beam-social";
     }
 
     card.className = `radar-card spotlight-card p-5 sm:p-6 flex flex-col justify-between h-full ${glowClass}`;
@@ -2975,9 +3047,10 @@ function renderCards() {
             ${sourcePill}
           </div>
           <div class="flex items-center gap-1.5 flex-wrap justify-end">
-            <a href="${ev.proof_url || ev.url}" target="_blank" onclick="event.stopPropagation()" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 inline-flex items-center gap-1 hover:bg-emerald-500/25 transition" title="100% Real Event • Verified: ${ev.proof_type || 'Announcement Post'}">
+            <a href="${ev.post_direct_url || ev.proof_url || ev.url}" target="_blank" onclick="event.stopPropagation()" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 inline-flex items-center gap-1 hover:bg-emerald-500/25 transition" title="100% Real Event • Verified: ${ev.proof_type || 'Announcement Post'}">
               <i data-lucide="shield-check" class="w-3 h-3 text-emerald-400"></i> Proof ↗
             </a>
+            ${ev.is_social_first ? `<span class="badge-social-first px-2 py-0.5 rounded-full text-[10px] font-bold inline-flex items-center gap-1" title="Social First Announcement"><i data-lucide="zap" class="w-3 h-3 text-cyan-400"></i> Social First</span>` : ""}
             ${isFlagship ? `<span class="badge-flagship-gold px-2.5 py-0.5 rounded-full text-[10px] inline-flex items-center gap-1">👑 Flagship</span>` : ""}
             ${hasPartner ? `<span class="badge-neon-purple px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wide">${ev.parallel_org}</span>` : ""}
             ${hasClash ? `<span class="badge-neon-amber px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wide">⚠️ Weekend Clash</span>` : ""}
@@ -3229,8 +3302,9 @@ function renderTableView(eventsToRender = state.events) {
       <td class="max-w-xs sm:max-w-md">
         <div class="flex items-center gap-1.5 flex-wrap">
           ${isFlagship ? `<span class="text-amber-400 font-bold text-[11px] shrink-0" title="Flagship Summit">👑</span>` : ""}
+          ${ev.is_social_first ? `<span class="text-cyan-400 font-bold text-[11px] shrink-0" title="Social First Announcement">⚡</span>` : ""}
           <a href="${ev.url}" target="_blank" class="font-bold text-white hover:text-[#00E5FF] transition truncate max-w-[240px] sm:max-w-[340px] inline-block font-display" onclick="event.stopPropagation()">${ev.title}</a>
-          <a href="${ev.proof_url || ev.url}" target="_blank" class="text-emerald-400 hover:text-emerald-300 inline-flex items-center gap-0.5 ml-1 text-[10px] font-bold" title="100% Real Event • Verified Proof: ${ev.proof_type || 'Announcement'}" onclick="event.stopPropagation()">
+          <a href="${ev.post_direct_url || ev.proof_url || ev.url}" target="_blank" class="text-emerald-400 hover:text-emerald-300 inline-flex items-center gap-0.5 ml-1 text-[10px] font-bold" title="100% Real Event • Verified Proof: ${ev.proof_type || 'Announcement'}" onclick="event.stopPropagation()">
             <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
           </a>
         </div>

@@ -15,14 +15,45 @@ ARABIC_MONTHS = {
 }
 
 EVENT_TRIGGERS = [
-    # English
+    # English Action & Registration Triggers
     r"\bmeet\s+us\b", r"\bregister\s+now\b", r"\blink\s+in\s+bio\b", r"\bjoin\s+us\b",
-    r"\bcareer\s+fair\b", r"\bhackathon\b", r"\bconference\b", r"\bworkshop\b",
+    r"\bapply\s+now\b", r"\bfill\s+the\s+form\b", r"\bforms?\.gle\b", r"\bgoogle\s+form\b",
+    r"\bfree\s+(admission|entry|ticket|attendance)\b", r"\bopen\s+for\s+all\b",
+    r"\bsave\s+the\s+date\b", r"\bcall\s+for\s+(speakers|delegates|applicants)\b",
+    r"\bapplications?\s+(are\s+)?open\b", r"\brecruitment\s+(is\s+)?open\b",
+    # English Event Formats
+    r"\bcareer\s+fair\b", r"\bemployment\s+fair\b", r"\bjob\s+fair\b", r"\binternship\s+(day|fair)\b",
+    r"\bhackathon\b", r"\bdatathon\b", r"\bideathon\b", r"\bconference\b", r"\bworkshop\b",
     r"\bsummit\b", r"\bevent\b", r"\bbootcamp\b", r"\bwebinar\b", r"\bspeaker\b",
-    # Arabic
-    r"سجل\s+الآن", r"اللينك\s+في\s+البايو", r"معرض\s+التوظيف", r"ملتقى", r"مؤتمر",
-    r"ورشة\s+عمل", r"هاكاثون", r"يوم\s+التوظيف", r"حضور\s+مجاني", r"ندوة", r"فعالية"
+    r"\bsymposium\b", r"\bconclave\b", r"\bcongress\b", r"\bforum\b", r"\bexpo\b",
+    r"\bcase\s+competition\b", r"\brobotics\s+(competition|challenge)\b", r"\bmasterclass\b",
+    r"\binfo\s+session\b", r"\binduction\b", r"\borientation\s+day\b", r"\bwelcome\s+party\b",
+    r"\bcampus\s+activation\b", r"\bgeneral\s+assembly\b",
+    # Student Orgs & Campus Bodies
+    r"\bstudent\s+union\b", r"\bstudent\s+activity\b", r"\bieee\b", r"\benactus\b",
+    r"\bgdsc\b", r"\bgoogle\s+developer\s+student\b", r"\bmsp\b", r"\bmicrosoft\s+student\b",
+    r"\bhult\s+prize\b", r"\baiesec\b", r"\bmodel\s+un\b", r"\bmun\b", r"\bmep\b",
+    r"\bspe\b", r"\baapg\b", r"\basme\b", r"\bformula\s+student\b", r"\bscci\b", r"\bepsf\b",
+    # Arabic Action & Registration Triggers
+    r"سجل\s+(الآن|الان)", r"(اللينك|الرابط)\s+في\s+(البايو|البيو)", r"(اللينك|الرابط)\s+في\s+أول\s+(كومنت|تعليق)",
+    r"(استمارة|فورم)\s+(التقديم|التسجيل)", r"فتح\s+باب\s+(التقديم|التسجيل|الانضمام)", r"انضم\s+إلينا", r"مستنيينكم",
+    r"حضور\s+مجاني", r"التسجيل\s+مجاناً?", r"الدخول\s+بالبطاقة\s+الجامعية", r"(مفتوح|متاح)\s+لجميع\s+الطلاب",
+    r"بدون\s+أي\s+رسوم", r"دعوة\s+عامة", r"احجز\s+مكانك",
+    # Arabic Event Formats
+    r"معرض\s+التوظيف", r"ملتقى\s+التوظيف", r"يوم\s+التوظيف", r"ملتقى\s+توظيف", r"فرص\s+تدريب", r"تدريب\s+صيفي",
+    r"مؤتمر", r"قمة", r"منتدى", r"فعالية", r"فعاليات", r"إيفنت", r"ندوة", r"جلسة\s+حوارية", r"سيشن",
+    r"ورشة\s+عمل", r"وورك\s+شوب", r"هاكاثون", r"مسابقة", r"تحدي\s+البرمجة", r"معسكر\s+تدريبي", r"بوت\s+كامب",
+    r"ريادة\s+أعمال", r"حاضنة\s+أعمال", r"معرض\s+علمي", r"يوم\s+هندسي", r"ملتقى\s+سنوي",
+    # Arabic Student Bodies
+    r"اتحاد\s+طلاب", r"الأنشطة\s+الطلابية", r"نشاط\s+طلابي", r"أسرة\s+طلابية", r"نموذج\s+محاكاة", r"هالت\s+برايز",
+    # Franco / Egyptian Social Media Slang
+    r"\bsegel\s+now\b", r"\bel\s+link\s+fel\s+bio\b", r"\blink\s+fel\s+comment\b", r"\bopen\s+for\s+applicants\b"
 ]
+
+FORM_URL_REGEX = re.compile(
+    r"https?://(?:forms\.gle/[\w\-]+|docs\.google\.com/forms/d/e/[\w\-]+/viewform[^\s\"']*|bit\.ly/[\w\-]+|linktr\.ee/[\w\-]+|t\.me/[\w\-]+/\d+|chat\.whatsapp\.com/[\w\-]+)",
+    re.IGNORECASE
+)
 
 
 class CaptionAnalyzer:
@@ -41,6 +72,13 @@ class CaptionAnalyzer:
                 return True
         return False
 
+    def extract_registration_url(self, caption: str) -> Optional[str]:
+        """Extracts direct Google Form, Bitly, Linktree, or registration links from caption text."""
+        if not caption:
+            return None
+        match = FORM_URL_REGEX.search(caption)
+        return match.group(0) if match else None
+
     def analyze(self, caption: str, flyer_url: Optional[str] = None) -> Dict[str, Any]:
         """
         Analyzes a caption using Gemini AI if configured, or the resilient rule engine.
@@ -53,6 +91,9 @@ class CaptionAnalyzer:
         if self.api_key:
             ai_result = self._analyze_with_gemini(caption, flyer_url)
             if ai_result and ai_result.get("is_event"):
+                # Also ensure registration link extracted if missing in AI response
+                if not ai_result.get("registration_url"):
+                    ai_result["registration_url"] = self.extract_registration_url(caption)
                 return ai_result
 
         # Fallback to local NLP rule engine
@@ -66,29 +107,58 @@ class CaptionAnalyzer:
 
         lines = [line.strip() for line in caption.split("\n") if line.strip()]
         title = lines[0] if lines else "Social Media Event Announcement"
-        if len(title) > 80:
-            title = title[:77] + "..."
+        if len(title) > 90:
+            title = title[:87] + "..."
 
-        # Venue detection
-        venue = "TBA"
-        for v_kw in ["Greek Campus", "AUC", "GUC", "Cairo University", "Alexandria University", "الجامعة الأمريكية", "جامعة القاهرة", "المقر", "MQR", "Online / Zoom"]:
-            if v_kw.lower() in caption.lower():
-                venue = v_kw
+        # Venue detection with expanded Egyptian campus list
+        venue = "Campus Auditorium / TBA"
+        venue_catalogs = [
+            ("The Greek Campus", ["greek campus", "الجريك كامبس", "مقر الجريك"]),
+            ("Cairo University Engineering Quad (CUFE)", ["cufe", "faculty of engineering cairo", "هندسة القاهرة", "جامعة القاهرة"]),
+            ("Ain Shams University Al-Zaafaran Hall", ["ain shams", "عين شمس", "قصر الزعفران", "الزعفران"]),
+            ("Alexandria University Faculty of Commerce", ["alexandria university", "جامعة الإسكندرية", "شاطبي", "مكتبة الإسكندرية"]),
+            ("Tanta University Sebor Campus (Hall 3)", ["tanta university", "جامعة طنطا", "مجمع سبرباي", "سبرباي", "طنطا"]),
+            ("Mansoura University Convention Center", ["mansoura university", "جامعة المنصورة", "حاسبات المنصورة"]),
+            ("Creativa Innovation Hub (Giza Hub)", ["creativa", "كرياتيفا", "itida", "ايتيدا", "tiec"]),
+            ("AUC New Cairo Campus & Venture Lab", ["auc", "الجامعة الأمريكية", "new cairo"]),
+            ("GUC Main Campus Complex", ["guc", "الجامعة الألمانية"]),
+            ("Bibliotheca Alexandrina Conference Center", ["bibliotheca alexandrina", "مكتبة الإسكندرية"]),
+            ("Jesuit Cultural Center Alexandria", ["jesuit", "الجزويت", "مركز الجزويت"]),
+            ("Rawabet Art Space Downtown Cairo", ["rawabet", "روابط"]),
+            ("Online / Telegram Live Stream", ["online", "zoom", "teams", "بث مباشر", "أونلاين", "اونلاين", "webinar"])
+        ]
+        caption_lower = caption.lower()
+        for v_name, v_triggers in venue_catalogs:
+            if any(vt in caption_lower for vt in v_triggers):
+                venue = v_name
                 break
 
-        # City detection
+        # City detection with expanded Egyptian governorates
         city = "Cairo"
-        for c in ["Alexandria", "Giza", "Mansoura", "Assiut", "Hurghada", "الإسكندرية", "الجيزة", "المنصورة"]:
-            if c.lower() in caption.lower():
-                city = c
+        city_triggers = [
+            ("Alexandria", ["alexandria", "إسكندرية", "اسكندرية", "الإسكندرية", "الاسكندرية", "شاطبي", "سموحة"]),
+            ("Tanta", ["tanta", "طنطا", "الغربية", "gharbia", "سبرباي"]),
+            ("Mansoura", ["mansoura", "المنصورة", "الدقهلية", "dakahlia"]),
+            ("Assiut", ["assiut", "أسيوط", "اسيوط"]),
+            ("Giza", ["giza", "الجيزة", "جيزة", "أكتوبر", "زايد", "الدقي", "المهندسين"]),
+            ("Zagazig", ["zagazig", "الزقازيق", "الشرقية"]),
+            ("Cairo", ["cairo", "القاهرة", "مدينة نصر", "العباسية", "المعادي", "التجمع", "التحرير"])
+        ]
+        for c_name, c_keywords in city_triggers:
+            if any(ck in caption_lower for ck in c_keywords):
+                city = c_name
                 break
 
         # Pricing detection
-        ticket_type = "Free" if any(w in caption.lower() for w in ["free", "مجانا", "مجاني", "بدون رسوم"]) else "Registration Required"
+        ticket_type = "Free" if any(w in caption_lower for w in [
+            "free", "مجانا", "مجاني", "بدون رسوم", "حضور مجاني", "الدخول مجاني", "مجاناً"
+        ]) else "Registration Required"
+
+        # Registration Form URL
+        registration_url = self.extract_registration_url(caption)
 
         # Date extraction attempt
         extracted_date = None
-        # Match standard numeric dates like 15/10/2026 or 15-10-2026
         num_date_match = re.search(r"\b(\d{1,2})[/-](\d{1,2})[/-](\d{2,4})\b", caption)
         if num_date_match:
             try:
@@ -106,7 +176,8 @@ class CaptionAnalyzer:
             "venue": venue,
             "city": city,
             "ticket_type": ticket_type,
-            "summary": caption[:200]
+            "registration_url": registration_url,
+            "summary": caption[:240]
         }
 
     def _analyze_with_gemini(self, caption: str, flyer_url: Optional[str] = None) -> Optional[Dict[str, Any]]:

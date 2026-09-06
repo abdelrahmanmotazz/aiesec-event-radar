@@ -70,6 +70,18 @@ def test_api_proof_verify():
     assert data["is_verified"] is True
     assert "facebook.com" in data["proof_domain"]
     assert "VERIFIED" in data["proof_status"]
+    assert "post_direct_url" in data
+    assert "organizer_account_url" in data
+    assert "registration_url" in data
+
+
+def test_api_events_social_only():
+    response = client.get("/api/events?social_only=true")
+    assert response.status_code == 200
+    data = response.json()
+    assert len(data["events"]) > 0
+    for ev in data["events"]:
+        assert ev.get("is_social_first") is True or any(k in ev["source"].lower() for k in ["facebook", "linkedin", "instagram", "telegram"])
 
 
 def test_api_leads_search():

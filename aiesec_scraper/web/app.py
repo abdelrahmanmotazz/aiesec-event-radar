@@ -201,7 +201,8 @@ def get_events(
     source: str = "all",
     search: str = "",
     clash_only: bool = False,
-    partner_only: bool = False
+    partner_only: bool = False,
+    social_only: bool = False
 ):
     """Retrieve filtered and sorted events with summary metrics."""
     filtered = list(CACHED_EVENTS)
@@ -233,6 +234,10 @@ def get_events(
     # Clash only filter
     if clash_only:
         filtered = [e for e in filtered if e.clash_warning]
+
+    # Social Only filter (Social First Announcements)
+    if social_only:
+        filtered = [e for e in filtered if getattr(e, "is_social_first", False) or any(k in e.source.lower() for k in ["facebook", "linkedin", "instagram", "telegram"])]
 
     # Keyword Search
     if search:
@@ -319,7 +324,12 @@ def verify_event_proof(req: ProofVerifyRequest):
     if req.event_id:
         target_event = next((e for e in CACHED_EVENTS if e.event_id == req.event_id), None)
 
-    proof_url = req.url or (target_event.proof_url if target_event else None) or (target_event.url if target_event else "https://facebook.com/events")
+    direct_post = (target_event.post_direct_url if target_event else None)
+    organizer_profile = (target_event.organizer_profile_url if target_event else None)
+    registration_url = (target_event.registration_url if target_event else None)
+    is_social = bool(target_event.is_social_first if target_event else False)
+
+    proof_url = req.url or direct_post or (target_event.proof_url if target_event else None) or organizer_profile or (target_event.url if target_event else "https://facebook.com/events")
     domain = urllib.parse.urlparse(proof_url).netloc or "official-portal.eg"
 
     return {
@@ -328,10 +338,15 @@ def verify_event_proof(req: ProofVerifyRequest):
         "is_valid": True,
         "proof_url": proof_url,
         "proof_domain": domain,
-        "proof_type": target_event.proof_type if target_event else "Official Announcement Post",
+        "proof_type": target_event.proof_type if target_event else ("Direct Social Announcement Post" if is_social else "Official Announcement Post"),
         "proof_status": "200_OK_VERIFIED",
         "verified_at": datetime.now().strftime("%b %d, %Y - %H:%M:%S"),
         "evidence": target_event.proof_evidence if target_event else "Official Social Media Announcement / Live Ticketing Registry",
+        "post_direct_url": direct_post,
+        "organizer_account_url": organizer_profile,
+        "registration_url": registration_url,
+        "is_social_first": is_social,
+        "platform": target_event.source if target_event else "Web",
         "message": f"Real Event Proof Confirmed on {domain}"
     }
 

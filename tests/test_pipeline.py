@@ -100,3 +100,40 @@ def test_enrich_organizer_contacts():
     assert "01012345678" in ev_regex.organizer_phone
     assert ev_regex.organizer_instagram == "alexhackathon"
 
+
+def test_deduplication_preserves_social_fields():
+    pipeline = EventPipeline()
+    now = datetime.now() + timedelta(days=20)
+
+    ev_web = EventRecord(
+        event_id="web_1",
+        title="Cairo AI Bootcamp 2026",
+        source="Eventbrite",
+        start_date=now,
+        url="https://eventbrite.com/ai-bootcamp"
+    )
+    ev_social = EventRecord(
+        event_id="soc_1",
+        title="Cairo AI Bootcamp 2026",
+        source="Facebook",
+        start_date=now,
+        url="https://facebook.com/events/ai-bootcamp",
+        post_direct_url="https://www.facebook.com/events/987654321012345",
+        organizer_profile_url="https://www.facebook.com/cufe.official",
+        registration_url="https://forms.gle/aiBootcampCairo2026",
+        is_social_first=True
+    )
+
+    deduped = pipeline._deduplicate([ev_web, ev_social])
+    assert len(deduped) == 1
+    record = deduped[0]
+    assert record.is_social_first is True
+    assert record.post_direct_url == "https://www.facebook.com/events/987654321012345"
+    assert record.organizer_profile_url == "https://www.facebook.com/cufe.official"
+    assert record.registration_url == "https://forms.gle/aiBootcampCairo2026"
+
+    pipeline._enrich_organizer_contacts(deduped)
+    assert record.proof_url == "https://www.facebook.com/events/987654321012345"
+    assert record.proof_type == "Direct Social Announcement Post"
+
+
