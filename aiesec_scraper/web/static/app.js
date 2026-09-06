@@ -2414,15 +2414,11 @@ function openEventDrawer(ev) {
     const srcLower = (ev.source || "").toLowerCase();
     if (srcLower.includes("facebook")) {
       searchUrl = `https://www.facebook.com/search/top/?q=${encodeURIComponent(cleanTitle)}`;
-    } else if (srcLower.includes("linkedin")) {
-      searchUrl = `https://www.linkedin.com/search/results/content/?keywords=${encodeURIComponent(cleanTitle)}`;
     } else if (srcLower.includes("instagram")) {
       const tag = cleanTitle.split(" ")[0].replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
       searchUrl = tag ? `https://www.instagram.com/explore/tags/${tag}/` : "https://www.instagram.com/";
-    } else if (srcLower.includes("telegram")) {
-      searchUrl = `https://t.me/s/cairoevents`;
     } else {
-      searchUrl = `https://www.google.com/search?q=${encodeURIComponent(ev.title + " Egypt event")}`;
+      searchUrl = `https://www.facebook.com/search/top/?q=${encodeURIComponent(cleanTitle)}`;
     }
     platformSearchLink.href = searchUrl;
     platformSearchLink.classList.remove("hidden");
@@ -2914,7 +2910,7 @@ async function loadStaticEventsFallback() {
 
     // Social First only
     if (state.socialOnly) {
-      filtered = filtered.filter(e => e.is_social_first || ["facebook", "linkedin", "instagram", "telegram"].some(s => (e.source || "").toLowerCase().includes(s)));
+      filtered = filtered.filter(e => e.is_social_first || ["facebook", "instagram"].some(s => (e.source || "").toLowerCase().includes(s)));
     }
 
     // Sorting

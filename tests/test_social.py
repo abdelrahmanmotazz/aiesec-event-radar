@@ -1,4 +1,4 @@
-"""Tests for Social Media Scraper Suite."""
+"""Tests for Social Media Scraper Suite (Facebook Events & Instagram Feeds)."""
 
 import time
 from aiesec_scraper.scrapers.social import SocialMediaScraper
@@ -10,21 +10,21 @@ def test_social_media_scraper_scraping():
     events = scraper.scrape(city=None)
     elapsed = time.time() - start
 
-    # Concurrency check: 4 network probes should resolve rapidly (< 15 seconds)
-    assert elapsed < 15.0
+    # Concurrency check: should resolve rapidly (< 10 seconds)
+    assert elapsed < 10.0
     assert len(events) >= 10
 
-    # Ensure all multi-network feeds are represented
+    # Ensure Facebook and Instagram are represented, while Telegram and LinkedIn are completely excluded
     sources = {e.source for e in events}
     assert any("Facebook" in s for s in sources)
-    assert any("LinkedIn" in s for s in sources)
     assert any("Instagram" in s for s in sources)
-    assert any("Telegram" in s for s in sources)
+    assert not any("Telegram" in s for s in sources)
+    assert not any("LinkedIn" in s for s in sources)
 
     # Specificity check: descriptions must be detailed (> 100 chars) and contain concrete briefing info
     for ev in events:
         assert len(ev.description) >= 100
-        assert ev.city in ["Cairo", "Alexandria", "Tanta", "Mansoura"]
+        assert ev.city in ["Cairo", "Alexandria", "Tanta", "Mansoura", "Assiut"]
         assert ev.url.startswith("http")
         assert ev.is_social_first is True
         assert ev.post_direct_url.startswith("http")
