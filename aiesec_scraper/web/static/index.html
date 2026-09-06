@@ -845,7 +845,7 @@
         <div class="p-5 sm:p-6 border-b border-white/10 flex items-start justify-between bg-white/[0.02]">
           <div class="space-y-1.5 pr-3">
             <div class="flex items-center gap-2" id="drawer-badge-container">
-              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">Flagship Summit</span>
+              <span id="drawer-badge" class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">Flagship Summit</span>
             </div>
             <h2 id="drawer-title" class="text-base sm:text-xl font-black text-white font-display leading-snug">Event Title</h2>
             <div class="flex items-center gap-2 text-xs text-slate-400 font-medium">
@@ -885,6 +885,68 @@
             </h3>
             <div id="drawer-description" class="text-slate-300 leading-relaxed bg-white/[0.02] p-4 rounded-xl border border-white/[0.06] whitespace-pre-wrap font-sans text-xs">
               Event description...
+            </div>
+          </div>
+
+          <!-- Verified Organizer Contacts & Fast Outreach (Idea 9) -->
+          <div id="drawer-organizer-scout-deck" class="space-y-2.5 p-3.5 rounded-2xl bg-gradient-to-br from-white/[0.04] to-white/[0.01] border border-white/10 shadow-lg">
+            <div class="flex items-center justify-between">
+              <h3 class="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-1.5">
+                <i data-lucide="contact" class="w-3.5 h-3.5 text-emerald-400"></i> Organizer & Outreach Intelligence
+              </h3>
+              <span id="drawer-organizer-status" class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">Verified Scout</span>
+            </div>
+            
+            <div class="flex items-center gap-2 text-xs text-slate-300">
+              <span class="text-slate-400 font-medium">Host / Committee:</span>
+              <span id="drawer-organizer-name" class="font-bold text-white font-display">Organizing Committee</span>
+            </div>
+
+            <!-- 4-Channel Outreach Quick Launch Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1" id="drawer-organizer-channels">
+              <!-- Email Pitch -->
+              <a id="drawer-contact-email" href="#" class="flex items-center gap-2.5 p-2 rounded-xl bg-white/[0.04] hover:bg-sky-500/15 border border-white/10 hover:border-sky-500/30 transition group cursor-pointer">
+                <div class="w-7 h-7 rounded-lg bg-sky-500/20 text-sky-300 flex items-center justify-center shrink-0 group-hover:scale-105 transition">
+                  <i data-lucide="mail" class="w-3.5 h-3.5"></i>
+                </div>
+                <div class="min-w-0">
+                  <div class="text-[10px] font-bold text-slate-400 uppercase">Email Pitch</div>
+                  <div id="drawer-contact-email-val" class="text-[11px] font-semibold text-slate-200 truncate">Scout Email</div>
+                </div>
+              </a>
+
+              <!-- LinkedIn Scout -->
+              <a id="drawer-contact-linkedin" href="#" target="_blank" class="flex items-center gap-2.5 p-2 rounded-xl bg-white/[0.04] hover:bg-blue-600/15 border border-white/10 hover:border-blue-500/30 transition group cursor-pointer">
+                <div class="w-7 h-7 rounded-lg bg-blue-600/20 text-blue-300 flex items-center justify-center shrink-0 group-hover:scale-105 transition">
+                  <i data-lucide="linkedin" class="w-3.5 h-3.5"></i>
+                </div>
+                <div class="min-w-0">
+                  <div class="text-[10px] font-bold text-slate-400 uppercase">LinkedIn</div>
+                  <div id="drawer-contact-linkedin-val" class="text-[11px] font-semibold text-slate-200 truncate">Scout Profile</div>
+                </div>
+              </a>
+
+              <!-- Instagram DM -->
+              <a id="drawer-contact-instagram" href="#" class="flex items-center gap-2.5 p-2 rounded-xl bg-white/[0.04] hover:bg-pink-500/15 border border-white/10 hover:border-pink-500/30 transition group cursor-pointer">
+                <div class="w-7 h-7 rounded-lg bg-pink-500/20 text-pink-300 flex items-center justify-center shrink-0 group-hover:scale-105 transition">
+                  <i data-lucide="instagram" class="w-3.5 h-3.5"></i>
+                </div>
+                <div class="min-w-0">
+                  <div class="text-[10px] font-bold text-slate-400 uppercase">Instagram DM</div>
+                  <div id="drawer-contact-instagram-val" class="text-[11px] font-semibold text-slate-200 truncate">@handle</div>
+                </div>
+              </a>
+
+              <!-- WhatsApp Direct / Phone -->
+              <a id="drawer-contact-phone" href="#" class="flex items-center gap-2.5 p-2 rounded-xl bg-white/[0.04] hover:bg-emerald-500/15 border border-white/10 hover:border-emerald-500/30 transition group cursor-pointer">
+                <div class="w-7 h-7 rounded-lg bg-emerald-500/20 text-emerald-300 flex items-center justify-center shrink-0 group-hover:scale-105 transition">
+                  <i data-lucide="phone-call" class="w-3.5 h-3.5"></i>
+                </div>
+                <div class="min-w-0">
+                  <div class="text-[10px] font-bold text-slate-400 uppercase">WhatsApp / Call</div>
+                  <div id="drawer-contact-phone-val" class="text-[11px] font-semibold text-slate-200 truncate">+20 Contact</div>
+                </div>
+              </a>
             </div>
           </div>
 

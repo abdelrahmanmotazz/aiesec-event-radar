@@ -1913,6 +1913,161 @@ function initTopicChips() {
 }
 
 // ============================================================
+// AUTOMATED ORGANIZER CONTACT & SOCIAL MEDIA SCOUT REGISTRY (Idea 9)
+// ============================================================
+const KNOWN_ORGANIZER_CONTACTS = {
+  techne: {
+    name: "Techne Summit Committee",
+    email: "info@technesummit.com",
+    instagram: "technesummit",
+    linkedin: "company/techne-summit",
+    phone: "+201200008324"
+  },
+  riseup: {
+    name: "RiseUp Summit Team",
+    email: "info@riseupsummit.com",
+    instagram: "riseupsummit",
+    linkedin: "company/riseup-summit",
+    phone: "+201000007473"
+  },
+  ticketsmarche: {
+    name: "TicketsMarche Operations",
+    email: "support@ticketsmarche.com",
+    instagram: "ticketsmarche",
+    linkedin: "company/ticketsmarche",
+    phone: "16826"
+  },
+  ieee: {
+    name: "IEEE Egypt Section",
+    email: "info@ieee-egypt.org",
+    instagram: "ieee_egypt",
+    linkedin: "company/ieee-egypt-section",
+    phone: null
+  },
+  enactus: {
+    name: "Enactus Egypt Country Office",
+    email: "egypt@enactus.org",
+    instagram: "enactusegypt",
+    linkedin: "company/enactus-egypt",
+    phone: null
+  },
+  "maker faire": {
+    name: "Maker Faire Cairo",
+    email: "info@makerfairecairo.com",
+    instagram: "makerfairecairo",
+    linkedin: "company/maker-faire-cairo",
+    phone: null
+  },
+  egycon: {
+    name: "EGYCON Organizing Committee",
+    email: "contact@egycon.net",
+    instagram: "egycon_official",
+    linkedin: "company/egycon",
+    phone: null
+  },
+  seamless: {
+    name: "Seamless North Africa / Terrapinn",
+    email: "info@terrapinn.com",
+    instagram: "seamlessafrica",
+    linkedin: "company/seamless-north-africa",
+    phone: null
+  },
+  "cairo university": {
+    name: "Cairo University Student Activities",
+    email: "events@cu.edu.eg",
+    instagram: "cairo_university_official",
+    linkedin: "school/cairo-university",
+    phone: null
+  },
+  "ain shams": {
+    name: "Ain Shams University Youth Hub",
+    email: "info@asu.edu.eg",
+    instagram: "ainshams_uni",
+    linkedin: "school/ain-shams-university",
+    phone: null
+  },
+  "alexandria university": {
+    name: "Alexandria University Student Affairs",
+    email: "info@alexu.edu.eg",
+    instagram: "alex_university_official",
+    linkedin: "school/alexandria-university",
+    phone: null
+  },
+  tanta: {
+    name: "Tanta University Youth & Campus Council",
+    email: "president@tanta.edu.eg",
+    instagram: "tanta_university_official",
+    linkedin: "school/tanta-university",
+    phone: null
+  },
+  mansoura: {
+    name: "Mansoura University Student Union",
+    email: "info@mans.edu.eg",
+    instagram: "mansoura_university",
+    linkedin: "school/mansoura-university",
+    phone: null
+  },
+  aiesec: {
+    name: "AIESEC in Egypt LC Network",
+    email: "contact@aiesec.org.eg",
+    instagram: "aiesecinegypt",
+    linkedin: "company/aiesecinegypt",
+    phone: null
+  }
+};
+
+function enrichEventContacts(ev) {
+  if (!ev) return { organizerName: "Organizing Committee", email: null, instagram: null, linkedin: null, phone: null };
+
+  let organizerName = ev.organizer || "Organizing Committee";
+  let email = ev.organizer_email || null;
+  let instagram = ev.organizer_instagram || null;
+  let linkedin = ev.organizer_linkedin || null;
+  let phone = ev.organizer_phone || null;
+
+  const fullText = `${ev.title || ""} ${ev.organizer || ""} ${ev.description || ""} ${ev.parallel_org || ""}`.toLowerCase();
+
+  for (const [key, item] of Object.entries(KNOWN_ORGANIZER_CONTACTS)) {
+    if (fullText.includes(key)) {
+      if (organizerName === "Organizing Committee" || !organizerName) {
+        organizerName = item.name;
+      }
+      if (!email && item.email) email = item.email;
+      if (!instagram && item.instagram) instagram = item.instagram;
+      if (!linkedin && item.linkedin) linkedin = item.linkedin;
+      if (!phone && item.phone) phone = item.phone;
+      break;
+    }
+  }
+
+  // Regex fallback from description
+  const desc = ev.description || "";
+  if (!email) {
+    const m = desc.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
+    if (m && !m[0].endsWith(".png") && !m[0].endsWith(".jpg")) email = m[0];
+  }
+  if (!phone) {
+    const p = desc.match(/(?:\+?20|0)?1[0125]\d{8}\b|\b1[5679]\d{3}\b/);
+    if (p) phone = p[0];
+  }
+  if (!instagram) {
+    const cleanForIg = desc.replace(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g, " ");
+    const ig = cleanForIg.match(/(?:instagram\.com\/|(?<![\w.-])@)([a-zA-Z0-9_.]{3,30})/);
+    if (ig && !["gmail", "yahoo", "hotmail", "outlook"].includes(ig[1].toLowerCase()) && !/\.(com|org|net|edu|gov|eg)$/i.test(ig[1])) {
+      instagram = ig[1];
+    }
+  }
+
+  return {
+    organizerName,
+    email,
+    instagram,
+    linkedin,
+    phone
+  };
+}
+
+// ============================================================
 // LINEAR-STYLE SLIDE-OVER EVENT INTEL DRAWER
 // ============================================================
 function openEventDrawer(ev) {
@@ -1946,6 +2101,87 @@ function openEventDrawer(ev) {
   if (actionEl) actionEl.innerText = ev.recommended_action || "Deploy student activation booth & PR outreach.";
   if (linkEl) linkEl.href = ev.url || "#";
   if (outputEl) outputEl.classList.add("hidden");
+
+  // Populate Organizer Scout Deck (Idea 9)
+  const contacts = enrichEventContacts(ev);
+  const orgNameEl = document.getElementById("drawer-organizer-name");
+  const orgStatusEl = document.getElementById("drawer-organizer-status");
+  const emailBtn = document.getElementById("drawer-contact-email");
+  const emailVal = document.getElementById("drawer-contact-email-val");
+  const liBtn = document.getElementById("drawer-contact-linkedin");
+  const liVal = document.getElementById("drawer-contact-linkedin-val");
+  const igBtn = document.getElementById("drawer-contact-instagram");
+  const igVal = document.getElementById("drawer-contact-instagram-val");
+  const waBtn = document.getElementById("drawer-contact-phone");
+  const waVal = document.getElementById("drawer-contact-phone-val");
+
+  if (orgNameEl) orgNameEl.innerText = contacts.organizerName;
+  if (orgStatusEl) {
+    if (contacts.email || contacts.instagram || contacts.linkedin) {
+      orgStatusEl.innerText = "Verified Scout";
+      orgStatusEl.className = "px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30";
+    } else {
+      orgStatusEl.innerText = "Live Scout";
+      orgStatusEl.className = "px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-sky-500/15 text-sky-300 border border-sky-500/30";
+    }
+  }
+
+  // Setup Email Action
+  if (emailVal) emailVal.innerText = contacts.email || "Draft Email Pitch";
+  if (emailBtn) {
+    emailBtn.onclick = (e) => {
+      e.preventDefault();
+      const defaultPitch = generateClientPitch(ev, "Abdelrahman Motazz", "abdelrahman.motazz@aiesec.net", "+20 10 1234 5678", "booth");
+      const toStr = contacts.email || "";
+      const mailto = `mailto:${toStr}?subject=${encodeURIComponent(defaultPitch.subject)}&body=${encodeURIComponent(defaultPitch.body)}`;
+      window.open(mailto, "_blank");
+      showToast(contacts.email ? `Drafting email to ${contacts.email}` : "Opening email pitch draft", "success");
+    };
+  }
+
+  // Setup LinkedIn Action
+  if (liVal) liVal.innerText = contacts.linkedin ? contacts.linkedin.replace("company/", "").replace("school/", "") : "Scout LinkedIn";
+  if (liBtn) {
+    const liUrl = contacts.linkedin 
+      ? `https://www.linkedin.com/${contacts.linkedin}`
+      : `https://www.linkedin.com/search/results/all/?keywords=${encodeURIComponent(contacts.organizerName + " Egypt")}`;
+    liBtn.href = liUrl;
+    liBtn.onclick = () => showToast(`Opening LinkedIn Scout for ${contacts.organizerName}...`, "info");
+  }
+
+  // Setup Instagram DM Action
+  if (igVal) igVal.innerText = contacts.instagram ? `@${contacts.instagram}` : "Scout Instagram";
+  if (igBtn) {
+    igBtn.onclick = (e) => {
+      e.preventDefault();
+      const pitchMsg = `Hello ${contacts.organizerName}! Reaching out on behalf of AIESEC in Egypt (LC Tanta). We're excited about "${ev.title}" and would love to collaborate as an official Youth / Media Partner. Can we connect with your team?`;
+      navigator.clipboard.writeText(pitchMsg).then(() => {
+        showToast("Instagram DM pitch copied to clipboard! Opening Instagram...", "success");
+      });
+      const igUrl = contacts.instagram
+        ? `https://instagram.com/${contacts.instagram}`
+        : `https://www.instagram.com/explore/tags/${encodeURIComponent(contacts.organizerName.replace(/\s+/g, '').toLowerCase())}/`;
+      window.open(igUrl, "_blank");
+    };
+  }
+
+  // Setup WhatsApp / Call Action
+  if (waVal) waVal.innerText = contacts.phone || "Search Hotline";
+  if (waBtn) {
+    waBtn.onclick = (e) => {
+      e.preventDefault();
+      if (contacts.phone) {
+        const cleanPhone = contacts.phone.replace(/[^0-9]/g, '');
+        const waMsg = `Hello! Reaching out from AIESEC in Egypt regarding partnership opportunities for "${ev.title}".`;
+        window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(waMsg)}`, "_blank");
+        showToast(`Opening WhatsApp chat with ${contacts.phone}...`, "success");
+      } else {
+        const query = encodeURIComponent(`${contacts.organizerName} Egypt contact phone number`);
+        window.open(`https://www.google.com/search?q=${query}`, "_blank");
+        showToast(`Searching directory for ${contacts.organizerName}...`, "info");
+      }
+    };
+  }
 
   if (drawer) {
     drawer.classList.add("active");
@@ -2390,6 +2626,7 @@ function renderCards() {
     card.className = `radar-card spotlight-card p-5 sm:p-6 flex flex-col justify-between h-full ${glowClass}`;
 
     // Priority badge class
+    const contacts = enrichEventContacts(ev);
     const badgeClass = isHigh ? "badge-neon-coral" : (ev.b2c_priority === "MEDIUM" ? "badge-neon-amber" : "badge-neon-slate");
     const dateBadge = parseDateForTearoff(ev.date_display);
     const sourcePill = getSourcePill(ev.source);
@@ -2467,6 +2704,21 @@ function renderCards() {
           </div>
           <div class="font-medium text-slate-200 leading-relaxed text-[11px]">
             ${ev.recommended_action}
+          </div>
+        </div>
+
+        <!-- Organizer Scout Intelligence Strip (Idea 9) -->
+        <div class="p-2.5 rounded-xl bg-white/[0.03] border border-white/[0.08] flex items-center justify-between gap-2 text-xs mt-1">
+          <div class="flex items-center gap-1.5 min-w-0">
+            <i data-lucide="user-check" class="w-3.5 h-3.5 text-emerald-400 shrink-0"></i>
+            <span class="text-[11px] font-semibold text-slate-300 truncate" title="${contacts.organizerName}">${contacts.organizerName}</span>
+          </div>
+          <div class="flex items-center gap-1.5 shrink-0 text-slate-400">
+            ${contacts.email ? `<span class="w-5 h-5 rounded-md bg-sky-500/15 text-sky-300 flex items-center justify-center text-[10px]" title="Email: ${contacts.email}"><i data-lucide="mail" class="w-3 h-3"></i></span>` : ""}
+            ${contacts.linkedin ? `<span class="w-5 h-5 rounded-md bg-blue-600/15 text-blue-300 flex items-center justify-center text-[10px]" title="LinkedIn Verified"><i data-lucide="linkedin" class="w-3 h-3"></i></span>` : ""}
+            ${contacts.instagram ? `<span class="w-5 h-5 rounded-md bg-pink-500/15 text-pink-300 flex items-center justify-center text-[10px]" title="Instagram: @${contacts.instagram}"><i data-lucide="instagram" class="w-3 h-3"></i></span>` : ""}
+            ${contacts.phone ? `<span class="w-5 h-5 rounded-md bg-emerald-500/15 text-emerald-300 flex items-center justify-center text-[10px]" title="Phone: ${contacts.phone}"><i data-lucide="phone" class="w-3 h-3"></i></span>` : ""}
+            <span class="text-[10px] text-sky-400 font-bold ml-1 hover:underline">Outreach →</span>
           </div>
         </div>
       </div>
@@ -2602,6 +2854,7 @@ function renderTableView(eventsToRender = state.events) {
   }
 
   events.forEach((ev) => {
+    const contacts = enrichEventContacts(ev);
     const row = document.createElement("tr");
     const isHigh = (ev.b2c_priority || "").toUpperCase() === "HIGH";
     const isFlagship = (ev.category || "").includes("Flagship") || (ev.b2c_score && ev.b2c_score >= 9.5);
@@ -2641,6 +2894,7 @@ function renderTableView(eventsToRender = state.events) {
         <div class="text-[10px] text-slate-400 mt-0.5 truncate flex items-center gap-2">
           <span class="text-slate-500">${ev.category || "Summit"}</span>
           ${ev.parallel_org && ev.parallel_org !== "Independent" ? `<span class="text-purple-300 font-semibold">• ${ev.parallel_org}</span>` : ""}
+          <span class="text-emerald-400/90 font-medium inline-flex items-center gap-1 shrink-0">• <i data-lucide="user-check" class="w-3 h-3"></i> ${contacts.organizerName}</span>
         </div>
       </td>
       <td class="whitespace-nowrap">

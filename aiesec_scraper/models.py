@@ -26,12 +26,16 @@ class EventRecord(BaseModel):
     b2c_priority: str = "LOW"
     recommended_action: str = "General Monitoring"
 
-    # Enhanced Intelligence Fields
+    # Enhanced Intelligence & Contact Scout Fields
     parallel_org: Optional[str] = None
     clash_warning: bool = False
     clash_count: int = 0
     clash_details: List[str] = Field(default_factory=list)
     raw_caption: Optional[str] = None
+    organizer_email: Optional[str] = None
+    organizer_instagram: Optional[str] = None
+    organizer_linkedin: Optional[str] = None
+    organizer_phone: Optional[str] = None
 
     def to_sheet_row(self) -> List[str]:
         """Convert record to a flat list for Google Sheets / Excel output."""
@@ -101,4 +105,8 @@ class EventRecord(BaseModel):
             "clash_warning": self.clash_warning,
             "clash_count": self.clash_count,
             "clash_details": self.clash_details,
+            "organizer_email": self.organizer_email,
+            "organizer_instagram": self.organizer_instagram,
+            "organizer_linkedin": self.organizer_linkedin,
+            "organizer_phone": self.organizer_phone,
         }

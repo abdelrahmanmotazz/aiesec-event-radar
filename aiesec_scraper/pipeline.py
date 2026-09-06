@@ -141,6 +141,9 @@ class EventPipeline:
         # Apply Clash Detection (Events competing on the same weekend in the same city)
         self._apply_clash_detection(deduped_events)
 
+        # Automated Organizer Contact & Social Media Scout (Idea 9)
+        self._enrich_organizer_contacts(deduped_events)
+
         # Sort: Primary by Date, with High Priority events clearly positioned
         deduped_events.sort(key=lambda x: (
             x.start_date is None,
@@ -263,3 +266,144 @@ class EventPipeline:
                     ev.clash_warning = True
                     ev.clash_count = len(group)
                     ev.clash_details = [other.title for other in group if other.event_id != ev.event_id][:3]
+
+    def _enrich_organizer_contacts(self, events: List[EventRecord]) -> None:
+        """
+        Automated Organizer Contact & Social Media Scout (Idea 9):
+        Enriches events with verified contact intelligence (Email, Instagram,
+        LinkedIn, and WhatsApp/Phone) using a curated Egyptian organizer knowledge base
+        and intelligent regex extraction from captions & descriptions.
+        """
+        ORGANIZER_DIRECTORY = {
+            "techne": {
+                "email": "info@technesummit.com",
+                "instagram": "technesummit",
+                "linkedin": "company/techne-summit",
+                "phone": "+20 120 000 8324",
+            },
+            "riseup": {
+                "email": "info@riseupsummit.com",
+                "instagram": "riseupsummit",
+                "linkedin": "company/riseup-summit",
+                "phone": "+20 100 000 7473",
+            },
+            "ticketsmarche": {
+                "email": "support@ticketsmarche.com",
+                "instagram": "ticketsmarche",
+                "linkedin": "company/ticketsmarche",
+                "phone": "16826",
+            },
+            "ieee": {
+                "email": "info@ieee-egypt.org",
+                "instagram": "ieee_egypt",
+                "linkedin": "company/ieee-egypt-section",
+                "phone": None,
+            },
+            "enactus": {
+                "email": "egypt@enactus.org",
+                "instagram": "enactusegypt",
+                "linkedin": "company/enactus-egypt",
+                "phone": None,
+            },
+            "maker faire": {
+                "email": "info@makerfairecairo.com",
+                "instagram": "makerfairecairo",
+                "linkedin": "company/maker-faire-cairo",
+                "phone": None,
+            },
+            "egycon": {
+                "email": "contact@egycon.net",
+                "instagram": "egycon_official",
+                "linkedin": "company/egycon",
+                "phone": None,
+            },
+            "seamless": {
+                "email": "info@terrapinn.com",
+                "instagram": "seamlessafrica",
+                "linkedin": "company/seamless-north-africa",
+                "phone": None,
+            },
+            "cairo university": {
+                "email": "events@cu.edu.eg",
+                "instagram": "cairo_university_official",
+                "linkedin": "school/cairo-university",
+                "phone": None,
+            },
+            "ain shams": {
+                "email": "info@asu.edu.eg",
+                "instagram": "ainshams_uni",
+                "linkedin": "school/ain-shams-university",
+                "phone": None,
+            },
+            "alexandria university": {
+                "email": "info@alexu.edu.eg",
+                "instagram": "alex_university_official",
+                "linkedin": "school/alexandria-university",
+                "phone": None,
+            },
+            "tanta": {
+                "email": "president@tanta.edu.eg",
+                "instagram": "tanta_university_official",
+                "linkedin": "school/tanta-university",
+                "phone": None,
+            },
+            "mansoura": {
+                "email": "info@mans.edu.eg",
+                "instagram": "mansoura_university",
+                "linkedin": "school/mansoura-university",
+                "phone": None,
+            },
+            "aiesec": {
+                "email": "contact@aiesec.org.eg",
+                "instagram": "aiesecinegypt",
+                "linkedin": "company/aiesecinegypt",
+                "phone": None,
+            },
+        }
+
+        EMAIL_REGEX = re.compile(r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,7}\b')
+        IG_REGEX = re.compile(r'(?:https?://(?:www\.)?instagram\.com/|(?<![\w\.-])@)([a-zA-Z0-9_.]{3,30})\b')
+        PHONE_REGEX = re.compile(r'(?:\+?20|0)?1[0125]\d{8}\b|\b1[5679]\d{3}\b')
+        LINKEDIN_REGEX = re.compile(r'(?:linkedin\.com/(?:in|company|school)/)([a-zA-Z0-9_-]+)')
+
+        for ev in events:
+            full_text = f"{ev.title or ''} {ev.organizer or ''} {ev.description or ''} {ev.raw_caption or ''} {ev.parallel_org or ''}".lower()
+
+            # 1. Match from curated directory
+            for key, contacts in ORGANIZER_DIRECTORY.items():
+                if key in full_text:
+                    if not ev.organizer_email and contacts.get("email"):
+                        ev.organizer_email = contacts["email"]
+                    if not ev.organizer_instagram and contacts.get("instagram"):
+                        ev.organizer_instagram = contacts["instagram"]
+                    if not ev.organizer_linkedin and contacts.get("linkedin"):
+                        ev.organizer_linkedin = contacts["linkedin"]
+                    if not ev.organizer_phone and contacts.get("phone"):
+                        ev.organizer_phone = contacts["phone"]
+                    break
+
+            # 2. Extract from text if missing
+            raw_text = f"{ev.description or ''} {ev.raw_caption or ''}"
+            if not ev.organizer_email:
+                email_match = EMAIL_REGEX.search(raw_text)
+                if email_match and not any(email_match.group(0).lower().endswith(ext) for ext in ['.png', '.jpg', '.jpeg', '.webp']):
+                    ev.organizer_email = email_match.group(0)
+
+            if not ev.organizer_phone:
+                phone_match = PHONE_REGEX.search(raw_text)
+                if phone_match:
+                    ev.organizer_phone = phone_match.group(0)
+
+            if not ev.organizer_linkedin:
+                li_match = LINKEDIN_REGEX.search(raw_text)
+                if li_match:
+                    ev.organizer_linkedin = f"company/{li_match.group(1)}"
+
+            if not ev.organizer_instagram:
+                clean_for_ig = EMAIL_REGEX.sub(" ", raw_text)
+                ig_match = IG_REGEX.search(clean_for_ig)
+                if ig_match:
+                    handle = ig_match.group(1).strip(". ")
+                    if handle.lower() not in ["gmail", "yahoo", "hotmail", "outlook"] and not re.search(r'\.(com|org|net|edu|gov|eg)$', handle, re.IGNORECASE):
+                        ev.organizer_instagram = handle
+

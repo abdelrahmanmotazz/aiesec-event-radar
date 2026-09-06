@@ -68,3 +68,35 @@ def test_deduplication():
     assert "AllEvents" in deduped[0].source
     # Richer description was preserved
     assert "detailed description" in deduped[0].description
+
+
+def test_enrich_organizer_contacts():
+    pipeline = EventPipeline()
+
+    ev_techne = EventRecord(
+        event_id="ts_1",
+        title="Techne Summit Alexandria 2026",
+        source="EgyptSummits",
+        url="https://technesummit.com"
+    )
+    ev_regex = EventRecord(
+        event_id="reg_2",
+        title="Alex Youth Hackathon",
+        source="Facebook",
+        url="https://facebook.com/events/123",
+        description="Join us! Contact organizers at alexhack@youth.org or call 01012345678 for details. Follow @alexhackathon on IG."
+    )
+
+    pipeline._enrich_organizer_contacts([ev_techne, ev_regex])
+
+    # Techne Summit enriched from curated directory
+    assert ev_techne.organizer_email == "info@technesummit.com"
+    assert ev_techne.organizer_instagram == "technesummit"
+    assert ev_techne.organizer_linkedin == "company/techne-summit"
+    assert ev_techne.organizer_phone == "+20 120 000 8324"
+
+    # Regex enriched from description
+    assert ev_regex.organizer_email == "alexhack@youth.org"
+    assert "01012345678" in ev_regex.organizer_phone
+    assert ev_regex.organizer_instagram == "alexhackathon"
+
