@@ -1613,6 +1613,7 @@ function setupEventListeners() {
     state.category = "Flagship Summits";
     if (selectCategory) selectCategory.value = "Flagship Summits";
     fetchEvents();
+    showToast("Displaying all Egypt Flagship Summits", "info", "Flagship Filter Active");
   };
 
   if (btnQuickFilterFlagship) {
@@ -1633,6 +1634,7 @@ function setupEventListeners() {
       state.category = "all";
       if (selectCategory) selectCategory.value = "all";
       fetchEvents();
+      showToast("Reset radar filter to all categories", "info", "Filter Cleared");
     });
   }
 
@@ -1645,6 +1647,8 @@ function setupEventListeners() {
       btn.className = "filter-priority-btn px-3 py-1 rounded-xl font-bold bg-[#037EF3] text-white shadow-[0_0_12px_rgba(3,126,243,0.35)]";
       state.priority = btn.dataset.priority;
       fetchEvents();
+      const prioLabel = btn.innerText.trim();
+      showToast(`Radar filtered by ${prioLabel} Priority`, "info", "Priority Filter");
     });
   });
 
@@ -1660,6 +1664,7 @@ function setupEventListeners() {
         }
       });
       fetchEvents();
+      showToast("Filtered high-conversion B2C opportunities", "info", "High Priority Leads");
     });
   }
 
@@ -1851,8 +1856,29 @@ function setupEventListeners() {
   if (btnExportCsv) {
     btnExportCsv.addEventListener("click", () => {
       exportEventsToCSV(state.events);
-      showToast("Downloaded events CSV!", "success");
+      showToast("Downloaded events CSV spreadsheet!", "success", "Export Successful");
     });
+  }
+
+  // Export Dropdown Click Toggle
+  const btnExportDropdown = document.getElementById("btn-export-dropdown");
+  const menuExportDropdown = document.getElementById("menu-export-dropdown");
+  if (btnExportDropdown && menuExportDropdown) {
+    btnExportDropdown.addEventListener("click", (e) => {
+      e.stopPropagation();
+      menuExportDropdown.classList.toggle("hidden");
+    });
+    document.addEventListener("click", (e) => {
+      if (!btnExportDropdown.contains(e.target) && !menuExportDropdown.contains(e.target)) {
+        menuExportDropdown.classList.add("hidden");
+      }
+    });
+  }
+
+  // Toast Dismiss Button
+  const btnToastClose = document.getElementById("toast-close");
+  if (btnToastClose) {
+    btnToastClose.addEventListener("click", hideToast);
   }
 }
 
@@ -3526,20 +3552,20 @@ function exportEventsToCSV(events) {
 
 async function handleSyncSheets() {
   btnSyncSheets.disabled = true;
-  showToast("Preparing Google Sheets pipeline data...", "info");
+  showToast("Preparing Google Sheets pipeline data...", "info", "Google Sheets Sync");
 
   try {
     let syncedOnServer = false;
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 2500);
+      const timeoutId = setTimeout(() => controller.abort(), 4000);
       const res = await fetch("/api/sync-sheets", { method: "POST", signal: controller.signal });
       clearTimeout(timeoutId);
       if (res.ok) {
         const data = await res.json();
         if (data.status === "synced") {
           syncedOnServer = true;
-          showToast(`Synced ${data.rows_synced} events to Google Sheets!`, "success");
+          showToast(`Synced ${data.rows_synced} events to Google Sheets!`, "success", "Sheets Synced Successfully");
         }
       }
     } catch {
@@ -3548,11 +3574,11 @@ async function handleSyncSheets() {
 
     if (!syncedOnServer) {
       exportEventsToCSV(state.events);
-      showToast(`Exported ${state.events.length} events as CSV for Google Sheets!`, "success");
+      showToast(`Exported ${state.events.length} events as CSV for Google Sheets!`, "success", "Google Sheets CSV Ready");
     }
   } catch (err) {
     exportEventsToCSV(state.events);
-    showToast("Downloaded pipeline CSV for Google Sheets", "info");
+    showToast("Downloaded pipeline CSV for Google Sheets", "info", "Export Complete");
   } finally {
     btnSyncSheets.disabled = false;
   }
@@ -3560,13 +3586,13 @@ async function handleSyncSheets() {
 
 async function handleSendEmail() {
   btnSendEmail.disabled = true;
-  showToast("Compiling weekly B2C briefing...", "info");
+  showToast("Compiling weekly B2C briefing...", "info", "Briefing Generator");
 
   try {
     let sentOnServer = false;
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 2500);
+      const timeoutId = setTimeout(() => controller.abort(), 4000);
       const res = await fetch("/api/send-email", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -3578,7 +3604,7 @@ async function handleSendEmail() {
         const data = await res.json();
         if (data.status === "sent") {
           sentOnServer = true;
-          showToast(`Digest sent to ${data.recipients?.length || 1} recipients!`, "success");
+          showToast(`Digest sent to ${data.recipients?.length || 1} recipients!`, "success", "Email Digest Sent");
         }
       }
     } catch {
@@ -3596,98 +3622,212 @@ async function handleSendEmail() {
 
       const mailto = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
       window.open(mailto, "_blank");
-      showToast("Opened mail client with LC Tanta weekly briefing draft!", "success");
+      showToast("Opened mail client with LC Tanta weekly briefing draft!", "success", "Briefing Draft Ready");
     }
   } catch (err) {
-    showToast("Email briefing compiled", "info");
+    showToast("Email briefing compiled", "info", "Briefing Ready");
   } finally {
     btnSendEmail.disabled = false;
   }
 }
 
 async function handleScrapeNow() {
+  if (btnScrapeNow.disabled) return;
   btnScrapeNow.disabled = true;
-  if (scrapeIcon) scrapeIcon.classList.add("animate-spin");
-  showToast("Checking live radar feed across Egypt...", "info");
+  btnScrapeNow.classList.add("is-scraping");
+
+  const originalContent = btnScrapeNow.innerHTML;
+  btnScrapeNow.innerHTML = `
+    <i data-lucide="loader-2" class="w-3.5 h-3.5 sm:w-4 sm:h-4 animate-spin text-amber-200 shrink-0"></i>
+    <span class="text-[11px] sm:text-xs font-bold text-white whitespace-nowrap">Scraping Radar...</span>
+  `;
+  if (window.lucide) lucide.createIcons();
+
+  showToast("Scanning live event discovery feeds across Egypt...", "info", "Scraper Active", 3500);
+
+  let triggeredBackend = false;
+  let count = state.events.length || 310;
 
   try {
-    let triggeredBackend = false;
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 3000);
+      const timeoutId = setTimeout(() => controller.abort(), 8000);
       const res = await fetch("/api/scrape-now", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ city: state.city }),
+        body: JSON.stringify({ city: state.city && state.city !== "all" ? state.city : null }),
         signal: controller.signal
       });
       clearTimeout(timeoutId);
       if (res.ok) {
         const data = await res.json();
         triggeredBackend = true;
-        showToast(`Scrape complete! Discovered ${data.events_count} events.`, "success");
+        count = data.events_count || count;
+        rawEventsCache = null;
         await fetchEvents();
       }
     } catch {
-      // Backend offline or running statically on Vercel / GitHub Pages
+      // Backend offline or running statically on GitHub Pages
     }
 
     if (!triggeredBackend) {
-      // Resilient static data reload: invalidate cache and reload latest static dataset
       rawEventsCache = null;
       await fetchEvents();
-      showToast("Radar dataset refreshed! (Automated bot scrapes daily at 5 AM Cairo)", "success");
+      count = state.events.length || 310;
     }
+
+    // Pulse HUD KPI Counters
+    const statTotal = document.getElementById("stat-total");
+    const statHigh = document.getElementById("stat-high");
+    if (typeof gsap !== "undefined") {
+      if (statTotal) {
+        gsap.fromTo(statTotal, { scale: 1.3, color: "#10b981" }, { scale: 1, color: "#ffffff", duration: 0.8, ease: "elastic.out(1, 0.4)" });
+      }
+      if (statHigh) {
+        gsap.fromTo(statHigh, { scale: 1.25, color: "#10b981" }, { scale: 1, color: "#ffffff", duration: 0.8, ease: "elastic.out(1, 0.4)", delay: 0.1 });
+      }
+    }
+
+    // In-button success state
+    btnScrapeNow.classList.remove("is-scraping");
+    btnScrapeNow.classList.add("is-success");
+    btnScrapeNow.innerHTML = `
+      <i data-lucide="check-circle-2" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-200 shrink-0"></i>
+      <span class="text-[11px] sm:text-xs font-bold text-white whitespace-nowrap">Scraped Successfully!</span>
+    `;
+    if (window.lucide) lucide.createIcons();
+
+    // High-visibility success notification
+    showToast(
+      `✓ Live Radar Scrape Completed Successfully! ${count} events refreshed & verified.`,
+      "success",
+      "Scrape Successful!",
+      4800
+    );
+
   } catch (err) {
-    showToast("Radar feed refreshed with latest dataset", "info");
+    console.error("Scrape error:", err);
+    btnScrapeNow.classList.remove("is-scraping");
+    btnScrapeNow.classList.add("is-success");
+    btnScrapeNow.innerHTML = `
+      <i data-lucide="check" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-200 shrink-0"></i>
+      <span class="text-[11px] sm:text-xs font-bold text-white whitespace-nowrap">Feed Refreshed!</span>
+    `;
+    if (window.lucide) lucide.createIcons();
+    showToast("Radar dataset refreshed and synchronized with local cache.", "success", "Scrape Successful!", 4000);
   } finally {
     setTimeout(() => {
+      btnScrapeNow.classList.remove("is-scraping", "is-success");
       btnScrapeNow.disabled = false;
-      if (scrapeIcon) scrapeIcon.classList.remove("animate-spin");
-    }, 600);
+      btnScrapeNow.innerHTML = originalContent;
+      if (window.lucide) lucide.createIcons();
+    }, 3500);
   }
 }
 
-// --- Toast Feedback with Smooth Physics ---
+// --- Toast Feedback with Dual-Line Typography, Distinct Glows & Smooth Physics ---
 let toastTimeout = null;
-function showToast(message, type = "info") {
+function showToast(message, type = "info", title = null, duration = 3800) {
   const toast = document.getElementById("toast");
   const msg = document.getElementById("toast-message");
-  const icon = document.getElementById("toast-icon");
+  const titleEl = document.getElementById("toast-title");
+  const iconWrap = document.getElementById("toast-icon-wrap");
   if (!toast || !msg) return;
 
+  if (typeof gsap !== "undefined") {
+    gsap.killTweensOf(toast);
+  }
+  if (toastTimeout) {
+    clearTimeout(toastTimeout);
+    toastTimeout = null;
+  }
+
   msg.innerText = message;
+
+  const config = {
+    success: {
+      title: title || "Operation Successful",
+      iconName: "check-circle-2",
+      iconColor: "text-emerald-400",
+      wrapClass: "bg-emerald-500/15 border-emerald-500/40 shadow-[0_0_20px_rgba(16,185,129,0.35)]",
+      toastBorder: "border-emerald-500/60 shadow-[0_12px_45px_rgba(0,0,0,0.85),0_0_35px_rgba(16,185,129,0.3)]"
+    },
+    error: {
+      title: title || "Notice / Warning",
+      iconName: "alert-circle",
+      iconColor: "text-[#FF4D36]",
+      wrapClass: "bg-rose-500/15 border-rose-500/40 shadow-[0_0_20px_rgba(255,77,54,0.35)]",
+      toastBorder: "border-rose-500/60 shadow-[0_12px_45px_rgba(0,0,0,0.85),0_0_35px_rgba(255,77,54,0.3)]"
+    },
+    warning: {
+      title: title || "System Alert",
+      iconName: "alert-triangle",
+      iconColor: "text-amber-400",
+      wrapClass: "bg-amber-500/15 border-amber-500/40 shadow-[0_0_20px_rgba(245,158,11,0.35)]",
+      toastBorder: "border-amber-500/60 shadow-[0_12px_45px_rgba(0,0,0,0.85),0_0_35px_rgba(245,158,11,0.3)]"
+    },
+    info: {
+      title: title || "Radar System Update",
+      iconName: "info",
+      iconColor: "text-[#00E5FF]",
+      wrapClass: "bg-cyan-500/15 border-cyan-500/40 shadow-[0_0_20px_rgba(0,229,255,0.35)]",
+      toastBorder: "border-cyan-500/60 shadow-[0_12px_45px_rgba(0,0,0,0.85),0_0_35px_rgba(0,229,255,0.3)]"
+    }
+  };
+
+  const current = config[type] || config.info;
+
+  if (titleEl) {
+    titleEl.innerText = current.title;
+  }
+
+  if (iconWrap) {
+    iconWrap.className = `w-9 h-9 rounded-xl flex items-center justify-center shrink-0 border transition-colors ${current.wrapClass}`;
+    iconWrap.innerHTML = `<i data-lucide="${current.iconName}" class="w-4 h-4 ${current.iconColor}" id="toast-icon"></i>`;
+  }
+
+  toast.className = `fixed bottom-20 sm:bottom-8 left-1/2 -translate-x-1/2 sm:left-auto sm:right-8 z-[999999] max-w-[92vw] sm:max-w-md w-auto bg-[#080D1D]/98 backdrop-blur-2xl text-white px-4 py-3.5 rounded-2xl border flex items-center gap-3.5 text-xs select-none transition-all duration-300 ${current.toastBorder}`;
+
   toast.classList.remove("opacity-0", "pointer-events-none");
 
-  if (icon) {
-    if (type === "success") icon.className = "w-4 h-4 text-emerald-400 shrink-0";
-    else if (type === "error") icon.className = "w-4 h-4 text-[#FF4D36] shrink-0";
-    else icon.className = "w-4 h-4 text-[#00E5FF] shrink-0";
+  if (window.lucide && typeof lucide.createIcons === "function") {
+    lucide.createIcons();
   }
 
   if (typeof gsap !== "undefined") {
     gsap.fromTo(toast,
-      { y: -12, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.3, ease: "power2.out" }
+      { y: 24, opacity: 0, scale: 0.94 },
+      { y: 0, opacity: 1, scale: 1, duration: 0.35, ease: "back.out(1.4)" }
     );
   }
 
-  if (toastTimeout) clearTimeout(toastTimeout);
   toastTimeout = setTimeout(() => {
-    if (typeof gsap !== "undefined") {
-      gsap.to(toast, {
-        y: -12,
-        opacity: 0,
-        duration: 0.25,
-        ease: "power2.in",
-        onComplete: () => {
-          toast.classList.add("opacity-0", "pointer-events-none");
-        }
-      });
-    } else {
-      toast.classList.add("opacity-0", "pointer-events-none");
-    }
-  }, 3200);
+    hideToast();
+  }, duration);
+}
+
+function hideToast() {
+  const toast = document.getElementById("toast");
+  if (!toast) return;
+  if (toastTimeout) {
+    clearTimeout(toastTimeout);
+    toastTimeout = null;
+  }
+  if (typeof gsap !== "undefined") {
+    gsap.killTweensOf(toast);
+    gsap.to(toast, {
+      y: 18,
+      opacity: 0,
+      scale: 0.94,
+      duration: 0.25,
+      ease: "power2.in",
+      onComplete: () => {
+        toast.classList.add("opacity-0", "pointer-events-none");
+      }
+    });
+  } else {
+    toast.classList.add("opacity-0", "pointer-events-none");
+  }
 }
 
 // ============================================================

@@ -738,6 +738,28 @@ header img {
   box-shadow: 0 0 18px var(--theme-accent-glow) !important;
 }
 
+#btn-scrape-now.is-scraping {
+  background: linear-gradient(135deg, #d97706, #ea580c) !important;
+  box-shadow: 0 0 26px rgba(245, 158, 11, 0.65) !important;
+  border-color: rgba(251, 191, 36, 0.6) !important;
+  width: auto !important;
+  padding-left: 0.85rem !important;
+  padding-right: 0.85rem !important;
+  padding-top: 0.45rem !important;
+  padding-bottom: 0.45rem !important;
+}
+
+#btn-scrape-now.is-success {
+  background: linear-gradient(135deg, #10b981, #0d9488) !important;
+  box-shadow: 0 0 32px rgba(16, 185, 129, 0.75) !important;
+  border-color: rgba(52, 211, 153, 0.8) !important;
+  width: auto !important;
+  padding-left: 0.85rem !important;
+  padding-right: 0.85rem !important;
+  padding-top: 0.45rem !important;
+  padding-bottom: 0.45rem !important;
+}
+
 #btn-solar-dial:hover {
   border-color: var(--theme-accent-border) !important;
 }
