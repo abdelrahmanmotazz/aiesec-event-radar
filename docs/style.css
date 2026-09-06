@@ -137,7 +137,7 @@ body {
   background-repeat: no-repeat, no-repeat, no-repeat, no-repeat, repeat;
   background-attachment: fixed;
   position: relative;
-  transition: background 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: background-color 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* Editorial Film Grain Noise */
@@ -161,8 +161,8 @@ body::before {
 .radar-card,
 .figma-card {
   background: var(--canvas-surface);
-  backdrop-filter: blur(24px) saturate(200%);
-  -webkit-backdrop-filter: blur(24px) saturate(200%);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
   border: 1px solid var(--border-subtle);
   border-radius: 20px;
   box-shadow: 
@@ -1178,7 +1178,12 @@ body.drawer-open {
   transform: translateY(0);
   transform-style: flat !important;
   backface-visibility: hidden;
-  will-change: transform, box-shadow;
+  content-visibility: auto;
+  contain-intrinsic-size: 0 420px;
+}
+
+.radar-card:hover {
+  will-change: transform;
 }
 
 /* Prismatic Holographic Iridescent Sheen Layer (Desktop Hover Only) */
@@ -1381,13 +1386,6 @@ html, body {
 /* ============================================================
    LINEAR CONIC LASER BORDER BEAMS (GPU-Accelerated 120 FPS)
    ============================================================ */
-.radar-card {
-  position: relative;
-  overflow: hidden;
-  content-visibility: auto;
-  contain-intrinsic-size: 320px;
-}
-
 .laser-border-beam {
   position: absolute;
   inset: 0;
@@ -1400,7 +1398,7 @@ html, body {
   mask-composite: exclude;
   z-index: 2;
   opacity: 0.85;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.25s ease;
 }
 
 .laser-border-beam::after {
@@ -1418,7 +1416,8 @@ html, body {
     var(--beam-c2, var(--solar-beam-2, #38BDF8)) 360deg
   );
   animation: laser-beam-spin 6.5s linear infinite;
-  will-change: transform;
+  animation-play-state: paused;
+  transform: rotate(0deg);
 }
 
 @keyframes laser-beam-spin {
@@ -1434,19 +1433,19 @@ html, body {
 .laser-border-beam.beam-summit {
   --beam-c1: #F59E0B;
   --beam-c2: #FDE047;
-  opacity: 1;
+  opacity: 0.85;
 }
 
 .laser-border-beam.beam-high {
   --beam-c1: #FF4D36;
   --beam-c2: #FB7185;
-  opacity: 1;
+  opacity: 0.85;
 }
 
 .laser-border-beam.beam-partner {
   --beam-c1: #A855F7;
   --beam-c2: #E879F9;
-  opacity: 0.95;
+  opacity: 0.85;
 }
 
 .laser-border-beam.beam-default {
@@ -1456,16 +1455,14 @@ html, body {
   transition: opacity 0.25s ease;
 }
 
-.laser-border-beam.beam-default::after {
-  animation-play-state: paused;
-}
-
-.radar-card:hover .laser-border-beam.beam-default {
+/* Hover activates the dynamic laser sweep with smooth GPU-accelerated spin */
+.radar-card:hover .laser-border-beam {
   opacity: 1;
 }
 
-.radar-card:hover .laser-border-beam.beam-default::after {
+.radar-card:hover .laser-border-beam::after {
   animation-play-state: running;
+  will-change: transform;
 }
 
 /* Hero Search Laser Border Halo */

@@ -704,8 +704,8 @@ function initThreeRadar() {
     function animate() {
       requestAnimationFrame(animate);
 
-      // Skip render if off-screen, tab hidden, or drawer open
-      if (!isHeroVisible || document.hidden || state.activeDrawerEvent) {
+      // Skip render if off-screen, tab hidden, drawer open, or actively scrolling
+      if (!isHeroVisible || document.hidden || state.activeDrawerEvent || window.__isScrolling) {
         return;
       }
 
@@ -864,13 +864,27 @@ function initSmoothMouseLighting() {
     }
   }, { passive: true });
 
-  // Lightweight delegated card spotlight calculation ONLY for the single card currently hovered
+  // Lightweight delegated card spotlight calculation with rAF coalescing
+  let spotlightRaf = null;
+  let lastSpotlightTarget = null;
+  let lastSpotlightPos = { x: 0, y: 0 };
+
   document.addEventListener("mousemove", (e) => {
-    const card = e.target.closest(".spotlight-card");
-    if (card) {
-      const rect = card.getBoundingClientRect();
-      card.style.setProperty("--card-mouse-x", `${(e.clientX - rect.left).toFixed(1)}px`);
-      card.style.setProperty("--card-mouse-y", `${(e.clientY - rect.top).toFixed(1)}px`);
+    lastSpotlightTarget = e.target;
+    lastSpotlightPos.x = e.clientX;
+    lastSpotlightPos.y = e.clientY;
+
+    if (!spotlightRaf) {
+      spotlightRaf = window.requestAnimationFrame(() => {
+        spotlightRaf = null;
+        if (!lastSpotlightTarget) return;
+        const card = lastSpotlightTarget.closest(".spotlight-card");
+        if (card) {
+          const rect = card.getBoundingClientRect();
+          card.style.setProperty("--card-mouse-x", `${(lastSpotlightPos.x - rect.left).toFixed(1)}px`);
+          card.style.setProperty("--card-mouse-y", `${(lastSpotlightPos.y - rect.top).toFixed(1)}px`);
+        }
+      });
     }
   }, { passive: true });
 }
@@ -1111,15 +1125,19 @@ function initAmbientCosmicDust() {
   resize();
 
   // Optimized particle population (lower on mobile to preserve 60/120fps scrolling)
-  const particleCount = isMobile ? 22 : 65;
+  const particleCount = isMobile ? 22 : 45;
   const particles = [];
 
   let isScrolling = false;
   let scrollTimeout = null;
   window.addEventListener("scroll", () => {
     isScrolling = true;
+    window.__isScrolling = true;
     clearTimeout(scrollTimeout);
-    scrollTimeout = setTimeout(() => { isScrolling = false; }, 100);
+    scrollTimeout = setTimeout(() => {
+      isScrolling = false;
+      window.__isScrolling = false;
+    }, 90);
   }, { passive: true });
 
   const THEME_DUST_PALETTES = {
@@ -1197,7 +1215,7 @@ function initAmbientCosmicDust() {
   const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   function renderDust() {
-    if (isRunning && !state.activeDrawerEvent && (!isMobile || !isScrolling)) {
+    if (isRunning && !state.activeDrawerEvent && !isScrolling) {
       ctx.clearRect(0, 0, width, height);
 
       const isObsidian = state.canvasMode === "obsidian";
@@ -1254,18 +1272,20 @@ function initAmbientCosmicDust() {
         }
       }
 
-      // 2. Interconnecting neural constellation lines (Desktop only to prevent mobile GPU fill-rate throttling)
+      // 2. Interconnecting neural constellation lines (Desktop only, optimized with squared distance)
       if (!isMobile && !prefersReduced) {
         const maxConnectDist = 80;
+        const maxConnectDistSq = maxConnectDist * maxConnectDist;
         for (let i = 0; i < particles.length; i++) {
+          const p1 = particles[i];
           for (let j = i + 1; j < particles.length; j++) {
-            const p1 = particles[i];
             const p2 = particles[j];
             const dx = p1.x - p2.x;
             const dy = p1.y - p2.y;
-            const dist = Math.sqrt(dx * dx + dy * dy);
+            const distSq = dx * dx + dy * dy;
 
-            if (dist < maxConnectDist) {
+            if (distSq < maxConnectDistSq) {
+              const dist = Math.sqrt(distSq);
               const lineAlpha = (1 - dist / maxConnectDist) * (isObsidian ? 0.08 : 0.12);
               ctx.beginPath();
               ctx.moveTo(p1.x, p1.y);
@@ -1302,13 +1322,27 @@ function initCardTiltPhysics() {
   const hasFinePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
   if (!hasFinePointer) return;
 
-  // Lightweight passive sheen tracking without modifying element geometry or 3D transform
+  // Lightweight passive sheen tracking with rAF coalescing
+  let sheenRaf = null;
+  let lastSheenTarget = null;
+  let lastSheenPos = { x: 0, y: 0 };
+
   container.addEventListener("mousemove", (e) => {
-    const card = e.target.closest(".radar-card");
-    if (!card) return;
-    const rect = card.getBoundingClientRect();
-    card.style.setProperty("--sheen-x", `${(e.clientX - rect.left).toFixed(1)}px`);
-    card.style.setProperty("--sheen-y", `${(e.clientY - rect.top).toFixed(1)}px`);
+    lastSheenTarget = e.target;
+    lastSheenPos.x = e.clientX;
+    lastSheenPos.y = e.clientY;
+
+    if (!sheenRaf) {
+      sheenRaf = window.requestAnimationFrame(() => {
+        sheenRaf = null;
+        if (!lastSheenTarget) return;
+        const card = lastSheenTarget.closest(".radar-card");
+        if (!card) return;
+        const rect = card.getBoundingClientRect();
+        card.style.setProperty("--sheen-x", `${(lastSheenPos.x - rect.left).toFixed(1)}px`);
+        card.style.setProperty("--sheen-y", `${(lastSheenPos.y - rect.top).toFixed(1)}px`);
+      });
+    }
   }, { passive: true });
 }
 
@@ -2886,6 +2920,8 @@ function renderCards() {
     return;
   }
 
+  const fragment = document.createDocumentFragment();
+
   state.events.forEach((ev) => {
     const card = document.createElement("div");
     const isHigh = ev.b2c_priority === "HIGH";
@@ -3050,12 +3086,14 @@ function renderCards() {
       });
     }
 
-    containerCards.appendChild(card);
+    fragment.appendChild(card);
   });
 
-  // Trigger GSAP Stagger Entrance for Cards
+  containerCards.appendChild(fragment);
+
+  // Trigger GSAP Stagger Entrance only for visible above-the-fold cards (prevents 300 concurrent tweens)
   if (typeof gsap !== "undefined") {
-    gsap.from("#container-cards > .radar-card", {
+    gsap.from("#container-cards > .radar-card:nth-child(-n+12)", {
       opacity: 0,
       y: 20,
       stagger: 0.035,
