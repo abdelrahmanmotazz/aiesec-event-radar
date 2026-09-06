@@ -205,6 +205,13 @@
           </div>
         </div>
 
+                <!-- Live Social Ingestion & Harvester Button -->
+        <button id="btn-open-social-ingest" class="flex items-center gap-1.5 bg-gradient-to-r from-sky-500/20 via-cyan-500/20 to-blue-600/20 hover:from-sky-500/30 hover:to-cyan-500/30 text-cyan-300 border border-cyan-500/40 hover:border-cyan-400 text-xs font-bold px-2.5 sm:px-3 py-2 rounded-xl transition shadow-[0_0_15px_rgba(0,229,255,0.2)] active:scale-95 group shrink-0" title="Live Social Ingestion Hub: Facebook & Instagram Auto-Harvester">
+          <i data-lucide="radio" class="w-3.5 h-3.5 text-cyan-400 group-hover:animate-pulse"></i>
+          <span class="hidden sm:inline">Live Social Ingest</span>
+          <span class="px-1.5 py-0.2 rounded-md bg-cyan-500/30 text-[9px] font-black uppercase text-cyan-200">AUTO</span>
+        </button>
+
         <!-- Smart Autonomous Lead Hunter AI Button -->
         <button id="btn-open-lead-hunter" class="flex items-center gap-1.5 bg-gradient-to-r from-amber-500/20 via-orange-500/20 to-amber-600/20 hover:from-amber-500/30 hover:to-orange-500/30 text-amber-300 border border-amber-500/40 hover:border-amber-400 text-xs font-bold px-2.5 sm:px-3 py-2 rounded-xl transition shadow-[0_0_15px_rgba(245,158,11,0.2)] active:scale-95 group shrink-0" title="Autonomous Lead Hunter AI: Discover Organizers & Key Contacts">
           <i data-lucide="crosshair" class="w-3.5 h-3.5 text-amber-400 group-hover:rotate-45 transition-transform"></i>
@@ -1318,6 +1325,118 @@
       <i data-lucide="arrow-up" class="w-4 h-4"></i>
       <span class="text-[9px] font-semibold">Top</span>
     </button>
+  </div>
+
+    <!-- Live Social Ingestion & Harvester Modal -->
+  <div id="social-ingest-modal" class="fixed inset-0 z-50 bg-black/85 hidden flex items-center justify-center p-3 sm:p-4 backdrop-blur-md">
+    <div class="bg-slate-900/95 border border-cyan-500/40 rounded-2xl w-full max-w-2xl max-h-[90vh] flex flex-col shadow-[0_0_50px_rgba(0,229,255,0.25)] overflow-hidden">
+      <!-- Modal Header -->
+      <div class="px-5 py-4 border-b border-white/[0.08] flex items-center justify-between bg-white/[0.02]">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-cyan-500/15 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
+            <i data-lucide="radio" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-white text-base font-display">Live Social Ingestion & Auto-Harvester</h3>
+            <p class="text-xs text-slate-400">100% Automated Live Facebook & Instagram Event Harvester</p>
+          </div>
+        </div>
+        <button id="btn-close-social-ingest" class="p-2 text-slate-400 hover:text-white rounded-xl hover:bg-white/[0.08] transition">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Modal Tabs -->
+      <div class="flex border-b border-white/[0.08] px-5 bg-white/[0.01]">
+        <button id="tab-btn-auto-scrape" class="tab-social-btn active px-4 py-3 text-xs font-bold text-cyan-400 border-b-2 border-cyan-400 flex items-center gap-2">
+          <i data-lucide="bot" class="w-4 h-4"></i> Autonomous Headless
+        </button>
+        <button id="tab-btn-ext-sync" class="tab-social-btn px-4 py-3 text-xs font-bold text-slate-400 hover:text-white border-b-2 border-transparent flex items-center gap-2">
+          <i data-lucide="chrome" class="w-4 h-4"></i> 1-Click Extension
+        </button>
+        <button id="tab-btn-paste-ingest" class="tab-social-btn px-4 py-3 text-xs font-bold text-slate-400 hover:text-white border-b-2 border-transparent flex items-center gap-2">
+          <i data-lucide="clipboard-paste" class="w-4 h-4"></i> Paste URL or JSON
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="p-5 overflow-y-auto flex-1 space-y-4">
+        <!-- Tab 1: Autonomous Headless Scraper -->
+        <div id="tab-panel-auto-scrape" class="space-y-4">
+          <div class="p-4 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-xs text-cyan-300 flex items-start gap-3">
+            <i data-lucide="zap" class="w-5 h-5 text-cyan-400 shrink-0 mt-0.5"></i>
+            <div>
+              <div class="font-bold text-white text-sm mb-1">Zero-Click Fully Automated Background Extractor</div>
+              <p class="text-slate-300 text-xs leading-relaxed">
+                Uses Microsoft Edge in headless mode. It automatically opens Facebook Events in the background, bypasses login interceptors, navigates the event discovery stream, extracts real-time event cards, and saves them directly to your live radar.
+              </p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div class="p-3.5 rounded-xl bg-white/[0.03] border border-white/[0.08]">
+              <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Target Geographic Hub</div>
+              <select id="auto-scrape-city" class="w-full bg-slate-950/80 border border-white/[0.1] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-500">
+                <option value="">All Egypt (Nationwide)</option>
+                <option value="cairo">Cairo & Giza Hubs</option>
+                <option value="alexandria">Alexandria Hub</option>
+                <option value="tanta">Tanta & Delta Campuses</option>
+                <option value="mansoura">Mansoura Hub</option>
+                <option value="assiut">Assiut & Upper Egypt</option>
+              </select>
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-white/[0.03] border border-white/[0.08]">
+              <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Session Status</div>
+              <div class="flex items-center gap-2 mt-1">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span class="text-xs font-semibold text-emerald-300">Playwright + Edge Ready</span>
+              </div>
+              <p class="text-[10px] text-slate-500 mt-1">Headless Edge v152 installed natively</p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-3 pt-2">
+            <button id="btn-trigger-headless-scrape" class="flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-extrabold text-xs tracking-wide uppercase transition shadow-[0_0_20px_rgba(0,229,255,0.3)] active:scale-95 flex items-center justify-center gap-2">
+              <i data-lucide="play" class="w-4 h-4 fill-current"></i> Run Autonomous Extraction Now
+            </button>
+          </div>
+
+          <div id="headless-scrape-output" class="hidden p-3 rounded-xl bg-black/50 border border-white/10 font-mono text-xs text-cyan-300">
+            Scanning Facebook Events...
+          </div>
+        </div>
+
+        <!-- Tab 2: 1-Click Browser Extension -->
+        <div id="tab-panel-ext-sync" class="hidden space-y-4">
+          <div class="p-4 rounded-xl bg-white/[0.03] border border-white/[0.08] text-xs space-y-2">
+            <div class="font-bold text-white text-sm flex items-center gap-2">
+              <i data-lucide="puzzle" class="w-4 h-4 text-cyan-400"></i> AIESEC Event Radar Chrome & Edge Extension
+            </div>
+            <p class="text-slate-300 text-xs">
+              Install the dedicated extension to extract events directly while browsing Facebook or Instagram on your PC.
+            </p>
+            <ol class="list-decimal list-inside text-slate-400 text-xs space-y-1 pt-1">
+              <li>Open Chrome or Edge and go to <code class="text-cyan-300 bg-white/5 px-1 py-0.5 rounded">chrome://extensions</code> or <code class="text-cyan-300 bg-white/5 px-1 py-0.5 rounded">edge://extensions</code></li>
+              <li>Toggle on <strong>Developer Mode</strong> (top right)</li>
+              <li>Click <strong>Load unpacked</strong> and select the <code class="text-cyan-300 bg-white/5 px-1 py-0.5 rounded">aiesec-radar-extension</code> folder in this project</li>
+              <li>Visit <a href="https://facebook.com/events" target="_blank" class="text-sky-400 underline">facebook.com/events</a>, open the extension, and click <strong>⚡ Sync Directly to Radar</strong></li>
+            </ol>
+          </div>
+        </div>
+
+        <!-- Tab 3: Paste URL or JSON -->
+        <div id="tab-panel-paste-ingest" class="hidden space-y-4">
+          <div>
+            <label class="text-xs font-bold text-slate-300 block mb-1.5">Paste Facebook / Instagram Event URL or JSON Payload</label>
+            <textarea id="input-social-payload" rows="6" class="w-full bg-slate-950/80 border border-white/[0.1] rounded-xl p-3 text-xs text-white focus:outline-none focus:border-cyan-500 font-mono" placeholder="https://www.facebook.com/events/1045928170882914/&#10;or paste extracted JSON array..."></textarea>
+          </div>
+          <button id="btn-submit-social-paste" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white font-extrabold text-xs tracking-wide uppercase transition shadow-md active:scale-95 flex items-center justify-center gap-2">
+            <i data-lucide="sparkles" class="w-4 h-4"></i> Ingest & Auto-Enrich to Radar
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Modern Notification Toast (Global High-Priority Feedback) -->

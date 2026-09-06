@@ -659,6 +659,18 @@ class SocialMediaScraper(BaseScraper):
                 seen_titles.add(norm_title)
             results.append(ev)
 
+        # 0. Try Live Autonomous Playwright Scraper if session or environment allows
+        try:
+            from .meta_playwright import MetaPlaywrightScraper
+            pw_scraper = MetaPlaywrightScraper()
+            if pw_scraper.is_session_available():
+                logger.info("[Social Media Suite] Persistent session detected. Running live Facebook Events extraction...")
+                live_pw_events = pw_scraper.scrape(city=city, max_events=25)
+                for l_ev in live_pw_events:
+                    _add_event(l_ev)
+        except Exception as pw_err:
+            logger.debug(f"[Social Media Suite] Playwright live extraction skipped: {pw_err}")
+
         # 1. Ingest Real Facebook Events Discovery Feed
         for fb in FACEBOOK_DISCOVERY_EVENTS:
             if not self._matches_city(fb["city"], city):

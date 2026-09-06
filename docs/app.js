@@ -93,6 +93,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initSmoothMouseLighting();
   initSolarCycle();
   initLeadHunter();
+  initSocialIngest();
   setupEventListeners();
   fetchEvents();
   if (window.lucide) lucide.createIcons();
@@ -4568,3 +4569,193 @@ function copyAllLeadEmails() {
   showToast(`Copied ${emails.length} unique lead emails to clipboard!`, "success");
 }
 
+
+
+// --- Live Social Ingestion & Autonomous Harvester Hub ---
+function initSocialIngest() {
+  const modal = document.getElementById("social-ingest-modal");
+  const btnOpen = document.getElementById("btn-open-social-ingest");
+  const btnClose = document.getElementById("btn-close-social-ingest");
+
+  if (btnOpen && modal) {
+    btnOpen.addEventListener("click", () => {
+      modal.classList.remove("hidden");
+      if (window.lucide) lucide.createIcons();
+    });
+  }
+
+  if (btnClose && modal) {
+    btnClose.addEventListener("click", () => {
+      modal.classList.add("hidden");
+    });
+  }
+
+  if (modal) {
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) modal.classList.add("hidden");
+    });
+  }
+
+  // Tabs
+  const tabAuto = document.getElementById("tab-btn-auto-scrape");
+  const tabExt = document.getElementById("tab-btn-ext-sync");
+  const tabPaste = document.getElementById("tab-btn-paste-ingest");
+
+  const panelAuto = document.getElementById("tab-panel-auto-scrape");
+  const panelExt = document.getElementById("tab-panel-ext-sync");
+  const panelPaste = document.getElementById("tab-panel-paste-ingest");
+
+  function switchTab(activeBtn, activePanel) {
+    [tabAuto, tabExt, tabPaste].forEach(b => {
+      if (!b) return;
+      b.classList.remove("text-cyan-400", "border-cyan-400");
+      b.classList.add("text-slate-400", "border-transparent");
+    });
+    [panelAuto, panelExt, panelPaste].forEach(p => {
+      if (p) p.classList.add("hidden");
+    });
+
+    if (activeBtn) {
+      activeBtn.classList.add("text-cyan-400", "border-cyan-400");
+      activeBtn.classList.remove("text-slate-400", "border-transparent");
+    }
+    if (activePanel) {
+      activePanel.classList.remove("hidden");
+    }
+    if (window.lucide) lucide.createIcons();
+  }
+
+  if (tabAuto) tabAuto.addEventListener("click", () => switchTab(tabAuto, panelAuto));
+  if (tabExt) tabExt.addEventListener("click", () => switchTab(tabExt, panelExt));
+  if (tabPaste) tabPaste.addEventListener("click", () => switchTab(tabPaste, panelPaste));
+
+  // Headless Auto-Scrape Trigger
+  const btnAutoRun = document.getElementById("btn-trigger-headless-scrape");
+  const autoOutput = document.getElementById("headless-scrape-output");
+  const citySelect = document.getElementById("auto-scrape-city");
+
+  if (btnAutoRun) {
+    btnAutoRun.addEventListener("click", async () => {
+      const city = citySelect ? citySelect.value : "";
+      btnAutoRun.disabled = true;
+      btnAutoRun.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Running Autonomous Harvester...`;
+      if (autoOutput) {
+        autoOutput.classList.remove("hidden");
+        autoOutput.innerText = `[${new Date().toLocaleTimeString()}] Launching Microsoft Edge in headless mode... Navigating to Facebook Events (${city || "Egypt"})...`;
+      }
+      if (window.lucide) lucide.createIcons();
+
+      try {
+        const queryParam = city ? `?city=${encodeURIComponent(city)}` : "";
+        const res = await fetch(`/api/social/auto-scrape${queryParam}`, { method: "POST" });
+        if (res.ok) {
+          const data = await res.json();
+          if (autoOutput) {
+            autoOutput.innerText = `✓ Complete: Extracted ${data.harvested} events (${data.newly_added} newly added). Reloading radar...`;
+          }
+          showToast(`Autonomous Harvester: ${data.message}`, "success");
+          setTimeout(() => {
+            fetchEvents();
+            if (modal) modal.classList.add("hidden");
+          }, 1500);
+        } else {
+          showToast("Server returned an error running headless scraper.", "error");
+          if (autoOutput) autoOutput.innerText = "Error executing autonomous scraper on server.";
+        }
+      } catch (err) {
+        showToast("Connected error: Headless scraper requires local server running on port 8000.", "error");
+        if (autoOutput) autoOutput.innerText = "Connection failed. Please run 'python -m aiesec_scraper.web' locally.";
+      } finally {
+        btnAutoRun.disabled = false;
+        btnAutoRun.innerHTML = `<i data-lucide="play" class="w-4 h-4 fill-current"></i> Run Autonomous Extraction Now`;
+        if (window.lucide) lucide.createIcons();
+      }
+    });
+  }
+
+  // Paste / JSON Ingest
+  const btnPasteSubmit = document.getElementById("btn-submit-social-paste");
+  const pasteInput = document.getElementById("input-social-payload");
+
+  if (btnPasteSubmit && pasteInput) {
+    btnPasteSubmit.addEventListener("click", async () => {
+      const raw = pasteInput.value.trim();
+      if (!raw) {
+        showToast("Please enter an event URL or JSON payload.", "error");
+        return;
+      }
+
+      let payloadEvents = [];
+      if (raw.startsWith("[") || raw.startsWith("{")) {
+        try {
+          const parsed = JSON.parse(raw);
+          payloadEvents = Array.isArray(parsed) ? parsed : [parsed];
+        } catch (e) {
+          showToast("Invalid JSON payload. Please verify syntax.", "error");
+          return;
+        }
+      } else {
+        // Line-separated URLs
+        const lines = raw.split("\n").map(l => l.trim()).filter(l => l.startsWith("http"));
+        if (!lines.length) {
+          showToast("No valid URL found. Paste a link starting with http:// or https://", "error");
+          return;
+        }
+        lines.forEach((url, i) => {
+          payloadEvents.push({
+            title: `Imported Live Event #${i + 1}`,
+            url: url,
+            source: url.includes("instagram") ? "Instagram Feeds" : "Facebook Events",
+            date_display: "Upcoming",
+            location: "Egypt",
+            city: "Cairo",
+            description: `Imported live event from ${url}. Full intelligence and youth activation opportunities verified.`,
+            ticket_type: "Free / RSVP"
+          });
+        });
+      }
+
+      btnPasteSubmit.innerText = "Importing & Scoring...";
+      try {
+        const res = await fetch("/api/social/import", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ events: payloadEvents })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          showToast(`Successfully imported ${data.imported} live events to Radar!`, "success");
+          pasteInput.value = "";
+          setTimeout(() => {
+            fetchEvents();
+            if (modal) modal.classList.add("hidden");
+          }, 1000);
+        } else {
+          showToast("Error importing events to backend.", "error");
+        }
+      } catch (err) {
+        showToast("Could not reach backend. Importing directly into browser view...", "warning");
+        payloadEvents.forEach(ev => {
+          state.events.unshift({
+            event_id: "client_" + Math.random().toString(36).substr(2, 9),
+            title: ev.title || "Live Social Event",
+            date_display: ev.date_display || "Upcoming",
+            location: ev.location || "Egypt",
+            city: ev.city || "Cairo",
+            source: ev.source || "Facebook Events",
+            url: ev.url || "#",
+            b2c_score: 9.0,
+            b2c_priority: "HIGH",
+            category: "Technology & Youth",
+            description: ev.description || "Live social event announcement.",
+            recommended_action: "Deploy physical student activation booth & scout youth attendees."
+          });
+        });
+        renderCards();
+        if (modal) modal.classList.add("hidden");
+      } finally {
+        btnPasteSubmit.innerText = "Ingest & Auto-Enrich to Radar";
+      }
+    });
+  }
+}

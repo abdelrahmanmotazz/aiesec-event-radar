@@ -1,0 +1,32 @@
+{
+  "manifest_version": 3,
+  "name": "AIESEC Event Radar - Auto Harvester",
+  "version": "1.0.0",
+  "description": "Automated live event extractor for Facebook Events & Instagram Feeds for AIESEC Egypt.",
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "storage"
+  ],
+  "host_permissions": [
+    "*://*.facebook.com/*",
+    "*://*.instagram.com/*",
+    "http://localhost:8000/*",
+    "http://127.0.0.1:8000/*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "AIESEC Event Radar Harvester"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.facebook.com/events*",
+        "*://*.facebook.com/*",
+        "*://*.instagram.com/*"
+      ],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}

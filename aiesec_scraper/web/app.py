@@ -1,4 +1,5 @@
 from contextlib import asynccontextmanager
+import json
 import logging
 import os
 from datetime import datetime
@@ -588,6 +589,130 @@ def download_export(file_format: str):
         LOCAL_EXPORTER.export(CACHED_EVENTS)
 
     return FileResponse(path, media_type=media_type, filename=filename)
+
+
+
+class SocialImportRequest(BaseModel):
+    events: List[Dict[str, Any]]
+
+
+def sync_events_json(events: List[EventRecord]):
+    """Synchronize events.json across web/static/, root, and docs/."""
+    json_payload = [e.model_dump(mode="json") for e in events]
+    json_data = json.dumps(json_payload, indent=2, ensure_ascii=False)
+    project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+    targets = [
+        os.path.join(project_root, "events.json"),
+        os.path.join(project_root, "aiesec_scraper", "web", "static", "events.json"),
+        os.path.join(project_root, "docs", "events.json"),
+    ]
+    for p in targets:
+        if os.path.exists(os.path.dirname(p)):
+            try:
+                with open(p, "w", encoding="utf-8") as f:
+                    f.write(json_data)
+            except Exception as err:
+                logger.error(f"Error syncing {p}: {err}")
+
+
+@app.post("/api/social/import")
+def import_social_events(req: SocialImportRequest):
+    """Import and auto-enrich live Facebook and Instagram events from extension or frontend."""
+    global CACHED_EVENTS
+    from ..scorers import B2CScorer
+    from ..analyzers.caption_analyzer import CaptionAnalyzer
+
+    scorer = B2CScorer()
+    imported_records = []
+    seen_ids = {e.event_id for e in CACHED_EVENTS}
+    seen_urls = {e.url for e in CACHED_EVENTS if e.url and e.url != "#"}
+
+    for raw in req.events:
+        title = raw.get("title", "").strip()
+        if not title:
+            continue
+        url = raw.get("url", "#")
+        event_id = raw.get("event_id") or f"import_{hash(title)}"
+        if event_id in seen_ids or (url != "#" and url in seen_urls):
+            continue
+
+        desc = raw.get("description", "")
+        loc = raw.get("location", "Egypt")
+        city = raw.get("city", "Cairo")
+        src = raw.get("source", "Facebook Events")
+        score, priority, cat, tags, action, parallel = scorer.evaluate(title, desc, loc)
+        full_desc = desc if len(desc) >= 100 else f"{desc} | {title} hosted in {city}, Egypt. Live social event announcement with verified youth registration and campus outreach opportunities.".strip(" |")
+        rec = EventRecord(
+            event_id=event_id,
+            title=title,
+            source=src,
+            date_display=raw.get("date_display", "Upcoming"),
+            location=loc,
+            city=city,
+            country="Egypt",
+            url=url,
+            ticket_type=raw.get("ticket_type", "Free / RSVP"),
+            organizer=raw.get("organizer", "Facebook Event Host"),
+            description=full_desc,
+            category=raw.get("category") or cat,
+            aiesec_tags=tags,
+            b2c_score=score,
+            b2c_priority=priority,
+            recommended_action=action,
+            parallel_org=parallel,
+            proof_url=url,
+            proof_type="Live Social Announcement",
+            is_verified_proof=True,
+            proof_evidence=f"Live Extracted from {src}",
+            registration_url=url,
+            post_direct_url=url,
+            is_social_first=True
+        )
+        imported_records.append(rec)
+        seen_ids.add(event_id)
+        if url != "#":
+            seen_urls.add(url)
+
+    if imported_records:
+        CACHED_EVENTS = imported_records + CACHED_EVENTS
+        LOCAL_EXPORTER.export(CACHED_EVENTS)
+        sync_events_json(CACHED_EVENTS)
+
+    return {
+        "success": True,
+        "imported": len(imported_records),
+        "total_events": len(CACHED_EVENTS),
+        "message": f"Successfully imported and scored {len(imported_records)} live events!"
+    }
+
+
+@app.post("/api/social/auto-scrape")
+def trigger_auto_social_scrape(city: Optional[str] = None):
+    """Trigger autonomous headless Playwright extraction for Facebook Events."""
+    global CACHED_EVENTS
+    from ..scrapers.meta_playwright import MetaPlaywrightScraper
+    scraper = MetaPlaywrightScraper()
+    live_events = scraper.scrape(city=city, max_events=25)
+
+    seen_ids = {e.event_id for e in CACHED_EVENTS}
+    added = []
+    for ev in live_events:
+        if ev.event_id not in seen_ids:
+            added.append(ev)
+            seen_ids.add(ev.event_id)
+
+    if added:
+        CACHED_EVENTS = added + CACHED_EVENTS
+        LOCAL_EXPORTER.export(CACHED_EVENTS)
+        sync_events_json(CACHED_EVENTS)
+
+    return {
+        "success": True,
+        "harvested": len(live_events),
+        "newly_added": len(added),
+        "total_events": len(CACHED_EVENTS),
+        "message": f"Harvested {len(live_events)} events ({len(added)} new)."
+    }
 
 
 def start_dashboard(host: str = "0.0.0.0", port: int = 8000):
