@@ -35,8 +35,14 @@ def main():
         table.add_column("URL", style="blue")
 
         for ev in events[:15]:
-            table.add_row(ev.title[:35], ev.city, ev.date_display[:20], f"{ev.b2c_score:.1f}", ev.url[:40])
-        console.print(table)
+            clean_title = ev.title.encode("ascii", "replace").decode("ascii")[:35]
+            clean_date = ev.date_display.encode("ascii", "replace").decode("ascii")[:20]
+            table.add_row(clean_title, ev.city, clean_date, f"{ev.b2c_score:.1f}", ev.url[:40])
+        try:
+            console.print(table)
+        except Exception:
+            for ev in events[:15]:
+                print(f"• {ev.title} ({ev.city}) - {ev.date_display}")
 
         if args.save:
             exporter = LocalExporter()
