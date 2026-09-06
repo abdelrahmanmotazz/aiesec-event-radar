@@ -701,14 +701,110 @@ body::before {
   background-color: #010409 !important;
 }
 
-/* Dynamically colorize UI elements when theme changes */
+/* ============================================================
+   GLOBAL THEME REACTIVITY (Transforms Entire Interface)
+   ============================================================ */
+/* Header & Brand */
+header img {
+  filter: drop-shadow(0 0 16px var(--theme-accent-glow)) !important;
+}
+
+#header-b2c-badge {
+  background: var(--theme-accent-subtle) !important;
+  color: var(--theme-accent) !important;
+  border-color: var(--theme-accent-border) !important;
+}
+
+.radar-live-dot {
+  background-color: var(--theme-accent) !important;
+  box-shadow: 0 0 8px var(--theme-accent) !important;
+}
+
 #theme-accent-indicator {
   background-color: var(--theme-accent) !important;
   box-shadow: 0 0 10px var(--theme-accent-glow) !important;
 }
 
+#btn-open-cmd-palette:hover {
+  border-color: var(--theme-accent-border) !important;
+}
+
+#btn-open-cmd-palette i {
+  color: var(--theme-accent) !important;
+}
+
+#btn-scrape-now {
+  background: linear-gradient(135deg, var(--theme-accent), #0266C8) !important;
+  box-shadow: 0 0 18px var(--theme-accent-glow) !important;
+}
+
+#btn-solar-dial:hover {
+  border-color: var(--theme-accent-border) !important;
+}
+
+/* Hero Bento Grid */
+#tile-total-radar span.uppercase {
+  background: var(--theme-accent-subtle) !important;
+  color: var(--theme-accent) !important;
+  border-color: var(--theme-accent-border) !important;
+}
+
+#btn-spatial-globe {
+  background: var(--theme-accent) !important;
+  box-shadow: 0 0 12px var(--theme-accent-glow) !important;
+}
+
+#hero-cal-techne {
+  background: var(--theme-accent-subtle) !important;
+  border-color: var(--theme-accent-border) !important;
+  box-shadow: 0 0 16px var(--theme-accent-glow) !important;
+}
+
+#hero-cal-techne div:first-child {
+  color: var(--theme-accent) !important;
+}
+
+.radar-surface.border-l-\[\#037EF3\] {
+  border-left-color: var(--theme-accent) !important;
+}
+
+#btn-hero-launch-pitch {
+  background: var(--theme-accent-subtle) !important;
+  border-color: var(--theme-accent-border) !important;
+  color: var(--theme-accent) !important;
+}
+
+#btn-hero-launch-pitch:hover {
+  background: var(--theme-accent) !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 20px var(--theme-accent-glow) !important;
+}
+
+/* Search Bar & Toolbar */
+#input-search:focus {
+  border-color: var(--theme-accent) !important;
+  box-shadow: 0 0 18px var(--theme-accent-glow) !important;
+}
+
+.hero-search-laser::after {
+  background: conic-gradient(
+    from 0deg at 50% 50%,
+    transparent 0deg,
+    transparent 280deg,
+    var(--theme-accent, #00E5FF) 330deg,
+    var(--theme-accent-glow, #38BDF8) 360deg
+  ) !important;
+}
+
+#search-intent-pills > span {
+  border-color: var(--theme-accent-border) !important;
+  background: var(--theme-accent-subtle) !important;
+  color: var(--theme-accent) !important;
+}
+
 .topic-chip.active,
 #btn-view-cards.active-view,
+#btn-view-table.active-view,
 #btn-view-calendar.active-view,
 .globe-hub-btn.active-hub {
   background: var(--theme-accent) !important;
@@ -717,6 +813,7 @@ body::before {
   box-shadow: 0 0 16px var(--theme-accent-glow) !important;
 }
 
+/* Event Cards */
 .radar-card:hover,
 .spotlight-card:hover {
   border-color: var(--theme-accent-border) !important;
@@ -727,7 +824,29 @@ body::before {
   color: var(--theme-accent) !important;
 }
 
+.date-tearoff-month {
+  color: var(--theme-accent) !important;
+}
+
+.radar-card:hover .date-tearoff-badge {
+  border-color: var(--theme-accent-border) !important;
+  box-shadow: 0 0 12px var(--theme-accent-glow) !important;
+}
+
+.event-desc-box span.text-sky-400 {
+  color: var(--theme-accent) !important;
+}
+
+.dark-action-box div:first-child {
+  color: var(--theme-accent) !important;
+}
+
+.radar-card span.text-sky-400 {
+  color: var(--theme-accent) !important;
+}
+
 .btn-pitch-event {
+  background: var(--theme-accent-subtle) !important;
   color: var(--theme-accent) !important;
   border-color: var(--theme-accent-border) !important;
 }
@@ -735,12 +854,29 @@ body::before {
 .btn-pitch-event:hover {
   background: var(--theme-accent) !important;
   color: #ffffff !important;
-  box-shadow: 0 0 16px var(--theme-accent-glow) !important;
+  box-shadow: 0 0 20px var(--theme-accent-glow) !important;
 }
 
+/* Drawer & Modals */
 #drawer-btn-generate {
   background: linear-gradient(135deg, var(--theme-accent), #0266C8) !important;
   box-shadow: 0 0 20px var(--theme-accent-glow) !important;
+}
+
+#drawer-event-link {
+  color: var(--theme-accent) !important;
+}
+
+#table-count-badge {
+  background: var(--theme-accent-subtle) !important;
+  color: var(--theme-accent) !important;
+  border-color: var(--theme-accent-border) !important;
+}
+
+/* Mobile Bottom Navigation Bar */
+#mobile-bottom-nav button:hover,
+#mobile-bottom-nav button:active {
+  color: var(--theme-accent) !important;
 }
 
 /* ============================================================
@@ -1179,6 +1315,8 @@ html, body {
 .radar-card {
   position: relative;
   overflow: hidden;
+  content-visibility: auto;
+  contain-intrinsic-size: 320px;
 }
 
 .laser-border-beam {
@@ -1243,13 +1381,22 @@ html, body {
 }
 
 .laser-border-beam.beam-default {
-  --beam-c1: var(--solar-beam-1, #00E5FF);
-  --beam-c2: var(--solar-beam-2, #38BDF8);
-  opacity: 0.4;
+  --beam-c1: var(--theme-accent, var(--solar-beam-1, #00E5FF));
+  --beam-c2: var(--theme-accent-glow, var(--solar-beam-2, #38BDF8));
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.laser-border-beam.beam-default::after {
+  animation-play-state: paused;
 }
 
 .radar-card:hover .laser-border-beam.beam-default {
-  opacity: 0.95;
+  opacity: 1;
+}
+
+.radar-card:hover .laser-border-beam.beam-default::after {
+  animation-play-state: running;
 }
 
 /* Hero Search Laser Border Halo */

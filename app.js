@@ -845,13 +845,9 @@ function initSmoothMouseLighting() {
   let targetY = 20;
   let currentX = 50;
   let currentY = 20;
-  let mouseClientX = -999;
-  let mouseClientY = -999;
   let ticking = false;
 
   window.addEventListener("mousemove", (e) => {
-    mouseClientX = e.clientX;
-    mouseClientY = e.clientY;
     targetX = Math.round((e.clientX / window.innerWidth) * 100);
     targetY = Math.round((e.clientY / window.innerHeight) * 100);
 
@@ -861,22 +857,19 @@ function initSmoothMouseLighting() {
         currentY += (targetY - currentY) * 0.18;
         document.documentElement.style.setProperty("--mouse-x", `${currentX.toFixed(1)}%`);
         document.documentElement.style.setProperty("--mouse-y", `${currentY.toFixed(1)}%`);
-
-        // Update spotlight cards in viewport proximity
-        const spotlightCards = document.querySelectorAll(".spotlight-card");
-        spotlightCards.forEach((card) => {
-          const rect = card.getBoundingClientRect();
-          const cx = mouseClientX - rect.left;
-          const cy = mouseClientY - rect.top;
-          if (cx >= -60 && cx <= rect.width + 60 && cy >= -60 && cy <= rect.height + 60) {
-            card.style.setProperty("--card-mouse-x", `${cx}px`);
-            card.style.setProperty("--card-mouse-y", `${cy}px`);
-          }
-        });
-
         ticking = false;
       });
       ticking = true;
+    }
+  }, { passive: true });
+
+  // Lightweight delegated card spotlight calculation ONLY for the single card currently hovered
+  document.addEventListener("mousemove", (e) => {
+    const card = e.target.closest(".spotlight-card");
+    if (card) {
+      const rect = card.getBoundingClientRect();
+      card.style.setProperty("--card-mouse-x", `${(e.clientX - rect.left).toFixed(1)}px`);
+      card.style.setProperty("--card-mouse-y", `${(e.clientY - rect.top).toFixed(1)}px`);
     }
   }, { passive: true });
 }
@@ -1907,17 +1900,18 @@ const THEME_CYCLE_KEYS = Object.keys(THEME_ACCENTS);
 
 function applyThemeTokens(themeName) {
   const tObj = THEME_ACCENTS[themeName] || THEME_ACCENTS.blue;
-  if (themeName === "blue") {
-    document.documentElement.removeAttribute("data-theme");
-  } else {
-    document.documentElement.setAttribute("data-theme", themeName);
-  }
+  document.documentElement.setAttribute("data-theme", themeName);
 
+  const subtleGlow = tObj.glow.replace(/[\d\.]+\)$/, "0.15)");
   document.documentElement.style.setProperty("--theme-accent", tObj.css);
   document.documentElement.style.setProperty("--theme-accent-glow", tObj.glow);
+  document.documentElement.style.setProperty("--theme-accent-subtle", subtleGlow);
   document.documentElement.style.setProperty("--theme-accent-border", tObj.border);
   document.documentElement.style.setProperty("--aiesec-blue", tObj.css);
   document.documentElement.style.setProperty("--aiesec-blue-glow", tObj.css);
+  document.documentElement.style.setProperty("--solar-beam-1", tObj.css);
+  document.documentElement.style.setProperty("--solar-beam-2", tObj.glow);
+  document.documentElement.style.setProperty("--solar-spotlight", subtleGlow);
 
   const indicator = document.getElementById("theme-accent-indicator");
   if (indicator) {

@@ -56,7 +56,7 @@
 
   <!-- Lucide Icons CDN -->
   <script src="https://unpkg.com/lucide@latest"></script>
-  <link rel="stylesheet" href="style.css?v=6.3">
+  <link rel="stylesheet" href="style.css?v=6.4">
 </head>
 <body class="dark min-h-screen flex flex-col antialiased bg-[#030712] text-slate-100 selection:bg-[#037EF3]/30 selection:text-white relative overflow-x-hidden">
 
@@ -68,16 +68,17 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
       
       <!-- Brand, LC Identifier & Telemetry -->
-      <div class="flex items-center space-x-2 sm:space-x-3.5 min-w-0">
+      <div class="flex items-center space-x-2 sm:space-x-3.5 min-w-0 shrink-0">
         <a href="./" class="flex items-center shrink-0">
-          <img src="aiesec-logo.svg" alt="AIESEC Logo" class="h-7 sm:h-9 w-auto hover:brightness-110 transition drop-shadow-[0_0_18px_rgba(3,126,243,0.45)]">
+          <img src="aiesec-logo.svg" alt="AIESEC Logo" class="h-6 sm:h-9 w-auto hover:brightness-110 transition drop-shadow-[0_0_18px_rgba(3,126,243,0.45)]">
         </a>
-        <div class="border-l border-white/10 pl-2.5 sm:pl-3 min-w-0">
+        <div class="border-l border-white/10 pl-2 sm:pl-3 min-w-0">
           <div class="flex items-center gap-1.5 sm:gap-2">
-            <h1 class="font-extrabold text-sm sm:text-lg tracking-tight text-white flex items-center gap-1 truncate">
-              <span>AIESEC in Tanta</span>
+            <h1 class="font-extrabold text-xs sm:text-lg tracking-tight text-white flex items-center gap-1 truncate">
+              <span class="hidden sm:inline">AIESEC in Tanta</span>
+              <span class="sm:hidden text-sky-400 font-bold">Tanta</span>
             </h1>
-            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-bold bg-blue-500/10 text-sky-400 border border-sky-500/30 uppercase tracking-wider shrink-0">
+            <span id="header-b2c-badge" class="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-bold bg-blue-500/10 text-sky-400 border border-sky-500/30 uppercase tracking-wider shrink-0">
               <span class="radar-live-dot"></span> B2C RADAR
             </span>
           </div>
@@ -204,7 +205,7 @@
           </div>
         </div>
 
-        <button id="btn-open-cmd-palette" class="flex items-center gap-1.5 bg-white/[0.05] hover:bg-white/[0.1] text-slate-300 hover:text-white border border-white/10 hover:border-white/20 text-xs font-semibold px-2 sm:px-3 py-2 rounded-xl transition shadow-sm active:scale-95 group" title="Open Command Palette (Ctrl+K)">
+        <button id="btn-open-cmd-palette" class="hidden sm:flex items-center gap-1.5 bg-white/[0.05] hover:bg-white/[0.1] text-slate-300 hover:text-white border border-white/10 hover:border-white/20 text-xs font-semibold px-2 sm:px-3 py-2 rounded-xl transition shadow-sm active:scale-95 group" title="Open Command Palette (Ctrl+K)">
           <i data-lucide="search" class="w-3.5 h-3.5 text-sky-400 group-hover:scale-110 transition-transform"></i>
           <span class="hidden sm:inline">Command</span>
           <kbd class="hidden sm:inline-flex items-center px-1.5 py-0.5 text-[9px] font-mono text-slate-400 bg-white/10 rounded border border-white/10">⌘K</kbd>
@@ -220,13 +221,13 @@
           <span class="hidden lg:inline">Email Digest</span>
         </button>
 
-        <button id="btn-scrape-now" class="flex items-center gap-1.5 bg-gradient-to-r from-[#FF4D36] to-[#E03620] hover:brightness-110 text-white text-xs font-bold px-2.5 sm:px-3.5 py-2 rounded-xl transition shadow-[0_0_22px_rgba(255,77,54,0.4)] active:scale-95" title="Refresh Live Radar Feed">
+        <button id="btn-scrape-now" class="w-8 h-8 sm:w-auto px-0 sm:px-3.5 py-0 sm:py-2 flex items-center justify-center gap-1.5 bg-gradient-to-r from-[#FF4D36] to-[#E03620] hover:brightness-110 text-white text-xs font-bold rounded-xl transition shadow-[0_0_22px_rgba(255,77,54,0.4)] active:scale-95 shrink-0" title="Refresh Live Radar Feed">
           <i data-lucide="refresh-cw" class="w-3.5 h-3.5 sm:w-4 sm:h-4" id="scrape-icon"></i>
           <span class="hidden sm:inline">Scrape Now</span>
         </button>
 
         <!-- Export Dropdown -->
-        <div class="relative group">
+        <div class="relative group hidden sm:block">
           <button class="p-2 text-slate-400 hover:text-white hover:bg-white/[0.08] rounded-xl transition border border-white/[0.09]" title="Export Data Feeds">
             <i data-lucide="download" class="w-4 h-4"></i>
           </button>
@@ -253,7 +254,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
       
       <!-- Left Column (3 cols on lg): Total Monitored & High-Priority Target Hub -->
-      <div class="lg:col-span-3 flex flex-col gap-5 justify-between">
+      <div class="lg:col-span-3 flex flex-col gap-5">
         
         <!-- Tile 1: Total Events Monitored with Floating Crown & Flagship Pill -->
         <div class="radar-surface spotlight-card p-5 sm:p-6 flex-1 flex flex-col justify-between cursor-pointer group hover:border-sky-500/40 transition" id="tile-total-radar" title="Click to view all events">
@@ -283,72 +284,77 @@
         </div>
 
         <!-- Tile 2: High Priority Lead Focus Card with Conic Lighting & Radial Arc Gauge -->
-        <div class="radar-surface spotlight-card conic-glow-card p-5 sm:p-6 flex-1 flex flex-col justify-between card-high-glow">
-          <div class="flex items-center justify-between">
-            <span class="text-[10px] font-bold text-[#FF8875] uppercase tracking-wider flex items-center gap-1.5">
-              <span class="w-2 h-2 rounded-full bg-[#FF4D36] animate-pulse"></span>
-              <span>High Priority B2C</span>
-            </span>
-            <span class="text-[10px] bg-red-500/15 text-red-300 px-2 py-0.5 rounded-md font-bold border border-red-500/30">Score ≥8.5</span>
-          </div>
+        <div class="radar-surface spotlight-card conic-glow-card p-5 sm:p-6 flex-1 flex flex-col justify-between card-high-glow min-h-[260px]">
+          <div>
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] font-bold text-[#FF8875] uppercase tracking-wider flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-[#FF4D36] animate-pulse"></span>
+                <span>High Priority B2C</span>
+              </span>
+              <span class="text-[10px] bg-red-500/15 text-red-300 px-2 py-0.5 rounded-md font-bold border border-red-500/30">Score ≥8.5</span>
+            </div>
 
-          <!-- Radial Arc Speedometer + Telemetry Readout -->
-          <div class="my-2.5 flex items-center justify-between gap-3">
-            <div class="relative w-24 h-24 shrink-0 flex items-center justify-center">
-              <svg viewBox="0 0 100 100" class="w-full h-full -rotate-90">
-                <circle cx="50" cy="50" r="38" stroke-width="7" class="radial-gauge-track" />
-                <circle id="radial-yield-arc" cx="50" cy="50" r="38" stroke-width="7" 
-                        stroke="url(#radialGaugeGrad)" 
-                        stroke-dasharray="238.76" 
-                        stroke-dashoffset="31" 
-                        class="radial-gauge-bar" />
-                <defs>
-                  <linearGradient id="radialGaugeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stop-color="#FF4D36" />
-                    <stop offset="60%" stop-color="#FF8875" />
-                    <stop offset="100%" stop-color="#00E5FF" />
-                  </linearGradient>
-                </defs>
-              </svg>
-              <div class="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none">
-                <span class="text-xl font-black text-white font-display leading-none" id="stat-yield-pct">87%</span>
-                <span class="text-[8px] font-bold uppercase tracking-wider text-slate-400 mt-0.5">Yield Index</span>
+            <!-- Radial Arc Speedometer + Telemetry Readout -->
+            <div class="my-2 flex items-center justify-between gap-3">
+              <div class="relative w-20 h-20 sm:w-22 sm:h-22 shrink-0 flex items-center justify-center">
+                <svg viewBox="0 0 100 100" class="w-full h-full -rotate-90">
+                  <circle cx="50" cy="50" r="38" stroke-width="7" class="radial-gauge-track" />
+                  <circle id="radial-yield-arc" cx="50" cy="50" r="38" stroke-width="7" 
+                          stroke="url(#radialGaugeGrad)" 
+                          stroke-dasharray="238.76" 
+                          stroke-dashoffset="31" 
+                          class="radial-gauge-bar" />
+                  <defs>
+                    <linearGradient id="radialGaugeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stop-color="#FF4D36" />
+                      <stop offset="60%" stop-color="#FF8875" />
+                      <stop offset="100%" stop-color="#00E5FF" />
+                    </linearGradient>
+                  </defs>
+                </svg>
+                <div class="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none">
+                  <span class="text-lg sm:text-xl font-black text-white font-display leading-none" id="stat-yield-pct">87%</span>
+                  <span class="text-[8px] font-bold uppercase tracking-wider text-slate-400 mt-0.5">Yield Index</span>
+                </div>
+              </div>
+
+              <div class="flex-1 text-left pl-1">
+                <div class="flex items-center gap-2 mb-1">
+                  <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-red-500/15 border border-red-500/30 flex items-center justify-center text-[#FF4D36] shadow-[0_0_12px_rgba(255,77,54,0.4)] flame-animated shrink-0">
+                    <i data-lucide="flame" class="w-3.5 h-3.5 sm:w-4 sm:h-4"></i>
+                  </div>
+                  <div>
+                    <div class="text-2xl sm:text-3xl font-black text-[#FF8875] tracking-tight font-display leading-none" id="stat-high">46</div>
+                    <div class="text-[9px] sm:text-[10px] text-slate-400 font-semibold uppercase tracking-wider">High Targets</div>
+                  </div>
+                </div>
+                <p class="text-[10px] sm:text-[11px] text-slate-300 leading-tight">Instant conversion focus for EB & delegates</p>
               </div>
             </div>
 
-            <div class="flex-1 text-left pl-1">
-              <div class="flex items-center gap-2 mb-1">
-                <div class="w-8 h-8 rounded-xl bg-red-500/15 border border-red-500/30 flex items-center justify-center text-[#FF4D36] shadow-[0_0_12px_rgba(255,77,54,0.4)] flame-animated shrink-0">
-                  <i data-lucide="flame" class="w-4 h-4"></i>
-                </div>
-                <div>
-                  <div class="text-3xl font-black text-[#FF8875] tracking-tight font-display leading-none" id="stat-high">46</div>
-                  <div class="text-[10px] text-slate-400 font-semibold uppercase tracking-wider">High Targets</div>
-                </div>
+            <!-- Recessed Inset Performance Counters -->
+            <div class="grid grid-cols-3 gap-1.5 py-1 text-center">
+              <div class="recessed-stat-box">
+                <div class="text-xs font-black text-white font-display">23%</div>
+                <div class="text-[8px] sm:text-[9px] text-slate-400 uppercase font-bold">Techne</div>
               </div>
-              <p class="text-[11px] text-slate-300 leading-tight">Instant conversion focus for EB & delegates</p>
+              <div class="recessed-stat-box">
+                <div class="text-xs font-black text-emerald-400 font-display">100%</div>
+                <div class="text-[8px] sm:text-[9px] text-slate-400 uppercase font-bold">Verified</div>
+              </div>
+              <div class="recessed-stat-box">
+                <div class="text-xs font-black text-sky-400 font-display">50+</div>
+                <div class="text-[8px] sm:text-[9px] text-slate-400 uppercase font-bold">LC Impact</div>
+              </div>
             </div>
           </div>
 
-          <!-- Recessed Inset Performance Counters -->
-          <div class="grid grid-cols-3 gap-1.5 py-1.5 my-1 text-center">
-            <div class="recessed-stat-box">
-              <div class="text-xs font-black text-white font-display">23%</div>
-              <div class="text-[9px] text-slate-400 uppercase font-bold">Techne</div>
-            </div>
-            <div class="recessed-stat-box">
-              <div class="text-xs font-black text-emerald-400 font-display">100%</div>
-              <div class="text-[9px] text-slate-400 uppercase font-bold">Verified</div>
-            </div>
-            <div class="recessed-stat-box">
-              <div class="text-xs font-black text-sky-400 font-display">50+</div>
-              <div class="text-[9px] text-slate-400 uppercase font-bold">LC Impact</div>
-            </div>
+          <!-- Bottom Action Button aligned with clean top border and padding -->
+          <div class="pt-3 border-t border-white/[0.06] mt-auto">
+            <button id="btn-quick-filter-high" class="w-full py-2.5 px-3 rounded-xl bg-[#FF4D36]/20 hover:bg-[#FF4D36] text-[#FF8875] hover:text-white border border-[#FF4D36]/40 text-xs font-bold transition active:scale-95 text-center shadow-[0_0_14px_rgba(255,77,54,0.2)]">
+              View High Leads
+            </button>
           </div>
-
-          <button id="btn-quick-filter-high" class="w-full py-2 px-3 rounded-xl bg-[#FF4D36]/20 hover:bg-[#FF4D36] text-[#FF8875] hover:text-white border border-[#FF4D36]/40 text-xs font-bold transition active:scale-95 text-center shadow-[0_0_14px_rgba(255,77,54,0.2)]">
-            View High Leads
-          </button>
         </div>
 
       </div>
@@ -1154,7 +1160,7 @@
     <span id="toast-message" class="truncate flex-1">Action processed</span>
   </div>
 
-  <script src="app.js?v=6.3"></script>
+  <script src="app.js?v=6.4"></script>
   <script>
     if (window.lucide && typeof lucide.createIcons === 'function') {
       lucide.createIcons();
