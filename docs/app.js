@@ -2381,7 +2381,7 @@ function openEventDrawer(ev) {
     proofLinkEl.setAttribute("title", `Direct Proof URL: ${proofUrl}`);
   }
   if (proofLinkText) {
-    proofLinkText.innerText = directPostUrl ? "Open Announcement Post Proof ↗" : "Open Verification Link ↗";
+    proofLinkText.innerText = ev.is_social_first ? "Open Official Announcement Channel ↗" : "Open Official Event Page ↗";
   }
 
   // Multi-Channel Proof Hub: Organizer Profile & Registration Form Buttons
@@ -2405,6 +2405,28 @@ function openEventDrawer(ev) {
       regFormLink.classList.add("hidden");
       regFormLink.classList.remove("flex");
     }
+  }
+
+  const platformSearchLink = document.getElementById("drawer-platform-search-link");
+  if (platformSearchLink) {
+    let searchUrl = "";
+    const cleanTitle = (ev.title || "").replace(/202[6-9]/g, "").trim();
+    const srcLower = (ev.source || "").toLowerCase();
+    if (srcLower.includes("facebook")) {
+      searchUrl = `https://www.facebook.com/search/top/?q=${encodeURIComponent(cleanTitle)}`;
+    } else if (srcLower.includes("linkedin")) {
+      searchUrl = `https://www.linkedin.com/search/results/content/?keywords=${encodeURIComponent(cleanTitle)}`;
+    } else if (srcLower.includes("instagram")) {
+      const tag = cleanTitle.split(" ")[0].replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
+      searchUrl = tag ? `https://www.instagram.com/explore/tags/${tag}/` : "https://www.instagram.com/";
+    } else if (srcLower.includes("telegram")) {
+      searchUrl = `https://t.me/s/cairoevents`;
+    } else {
+      searchUrl = `https://www.google.com/search?q=${encodeURIComponent(ev.title + " Egypt event")}`;
+    }
+    platformSearchLink.href = searchUrl;
+    platformSearchLink.classList.remove("hidden");
+    platformSearchLink.classList.add("flex");
   }
 
   if (pingBtn) {
