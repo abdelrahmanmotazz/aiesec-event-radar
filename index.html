@@ -202,39 +202,71 @@
           </div>
         </div>
 
-        <!-- Tile 2: High Priority Lead Focus Card with Center Flame -->
-        <div class="radar-surface spotlight-card p-5 sm:p-6 flex-1 flex flex-col justify-between card-high-glow">
+        <!-- Tile 2: High Priority Lead Focus Card with Conic Lighting & Radial Arc Gauge -->
+        <div class="radar-surface spotlight-card conic-glow-card p-5 sm:p-6 flex-1 flex flex-col justify-between card-high-glow">
           <div class="flex items-center justify-between">
             <span class="text-[10px] font-bold text-[#FF8875] uppercase tracking-wider flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-[#FF4D36] animate-pulse"></span>
               <span>High Priority B2C</span>
             </span>
-            <span class="text-[10px] bg-red-500/15 text-red-300 px-2 py-0.5 rounded-md font-bold">≥8.5</span>
+            <span class="text-[10px] bg-red-500/15 text-red-300 px-2 py-0.5 rounded-md font-bold border border-red-500/30">Score ≥8.5</span>
           </div>
 
-          <div class="text-center my-2">
-            <div class="w-11 h-11 rounded-2xl bg-red-500/10 border border-red-500/25 flex items-center justify-center text-[#FF4D36] shadow-[0_0_16px_rgba(255,77,54,0.3)] mx-auto flame-animated mb-2">
-              <i data-lucide="flame" class="w-5 h-5"></i>
+          <!-- Radial Arc Speedometer + Telemetry Readout -->
+          <div class="my-2.5 flex items-center justify-between gap-3">
+            <div class="relative w-24 h-24 shrink-0 flex items-center justify-center">
+              <svg viewBox="0 0 100 100" class="w-full h-full -rotate-90">
+                <circle cx="50" cy="50" r="38" stroke-width="7" class="radial-gauge-track" />
+                <circle id="radial-yield-arc" cx="50" cy="50" r="38" stroke-width="7" 
+                        stroke="url(#radialGaugeGrad)" 
+                        stroke-dasharray="238.76" 
+                        stroke-dashoffset="31" 
+                        class="radial-gauge-bar" />
+                <defs>
+                  <linearGradient id="radialGaugeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#FF4D36" />
+                    <stop offset="60%" stop-color="#FF8875" />
+                    <stop offset="100%" stop-color="#00E5FF" />
+                  </linearGradient>
+                </defs>
+              </svg>
+              <div class="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none">
+                <span class="text-xl font-black text-white font-display leading-none" id="stat-yield-pct">87%</span>
+                <span class="text-[8px] font-bold uppercase tracking-wider text-slate-400 mt-0.5">Yield Index</span>
+              </div>
             </div>
-            <div class="text-3xl font-black text-[#FF8875] tracking-tight font-display" id="stat-high">46</div>
-            <div class="text-[11px] text-slate-400 font-medium">Immediate Conversion Targets</div>
+
+            <div class="flex-1 text-left pl-1">
+              <div class="flex items-center gap-2 mb-1">
+                <div class="w-8 h-8 rounded-xl bg-red-500/15 border border-red-500/30 flex items-center justify-center text-[#FF4D36] shadow-[0_0_12px_rgba(255,77,54,0.4)] flame-animated shrink-0">
+                  <i data-lucide="flame" class="w-4 h-4"></i>
+                </div>
+                <div>
+                  <div class="text-3xl font-black text-[#FF8875] tracking-tight font-display leading-none" id="stat-high">46</div>
+                  <div class="text-[10px] text-slate-400 font-semibold uppercase tracking-wider">High Targets</div>
+                </div>
+              </div>
+              <p class="text-[11px] text-slate-300 leading-tight">Instant conversion focus for EB & delegates</p>
+            </div>
           </div>
 
-          <div class="grid grid-cols-3 gap-1 py-2 my-1 border-y border-white/[0.06] text-center">
-            <div>
-              <div class="text-xs font-black text-white">23%</div>
-              <div class="text-[9px] text-slate-500 uppercase font-semibold">Techne</div>
+          <!-- Recessed Inset Performance Counters -->
+          <div class="grid grid-cols-3 gap-1.5 py-1.5 my-1 text-center">
+            <div class="recessed-stat-box">
+              <div class="text-xs font-black text-white font-display">23%</div>
+              <div class="text-[9px] text-slate-400 uppercase font-bold">Techne</div>
             </div>
-            <div>
-              <div class="text-xs font-black text-emerald-400">100%</div>
-              <div class="text-[9px] text-slate-500 uppercase font-semibold">Verified</div>
+            <div class="recessed-stat-box">
+              <div class="text-xs font-black text-emerald-400 font-display">100%</div>
+              <div class="text-[9px] text-slate-400 uppercase font-bold">Verified</div>
             </div>
-            <div>
-              <div class="text-xs font-black text-sky-400">50+</div>
-              <div class="text-[9px] text-slate-500 uppercase font-semibold">LC Impact</div>
+            <div class="recessed-stat-box">
+              <div class="text-xs font-black text-sky-400 font-display">50+</div>
+              <div class="text-[9px] text-slate-400 uppercase font-bold">LC Impact</div>
             </div>
           </div>
 
-          <button id="btn-quick-filter-high" class="w-full py-2 px-3 rounded-xl bg-[#FF4D36]/20 hover:bg-[#FF4D36] text-[#FF8875] hover:text-white border border-[#FF4D36]/40 text-xs font-bold transition active:scale-95 text-center">
+          <button id="btn-quick-filter-high" class="w-full py-2 px-3 rounded-xl bg-[#FF4D36]/20 hover:bg-[#FF4D36] text-[#FF8875] hover:text-white border border-[#FF4D36]/40 text-xs font-bold transition active:scale-95 text-center shadow-[0_0_14px_rgba(255,77,54,0.2)]">
             View High Leads
           </button>
         </div>
@@ -360,45 +392,78 @@
           </button>
         </div>
 
-        <!-- Tile 4: Campus Reach & Sparkline Trends with Live Activity -->
+        <!-- Tile 4: Campus Reach & Sparkline Trends with Live Telemetry & Equalizer -->
         <div class="radar-surface spotlight-card p-5 sm:p-6 flex-1 flex flex-col justify-between">
           <div>
             <div class="flex items-center justify-between text-xs mb-2">
               <div>
-                <div class="text-[10px] text-slate-400 font-bold uppercase">Total Reach</div>
+                <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Total Reach</div>
                 <div class="text-lg font-black text-white font-display">2,014 <span class="text-[10px] text-emerald-400 font-bold">▲ 10.8%</span></div>
               </div>
               <div class="text-right">
-                <div class="text-[10px] text-slate-400 font-bold uppercase">Impressions</div>
+                <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Impressions</div>
                 <div class="text-lg font-black text-white font-display">176,651 <span class="text-[10px] text-sky-400 font-bold">▲ 10.7%</span></div>
               </div>
             </div>
 
-            <!-- Glowing SVG Sparkline Curve -->
+            <!-- Dual-Spline Animated SVG Curve with Month Markers -->
             <div class="py-1">
-              <svg viewBox="0 0 300 70" class="w-full h-12 overflow-visible">
+              <svg viewBox="0 0 300 80" class="w-full h-14 overflow-visible">
                 <defs>
-                  <linearGradient id="sparkGradient" x1="0" y1="0" x2="1" y2="0">
+                  <linearGradient id="sparkGradientPrimary" x1="0" y1="0" x2="1" y2="0">
                     <stop offset="0%" stop-color="#037EF3" />
                     <stop offset="50%" stop-color="#00E5FF" />
                     <stop offset="100%" stop-color="#38BDF8" />
                   </linearGradient>
-                  <linearGradient id="sparkFill" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stop-color="rgba(0, 229, 255, 0.28)" />
+                  <linearGradient id="sparkFillPrimary" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="rgba(0, 229, 255, 0.32)" />
                     <stop offset="100%" stop-color="rgba(0, 229, 255, 0)" />
                   </linearGradient>
+                  <linearGradient id="sparkGradientSecondary" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stop-color="#F59E0B" />
+                    <stop offset="100%" stop-color="#FF4D36" />
+                  </linearGradient>
                 </defs>
-                <path d="M 0,55 Q 40,60 75,35 T 150,45 T 225,15 T 300,30 L 300,70 L 0,70 Z" fill="url(#sparkFill)" />
-                <path d="M 0,55 Q 40,60 75,35 T 150,45 T 225,15 T 300,30" fill="none" stroke="url(#sparkGradient)" stroke-width="2.5" stroke-linecap="round" />
-                <circle cx="225" cy="15" r="4.5" fill="#00E5FF" class="animate-ping opacity-75" />
-                <circle cx="225" cy="15" r="3.5" fill="#FFFFFF" stroke="#00E5FF" stroke-width="2" />
+                <!-- Subtle grid tick lines -->
+                <line x1="0" y1="22" x2="300" y2="22" stroke="rgba(255,255,255,0.06)" stroke-dasharray="3,3" />
+                <line x1="0" y1="48" x2="300" y2="48" stroke="rgba(255,255,255,0.06)" stroke-dasharray="3,3" />
+                
+                <!-- Primary Area Wave (Campus Reach) -->
+                <path d="M 0,60 Q 40,65 75,38 T 150,48 T 225,16 T 300,32 L 300,80 L 0,80 Z" fill="url(#sparkFillPrimary)" />
+                <path d="M 0,60 Q 40,65 75,38 T 150,48 T 225,16 T 300,32" fill="none" stroke="url(#sparkGradientPrimary)" stroke-width="2.5" stroke-linecap="round" />
+                
+                <!-- Secondary Accent Spline (Student Conversion Velocity) -->
+                <path d="M 0,72 Q 45,70 85,55 T 160,40 T 235,26 T 300,18" fill="none" stroke="url(#sparkGradientSecondary)" stroke-width="1.75" stroke-linecap="round" stroke-dasharray="4,3" opacity="0.85" />
+                
+                <!-- Glowing Peak Indicators -->
+                <circle cx="225" cy="16" r="4.5" fill="#00E5FF" class="animate-ping opacity-75" />
+                <circle cx="225" cy="16" r="3.5" fill="#FFFFFF" stroke="#00E5FF" stroke-width="2" />
+                <circle cx="300" cy="18" r="3" fill="#FF4D36" />
               </svg>
+              <!-- Timeline Month Labels -->
+              <div class="flex items-center justify-between text-[8px] font-mono uppercase text-slate-500 px-1 mt-0.5">
+                <span>Jan</span>
+                <span>Apr</span>
+                <span>Jul</span>
+                <span class="text-sky-400 font-bold">Oct (Peak)</span>
+                <span>Dec</span>
+              </div>
             </div>
           </div>
 
+          <!-- Bottom Telemetry & Audio/Radar Equalizer Bars -->
           <div class="mt-2 pt-2 border-t border-white/[0.06] flex items-center justify-between text-xs">
             <div class="flex items-center gap-2">
-              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              <div class="equalizer-container" title="Live Scraping & Frequency Telemetry">
+                <span class="equalizer-bar"></span>
+                <span class="equalizer-bar"></span>
+                <span class="equalizer-bar"></span>
+                <span class="equalizer-bar"></span>
+                <span class="equalizer-bar"></span>
+                <span class="equalizer-bar"></span>
+                <span class="equalizer-bar"></span>
+                <span class="equalizer-bar"></span>
+              </div>
               <span class="text-[11px] font-bold text-slate-300">Live Pulse: 308 Verified</span>
             </div>
             <span class="text-[10px] text-sky-400 font-mono font-semibold">Tanta Hub Active</span>
@@ -465,12 +530,15 @@
             </select>
           </div>
 
-          <!-- View Switcher Segmented Control -->
-          <div class="flex bg-[#050A16] p-1 rounded-xl border border-white/[0.08]">
-            <button id="btn-view-cards" class="px-3 py-1.5 text-xs font-bold rounded-lg bg-[#037EF3] text-white shadow-sm flex items-center gap-1.5 transition active:scale-95">
+          <!-- View Switcher Segmented Control (Cards | Table | Conflict Radar) -->
+          <div class="flex bg-[#050A16] p-1 rounded-xl border border-white/[0.08] shadow-inner">
+            <button id="btn-view-cards" class="px-3 py-1.5 text-xs font-bold rounded-lg bg-[#037EF3] text-white shadow-sm flex items-center gap-1.5 transition active:scale-95" title="Card Grid View">
               <i data-lucide="layout-grid" class="w-3.5 h-3.5"></i> Cards
             </button>
-            <button id="btn-view-calendar" class="px-3 py-1.5 text-xs font-bold rounded-lg text-slate-400 hover:text-white flex items-center gap-1.5 transition active:scale-95">
+            <button id="btn-view-table" class="px-3 py-1.5 text-xs font-bold rounded-lg text-slate-400 hover:text-white flex items-center gap-1.5 transition active:scale-95" title="High-Density Executive Table View">
+              <i data-lucide="table" class="w-3.5 h-3.5"></i> Table
+            </button>
+            <button id="btn-view-calendar" class="px-3 py-1.5 text-xs font-bold rounded-lg text-slate-400 hover:text-white flex items-center gap-1.5 transition active:scale-95" title="Campus Conflict Radar">
               <i data-lucide="calendar-range" class="w-3.5 h-3.5"></i> Conflict Radar
             </button>
           </div>
@@ -563,7 +631,56 @@
       <!-- Dynamically rendered by app.js -->
     </div>
 
-    <!-- View B: Campus Calendar & Conflict Radar -->
+    <!-- View B: High-Density Executive Table View -->
+    <div id="container-table" class="hidden radar-surface p-4 sm:p-6 space-y-4">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-white/[0.08]">
+        <div>
+          <h2 class="text-base font-bold text-white flex items-center gap-2 font-display">
+            <i data-lucide="table" class="w-5 h-5 text-sky-400"></i>
+            Executive Event Data Grid
+          </h2>
+          <p class="text-xs text-slate-400 mt-0.5" id="table-metrics-subtitle">
+            Dense high-visibility matrix displaying verified student summits, direct tickets, and priority targeting.
+          </p>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-xs text-slate-400 font-medium font-mono" id="table-count-badge">308 Rows</span>
+          <button id="btn-table-export-csv" class="px-3 py-1.5 bg-white/[0.06] hover:bg-white/[0.12] text-slate-200 border border-white/10 rounded-xl text-xs font-bold transition flex items-center gap-1.5 active:scale-95 shadow-sm">
+            <i data-lucide="download" class="w-3.5 h-3.5 text-sky-400"></i> Export Table
+          </button>
+        </div>
+      </div>
+
+      <!-- Responsive Table Wrapper -->
+      <div class="overflow-x-auto rounded-xl border border-white/[0.08]">
+        <table class="radar-table" id="executive-radar-table">
+          <thead>
+            <tr>
+              <th class="sortable" data-sort-col="priority" title="Click to sort by Priority">
+                <span class="flex items-center gap-1">Score <i data-lucide="arrow-up-down" class="w-3 h-3 text-slate-500"></i></span>
+              </th>
+              <th class="sortable" data-sort-col="title" title="Click to sort by Title">
+                <span class="flex items-center gap-1">Summit / Event <i data-lucide="arrow-up-down" class="w-3 h-3 text-slate-500"></i></span>
+              </th>
+              <th class="sortable" data-sort-col="date" title="Click to sort by Date">
+                <span class="flex items-center gap-1">Date & Time <i data-lucide="arrow-up-down" class="w-3 h-3 text-slate-500"></i></span>
+              </th>
+              <th class="sortable" data-sort-col="city" title="Click to sort by City">
+                <span class="flex items-center gap-1">Location <i data-lucide="arrow-up-down" class="w-3 h-3 text-slate-500"></i></span>
+              </th>
+              <th>Organizer / Entity</th>
+              <th>Admission</th>
+              <th class="text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="table-body">
+            <!-- Dynamically populated by app.js -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- View C: Campus Calendar & Conflict Radar -->
     <div id="container-calendar" class="hidden radar-surface p-6 space-y-6">
       <div>
         <h2 class="text-base font-bold text-white flex items-center gap-2">

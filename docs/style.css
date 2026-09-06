@@ -689,6 +689,184 @@ body::before {
 }
 
 /* ============================================================
+   OPTION 3 & 4: CONIC LIGHTING, TELEMETRY & EXECUTIVE TABLE
+   ============================================================ */
+
+/* Conic Border Lighting & Rotating Border Beam */
+@property --conic-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@keyframes rotateConicBeam {
+  0% { --conic-angle: 0deg; }
+  100% { --conic-angle: 360deg; }
+}
+
+.conic-glow-card {
+  position: relative;
+  isolation: isolate;
+}
+
+.conic-glow-card::after {
+  content: '';
+  position: absolute;
+  inset: -1.5px;
+  border-radius: 21px;
+  padding: 1.5px;
+  background: conic-gradient(
+    from var(--conic-angle, 0deg) at 50% 50%,
+    transparent 0deg,
+    var(--theme-accent, #037EF3) 50deg,
+    #00E5FF 110deg,
+    transparent 170deg,
+    var(--aiesec-coral, #FF4D36) 240deg,
+    var(--theme-accent, #037EF3) 300deg,
+    transparent 360deg
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  animation: rotateConicBeam 5s linear infinite;
+  opacity: 0.85;
+}
+
+/* Multi-tier recessed performance counters */
+.recessed-stat-box {
+  background: rgba(4, 8, 20, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 6px 8px;
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.6), 0 1px 0 rgba(255, 255, 255, 0.05);
+  transition: all 0.2s ease;
+}
+
+.recessed-stat-box:hover {
+  background: rgba(10, 18, 40, 0.85);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+/* Radial Arc / Speedometer Gauge */
+.radial-gauge-track {
+  stroke: rgba(255, 255, 255, 0.08);
+  fill: none;
+  stroke-linecap: round;
+}
+
+.radial-gauge-bar {
+  fill: none;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 1.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Audio/Radar Live Equalizer Bars */
+.equalizer-container {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 18px;
+}
+
+.equalizer-bar {
+  width: 3.5px;
+  border-radius: 2px;
+  background: linear-gradient(to top, var(--theme-accent, #037EF3), #00E5FF);
+  animation: pulseEqualizer 1.2s ease-in-out infinite alternate;
+}
+
+.equalizer-bar:nth-child(1) { height: 35%; animation-delay: 0.05s; }
+.equalizer-bar:nth-child(2) { height: 80%; animation-delay: 0.25s; }
+.equalizer-bar:nth-child(3) { height: 45%; animation-delay: 0.1s; }
+.equalizer-bar:nth-child(4) { height: 95%; animation-delay: 0.4s; }
+.equalizer-bar:nth-child(5) { height: 60%; animation-delay: 0.2s; }
+.equalizer-bar:nth-child(6) { height: 100%; animation-delay: 0.5s; }
+.equalizer-bar:nth-child(7) { height: 50%; animation-delay: 0.15s; }
+.equalizer-bar:nth-child(8) { height: 85%; animation-delay: 0.35s; }
+
+@keyframes pulseEqualizer {
+  0% { transform: scaleY(0.35); opacity: 0.6; }
+  100% { transform: scaleY(1); opacity: 1; filter: brightness(1.25); }
+}
+
+/* High-Density Executive Table View */
+.radar-table-container {
+  position: relative;
+  border-radius: 20px;
+}
+
+.radar-table {
+  border-collapse: separate;
+  border-spacing: 0;
+  width: 100%;
+}
+
+.radar-table th {
+  background: rgba(8, 14, 30, 0.95);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  color: #94A3B8;
+  font-weight: 700;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  white-space: nowrap;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.radar-table th.sortable {
+  cursor: pointer;
+  user-select: none;
+  transition: color 0.15s ease;
+}
+
+.radar-table th.sortable:hover {
+  color: #FFFFFF;
+}
+
+.radar-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  color: #CBD5E1;
+  font-size: 12px;
+  vertical-align: middle;
+  transition: background-color 0.15s ease;
+}
+
+.radar-table tr.radar-table-row {
+  cursor: pointer;
+  background: rgba(10, 16, 32, 0.45);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.radar-table tr.radar-table-row:nth-child(even) {
+  background: rgba(13, 20, 40, 0.35);
+}
+
+.radar-table tr.radar-table-row:hover {
+  background: rgba(18, 28, 56, 0.85);
+}
+
+.radar-table tr.radar-table-row:hover td {
+  color: #FFFFFF;
+}
+
+.radar-table tr.radar-table-row.row-priority-high {
+  border-left: 3px solid #FF4D36;
+}
+
+.radar-table tr.radar-table-row.row-priority-high:hover {
+  background: rgba(255, 77, 54, 0.08);
+}
+
+
+/* ============================================================
    MOBILE RESPONSIVENESS & ZERO-OVERFLOW SAFEGUARDS
    ============================================================ */
 html, body {

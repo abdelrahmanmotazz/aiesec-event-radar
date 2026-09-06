@@ -21,7 +21,7 @@
  * @property {string} [ticket_type]
  */
 
-/** @type {{ events: EventRecord[], sort: string, priority: string, category: string, city: string, source: string, search: string, partnersOnly: boolean, clashesOnly: boolean, activePitchEvent: EventRecord|null, activeDrawerEvent: EventRecord|null, activeTopic: string, currentTheme: string, activeView: 'cards'|'calendar' }} */
+/** @type {{ events: EventRecord[], sort: string, priority: string, category: string, city: string, source: string, search: string, partnersOnly: boolean, clashesOnly: boolean, activePitchEvent: EventRecord|null, activeDrawerEvent: EventRecord|null, activeTopic: string, currentTheme: string, activeView: 'cards'|'table'|'calendar' }} */
 let state = {
   events: [],
   sort: "score_desc",
@@ -41,8 +41,12 @@ let state = {
 
 // DOM Elements
 const containerCards = document.getElementById("container-cards");
+const containerTable = document.getElementById("container-table");
 const containerCalendar = document.getElementById("container-calendar");
 const calendarTimeline = document.getElementById("calendar-timeline");
+const tableBody = document.getElementById("table-body");
+const tableCountBadge = document.getElementById("table-count-badge");
+const btnTableExportCsv = document.getElementById("btn-table-export-csv");
 const inputSearch = document.getElementById("input-search");
 const selectSort = document.getElementById("select-sort");
 const selectCategory = document.getElementById("select-category");
@@ -51,6 +55,7 @@ const selectSource = document.getElementById("select-source");
 const checkPartnersOnly = document.getElementById("check-partners-only");
 const checkClashesOnly = document.getElementById("check-clashes-only");
 const btnViewCards = document.getElementById("btn-view-cards");
+const btnViewTable = document.getElementById("btn-view-table");
 const btnViewCalendar = document.getElementById("btn-view-calendar");
 const btnQuickFilterHigh = document.getElementById("btn-quick-filter-high");
 const btnQuickFilterFlagship = document.getElementById("btn-quick-filter-flagship");
@@ -847,20 +852,47 @@ function setupEventListeners() {
   });
   if (mobileBtnView) mobileBtnView.addEventListener("click", () => {
     if (state.activeView === "cards") {
+      switchView("table");
+      showToast("Switched to Executive Table", "info");
+    } else if (state.activeView === "table") {
       switchView("calendar");
-      showToast("Switched to Calendar", "info");
+      showToast("Switched to Conflict Radar", "info");
     } else {
       switchView("cards");
-      showToast("Switched to Cards", "info");
+      showToast("Switched to Cards Grid", "info");
     }
   });
   if (mobileBtnTop) mobileBtnTop.addEventListener("click", () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   });
 
-  // View Switcher
-  btnViewCards.addEventListener("click", () => switchView("cards"));
-  btnViewCalendar.addEventListener("click", () => switchView("calendar"));
+  // View Switcher (Cards | Table | Conflict Radar)
+  if (btnViewCards) btnViewCards.addEventListener("click", () => switchView("cards"));
+  if (btnViewTable) btnViewTable.addEventListener("click", () => switchView("table"));
+  if (btnViewCalendar) btnViewCalendar.addEventListener("click", () => switchView("calendar"));
+
+  // Executive Table Export Button
+  if (btnTableExportCsv) {
+    btnTableExportCsv.addEventListener("click", () => {
+      exportEventsToCSV(state.events);
+      showToast("Exported executive data grid!", "success");
+    });
+  }
+
+  // Executive Table Column Sorting Headers
+  document.querySelectorAll("#executive-radar-table th.sortable").forEach((th) => {
+    th.addEventListener("click", () => {
+      const col = th.dataset.sortCol;
+      if (tableSortCol === col) {
+        tableSortAsc = !tableSortAsc;
+      } else {
+        tableSortCol = col;
+        tableSortAsc = (col === "title" || col === "city");
+      }
+      renderTableView();
+      showToast(`Sorted table by ${col} (${tableSortAsc ? "Ascending" : "Descending"})`, "info");
+    });
+  });
 
   // Modal Controls
   btnCloseModal.addEventListener("click", closePitchModal);
@@ -886,16 +918,27 @@ function setupEventListeners() {
 
 function switchView(view) {
   state.activeView = view;
+  const activeClass = "px-3 py-1.5 text-xs font-bold rounded-lg bg-[#037EF3] text-white shadow-sm flex items-center gap-1.5 transition active:scale-95";
+  const inactiveClass = "px-3 py-1.5 text-xs font-bold rounded-lg text-slate-400 hover:text-white flex items-center gap-1.5 transition active:scale-95";
+
+  if (btnViewCards) btnViewCards.className = view === "cards" ? activeClass : inactiveClass;
+  if (btnViewTable) btnViewTable.className = view === "table" ? activeClass : inactiveClass;
+  if (btnViewCalendar) btnViewCalendar.className = view === "calendar" ? activeClass : inactiveClass;
+
   if (view === "cards") {
-    containerCards.classList.remove("hidden");
-    containerCalendar.classList.add("hidden");
-    btnViewCards.className = "px-3 py-1 text-xs font-bold rounded-lg bg-[#037EF3] text-white shadow-sm flex items-center gap-1.5 transition active:scale-95";
-    btnViewCalendar.className = "px-3 py-1 text-xs font-bold rounded-lg text-slate-400 hover:text-white flex items-center gap-1.5 transition active:scale-95";
-  } else {
-    containerCards.classList.add("hidden");
-    containerCalendar.classList.remove("hidden");
-    btnViewCalendar.className = "px-3 py-1 text-xs font-bold rounded-lg bg-[#037EF3] text-white shadow-sm flex items-center gap-1.5 transition active:scale-95";
-    btnViewCards.className = "px-3 py-1 text-xs font-bold rounded-lg text-slate-400 hover:text-white flex items-center gap-1.5 transition active:scale-95";
+    if (containerCards) containerCards.classList.remove("hidden");
+    if (containerTable) containerTable.classList.add("hidden");
+    if (containerCalendar) containerCalendar.classList.add("hidden");
+    renderCards();
+  } else if (view === "table") {
+    if (containerCards) containerCards.classList.add("hidden");
+    if (containerTable) containerTable.classList.remove("hidden");
+    if (containerCalendar) containerCalendar.classList.add("hidden");
+    renderTableView();
+  } else if (view === "calendar") {
+    if (containerCards) containerCards.classList.add("hidden");
+    if (containerTable) containerTable.classList.add("hidden");
+    if (containerCalendar) containerCalendar.classList.remove("hidden");
     renderCalendarView();
   }
   if (window.lucide) lucide.createIcons();
@@ -1224,8 +1267,12 @@ async function fetchEvents() {
     const elFlagship = document.getElementById("stat-flagship-count");
     animateCounter(elFlagship, data.metrics.flagship_count || 10);
 
-    renderCards();
-    if (state.activeView === "calendar") {
+    updateYieldGauge(87);
+    if (state.activeView === "cards") {
+      renderCards();
+    } else if (state.activeView === "table") {
+      renderTableView();
+    } else if (state.activeView === "calendar") {
       renderCalendarView();
     }
   } catch (err) {
@@ -1387,8 +1434,12 @@ async function loadStaticEventsFallback() {
     const elFlagship = document.getElementById("stat-flagship-count");
     animateCounter(elFlagship, flagshipCount || 10);
 
-    renderCards();
-    if (state.activeView === "calendar") {
+    updateYieldGauge(87);
+    if (state.activeView === "cards") {
+      renderCards();
+    } else if (state.activeView === "table") {
+      renderTableView();
+    } else if (state.activeView === "calendar") {
       renderCalendarView();
     }
   } catch (err) {
@@ -1588,6 +1639,206 @@ function renderCards() {
 
   if (window.lucide) lucide.createIcons();
 }
+
+// ============================================================
+// MICRO-VISUAL TELEMETRY: RADIAL ARC SPEEDOMETER CONTROLLER
+// ============================================================
+function updateYieldGauge(percentage = 87) {
+  const arc = document.getElementById("radial-yield-arc");
+  const textEl = document.getElementById("stat-yield-pct");
+  if (!arc) return;
+  const pct = Math.max(0, Math.min(100, percentage));
+  const circumference = 238.76;
+  const offset = circumference * (1 - pct / 100);
+  arc.style.strokeDashoffset = offset.toFixed(2);
+
+  if (textEl) {
+    if (window.gsap) {
+      const current = parseInt(textEl.innerText) || 0;
+      const obj = { val: current };
+      gsap.to(obj, {
+        val: pct,
+        duration: 1.2,
+        ease: "power2.out",
+        onUpdate: () => {
+          textEl.innerText = `${Math.round(obj.val)}%`;
+        }
+      });
+    } else {
+      textEl.innerText = `${pct}%`;
+    }
+  }
+}
+
+// ============================================================
+// HIGH-DENSITY EXECUTIVE TABLE VIEW
+// ============================================================
+let tableSortCol = "priority";
+let tableSortAsc = false;
+
+function renderTableView(eventsToRender = state.events) {
+  if (!tableBody) return;
+  tableBody.innerHTML = "";
+
+  const events = [...eventsToRender];
+
+  // Apply sorting to table rows
+  events.sort((a, b) => {
+    let valA, valB;
+    if (tableSortCol === "priority") {
+      valA = a.b2c_score || 0;
+      valB = b.b2c_score || 0;
+    } else if (tableSortCol === "title") {
+      valA = (a.title || "").toLowerCase();
+      valB = (b.title || "").toLowerCase();
+    } else if (tableSortCol === "date") {
+      valA = a.start_date || a.date_display || "";
+      valB = b.start_date || b.date_display || "";
+    } else if (tableSortCol === "city") {
+      valA = (a.city || "").toLowerCase();
+      valB = (b.city || "").toLowerCase();
+    } else {
+      valA = a.b2c_score || 0;
+      valB = b.b2c_score || 0;
+    }
+
+    if (valA < valB) return tableSortAsc ? -1 : 1;
+    if (valA > valB) return tableSortAsc ? 1 : -1;
+    return 0;
+  });
+
+  if (tableCountBadge) {
+    tableCountBadge.innerText = `${events.length} Events Visible`;
+  }
+
+  if (events.length === 0) {
+    tableBody.innerHTML = `
+      <tr>
+        <td colspan="7" class="text-center py-12 text-slate-400">
+          <i data-lucide="inbox" class="w-8 h-8 mx-auto text-slate-500 mb-2"></i>
+          <p class="font-semibold text-sm text-slate-300 font-display">No events match your active filters</p>
+          <p class="text-xs text-slate-500 mt-1">Try resetting filters or adjusting search queries</p>
+        </td>
+      </tr>
+    `;
+    if (window.lucide) lucide.createIcons();
+    return;
+  }
+
+  events.forEach((ev) => {
+    const row = document.createElement("tr");
+    const isHigh = (ev.b2c_priority || "").toUpperCase() === "HIGH";
+    const isFlagship = (ev.category || "").includes("Flagship") || (ev.b2c_score && ev.b2c_score >= 9.5);
+    row.className = `radar-table-row ${isHigh ? "row-priority-high" : ""}`;
+
+    // Score pill
+    let scoreBadge = "";
+    if (isHigh) {
+      scoreBadge = `<span class="px-2.5 py-1 rounded-lg font-bold text-[11px] bg-red-500/15 text-red-300 border border-red-500/30 inline-flex items-center gap-1 shadow-[0_0_10px_rgba(255,77,54,0.25)]"><i data-lucide="flame" class="w-3.5 h-3.5 text-[#FF4D36]"></i> ${(ev.b2c_score || 8.5).toFixed(1)}</span>`;
+    } else if ((ev.b2c_priority || "").toUpperCase() === "MEDIUM") {
+      scoreBadge = `<span class="px-2.5 py-1 rounded-lg font-bold text-[11px] bg-amber-500/15 text-amber-300 border border-amber-500/30 inline-flex items-center gap-1">${(ev.b2c_score || 7.0).toFixed(1)}</span>`;
+    } else {
+      scoreBadge = `<span class="px-2.5 py-1 rounded-lg font-semibold text-[11px] bg-white/[0.05] text-slate-400 border border-white/10 inline-flex items-center gap-1">${(ev.b2c_score || 5.0).toFixed(1)}</span>`;
+    }
+
+    // City tag
+    const isTanta = (ev.city || "").toLowerCase().includes("tanta");
+    const cityPill = isTanta 
+      ? `<span class="font-bold text-sky-300 bg-sky-500/15 px-2 py-0.5 rounded-md border border-sky-500/30 text-[11px]">📍 Tanta</span>`
+      : `<span class="font-semibold text-slate-200 text-xs">${ev.city || "Egypt"}</span>`;
+
+    // Admission
+    const isFree = (ev.ticket_type || "").toLowerCase().includes("free") || !ev.ticket_type;
+    const admissionPill = isFree
+      ? `<span class="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-md border border-emerald-500/20">Free Admission</span>`
+      : `<span class="text-[10px] font-bold text-amber-300 bg-amber-500/10 px-2 py-0.5 rounded-md border border-amber-500/20 truncate max-w-[120px] inline-block" title="${ev.ticket_type}">${ev.ticket_type}</span>`;
+
+    row.innerHTML = `
+      <td class="font-mono-code font-bold whitespace-nowrap">
+        ${scoreBadge}
+      </td>
+      <td class="max-w-xs sm:max-w-md">
+        <div class="flex items-center gap-1.5 flex-wrap">
+          ${isFlagship ? `<span class="text-amber-400 font-bold text-[11px] shrink-0" title="Flagship Summit">👑</span>` : ""}
+          <a href="${ev.url}" target="_blank" class="font-bold text-white hover:text-[#00E5FF] transition truncate max-w-[240px] sm:max-w-[340px] inline-block font-display" onclick="event.stopPropagation()">${ev.title}</a>
+        </div>
+        <div class="text-[10px] text-slate-400 mt-0.5 truncate flex items-center gap-2">
+          <span class="text-slate-500">${ev.category || "Summit"}</span>
+          ${ev.parallel_org && ev.parallel_org !== "Independent" ? `<span class="text-purple-300 font-semibold">• ${ev.parallel_org}</span>` : ""}
+        </div>
+      </td>
+      <td class="whitespace-nowrap">
+        <div class="font-semibold text-slate-200 text-xs">${ev.date_display || "TBA"}</div>
+        ${ev.clash_warning ? `<span class="text-[9px] font-bold text-amber-400">⚠️ Peak Weekend</span>` : ""}
+      </td>
+      <td class="whitespace-nowrap">
+        ${cityPill}
+        <div class="text-[10px] text-slate-400 truncate max-w-[140px] mt-0.5" title="${ev.location}">${ev.location}</div>
+      </td>
+      <td class="whitespace-nowrap">
+        <span class="text-[11px] font-medium text-slate-300 bg-white/[0.04] px-2 py-0.5 rounded-md border border-white/[0.08]">${ev.source}</span>
+      </td>
+      <td class="whitespace-nowrap">
+        ${admissionPill}
+      </td>
+      <td class="text-right whitespace-nowrap" onclick="event.stopPropagation()">
+        <div class="flex items-center justify-end gap-1.5">
+          <button class="btn-table-pitch px-2.5 py-1 bg-sky-500/15 hover:bg-sky-500/30 text-sky-300 border border-sky-500/30 rounded-lg text-xs font-bold transition active:scale-95 flex items-center gap-1" title="Generate Pitch Proposal" data-event-id="${ev.event_id}">
+            <i data-lucide="sparkles" class="w-3 h-3 text-cyan-300"></i> Pitch
+          </button>
+          <button class="btn-table-drawer p-1.5 text-slate-400 hover:text-white bg-white/[0.04] hover:bg-white/[0.1] border border-white/10 rounded-lg transition" title="View Full Intel Drawer" data-event-id="${ev.event_id}">
+            <i data-lucide="eye" class="w-3.5 h-3.5"></i>
+          </button>
+          <a href="${ev.url}" target="_blank" class="p-1.5 text-slate-400 hover:text-white bg-white/[0.04] hover:bg-white/[0.1] border border-white/10 rounded-lg transition" title="Open Event URL">
+            <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+          </a>
+        </div>
+      </td>
+    `;
+
+    // Row click opens drawer
+    row.addEventListener("click", () => openEventDrawer(ev));
+
+    // Pitch button
+    const pitchBtn = row.querySelector(".btn-table-pitch");
+    if (pitchBtn) {
+      pitchBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        openPitchModal(ev);
+      });
+    }
+
+    // Drawer button
+    const drawerBtn = row.querySelector(".btn-table-drawer");
+    if (drawerBtn) {
+      drawerBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        openEventDrawer(ev);
+      });
+    }
+
+    tableBody.appendChild(row);
+  });
+
+  // Stagger entrance animation for table rows if GSAP present
+  if (typeof gsap !== "undefined") {
+    gsap.from("#table-body > tr", {
+      opacity: 0,
+      y: 10,
+      stagger: 0.02,
+      duration: 0.3,
+      ease: "power2.out",
+      clearProps: "all"
+    });
+  }
+
+  if (window.lucide) lucide.createIcons();
+}
+
+window.openEventDrawerById = function(eventId) {
+  const ev = state.events.find(e => e.event_id === eventId);
+  if (ev) openEventDrawer(ev);
+};
 
 // --- Render Calendar & Conflict Radar ---
 function renderCalendarView() {
