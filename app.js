@@ -684,10 +684,30 @@ function initThreeRadar() {
       }
     });
 
+    // High-Performance Visibility Observer:
+    // Only render Three.js when hero canvas is actually visible on screen.
+    // When scrolled down to view cards, Three.js is completely paused to save 100% CPU/GPU!
+    let isHeroVisible = true;
+    if ("IntersectionObserver" in window) {
+      const heroObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          isHeroVisible = entry.isIntersecting;
+        });
+      }, { threshold: 0.05 });
+      heroObserver.observe(container);
+    }
+
     // Render Animation Loop with 3D Holographic Particle Wave Flow
     let waveClock = 0;
+    const isMobileViewport = window.innerWidth < 768 || ("ontouchstart" in window);
     function animate() {
       requestAnimationFrame(animate);
+
+      // Skip render if off-screen, tab hidden, or drawer open
+      if (!isHeroVisible || document.hidden || state.activeDrawerEvent) {
+        return;
+      }
+
       waveClock += 0.022;
 
       if (state.activeSpatialMode === "mesh") {
@@ -721,8 +741,8 @@ function initThreeRadar() {
           }
         });
       } else {
-        // Subtle dynamic 3D undulating wave oscillation across particles
-        if (partGeo && partGeo.attributes && partGeo.attributes.position) {
+        // Subtle dynamic 3D undulating wave oscillation across particles (desktop only to prevent mobile stutter)
+        if (!isMobileViewport && partGeo && partGeo.attributes && partGeo.attributes.position) {
           const posArr = partGeo.attributes.position.array;
           for (let i = 0; i < particleCount; i++) {
             const i3 = i * 3;
@@ -893,25 +913,33 @@ function initAmbientCosmicDust() {
   const ctx = canvas.getContext("2d");
   if (!ctx) return;
 
+  const isMobile = window.innerWidth < 768 || ("ontouchstart" in window) || (navigator.maxTouchPoints > 0);
   let width = 0;
   let height = 0;
-  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const dpr = isMobile ? 1.0 : Math.min(window.devicePixelRatio || 1, 1.5);
 
   function resize() {
     width = window.innerWidth;
     height = window.innerHeight;
-    canvas.width = width * dpr;
-    canvas.height = height * dpr;
+    canvas.width = Math.floor(width * dpr);
+    canvas.height = Math.floor(height * dpr);
     canvas.style.width = `${width}px`;
     canvas.style.height = `${height}px`;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   }
   resize();
 
-  // Particle population
-  const isMobile = window.innerWidth < 768;
-  const particleCount = isMobile ? 42 : 80;
+  // Optimized particle population (lower on mobile to preserve 60/120fps scrolling)
+  const particleCount = isMobile ? 22 : 65;
   const particles = [];
+
+  let isScrolling = false;
+  let scrollTimeout = null;
+  window.addEventListener("scroll", () => {
+    isScrolling = true;
+    clearTimeout(scrollTimeout);
+    scrollTimeout = setTimeout(() => { isScrolling = false; }, 100);
+  }, { passive: true });
 
   const THEME_DUST_PALETTES = {
     blue: ["#00E5FF", "#037EF3", "#38BDF8", "#93C5FD"],
@@ -988,12 +1016,12 @@ function initAmbientCosmicDust() {
   const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   function renderDust() {
-    if (isRunning) {
+    if (isRunning && !state.activeDrawerEvent && (!isMobile || !isScrolling)) {
       ctx.clearRect(0, 0, width, height);
 
       const isObsidian = state.canvasMode === "obsidian";
-      const repelRadius = isMobile ? 95 : 145;
-      const repelStrength = isMobile ? 1.5 : 2.2;
+      const repelRadius = isMobile ? 80 : 145;
+      const repelStrength = isMobile ? 1.4 : 2.2;
 
       // 1. Update and draw dust particles
       for (let i = 0; i < particles.length; i++) {
@@ -1036,7 +1064,7 @@ function initAmbientCosmicDust() {
         ctx.globalAlpha = isObsidian ? alpha * 0.85 : alpha * 0.65;
         ctx.fill();
 
-        if (p.radius > 1.5) {
+        if (p.radius > 1.5 && !isMobile) {
           ctx.beginPath();
           ctx.arc(p.x, p.y, p.radius * 2.2, 0, Math.PI * 2);
           ctx.fillStyle = drawColor;
@@ -1045,25 +1073,27 @@ function initAmbientCosmicDust() {
         }
       }
 
-      // 2. Interconnecting neural constellation lines
-      const maxConnectDist = isMobile ? 55 : 85;
-      for (let i = 0; i < particles.length; i++) {
-        for (let j = i + 1; j < particles.length; j++) {
-          const p1 = particles[i];
-          const p2 = particles[j];
-          const dx = p1.x - p2.x;
-          const dy = p1.y - p2.y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
+      // 2. Interconnecting neural constellation lines (Desktop only to prevent mobile GPU fill-rate throttling)
+      if (!isMobile && !prefersReduced) {
+        const maxConnectDist = 80;
+        for (let i = 0; i < particles.length; i++) {
+          for (let j = i + 1; j < particles.length; j++) {
+            const p1 = particles[i];
+            const p2 = particles[j];
+            const dx = p1.x - p2.x;
+            const dy = p1.y - p2.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
 
-          if (dist < maxConnectDist) {
-            const lineAlpha = (1 - dist / maxConnectDist) * (isObsidian ? 0.08 : 0.13);
-            ctx.beginPath();
-            ctx.moveTo(p1.x, p1.y);
-            ctx.lineTo(p2.x, p2.y);
-            ctx.strokeStyle = activeColors[0];
-            ctx.globalAlpha = lineAlpha;
-            ctx.lineWidth = 0.55;
-            ctx.stroke();
+            if (dist < maxConnectDist) {
+              const lineAlpha = (1 - dist / maxConnectDist) * (isObsidian ? 0.08 : 0.12);
+              ctx.beginPath();
+              ctx.moveTo(p1.x, p1.y);
+              ctx.lineTo(p2.x, p2.y);
+              ctx.strokeStyle = activeColors[0];
+              ctx.globalAlpha = lineAlpha;
+              ctx.lineWidth = 0.55;
+              ctx.stroke();
+            }
           }
         }
       }
@@ -1079,6 +1109,14 @@ function initAmbientCosmicDust() {
 // FEATURE 1: 3D HOLOGRAPHIC CARD TILT & IRIDESCENT SHEEN CONTROLLER
 // ============================================================
 function initCardTiltPhysics() {
+  // STRICT DESKTOP-ONLY GUARD:
+  // Touchscreens do not have a cursor and trigger synthetic mousemove events
+  // that cause catastrophic 3D layer clipping, shear distortion, and lag on mobile WebKit.
+  const hasFinePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+  if (!hasFinePointer || "ontouchstart" in window || (navigator.maxTouchPoints && navigator.maxTouchPoints > 0)) {
+    return;
+  }
+
   const container = document.getElementById("container-cards");
   if (!container) return;
 
@@ -1106,12 +1144,12 @@ function initCardTiltPhysics() {
     const nx = (cx / rect.width) * 2 - 1; // -1 to 1
     const ny = (cy / rect.height) * 2 - 1;
 
-    const maxTilt = 7.0; // max degrees
+    const maxTilt = 5.5; // subtle, realistic tilt degrees
     const tiltX = (-ny * maxTilt).toFixed(2);
     const tiltY = (nx * maxTilt).toFixed(2);
 
     card.style.transition = "none";
-    card.style.transform = `perspective(1100px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) scale3d(1.018, 1.018, 1.018)`;
+    card.style.transform = `perspective(1100px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) scale3d(1.015, 1.015, 1.015)`;
     card.style.setProperty("--sheen-x", `${cx}px`);
     card.style.setProperty("--sheen-y", `${cy}px`);
   });
@@ -1124,31 +1162,8 @@ function initCardTiltPhysics() {
   });
 
   function resetCardTilt(card) {
-    card.style.transition = "transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease";
+    card.style.transition = "transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease";
     card.style.transform = "perspective(1100px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)";
-  }
-
-  // Mobile Gyroscope Parallax Physics (DeviceOrientation API)
-  if (window.DeviceOrientationEvent && "ontouchstart" in window) {
-    window.addEventListener("deviceorientation", (e) => {
-      if (e.gamma == null || e.beta == null) return;
-      const gamma = Math.max(-20, Math.min(20, e.gamma)); // left to right tilt
-      const beta = Math.max(-20, Math.min(20, e.beta - 45)); // holding tilt
-
-      const cards = document.querySelectorAll(".radar-card");
-      cards.forEach((c) => {
-        const rect = c.getBoundingClientRect();
-        if (rect.top < window.innerHeight && rect.bottom > 0) {
-          const tiltY = (gamma * 0.22).toFixed(2);
-          const tiltX = (-beta * 0.22).toFixed(2);
-          c.style.transform = `perspective(1000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
-          const sheenX = ((gamma + 20) / 40) * rect.width;
-          const sheenY = ((beta + 20) / 40) * rect.height;
-          c.style.setProperty("--sheen-x", `${sheenX}px`);
-          c.style.setProperty("--sheen-y", `${sheenY}px`);
-        }
-      });
-    }, { passive: true });
   }
 }
 
@@ -2184,14 +2199,26 @@ function openEventDrawer(ev) {
   }
 
   if (drawer) {
-    drawer.classList.add("active");
+    drawer.classList.remove("hidden");
+    document.body.style.overflow = "hidden"; // Prevent background scrolling on phone & desktop
+    requestAnimationFrame(() => {
+      drawer.classList.add("active");
+    });
   }
   if (window.lucide) lucide.createIcons();
 }
 
 function closeEventDrawer() {
   const drawer = document.getElementById("event-detail-drawer");
-  if (drawer) drawer.classList.remove("active");
+  if (drawer) {
+    drawer.classList.remove("active");
+    document.body.style.overflow = ""; // Restore page scrolling
+    setTimeout(() => {
+      if (!drawer.classList.contains("active")) {
+        drawer.classList.add("hidden");
+      }
+    }, 360);
+  }
   state.activeDrawerEvent = null;
 }
 
@@ -2285,6 +2312,12 @@ function initEventDrawer() {
   if (btnDone) btnDone.addEventListener("click", closeEventDrawer);
   if (btnGen) btnGen.addEventListener("click", handleGenerateDrawerPitch);
   if (btnCopy) btnCopy.addEventListener("click", handleCopyDrawerPitch);
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && state.activeDrawerEvent) {
+      closeEventDrawer();
+    }
+  });
 }
 
 // --- Fetch API ---

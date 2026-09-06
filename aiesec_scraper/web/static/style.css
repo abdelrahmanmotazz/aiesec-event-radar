@@ -123,6 +123,19 @@ body::before {
   justify-content: space-between;
 }
 
+/* Mobile GPU Performance Optimization: lighter blur & solid background for silky 60/120fps scrolling */
+@media (max-width: 768px) {
+  .radar-surface,
+  .figma-surface,
+  .radar-card,
+  .figma-card {
+    backdrop-filter: blur(10px) saturate(140%) !important;
+    -webkit-backdrop-filter: blur(10px) saturate(140%) !important;
+    background: rgba(9, 15, 31, 0.94) !important;
+    box-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.5) !important;
+  }
+}
+
 .radar-card:hover,
 .figma-card:hover {
   background: var(--canvas-elevated);
@@ -706,9 +719,13 @@ body::before {
   opacity: 1;
   pointer-events: auto;
 }
+#event-detail-drawer.active #drawer-backdrop {
+  opacity: 1;
+}
 #drawer-panel {
   transform: translateX(100%);
-  transition: transform 0.38s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
 }
 #event-detail-drawer.active #drawer-panel {
   transform: translateX(0);
@@ -894,19 +911,16 @@ body::before {
 /* ============================================================
    FEATURE 1: 3D HOLOGRAPHIC CARD TILT & IRIDESCENT SHEEN
    ============================================================ */
-#container-cards {
-  perspective: 1400px;
-}
-
 .radar-card {
   position: relative;
   overflow: hidden;
-  transform-style: preserve-3d;
-  will-change: transform;
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease, border-color 0.3s ease;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, border-color 0.25s ease;
 }
 
-/* Prismatic Holographic Iridescent Sheen Layer */
+/* Prismatic Holographic Iridescent Sheen Layer (Desktop Hover Only) */
 .holographic-sheen {
   position: absolute;
   inset: 0;
@@ -925,14 +939,36 @@ body::before {
   transition: opacity 0.35s ease;
 }
 
-.radar-card:hover .holographic-sheen {
-  opacity: 1;
+/* Desktop Hover & 3D Tilt: strictly for fine-pointer / mouse devices */
+@media (hover: hover) and (pointer: fine) {
+  #container-cards {
+    perspective: 1200px;
+  }
+  .radar-card:hover {
+    box-shadow: 
+      0 24px 48px -12px rgba(0, 0, 0, 0.75),
+      0 0 28px var(--theme-accent-glow, rgba(3, 126, 243, 0.22));
+  }
+  .radar-card:hover .holographic-sheen {
+    opacity: 1;
+  }
 }
 
-.radar-card:hover {
-  box-shadow: 
-    0 24px 48px -12px rgba(0, 0, 0, 0.75),
-    0 0 28px var(--theme-accent-glow, rgba(3, 126, 243, 0.22));
+/* Mobile & Touch Devices: Rock-Solid 2D Performance, Zero 3D Distortion */
+@media (hover: none), (pointer: coarse) {
+  #container-cards {
+    perspective: none !important;
+  }
+  .radar-card {
+    transform: none !important;
+  }
+  .radar-card:active {
+    transform: scale(0.985) !important;
+    transition: transform 0.08s ease !important;
+  }
+  .holographic-sheen {
+    display: none !important;
+  }
 }
 
 /* ============================================================
