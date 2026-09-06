@@ -56,7 +56,7 @@
 
   <!-- Lucide Icons CDN -->
   <script src="https://unpkg.com/lucide@latest"></script>
-  <link rel="stylesheet" href="style.css?v=6.2">
+  <link rel="stylesheet" href="style.css?v=6.3">
 </head>
 <body class="dark min-h-screen flex flex-col antialiased bg-[#030712] text-slate-100 selection:bg-[#037EF3]/30 selection:text-white relative overflow-x-hidden">
 
@@ -91,6 +91,63 @@
 
       <!-- Quick Action Buttons -->
       <div class="flex items-center space-x-1.5 sm:space-x-2 shrink-0">
+        <!-- Cairo Solar Cycle Dial & Dropdown -->
+        <div class="relative">
+          <button id="btn-solar-dial" class="h-8 px-2 sm:px-2.5 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] border border-white/10 flex items-center gap-1.5 text-slate-300 hover:text-white transition active:scale-95 group" title="Cairo Solar Atmosphere (Click to preview/switch)">
+            <span class="solar-pulse-orb" id="solar-orb-indicator"></span>
+            <span id="solar-dial-icon" class="text-xs">🌌</span>
+            <span id="solar-dial-clock" class="text-[10px] sm:text-[11px] font-mono text-slate-200 font-semibold">--:--</span>
+            <span id="solar-dial-phase" class="hidden md:inline text-[10px] text-slate-400 font-sans font-normal">· Midnight</span>
+          </button>
+          
+          <div id="menu-solar-dial" class="hidden absolute right-0 mt-2 w-64 bg-[#080D1D]/98 border border-white/15 rounded-2xl shadow-2xl p-2.5 z-50 backdrop-blur-2xl text-xs">
+            <div class="px-2 py-1 text-[9px] font-bold text-slate-400 uppercase tracking-wider border-b border-white/[0.06] mb-1.5 flex items-center justify-between">
+              <span>Cairo Solar Atmosphere</span>
+              <span id="solar-menu-time" class="text-[9px] font-mono text-sky-400">--:-- --</span>
+            </div>
+            <div class="space-y-0.5" id="solar-modes-list">
+              <button class="solar-dial-item w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg hover:bg-white/10 text-xs text-white transition font-medium active-solar-mode" data-solar-mode="auto">
+                <span class="flex items-center gap-2">
+                  <span>🔄</span>
+                  <span>Auto (Live Cairo Sync)</span>
+                </span>
+                <span class="solar-check text-sky-400 text-[10px] font-bold">✓</span>
+              </button>
+              <button class="solar-dial-item w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg hover:bg-white/10 text-xs text-slate-300 hover:text-white transition font-medium" data-solar-mode="dawn">
+                <span class="flex items-center gap-2">
+                  <span>🌅</span>
+                  <span>Golden Dawn (06:00 - 10:00)</span>
+                </span>
+                <span class="solar-check hidden text-amber-400 text-[10px] font-bold">✓</span>
+              </button>
+              <button class="solar-dial-item w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg hover:bg-white/10 text-xs text-slate-300 hover:text-white transition font-medium" data-solar-mode="meridian">
+                <span class="flex items-center gap-2">
+                  <span>⚡</span>
+                  <span>Cyber Noon (10:00 - 17:30)</span>
+                </span>
+                <span class="solar-check hidden text-cyan-400 text-[10px] font-bold">✓</span>
+              </button>
+              <button class="solar-dial-item w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg hover:bg-white/10 text-xs text-slate-300 hover:text-white transition font-medium" data-solar-mode="dusk">
+                <span class="flex items-center gap-2">
+                  <span>🌆</span>
+                  <span>Twilight Dusk (17:30 - 20:30)</span>
+                </span>
+                <span class="solar-check hidden text-rose-400 text-[10px] font-bold">✓</span>
+              </button>
+              <button class="solar-dial-item w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg hover:bg-white/10 text-xs text-slate-300 hover:text-white transition font-medium" data-solar-mode="midnight">
+                <span class="flex items-center gap-2">
+                  <span>🌌</span>
+                  <span>Obsidian Midnight (20:30 - 06:00)</span>
+                </span>
+                <span class="solar-check hidden text-purple-400 text-[10px] font-bold">✓</span>
+              </button>
+            </div>
+            <div class="mt-2 pt-2 border-t border-white/[0.08] text-[9px] text-slate-400 px-2 leading-relaxed">
+              Dynamically shifts ambient canopy, card laser beams & lighting based on daylight across Egypt.
+            </div>
+          </div>
+        </div>
+
         <!-- Theme Accent Switcher Dropdown -->
         <div class="relative">
           <button id="btn-theme-accent" class="w-8 h-8 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] border border-white/10 flex items-center justify-center text-slate-300 hover:text-white transition active:scale-95 group" title="Change Radar Color Accent & Canvas Mode (or press 'T')">
@@ -546,11 +603,12 @@
         
         <!-- Search Command Bar & Natural Language "Ask Radar" -->
         <div class="relative w-full md:w-96 flex flex-col gap-1.5">
-          <div class="relative w-full">
-            <i data-lucide="sparkles" class="w-4 h-4 text-sky-400 absolute left-3.5 top-3"></i>
+          <div class="relative w-full rounded-xl overflow-hidden group">
+            <div class="hero-search-laser" aria-hidden="true"></div>
+            <i data-lucide="sparkles" class="w-4 h-4 text-sky-400 absolute left-3.5 top-3 z-20"></i>
             <input id="input-search" type="text" placeholder="Ask Radar: 'free hackathons in alexandria'..." 
-                   class="w-full pl-9 pr-10 py-2.5 figma-input rounded-xl text-xs font-medium focus:ring-2 focus:ring-[#00E5FF] focus:border-transparent outline-none transition placeholder:text-slate-500">
-            <kbd class="kbd-shortcut absolute right-3 top-2.5" title="Press / to focus search">/</kbd>
+                   class="w-full pl-9 pr-10 py-2.5 figma-input rounded-xl text-xs font-medium focus:ring-2 focus:ring-[#00E5FF] focus:border-transparent outline-none transition placeholder:text-slate-500 relative z-10">
+            <kbd class="kbd-shortcut absolute right-3 top-2.5 z-20" title="Press / to focus search">/</kbd>
           </div>
           <!-- Natural Language Intent Parsed Badges Container -->
           <div id="search-intent-pills" class="hidden flex items-center gap-1.5 flex-wrap text-[10px]">
@@ -1096,7 +1154,7 @@
     <span id="toast-message" class="truncate flex-1">Action processed</span>
   </div>
 
-  <script src="app.js?v=6.2"></script>
+  <script src="app.js?v=6.3"></script>
   <script>
     if (window.lucide && typeof lucide.createIcons === 'function') {
       lucide.createIcons();

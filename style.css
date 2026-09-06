@@ -34,6 +34,64 @@
   --text-primary: #F8FAFC;
   --text-secondary: #94A3B8;
   --text-muted: #64748B;
+
+  /* Dynamic Cairo Solar Cycle Default Tokens (Midnight / Obsidian baseline) */
+  --solar-ambient-top: rgba(3, 126, 243, 0.12);
+  --solar-flare-right: rgba(0, 229, 255, 0.08);
+  --solar-flare-left: rgba(16, 185, 129, 0.09);
+  --solar-spotlight: rgba(3, 126, 243, 0.15);
+  --solar-beam-1: #38BDF8;
+  --solar-beam-2: #10B981;
+  --solar-phase-glow: rgba(56, 189, 248, 0.4);
+  --solar-phase-accent: #38BDF8;
+}
+
+/* 🌅 Solar Phase: Golden Dawn (06:00 - 10:00) */
+:root[data-solar="dawn"] {
+  --solar-ambient-top: rgba(245, 158, 11, 0.22);
+  --solar-flare-right: rgba(251, 191, 36, 0.15);
+  --solar-flare-left: rgba(255, 77, 54, 0.12);
+  --solar-spotlight: rgba(245, 158, 11, 0.18);
+  --solar-beam-1: #F59E0B;
+  --solar-beam-2: #FDE047;
+  --solar-phase-glow: rgba(245, 158, 11, 0.5);
+  --solar-phase-accent: #F59E0B;
+}
+
+/* ⚡ Solar Phase: Cyber Meridian (10:00 - 17:30) */
+:root[data-solar="meridian"] {
+  --solar-ambient-top: rgba(0, 229, 255, 0.18);
+  --solar-flare-right: rgba(3, 126, 243, 0.14);
+  --solar-flare-left: rgba(56, 189, 248, 0.12);
+  --solar-spotlight: rgba(0, 229, 255, 0.18);
+  --solar-beam-1: #00E5FF;
+  --solar-beam-2: #037EF3;
+  --solar-phase-glow: rgba(0, 229, 255, 0.5);
+  --solar-phase-accent: #00E5FF;
+}
+
+/* 🌆 Solar Phase: Twilight Dusk (17:30 - 20:30) */
+:root[data-solar="dusk"] {
+  --solar-ambient-top: rgba(168, 85, 247, 0.22);
+  --solar-flare-right: rgba(255, 77, 54, 0.16);
+  --solar-flare-left: rgba(244, 63, 94, 0.13);
+  --solar-spotlight: rgba(168, 85, 247, 0.18);
+  --solar-beam-1: #A855F7;
+  --solar-beam-2: #FF4D36;
+  --solar-phase-glow: rgba(168, 85, 247, 0.45);
+  --solar-phase-accent: #A855F7;
+}
+
+/* 🌌 Solar Phase: Obsidian Midnight (20:30 - 06:00) */
+:root[data-solar="midnight"] {
+  --solar-ambient-top: rgba(3, 126, 243, 0.13);
+  --solar-flare-right: rgba(0, 229, 255, 0.09);
+  --solar-flare-left: rgba(16, 185, 129, 0.09);
+  --solar-spotlight: rgba(3, 126, 243, 0.15);
+  --solar-beam-1: #38BDF8;
+  --solar-beam-2: #10B981;
+  --solar-phase-glow: rgba(56, 189, 248, 0.45);
+  --solar-phase-accent: #38BDF8;
 }
 
 * {
@@ -60,18 +118,18 @@ h1, h2, h3, h4, .font-display {
 }
 
 /* ============================================================
-   ATMOSPHERIC CANOPY & DYNAMIC CURSOR LIGHTING
+   ATMOSPHERIC CANOPY & DYNAMIC CURSOR LIGHTING (Solar Reactive)
    ============================================================ */
 body {
   background-image: 
     /* Dynamic cursor-following spotlight */
-    radial-gradient(850px circle at var(--mouse-x, 50%) var(--mouse-y, 20%), rgba(3, 126, 243, 0.15), transparent 70%),
-    /* Ambient Top Halo (Cyan) */
-    radial-gradient(ellipse 1100px 550px at 50% -100px, rgba(0, 229, 255, 0.10), transparent 70%),
-    /* Right Accent Flame (Coral) */
-    radial-gradient(ellipse 800px 600px at 95% 550px, rgba(255, 77, 54, 0.07), transparent 75%),
-    /* Left Deep Glow (Indigo/Purple) */
-    radial-gradient(ellipse 750px 500px at 5% 900px, rgba(168, 85, 247, 0.06), transparent 75%),
+    radial-gradient(850px circle at var(--mouse-x, 50%) var(--mouse-y, 20%), var(--solar-spotlight), transparent 70%),
+    /* Ambient Top Halo (Solar Cycle Driven) */
+    radial-gradient(ellipse 1100px 550px at 50% -100px, var(--solar-ambient-top), transparent 70%),
+    /* Right Accent Flame (Solar Cycle Driven) */
+    radial-gradient(ellipse 800px 600px at 95% 550px, var(--solar-flare-right), transparent 75%),
+    /* Left Deep Glow (Solar Cycle Driven) */
+    radial-gradient(ellipse 750px 500px at 5% 900px, var(--solar-flare-left), transparent 75%),
     /* Micro Grid Matrix */
     radial-gradient(rgba(255, 255, 255, 0.075) 1px, transparent 1px);
   background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%, 28px 28px;
@@ -79,6 +137,7 @@ body {
   background-repeat: no-repeat, no-repeat, no-repeat, no-repeat, repeat;
   background-attachment: fixed;
   position: relative;
+  transition: background 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* Editorial Film Grain Noise */
@@ -1113,4 +1172,166 @@ html, body {
 #mobile-bottom-nav {
   padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
 }
+
+/* ============================================================
+   LINEAR CONIC LASER BORDER BEAMS (GPU-Accelerated 120 FPS)
+   ============================================================ */
+.radar-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.laser-border-beam {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.5px;
+  pointer-events: none;
+  overflow: hidden;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  z-index: 2;
+  opacity: 0.85;
+  transition: opacity 0.3s ease;
+}
+
+.laser-border-beam::after {
+  content: "";
+  position: absolute;
+  top: -100%;
+  left: -100%;
+  width: 300%;
+  height: 300%;
+  background: conic-gradient(
+    from 0deg at 50% 50%,
+    transparent 0deg,
+    transparent 260deg,
+    var(--beam-c1, var(--solar-beam-1, #00E5FF)) 325deg,
+    var(--beam-c2, var(--solar-beam-2, #38BDF8)) 360deg
+  );
+  animation: laser-beam-spin 6.5s linear infinite;
+  will-change: transform;
+}
+
+@keyframes laser-beam-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Category-specific border beam styling */
+.laser-border-beam.beam-summit {
+  --beam-c1: #F59E0B;
+  --beam-c2: #FDE047;
+  opacity: 1;
+}
+
+.laser-border-beam.beam-high {
+  --beam-c1: #FF4D36;
+  --beam-c2: #FB7185;
+  opacity: 1;
+}
+
+.laser-border-beam.beam-partner {
+  --beam-c1: #A855F7;
+  --beam-c2: #E879F9;
+  opacity: 0.95;
+}
+
+.laser-border-beam.beam-default {
+  --beam-c1: var(--solar-beam-1, #00E5FF);
+  --beam-c2: var(--solar-beam-2, #38BDF8);
+  opacity: 0.4;
+}
+
+.radar-card:hover .laser-border-beam.beam-default {
+  opacity: 0.95;
+}
+
+/* Hero Search Laser Border Halo */
+.hero-search-laser {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.5px;
+  pointer-events: none;
+  overflow: hidden;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  z-index: 10;
+  opacity: 0.75;
+}
+
+.hero-search-laser::after {
+  content: "";
+  position: absolute;
+  top: -100%;
+  left: -100%;
+  width: 300%;
+  height: 300%;
+  background: conic-gradient(
+    from 0deg at 50% 50%,
+    transparent 0deg,
+    transparent 280deg,
+    var(--solar-beam-1, #00E5FF) 330deg,
+    var(--solar-beam-2, #38BDF8) 360deg
+  );
+  animation: laser-beam-spin 8s linear infinite;
+  will-change: transform;
+}
+
+/* ============================================================
+   SOLAR DIAL STATUS CAPSULE & DROPDOWN MENU
+   ============================================================ */
+#btn-solar-dial {
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.solar-pulse-orb {
+  width: 7px;
+  height: 7px;
+  border-radius: 9999px;
+  background-color: var(--solar-phase-accent, #38BDF8);
+  box-shadow: 0 0 10px var(--solar-phase-glow, rgba(56, 189, 248, 0.6));
+  animation: solar-orb-pulse 2.2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  flex-shrink: 0;
+}
+
+@keyframes solar-orb-pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(0.85);
+  }
+}
+
+.solar-dial-item.active-solar-mode {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: #FFFFFF !important;
+  font-weight: 700;
+}
+
+.solar-dial-item.active-solar-mode .solar-check {
+  display: inline-block !important;
+}
+
+/* Mobile Touch Performance Adjustments */
+@media (max-width: 768px) {
+  .laser-border-beam {
+    padding: 1.25px;
+  }
+  .laser-border-beam::after {
+    animation-duration: 5.5s;
+  }
+}
+
 

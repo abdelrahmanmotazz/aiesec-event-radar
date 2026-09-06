@@ -89,7 +89,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initAmbientCosmicDust();
   initCardTiltPhysics();
   initSmoothMouseLighting();
-  initLiveClock();
+  initSolarCycle();
   setupEventListeners();
   fetchEvents();
   if (window.lucide) lucide.createIcons();
@@ -881,23 +881,210 @@ function initSmoothMouseLighting() {
   }, { passive: true });
 }
 
-// Live Cairo Time Clock (Africa/Cairo timezone)
-function initLiveClock() {
-  const el = document.getElementById("live-clock");
-  if (!el) return;
-  function tick() {
-    const now = new Date();
-    const timeStr = now.toLocaleTimeString("en-US", { 
-      timeZone: "Africa/Cairo", 
-      hour: "2-digit", 
-      minute: "2-digit", 
-      second: "2-digit",
-      hour12: true 
-    });
-    el.innerText = `Cairo: ${timeStr}`;
+// ============================================================
+// DYNAMIC EGYPTIAN SOLAR CYCLE (Atmospheric Cairo Time-Engine)
+// ============================================================
+let solarCycleState = {
+  mode: localStorage.getItem("aiesec_solar_mode") || "auto", // 'auto' | 'dawn' | 'meridian' | 'dusk' | 'midnight'
+  activePhase: "midnight",
+  cairoHour: 5,
+  cairoMinute: 0,
+  timeString: ""
+};
+
+const SOLAR_PHASES = {
+  dawn: {
+    icon: "🌅",
+    label: "Dawn",
+    fullLabel: "Golden Dawn (06:00 - 10:00)",
+    accent: "#F59E0B",
+    glow: "rgba(245, 158, 11, 0.5)",
+    beam1: "#F59E0B",
+    beam2: "#FDE047"
+  },
+  meridian: {
+    icon: "⚡",
+    label: "Meridian",
+    fullLabel: "Cyber Noon (10:00 - 17:30)",
+    accent: "#00E5FF",
+    glow: "rgba(0, 229, 255, 0.5)",
+    beam1: "#00E5FF",
+    beam2: "#037EF3"
+  },
+  dusk: {
+    icon: "🌆",
+    label: "Dusk",
+    fullLabel: "Twilight Dusk (17:30 - 20:30)",
+    accent: "#A855F7",
+    glow: "rgba(168, 85, 247, 0.45)",
+    beam1: "#A855F7",
+    beam2: "#FF4D36"
+  },
+  midnight: {
+    icon: "🌌",
+    label: "Midnight",
+    fullLabel: "Obsidian Midnight (20:30 - 06:00)",
+    accent: "#38BDF8",
+    glow: "rgba(56, 189, 248, 0.45)",
+    beam1: "#38BDF8",
+    beam2: "#10B981"
   }
-  tick();
-  setInterval(tick, 1000);
+};
+
+function getCairoSolarPhase(hour, minute) {
+  const decimalHour = hour + minute / 60;
+  if (decimalHour >= 6.0 && decimalHour < 10.0) {
+    return "dawn";
+  } else if (decimalHour >= 10.0 && decimalHour < 17.5) {
+    return "meridian";
+  } else if (decimalHour >= 17.5 && decimalHour < 20.5) {
+    return "dusk";
+  } else {
+    return "midnight";
+  }
+}
+
+function applySolarPhase(phase) {
+  solarCycleState.activePhase = phase;
+  document.documentElement.setAttribute("data-solar", phase);
+
+  // Update Solar Dial UI elements
+  const orb = document.getElementById("solar-orb-indicator");
+  const icon = document.getElementById("solar-dial-icon");
+  const phaseLabel = document.getElementById("solar-dial-phase");
+  const info = SOLAR_PHASES[phase] || SOLAR_PHASES.midnight;
+
+  if (orb) {
+    orb.style.backgroundColor = info.accent;
+    orb.style.boxShadow = `0 0 10px ${info.glow}`;
+  }
+  if (icon) icon.textContent = info.icon;
+  if (phaseLabel) phaseLabel.textContent = `· ${info.label}`;
+
+  // Update menu active checkmarks
+  document.querySelectorAll(".solar-dial-item").forEach((btn) => {
+    const mode = btn.getAttribute("data-solar-mode");
+    const check = btn.querySelector(".solar-check");
+    if (mode === solarCycleState.mode) {
+      btn.classList.add("active-solar-mode");
+      if (check) check.classList.remove("hidden");
+    } else {
+      btn.classList.remove("active-solar-mode");
+      if (check) check.classList.add("hidden");
+    }
+  });
+
+  // Keep Three.js globe ambient light aligned if initialized
+  if (window.threeSceneAmbient && info.accent) {
+    try {
+      window.threeSceneAmbient.color.set(info.accent);
+    } catch (e) {}
+  }
+}
+
+function updateCairoClock() {
+  const now = new Date();
+  const timeStr = now.toLocaleTimeString("en-US", { 
+    timeZone: "Africa/Cairo", 
+    hour: "2-digit", 
+    minute: "2-digit", 
+    second: "2-digit",
+    hour12: true 
+  });
+
+  const shortTimeStr = now.toLocaleTimeString("en-US", {
+    timeZone: "Africa/Cairo",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true
+  });
+
+  // Calculate Cairo Hour in 24h format
+  let hour = now.getUTCHours() + 2; // Cairo default UTC+2
+  let minute = now.getUTCMinutes();
+  try {
+    const hour24Str = new Intl.DateTimeFormat("en-US", {
+      timeZone: "Africa/Cairo",
+      hour: "numeric",
+      hour12: false
+    }).format(now);
+    const minStr = new Intl.DateTimeFormat("en-US", {
+      timeZone: "Africa/Cairo",
+      minute: "numeric"
+    }).format(now);
+    hour = parseInt(hour24Str, 10);
+    minute = parseInt(minStr, 10);
+  } catch (e) {}
+
+  solarCycleState.cairoHour = hour;
+  solarCycleState.cairoMinute = minute;
+  solarCycleState.timeString = timeStr;
+
+  // Update header labels
+  const liveClock = document.getElementById("live-clock");
+  if (liveClock) liveClock.innerText = `Cairo: ${timeStr}`;
+
+  const dialClock = document.getElementById("solar-dial-clock");
+  if (dialClock) dialClock.innerText = shortTimeStr;
+
+  const menuTime = document.getElementById("solar-menu-time");
+  if (menuTime) menuTime.innerText = `Cairo: ${timeStr}`;
+
+  // If in auto mode, auto-detect phase
+  if (solarCycleState.mode === "auto") {
+    const autoPhase = getCairoSolarPhase(hour, minute);
+    if (solarCycleState.activePhase !== autoPhase) {
+      applySolarPhase(autoPhase);
+    }
+  }
+}
+
+function initSolarCycle() {
+  const btnDial = document.getElementById("btn-solar-dial");
+  const menuDial = document.getElementById("menu-solar-dial");
+
+  if (btnDial && menuDial) {
+    btnDial.addEventListener("click", (e) => {
+      e.stopPropagation();
+      menuDial.classList.toggle("hidden");
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!btnDial.contains(e.target) && !menuDial.contains(e.target)) {
+        menuDial.classList.add("hidden");
+      }
+    });
+  }
+
+  // Bind clicks for all solar options
+  document.querySelectorAll(".solar-dial-item").forEach((item) => {
+    item.addEventListener("click", () => {
+      const mode = item.getAttribute("data-solar-mode");
+      if (!mode) return;
+      solarCycleState.mode = mode;
+      localStorage.setItem("aiesec_solar_mode", mode);
+
+      if (mode === "auto") {
+        const autoPhase = getCairoSolarPhase(solarCycleState.cairoHour, solarCycleState.cairoMinute);
+        applySolarPhase(autoPhase);
+      } else {
+        applySolarPhase(mode);
+      }
+
+      if (menuDial) menuDial.classList.add("hidden");
+    });
+  });
+
+  // Initial update
+  updateCairoClock();
+  if (solarCycleState.mode !== "auto") {
+    applySolarPhase(solarCycleState.mode);
+  } else {
+    const autoPhase = getCairoSolarPhase(solarCycleState.cairoHour, solarCycleState.cairoMinute);
+    applySolarPhase(autoPhase);
+  }
+
+  setInterval(updateCairoClock, 1000);
 }
 
 // ============================================================
@@ -2648,12 +2835,16 @@ function renderCards() {
     const hasClash = ev.clash_warning;
 
     let glowClass = "";
+    let beamClass = "beam-default";
     if (isFlagship) {
       glowClass = "card-summit-glow";
+      beamClass = "beam-summit";
     } else if (isHigh) {
       glowClass = "card-high-glow";
+      beamClass = "beam-high";
     } else if (hasPartner) {
       glowClass = "card-partner-glow";
+      beamClass = "beam-partner";
     }
 
     card.className = `radar-card spotlight-card p-5 sm:p-6 flex flex-col justify-between h-full ${glowClass}`;
@@ -2665,6 +2856,9 @@ function renderCards() {
     const sourcePill = getSourcePill(ev.source);
 
     card.innerHTML = `
+      <!-- Linear Conic Laser Border Beam (GPU-Accelerated) -->
+      <div class="laser-border-beam ${beamClass}" aria-hidden="true"></div>
+
       <!-- Prismatic Holographic Iridescent Sheen (Feature 1) -->
       <div class="holographic-sheen"></div>
 
