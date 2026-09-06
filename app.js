@@ -1287,65 +1287,29 @@ function initAmbientCosmicDust() {
 }
 
 // ============================================================
-// FEATURE 1: 3D HOLOGRAPHIC CARD TILT & IRIDESCENT SHEEN CONTROLLER
+// FEATURE 1: 2.5D CARD SHEEN CONTROLLER & DISTORTION SAFEGUARDS
 // ============================================================
 function initCardTiltPhysics() {
-  // STRICT DESKTOP-ONLY GUARD:
-  // Touchscreens do not have a cursor and trigger synthetic mousemove events
-  // that cause catastrophic 3D layer clipping, shear distortion, and lag on mobile WebKit.
-  const hasFinePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
-  if (!hasFinePointer || "ontouchstart" in window || (navigator.maxTouchPoints && navigator.maxTouchPoints > 0)) {
-    return;
-  }
-
   const container = document.getElementById("container-cards");
   if (!container) return;
 
-  let activeCard = null;
+  // Clean up and purge any residual transform or perspective inline styles on all cards
+  container.querySelectorAll(".radar-card").forEach((card) => {
+    card.style.removeProperty("transform");
+    card.style.removeProperty("transition");
+  });
 
+  const hasFinePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+  if (!hasFinePointer) return;
+
+  // Lightweight passive sheen tracking without modifying element geometry or 3D transform
   container.addEventListener("mousemove", (e) => {
     const card = e.target.closest(".radar-card");
-    if (!card) {
-      if (activeCard) {
-        resetCardTilt(activeCard);
-        activeCard = null;
-      }
-      return;
-    }
-
-    if (activeCard && activeCard !== card) {
-      resetCardTilt(activeCard);
-    }
-    activeCard = card;
-
+    if (!card) return;
     const rect = card.getBoundingClientRect();
-    const cx = e.clientX - rect.left;
-    const cy = e.clientY - rect.top;
-
-    const nx = (cx / rect.width) * 2 - 1; // -1 to 1
-    const ny = (cy / rect.height) * 2 - 1;
-
-    const maxTilt = 5.5; // subtle, realistic tilt degrees
-    const tiltX = (-ny * maxTilt).toFixed(2);
-    const tiltY = (nx * maxTilt).toFixed(2);
-
-    card.style.transition = "none";
-    card.style.transform = `perspective(1100px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) scale3d(1.015, 1.015, 1.015)`;
-    card.style.setProperty("--sheen-x", `${cx}px`);
-    card.style.setProperty("--sheen-y", `${cy}px`);
-  });
-
-  container.addEventListener("mouseleave", () => {
-    if (activeCard) {
-      resetCardTilt(activeCard);
-      activeCard = null;
-    }
-  });
-
-  function resetCardTilt(card) {
-    card.style.transition = "transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease";
-    card.style.transform = "perspective(1100px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)";
-  }
+    card.style.setProperty("--sheen-x", `${(e.clientX - rect.left).toFixed(1)}px`);
+    card.style.setProperty("--sheen-y", `${(e.clientY - rect.top).toFixed(1)}px`);
+  }, { passive: true });
 }
 
 // ============================================================

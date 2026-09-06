@@ -585,7 +585,7 @@ body::before {
 /* GSAP Magnetic Button Transition Container */
 .magnetic-btn {
   will-change: transform;
-  transform-style: preserve-3d;
+  transform-style: flat;
 }
 
 /* ============================================================
@@ -1161,15 +1161,24 @@ body.drawer-open {
 }
 
 /* ============================================================
-   FEATURE 1: 3D HOLOGRAPHIC CARD TILT & IRIDESCENT SHEEN
+   FEATURE 1: ROCK-SOLID 2.5D CARD ELEVATION & IRIDESCENT SHEEN
    ============================================================ */
+#container-cards {
+  perspective: none !important;
+  transform-style: flat !important;
+}
+
 .radar-card {
   position: relative;
   overflow: hidden;
   cursor: pointer;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
-  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, border-color 0.25s ease;
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s ease, border-color 0.22s ease;
+  transform: translateY(0);
+  transform-style: flat !important;
+  backface-visibility: hidden;
+  will-change: transform, box-shadow;
 }
 
 /* Prismatic Holographic Iridescent Sheen Layer (Desktop Hover Only) */
@@ -1191,27 +1200,30 @@ body.drawer-open {
   transition: opacity 0.35s ease;
 }
 
-/* Desktop Hover & 3D Tilt: strictly for fine-pointer / mouse devices */
+/* Desktop Hover: Ultra-clean 4px lift with theme-aware glow and zero 3D distortion */
 @media (hover: hover) and (pointer: fine) {
-  #container-cards {
-    perspective: 1200px;
-  }
   .radar-card:hover {
+    transform: translateY(-4px) !important;
     box-shadow: 
-      0 24px 48px -12px rgba(0, 0, 0, 0.75),
-      0 0 28px var(--theme-accent-glow, rgba(3, 126, 243, 0.22));
+      0 20px 45px -10px rgba(0, 0, 0, 0.8),
+      0 0 28px var(--theme-accent-glow, rgba(3, 126, 243, 0.25)) !important;
+    border-color: rgba(56, 189, 248, 0.42) !important;
   }
   .radar-card:hover .holographic-sheen {
     opacity: 1;
   }
 }
 
-/* Mobile & Touch Devices: Rock-Solid 2D Performance, Zero 3D Distortion */
-@media (hover: none), (pointer: coarse) {
+/* Mobile & Touch Devices: Rock-Solid 2D Performance, Zero Distortion */
+@media (hover: none), (pointer: coarse), (max-width: 768px) {
   #container-cards {
     perspective: none !important;
+    transform-style: flat !important;
   }
   .radar-card {
+    transform: none !important;
+  }
+  .radar-card:hover {
     transform: none !important;
   }
   .radar-card:active {
