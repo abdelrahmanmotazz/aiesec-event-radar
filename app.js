@@ -2266,6 +2266,22 @@ function enrichEventContacts(ev) {
 // ============================================================
 // LINEAR-STYLE SLIDE-OVER EVENT INTEL DRAWER
 // ============================================================
+let drawerScrollLockY = 0;
+
+function lockBodyForDrawer() {
+  drawerScrollLockY = window.pageYOffset || document.documentElement.scrollTop || 0;
+  document.documentElement.classList.add("drawer-open");
+  document.body.classList.add("drawer-open");
+  document.body.style.top = `-${drawerScrollLockY}px`;
+}
+
+function unlockBodyForDrawer() {
+  document.documentElement.classList.remove("drawer-open");
+  document.body.classList.remove("drawer-open");
+  document.body.style.top = "";
+  window.scrollTo(0, drawerScrollLockY);
+}
+
 function openEventDrawer(ev) {
   if (!ev) return;
   state.activeDrawerEvent = ev;
@@ -2381,9 +2397,11 @@ function openEventDrawer(ev) {
 
   if (drawer) {
     drawer.classList.remove("hidden");
-    document.body.style.overflow = "hidden"; // Prevent background scrolling on phone & desktop
+    lockBodyForDrawer();
     requestAnimationFrame(() => {
       drawer.classList.add("active");
+      const scrollBody = document.getElementById("drawer-scroll-body");
+      if (scrollBody) scrollBody.scrollTop = 0;
     });
   }
   if (window.lucide) lucide.createIcons();
@@ -2393,7 +2411,7 @@ function closeEventDrawer() {
   const drawer = document.getElementById("event-detail-drawer");
   if (drawer) {
     drawer.classList.remove("active");
-    document.body.style.overflow = ""; // Restore page scrolling
+    unlockBodyForDrawer();
     setTimeout(() => {
       if (!drawer.classList.contains("active")) {
         drawer.classList.add("hidden");
@@ -2489,7 +2507,12 @@ function initEventDrawer() {
   const btnCopy = document.getElementById("drawer-btn-copy");
 
   if (btnClose) btnClose.addEventListener("click", closeEventDrawer);
-  if (backdrop) backdrop.addEventListener("click", closeEventDrawer);
+  if (backdrop) {
+    backdrop.addEventListener("click", closeEventDrawer);
+    backdrop.addEventListener("touchmove", (e) => {
+      e.preventDefault();
+    }, { passive: false });
+  }
   if (btnDone) btnDone.addEventListener("click", closeEventDrawer);
   if (btnGen) btnGen.addEventListener("click", handleGenerateDrawerPitch);
   if (btnCopy) btnCopy.addEventListener("click", handleCopyDrawerPitch);

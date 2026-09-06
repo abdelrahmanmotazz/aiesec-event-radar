@@ -905,25 +905,60 @@ header img {
 /* ============================================================
    LINEAR-STYLE SLIDE-OVER INTEL DRAWER
    ============================================================ */
+html.drawer-open,
+body.drawer-open {
+  overflow: hidden !important;
+  overscroll-behavior: none !important;
+  position: fixed !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
 #event-detail-drawer {
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  overscroll-behavior: contain !important;
+  -webkit-tap-highlight-color: transparent;
 }
+
 #event-detail-drawer.active {
   opacity: 1;
   pointer-events: auto;
 }
+
+#drawer-backdrop {
+  background-color: rgba(4, 8, 19, 0.88) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
 #event-detail-drawer.active #drawer-backdrop {
   opacity: 1;
 }
+
 #drawer-panel {
+  background-color: #080D1D !important;
+  background-image: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
   transform: translateX(100%);
   transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: transform;
+  overscroll-behavior-y: contain !important;
+  height: 100%;
+  max-height: 100dvh;
 }
+
 #event-detail-drawer.active #drawer-panel {
   transform: translateX(0);
+}
+
+#drawer-scroll-body {
+  overscroll-behavior: contain !important;
+  overscroll-behavior-y: contain !important;
+  -webkit-overflow-scrolling: touch !important;
+  touch-action: pan-y !important;
 }
 
 /* ============================================================
