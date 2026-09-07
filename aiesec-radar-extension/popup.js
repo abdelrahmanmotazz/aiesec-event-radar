@@ -53,14 +53,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         const data = await res.json();
         showToast(`Synced ${data.imported || extractedEvents.length} events to Radar!`, "success");
         btnSync.innerText = "✓ Synced Successfully";
-      } else {
-        showToast("Server error. Ensure radar is running on port 8000.", "error");
-        btnSync.innerText = "⚡ Sync Directly to Radar";
+        return;
       }
     } catch (err) {
-      showToast("Could not connect to http://127.0.0.1:8000. Copy JSON instead!", "error");
-      btnSync.innerText = "⚡ Sync Directly to Radar";
+      // Local server not reachable
     }
+
+    // Fallback: Copy to clipboard with instant guidance
+    navigator.clipboard.writeText(JSON.stringify(extractedEvents, null, 2));
+    showToast(`Copied ${extractedEvents.length} events! Paste into Live Social Ingest modal on your live site.`, "success");
+    btnSync.innerText = "✓ Copied to Clipboard";
+    setTimeout(() => { btnSync.innerText = "⚡ Sync Directly to Radar"; }, 3000);
   });
 
   btnCopy.addEventListener('click', () => {

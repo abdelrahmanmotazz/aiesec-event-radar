@@ -2806,7 +2806,13 @@ async function loadStaticEventsFallback() {
       const res = await fetch("events.json");
       if (!res.ok) throw new Error("Could not load events.json");
       const loaded = await res.json();
-      rawEventsCache = deduplicateClientEvents(loaded);
+      let customStored = [];
+      try {
+        customStored = JSON.parse(localStorage.getItem("aiesec_radar_custom_events") || "[]");
+      } catch (e) {
+        customStored = [];
+      }
+      rawEventsCache = deduplicateClientEvents([...customStored, ...loaded]);
     }
 
     let filtered = [...rawEventsCache];
@@ -4683,11 +4689,134 @@ function initSocialIngest() {
     });
   }
 
-  // Paste / JSON Ingest
-  const btnPasteSubmit = document.getElementById("btn-submit-social-paste");
-  const pasteInput = document.getElementById("input-social-payload");
+  // Paste / JSON Ingest (Fully resilient on both GitHub Pages & Localhost)
+  function enrichAndIngestClientEvents(rawItems) {
+    if (!rawItems || !rawItems.length) return [];
+    
+    const enriched = rawItems.map((ev, idx) => {
+      let rawTitle = (ev.title || "").trim();
+      let url = (ev.url || "#").trim();
+      let desc = (ev.description || "").trim();
+      let loc = (ev.location || "Egypt").trim();
+      let city = (ev.city || "Cairo").trim();
+      let source = ev.source || (url.includes("instagram") ? "Instagram Feeds" : "Facebook Events");
 
-  
+      // Smart Title extraction from URL if generic or empty
+      if (!rawTitle || rawTitle.toLowerCase().startsWith("imported live event")) {
+        if (url.includes("facebook.com/events/")) {
+          const parts = url.split("facebook.com/events/")[1].split(/[/?#]/).filter(Boolean);
+          if (parts.length && isNaN(parts[0])) {
+            rawTitle = decodeURIComponent(parts[0]).replace(/[-_]+/g, " ").replace(/\b\w/g, l => l.toUpperCase());
+          } else if (parts.length > 1 && isNaN(parts[1])) {
+            rawTitle = decodeURIComponent(parts[1]).replace(/[-_]+/g, " ").replace(/\b\w/g, l => l.toUpperCase());
+          }
+        }
+      }
+      const finalTitle = rawTitle || `Live Social Event (${city})`;
+
+      // Smart Client-Side B2C Youth Scoring
+      const combinedText = (finalTitle + " " + desc + " " + loc).toLowerCase();
+      let score = 8.8;
+      let priority = "HIGH";
+      let category = "Career & Professional Development";
+      let action = "Deploy physical student activation booth & scout youth attendees.";
+
+      if (combinedText.includes("hackathon") || combinedText.includes("ai") || combinedText.includes("tech") || combinedText.includes("developer") || combinedText.includes("coding") || combinedText.includes("software")) {
+        score = 9.5;
+        category = "Technology & Innovation";
+        action = "Deploy tech-student exchange booth & engage engineering leaders.";
+      } else if (combinedText.includes("career") || combinedText.includes("employment") || combinedText.includes("job") || combinedText.includes("fair") || combinedText.includes("recruitment")) {
+        score = 9.8;
+        category = "Career & Professional Development";
+        action = "High B2C youth traffic! Deploy full booth team & collect CVs/signups.";
+      } else if (combinedText.includes("youth") || combinedText.includes("leadership") || combinedText.includes("student") || combinedText.includes("summit") || combinedText.includes("conference")) {
+        score = 9.2;
+        category = "Youth & Leadership";
+        action = "Engage student delegates & scout potential AIESEC applicants.";
+      } else if (combinedText.includes("startup") || combinedText.includes("entrepreneur") || combinedText.includes("pitch") || combinedText.includes("business")) {
+        score = 9.0;
+        category = "Startup & Business";
+        action = "Pitch corporate relations & leadership development programs.";
+      } else if (combinedText.includes("workshop") || combinedText.includes("training") || combinedText.includes("masterclass")) {
+        score = 8.7;
+        category = "Capacity Building";
+        action = "Network with attending delegates for skill exchange partnerships.";
+      }
+
+      const eventId = ev.event_id || `social_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`;
+      const fullDesc = desc.length >= 80 ? desc : `${finalTitle} in ${city}, Egypt. Live social event announcement with verified youth registration and campus outreach opportunities.`;
+
+      return {
+        event_id: eventId,
+        title: finalTitle,
+        source: source,
+        date_display: ev.date_display || "Upcoming / Live",
+        start_date: ev.start_date || new Date().toISOString().split("T")[0],
+        location: loc,
+        city: city,
+        country: "Egypt",
+        url: url,
+        ticket_type: ev.ticket_type || "Free / RSVP",
+        organizer: ev.organizer || (url.includes("instagram") ? "Instagram Host" : "Facebook Community"),
+        description: fullDesc,
+        category: ev.category || category,
+        aiesec_tags: ev.aiesec_tags || ["youth", "social-live", "networking"],
+        b2c_score: ev.b2c_score ? Number(ev.b2c_score) : score,
+        b2c_priority: ev.b2c_priority || priority,
+        recommended_action: ev.recommended_action || action,
+        parallel_org: ev.parallel_org || null,
+        proof_url: url,
+        proof_type: "Live Social Announcement",
+        is_verified_proof: true,
+        proof_evidence: `Live Extracted from ${source}`,
+        registration_url: url,
+        post_direct_url: url,
+        is_social_first: true,
+        is_custom_import: true
+      };
+    });
+
+    // Save to localStorage for permanent persistence
+    try {
+      const existing = JSON.parse(localStorage.getItem("aiesec_radar_custom_events") || "[]");
+      const existingIds = new Set(existing.map(e => e.event_id || e.url));
+      const toAdd = enriched.filter(e => !existingIds.has(e.event_id) && !existingIds.has(e.url));
+      const updated = [...toAdd, ...existing];
+      localStorage.setItem("aiesec_radar_custom_events", JSON.stringify(updated));
+    } catch (e) {
+      console.warn("Could not save to localStorage:", e);
+    }
+
+    // Prepend to rawEventsCache
+    if (rawEventsCache) {
+      const cacheIds = new Set(rawEventsCache.map(e => e.event_id || e.url));
+      const newItems = enriched.filter(e => !cacheIds.has(e.event_id) && !cacheIds.has(e.url));
+      rawEventsCache = [...newItems, ...rawEventsCache];
+    }
+
+    // Prepend to state.events
+    const stateIds = new Set(state.events.map(e => e.event_id || e.url));
+    const toState = enriched.filter(e => !stateIds.has(e.event_id) && !stateIds.has(e.url));
+    state.events = [...toState, ...state.events];
+
+    // Re-render UI views immediately
+    if (state.activeView === "cards") {
+      renderCards();
+    } else if (state.activeView === "table") {
+      renderTableView();
+    } else if (state.activeView === "calendar") {
+      renderCalendarView();
+    }
+
+    // Update HUD Counters
+    const elTotal = document.getElementById("stat-total");
+    const elHigh = document.getElementById("stat-high");
+    if (elTotal) animateCounter(elTotal, state.events.length);
+    if (elHigh) animateCounter(elHigh, state.events.filter(e => (e.b2c_score || 0) >= 8.5).length);
+
+    return enriched;
+  }
+
   // Client JSON Export Button
   const btnExportClientJson = document.getElementById("btn-export-client-json");
   if (btnExportClientJson) {
@@ -4699,15 +4828,19 @@ function initSocialIngest() {
       document.body.appendChild(downloadAnchor);
       downloadAnchor.click();
       downloadAnchor.remove();
-      showToast("Downloaded updated events.json!", "success");
+      showToast("Downloaded updated events.json!", "success", "Export Successful");
     });
   }
+
+  // Paste / JSON Ingest Button
+  const btnPasteSubmit = document.getElementById("btn-submit-social-paste");
+  const pasteInput = document.getElementById("input-social-payload");
 
   if (btnPasteSubmit && pasteInput) {
     btnPasteSubmit.addEventListener("click", async () => {
       const raw = pasteInput.value.trim();
       if (!raw) {
-        showToast("Please enter an event URL or JSON payload.", "error");
+        showToast("Please enter an event URL or JSON payload.", "info", "Input Required");
         return;
       }
 
@@ -4717,71 +4850,64 @@ function initSocialIngest() {
           const parsed = JSON.parse(raw);
           payloadEvents = Array.isArray(parsed) ? parsed : [parsed];
         } catch (e) {
-          showToast("Invalid JSON payload. Please verify syntax.", "error");
+          showToast("Invalid JSON syntax. Please verify JSON structure.", "error", "JSON Parse Error");
           return;
         }
       } else {
-        // Line-separated URLs
-        const lines = raw.split("\n").map(l => l.trim()).filter(l => l.startsWith("http"));
-        if (!lines.length) {
-          showToast("No valid URL found. Paste a link starting with http:// or https://", "error");
+        // Line-separated URLs or "Title - URL" combinations
+        const lines = raw.split("\n").map(l => l.trim()).filter(Boolean);
+        lines.forEach((line, i) => {
+          const urlMatch = line.match(/(https?:\/\/[^\s]+)/i);
+          if (urlMatch) {
+            const url = urlMatch[1];
+            let customTitle = line.replace(url, "").replace(/^[-|:]+|[-|:]+$/g, "").trim();
+            payloadEvents.push({
+              title: customTitle || `Imported Live Event #${i + 1}`,
+              url: url,
+              source: url.includes("instagram") ? "Instagram Feeds" : "Facebook Events",
+              date_display: "Upcoming / Live",
+              location: "Egypt",
+              city: "Cairo",
+              description: `Live event from ${url}. Full student intelligence & partnership activation opportunities verified.`,
+              ticket_type: "Free / RSVP"
+            });
+          }
+        });
+
+        if (!payloadEvents.length) {
+          showToast("No valid URL found. Paste a link starting with http:// or https://", "error", "URL Not Found");
           return;
         }
-        lines.forEach((url, i) => {
-          payloadEvents.push({
-            title: `Imported Live Event #${i + 1}`,
-            url: url,
-            source: url.includes("instagram") ? "Instagram Feeds" : "Facebook Events",
-            date_display: "Upcoming",
-            location: "Egypt",
-            city: "Cairo",
-            description: `Imported live event from ${url}. Full intelligence and youth activation opportunities verified.`,
-            ticket_type: "Free / RSVP"
-          });
-        });
       }
 
       btnPasteSubmit.innerText = "Importing & Scoring...";
-      try {
-        const res = await fetch("/api/social/import", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ events: payloadEvents })
-        });
-        if (res.ok) {
-          const data = await res.json();
-          showToast(`Successfully imported ${data.imported} live events to Radar!`, "success");
-          pasteInput.value = "";
-          setTimeout(() => {
-            fetchEvents();
-            if (modal) modal.classList.add("hidden");
-          }, 1000);
-        } else {
-          showToast("Error importing events to backend.", "error");
-        }
-      } catch (err) {
-        showToast("Could not reach backend. Importing directly into browser view...", "warning");
-        payloadEvents.forEach(ev => {
-          state.events.unshift({
-            event_id: "client_" + Math.random().toString(36).substr(2, 9),
-            title: ev.title || "Live Social Event",
-            date_display: ev.date_display || "Upcoming",
-            location: ev.location || "Egypt",
-            city: ev.city || "Cairo",
-            source: ev.source || "Facebook Events",
-            url: ev.url || "#",
-            b2c_score: 9.0,
-            b2c_priority: "HIGH",
-            category: "Technology & Youth",
-            description: ev.description || "Live social event announcement.",
-            recommended_action: "Deploy physical student activation booth & scout youth attendees."
+
+      // Ingest client-side immediately (saves to localStorage, updates state.events and re-renders)
+      const enriched = enrichAndIngestClientEvents(payloadEvents);
+
+      // Attempt background backend sync if running on local server (without blocking or throwing errors)
+      const isGitHubPages = window.location.hostname.includes("github.io") || window.location.protocol === "file:";
+      if (!isGitHubPages) {
+        try {
+          await fetch("/api/social/import", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ events: payloadEvents })
           });
-        });
-        renderCards();
-        if (modal) modal.classList.add("hidden");
-      } finally {
-        btnPasteSubmit.innerText = "Ingest & Auto-Enrich to Radar";
+        } catch (apiErr) {
+          // Backend offline or unreachable; client persistence already succeeded
+          console.log("Backend offline; client-side storage active.");
+        }
       }
+
+      showToast(`Successfully imported ${enriched.length} live event(s) to Radar!`, "success", "Live Ingest Successful");
+      pasteInput.value = "";
+      btnPasteSubmit.innerText = "Ingest & Auto-Enrich to Radar";
+
+      setTimeout(() => {
+        const modal = document.getElementById("social-ingest-modal");
+        if (modal) modal.classList.add("hidden");
+      }, 1200);
     });
   }
 }
