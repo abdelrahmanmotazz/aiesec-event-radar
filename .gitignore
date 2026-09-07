@@ -8,6 +8,9 @@ service_account.json
 .env
 *.pem
 *.key
+data/meta_session/
+storage_state.json
+cookies.json
 
 # Python Bytecode & Cache
 __pycache__/

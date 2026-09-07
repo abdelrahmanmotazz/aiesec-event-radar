@@ -205,7 +205,13 @@
           </div>
         </div>
 
-                <!-- Live Social Ingestion & Harvester Button -->
+                        <!-- Cloud Radar Live Telemetry Badge -->
+        <div id="telemetry-cloud-badge" class="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-cyan-500/10 text-cyan-300 border border-cyan-500/30 shrink-0" title="Live Cloud Synchronization Active">
+          <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+          <span>Cloud Live</span>
+        </div>
+
+        <!-- Live Social Ingestion & Harvester Button -->
         <button id="btn-open-social-ingest" class="flex items-center gap-1.5 bg-gradient-to-r from-sky-500/20 via-cyan-500/20 to-blue-600/20 hover:from-sky-500/30 hover:to-cyan-500/30 text-cyan-300 border border-cyan-500/40 hover:border-cyan-400 text-xs font-bold px-2.5 sm:px-3 py-2 rounded-xl transition shadow-[0_0_15px_rgba(0,229,255,0.2)] active:scale-95 group shrink-0" title="Live Social Ingestion Hub: Facebook & Instagram Auto-Harvester">
           <i data-lucide="radio" class="w-3.5 h-3.5 text-cyan-400 group-hover:animate-pulse"></i>
           <span class="hidden sm:inline">Live Social Ingest</span>
@@ -1373,6 +1379,23 @@
             </div>
           </div>
 
+                    <div id="gh-actions-cloud-box" class="p-3.5 rounded-xl bg-slate-950/80 border border-cyan-500/30 text-xs text-slate-300 space-y-2">
+            <div class="font-bold text-cyan-300 flex items-center justify-between">
+              <span class="flex items-center gap-2">
+                <i data-lucide="cloud-lightning" class="w-4 h-4 text-cyan-400"></i> Cloud Auto-Scraping on GitHub Actions
+              </span>
+              <span class="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-bold">5:00 AM Cairo Daily</span>
+            </div>
+            <p class="text-[11px] text-slate-400 leading-relaxed">
+              The live website automatically scrapes Facebook & Instagram every morning in the cloud. You can also trigger an instant live cloud scrape right now via GitHub Actions:
+            </p>
+            <div class="flex items-center gap-2 pt-1">
+              <a href="https://github.com/abdelrahmanmotazz/aiesec-event-radar/actions/workflows/daily-scrape.yml" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 font-bold text-xs border border-cyan-500/40 transition">
+                <i data-lucide="play" class="w-3.5 h-3.5 fill-current"></i> Trigger Cloud Scrape on GitHub Actions ↗
+              </a>
+            </div>
+          </div>
+
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div class="p-3.5 rounded-xl bg-white/[0.03] border border-white/[0.08]">
               <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Target Geographic Hub</div>
@@ -1431,9 +1454,14 @@
             <label class="text-xs font-bold text-slate-300 block mb-1.5">Paste Facebook / Instagram Event URL or JSON Payload</label>
             <textarea id="input-social-payload" rows="6" class="w-full bg-slate-950/80 border border-white/[0.1] rounded-xl p-3 text-xs text-white focus:outline-none focus:border-cyan-500 font-mono" placeholder="https://www.facebook.com/events/1045928170882914/&#10;or paste extracted JSON array..."></textarea>
           </div>
-          <button id="btn-submit-social-paste" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white font-extrabold text-xs tracking-wide uppercase transition shadow-md active:scale-95 flex items-center justify-center gap-2">
-            <i data-lucide="sparkles" class="w-4 h-4"></i> Ingest & Auto-Enrich to Radar
-          </button>
+                    <div class="flex items-center gap-2">
+            <button id="btn-submit-social-paste" class="flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white font-extrabold text-xs tracking-wide uppercase transition shadow-md active:scale-95 flex items-center justify-center gap-2">
+              <i data-lucide="sparkles" class="w-4 h-4"></i> Ingest & Auto-Enrich to Radar
+            </button>
+            <button id="btn-export-client-json" class="py-3 px-4 rounded-xl bg-white/[0.06] hover:bg-white/[0.1] text-slate-300 hover:text-white font-bold text-xs transition border border-white/10 flex items-center justify-center gap-1.5 shrink-0" title="Export events.json file">
+              <i data-lucide="download" class="w-4 h-4"></i> Export JSON
+            </button>
+          </div>
         </div>
       </div>
     </div>

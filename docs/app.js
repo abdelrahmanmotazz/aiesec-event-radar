@@ -4645,6 +4645,16 @@ function initSocialIngest() {
       }
       if (window.lucide) lucide.createIcons();
 
+            // Check if running on static GitHub Pages
+      const isGitHubPages = window.location.hostname.includes("github.io");
+      if (isGitHubPages) {
+        showToast("Live Cloud Site: Please trigger scrape via GitHub Actions or run 4_SYNC_LIVE_SITE.bat on your PC!", "info");
+        window.open("https://github.com/abdelrahmanmotazz/aiesec-event-radar/actions/workflows/daily-scrape.yml", "_blank");
+        btnAutoRun.disabled = false;
+        btnAutoRun.innerHTML = `<i data-lucide="play" class="w-4 h-4 fill-current"></i> Run Autonomous Extraction Now`;
+        if (window.lucide) lucide.createIcons();
+        return;
+      }
       try {
         const queryParam = city ? `?city=${encodeURIComponent(city)}` : "";
         const res = await fetch(`/api/social/auto-scrape${queryParam}`, { method: "POST" });
@@ -4676,6 +4686,22 @@ function initSocialIngest() {
   // Paste / JSON Ingest
   const btnPasteSubmit = document.getElementById("btn-submit-social-paste");
   const pasteInput = document.getElementById("input-social-payload");
+
+  
+  // Client JSON Export Button
+  const btnExportClientJson = document.getElementById("btn-export-client-json");
+  if (btnExportClientJson) {
+    btnExportClientJson.addEventListener("click", () => {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state.events, null, 2));
+      const downloadAnchor = document.createElement("a");
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", "events.json");
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+      showToast("Downloaded updated events.json!", "success");
+    });
+  }
 
   if (btnPasteSubmit && pasteInput) {
     btnPasteSubmit.addEventListener("click", async () => {

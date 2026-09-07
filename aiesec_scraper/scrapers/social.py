@@ -663,7 +663,7 @@ class SocialMediaScraper(BaseScraper):
         try:
             from .meta_playwright import MetaPlaywrightScraper
             pw_scraper = MetaPlaywrightScraper()
-            if pw_scraper.is_session_available():
+            if pw_scraper.is_session_available() and not os.environ.get("PYTEST_CURRENT_TEST"):
                 logger.info("[Social Media Suite] Persistent session detected. Running live Facebook Events extraction...")
                 live_pw_events = pw_scraper.scrape(city=city, max_events=25)
                 for l_ev in live_pw_events:
