@@ -2902,9 +2902,14 @@ let rawEventsCache = null;
 async function loadStaticEventsFallback() {
   try {
     if (!rawEventsCache) {
-      const res = await fetch("events.json?v=" + Date.now());
-      if (!res.ok) throw new Error("Could not load events.json");
-      const loaded = await res.json();
+      let loaded = [];
+      if (window.RADAR_STATIC_EVENTS && Array.isArray(window.RADAR_STATIC_EVENTS) && window.RADAR_STATIC_EVENTS.length > 0) {
+        loaded = window.RADAR_STATIC_EVENTS;
+      } else {
+        const res = await fetch("events.json?v=" + Date.now());
+        if (!res.ok) throw new Error("Could not load events.json");
+        loaded = await res.json();
+      }
       let customStored = [];
       try {
         customStored = JSON.parse(localStorage.getItem("aiesec_radar_custom_events") || "[]");
