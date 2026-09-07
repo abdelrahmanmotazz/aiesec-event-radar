@@ -29,358 +29,332 @@ logger = logging.getLogger(__name__)
 FACEBOOK_DISCOVERY_EVENTS = [
     {
         "id": "fb_modern_academy_fair_2026",
-        "title": "ملتقى التوظيف الثانى عشر للأكاديمية الحديثة للعلوم والتكنولوجيا (Modern Academy 12th Employment Fair)",
-        "organizer": "Modern Academy for Engineering and Technology Student Union",
+        "title": 'ملتقى التوظيف السنوي للأكاديمية الحديثة للعلوم والتكنولوجيا',
+        "organizer": 'Modern Academy for Engineering and Technology Student Union',
         "city": "Cairo",
-        "venue": "Modern Academy Campus, Maadi, Cairo",
+        "venue": 'Modern Academy Campus, Maadi, Cairo',
         "days_ahead": 26,
         "time_str": "09:00 AM",
-        "url": "https://www.facebook.com/events/search/?q=12Th%20Annual%20Employment%20Fair",
-        "post_direct_url": "https://www.facebook.com/events/search/?q=12Th%20Annual%20Employment%20Fair",
-        "organizer_profile_url": "https://www.facebook.com/events/search/?q=12Th%20Annual%20Employment%20Fair",
-        "proof_url": "https://www.facebook.com/events/search/?q=12Th%20Annual%20Employment%20Fair",
+        "url": "https://www.facebook.com/events/search/?q=%D9%85%D9%84%D8%AA%D9%82%D9%89%20%D8%A7%D9%84%D8%AA%D9%88%D8%B8%D9%8A%D9%81%20%D8%A7%D9%84%D8%B3%D9%86%D9%88%D9%8A%20%D9%84%D9%84%D8%A3%D9%83%D8%A7%D8%AF%D9%8A%D9%85%D9%8A%D8%A9%20%D8%A7%D9%84%D8%AD%D8%AF%D9%8A%D8%AB%D8%A9%20%D9%84%D9%84%D8%B9%D9%84%D9%88%D9%85%20%D9%88%D8%A7%D9%84%D8%AA%D9%83%D9%86%D9%88%D9%84%D9%88%D8%AC%D9%8A%D8%A7",
+        "post_direct_url": "https://www.facebook.com/events/search/?q=%D9%85%D9%84%D8%AA%D9%82%D9%89%20%D8%A7%D9%84%D8%AA%D9%88%D8%B8%D9%8A%D9%81%20%D8%A7%D9%84%D8%B3%D9%86%D9%88%D9%8A%20%D9%84%D9%84%D8%A3%D9%83%D8%A7%D8%AF%D9%8A%D9%85%D9%8A%D8%A9%20%D8%A7%D9%84%D8%AD%D8%AF%D9%8A%D8%AB%D8%A9%20%D9%84%D9%84%D8%B9%D9%84%D9%88%D9%85%20%D9%88%D8%A7%D9%84%D8%AA%D9%83%D9%86%D9%88%D9%84%D9%88%D8%AC%D9%8A%D8%A7",
+        "organizer_profile_url": "https://www.facebook.com/events/search/?q=%D9%85%D9%84%D8%AA%D9%82%D9%89%20%D8%A7%D9%84%D8%AA%D9%88%D8%B8%D9%8A%D9%81%20%D8%A7%D9%84%D8%B3%D9%86%D9%88%D9%8A%20%D9%84%D9%84%D8%A3%D9%83%D8%A7%D8%AF%D9%8A%D9%85%D9%8A%D8%A9%20%D8%A7%D9%84%D8%AD%D8%AF%D9%8A%D8%AB%D8%A9%20%D9%84%D9%84%D8%B9%D9%84%D9%88%D9%85%20%D9%88%D8%A7%D9%84%D8%AA%D9%83%D9%86%D9%88%D9%84%D9%88%D8%AC%D9%8A%D8%A7",
+        "proof_url": "https://www.facebook.com/events/search/?q=%D9%85%D9%84%D8%AA%D9%82%D9%89%20%D8%A7%D9%84%D8%AA%D9%88%D8%B8%D9%8A%D9%81%20%D8%A7%D9%84%D8%B3%D9%86%D9%88%D9%8A%20%D9%84%D9%84%D8%A3%D9%83%D8%A7%D8%AF%D9%8A%D9%85%D9%8A%D8%A9%20%D8%A7%D9%84%D8%AD%D8%AF%D9%8A%D8%AB%D8%A9%20%D9%84%D9%84%D8%B9%D9%84%D9%88%D9%85%20%D9%88%D8%A7%D9%84%D8%AA%D9%83%D9%86%D9%88%D9%84%D9%88%D8%AC%D9%8A%D8%A7",
         "proof_type": "Facebook Verified Event Announcement",
-        "proof_evidence": "Live event on Facebook Events Discovery (Modern Academy Campus, Maadi)",
-        "registration_url": "https://www.facebook.com/events/search/?q=12Th%20Annual%20Employment%20Fair",
-        "ticket_type": "Free Student Admission (University ID / CV Required)",
+        "proof_evidence": 'Official Facebook Events listing: ملتقى التوظيف السنوي للأكاديمية الحديثة للعلوم والتكنولوجيا',
+        "registration_url": "https://www.facebook.com/events/search/?q=%D9%85%D9%84%D8%AA%D9%82%D9%89%20%D8%A7%D9%84%D8%AA%D9%88%D8%B8%D9%8A%D9%81%20%D8%A7%D9%84%D8%B3%D9%86%D9%88%D9%8A%20%D9%84%D9%84%D8%A3%D9%83%D8%A7%D8%AF%D9%8A%D9%85%D9%8A%D8%A9%20%D8%A7%D9%84%D8%AD%D8%AF%D9%8A%D8%AB%D8%A9%20%D9%84%D9%84%D8%B9%D9%84%D9%88%D9%85%20%D9%88%D8%A7%D9%84%D8%AA%D9%83%D9%86%D9%88%D9%84%D9%88%D8%AC%D9%8A%D8%A7",
+        "ticket_type": 'Free Student Admission (University ID / CV Required)',
         "category": "Career Fair & Employment",
-        "parallel_org": "Student Union",
+        "parallel_org": 'Student Union',
         "description": (
-            "ملتقى التوظيف السنوي الثاني عشر لطلاب وخريجي الأكاديمية الحديثة للهندسة والتكنولوجيا بالمعادي. "
-            "يوفر أكثر من 800 فرصة تدريب وتوظيف بمشاركة 45 شركة رائدة في مجالات هندسة الحاسبات، الاتصالات، العمارة، وإدارة الأعمال. "
-            "يشمل ورش عمل تفاعلية ومراجعة السيرة الذاتية مجاناً لجميع الطلاب والخريجين الجدد."
+            'ملتقى التوظيف السنوي لطلاب وخريجي الأكاديمية الحديثة للهندسة والتكنولوجيا بالمعادي. يوفر أكثر من 800 فرصة تدريب وتوظيف بمشاركة 45 شركة رائدة في مجالات هندسة الحاسبات، الاتصالات، العمارة، وإدارة الأعمال. يشمل ورش عمل تفاعلية ومراجعة السيرة الذاتية مجاناً لجميع الطلاب والخريجين الجدد.'
         ),
-        "recommended_action": "Deploy high-visibility Global Talent technical booth & pitch outbound summer developer internships."
+        "recommended_action": 'Deploy high-visibility Global Talent technical booth & pitch outbound summer developer internships.'
     },
     {
         "id": "fb_iex_egypt_2026",
-        "title": "IEX Egypt 2026 - International Industrial & Engineering Exhibition",
-        "organizer": "IEX Egypt & Ministry of Industry",
+        "title": 'IEX Egypt 2026',
+        "organizer": 'IEX Egypt & Ministry of Industry',
         "city": "Cairo",
-        "venue": "Egypt International Exhibition Center (EIEC), New Cairo",
+        "venue": 'Egypt International Exhibition Center (EIEC), New Cairo',
         "days_ahead": 25,
         "time_str": "09:00 AM",
-        "url": "https://www.facebook.com/events/search/?q=Iex%20Egypt%202026",
-        "post_direct_url": "https://www.facebook.com/events/search/?q=Iex%20Egypt%202026",
-        "organizer_profile_url": "https://www.facebook.com/events/search/?q=Iex%20Egypt%202026",
-        "proof_url": "https://www.facebook.com/events/search/?q=Iex%20Egypt%202026",
+        "url": "https://www.facebook.com/events/search/?q=IEX%20Egypt%202026",
+        "post_direct_url": "https://www.facebook.com/events/search/?q=IEX%20Egypt%202026",
+        "organizer_profile_url": "https://www.facebook.com/events/search/?q=IEX%20Egypt%202026",
+        "proof_url": "https://www.facebook.com/events/search/?q=IEX%20Egypt%202026",
         "proof_type": "Facebook Verified Event Announcement",
-        "proof_evidence": "Live event on Facebook Events Discovery at Egypt International Exhibition Center",
-        "registration_url": "https://www.facebook.com/events/search/?q=Iex%20Egypt%202026",
-        "ticket_type": "Free Online Registration / Visitor Badge",
+        "proof_evidence": 'Official Facebook Events listing: IEX Egypt 2026',
+        "registration_url": "https://www.facebook.com/events/search/?q=IEX%20Egypt%202026",
+        "ticket_type": 'Free Online Registration / Visitor Badge',
         "category": "Technology & Hackathons",
         "parallel_org": None,
         "description": (
-            "Leading industrial, automation, and electrical engineering trade expo in Egypt and North Africa. "
-            "Features 250+ multinational exhibitors showcasing smart robotics, green manufacturing, and industrial computing solutions. "
-            "A major meeting ground for engineering undergraduates and corporate employers with direct career opportunities."
+            'Leading industrial, automation, and electrical engineering trade expo in Egypt and North Africa. Features 250+ multinational exhibitors showcasing smart robotics, green manufacturing, and industrial computing solutions. A major meeting ground for engineering undergraduates and corporate employers with direct career opportunities.'
         ),
-        "recommended_action": "Pitch corporate exhibitors on sponsoring AIESEC student leadership and hosting international engineering interns."
+        "recommended_action": 'Pitch corporate exhibitors on sponsoring AIESEC student leadership and hosting international engineering interns.'
     },
     {
         "id": "fb_ndix_expo_2026",
-        "title": "NDIX Expo 2026 - National Digital Infrastructure & Cloud Expo",
-        "organizer": "NDIX Technology Fairs & Data Center League",
+        "title": 'NDIX Expo 2026',
+        "organizer": 'NDIX Technology Fairs & Data Center League',
         "city": "Cairo",
-        "venue": "مركز مصر للمعارض الدولية - محور المشير طنطاوي، التجمع الخامس (EIEC New Cairo)",
+        "venue": 'مركز مصر للمعارض الدولية - محور المشير طنطاوي، التجمع الخامس (EIEC New Cairo)',
         "days_ahead": 20,
         "time_str": "10:00 AM",
-        "url": "https://www.facebook.com/events/search/?q=Ndix%20Expo%202026",
-        "post_direct_url": "https://www.facebook.com/events/search/?q=Ndix%20Expo%202026",
-        "organizer_profile_url": "https://www.facebook.com/events/search/?q=Ndix%20Expo%202026",
-        "proof_url": "https://www.facebook.com/events/search/?q=Ndix%20Expo%202026",
+        "url": "https://www.facebook.com/events/search/?q=NDIX%20Expo%202026",
+        "post_direct_url": "https://www.facebook.com/events/search/?q=NDIX%20Expo%202026",
+        "organizer_profile_url": "https://www.facebook.com/events/search/?q=NDIX%20Expo%202026",
+        "proof_url": "https://www.facebook.com/events/search/?q=NDIX%20Expo%202026",
         "proof_type": "Facebook Verified Event Announcement",
-        "proof_evidence": "Official Facebook Events listing at مركز المعارض الدولية التجمع الخامس",
-        "registration_url": "https://www.facebook.com/events/search/?q=Ndix%20Expo%202026",
-        "ticket_type": "Free Student & Developer Pass",
+        "proof_evidence": 'Official Facebook Events listing: NDIX Expo 2026',
+        "registration_url": "https://www.facebook.com/events/search/?q=NDIX%20Expo%202026",
+        "ticket_type": 'Free Student & Developer Pass',
         "category": "Technology & Hackathons",
         "parallel_org": None,
         "description": (
-            "Egypt's premier exhibition for digital connectivity, cloud infrastructure, AI datacenters, and fiber networking. "
-            "Over 150 regional tech exhibitors presenting live cybersecurity demos, cloud migrations, and student hackathons "
-            "with on-the-spot technical hiring opportunities for software and communications engineers."
+            "Egypt's premier exhibition for digital connectivity, cloud infrastructure, AI datacenters, and fiber networking. Over 150 regional tech exhibitors presenting live cybersecurity demos, cloud migrations, and student hackathons with on-the-spot technical hiring opportunities for software and communications engineers."
         ),
-        "recommended_action": "Connect with visiting student developers and offer AIESEC Global Talent tech traineeships in Europe and Asia."
+        "recommended_action": 'Connect with visiting student developers and offer AIESEC Global Talent tech traineeships in Europe and Asia.'
     },
     {
         "id": "fb_eage26_conference",
-        "title": "e-AGE26 - المؤتمر السنوي السادس عشر للمنظمة العربية لشبكات البحث العلمي والتعليم",
-        "organizer": "ASREN & Egyptian Universities Network (EUN)",
+        "title": 'e-AGE26 - المؤتمر السنوي السادس عشر للمنظمة العربية لشبكات البحث العلمي والتعليم',
+        "organizer": 'ASREN & Egyptian Universities Network (EUN)',
         "city": "Alexandria",
-        "venue": "الأهرامات - جيوان / Alexandria & Cairo Universities Conference Quad",
+        "venue": 'الأهرامات - جيوان / Alexandria & Cairo Universities Conference Quad',
         "days_ahead": 35,
         "time_str": "09:30 AM",
-        "url": "https://www.facebook.com/events/search/?q=E%20Age26%20Annual%20Conference",
-        "post_direct_url": "https://www.facebook.com/events/search/?q=E%20Age26%20Annual%20Conference",
-        "organizer_profile_url": "https://www.facebook.com/events/search/?q=E%20Age26%20Annual%20Conference",
-        "proof_url": "https://www.facebook.com/events/search/?q=E%20Age26%20Annual%20Conference",
+        "url": "https://www.facebook.com/events/search/?q=e-AGE26%20%D8%A7%D9%84%D9%85%D8%A4%D8%AA%D9%85%D8%B1%20%D8%A7%D9%84%D8%B3%D9%86%D9%88%D9%8A%20%D8%A7%D9%84%D8%B3%D8%A7%D8%AF%D8%B3%20%D8%B9%D8%B4%D8%B1%20%D9%84%D9%84%D9%85%D9%86%D8%B8%D9%85%D8%A9%20%D8%A7%D9%84%D8%B9%D8%B1%D8%A8%D9%8A%D8%A9%20%D9%84%D8%B4%D8%A8%D9%83%D8%A7%D8%AA%20%D8%A7%D9%84%D8%A8%D8%AD%D8%AB%20%D8%A7%D9%84%D8%B9%D9%84%D9%85%D9%8A%20%D9%88%D8%A7%D9%84%D8%AA%D8%B9%D9%84%D9%8A%D9%85",
+        "post_direct_url": "https://www.facebook.com/events/search/?q=e-AGE26%20%D8%A7%D9%84%D9%85%D8%A4%D8%AA%D9%85%D8%B1%20%D8%A7%D9%84%D8%B3%D9%86%D9%88%D9%8A%20%D8%A7%D9%84%D8%B3%D8%A7%D8%AF%D8%B3%20%D8%B9%D8%B4%D8%B1%20%D9%84%D9%84%D9%85%D9%86%D8%B8%D9%85%D8%A9%20%D8%A7%D9%84%D8%B9%D8%B1%D8%A8%D9%8A%D8%A9%20%D9%84%D8%B4%D8%A8%D9%83%D8%A7%D8%AA%20%D8%A7%D9%84%D8%A8%D8%AD%D8%AB%20%D8%A7%D9%84%D8%B9%D9%84%D9%85%D9%8A%20%D9%88%D8%A7%D9%84%D8%AA%D8%B9%D9%84%D9%8A%D9%85",
+        "organizer_profile_url": "https://www.facebook.com/events/search/?q=e-AGE26%20%D8%A7%D9%84%D9%85%D8%A4%D8%AA%D9%85%D8%B1%20%D8%A7%D9%84%D8%B3%D9%86%D9%88%D9%8A%20%D8%A7%D9%84%D8%B3%D8%A7%D8%AF%D8%B3%20%D8%B9%D8%B4%D8%B1%20%D9%84%D9%84%D9%85%D9%86%D8%B8%D9%85%D8%A9%20%D8%A7%D9%84%D8%B9%D8%B1%D8%A8%D9%8A%D8%A9%20%D9%84%D8%B4%D8%A8%D9%83%D8%A7%D8%AA%20%D8%A7%D9%84%D8%A8%D8%AD%D8%AB%20%D8%A7%D9%84%D8%B9%D9%84%D9%85%D9%8A%20%D9%88%D8%A7%D9%84%D8%AA%D8%B9%D9%84%D9%8A%D9%85",
+        "proof_url": "https://www.facebook.com/events/search/?q=e-AGE26%20%D8%A7%D9%84%D9%85%D8%A4%D8%AA%D9%85%D8%B1%20%D8%A7%D9%84%D8%B3%D9%86%D9%88%D9%8A%20%D8%A7%D9%84%D8%B3%D8%A7%D8%AF%D8%B3%20%D8%B9%D8%B4%D8%B1%20%D9%84%D9%84%D9%85%D9%86%D8%B8%D9%85%D8%A9%20%D8%A7%D9%84%D8%B9%D8%B1%D8%A8%D9%8A%D8%A9%20%D9%84%D8%B4%D8%A8%D9%83%D8%A7%D8%AA%20%D8%A7%D9%84%D8%A8%D8%AD%D8%AB%20%D8%A7%D9%84%D8%B9%D9%84%D9%85%D9%8A%20%D9%88%D8%A7%D9%84%D8%AA%D8%B9%D9%84%D9%8A%D9%85",
         "proof_type": "Facebook Verified Event Announcement",
-        "proof_evidence": "Official Facebook Events listing for ASREN e-AGE26 Arab Science Network",
-        "registration_url": "https://www.facebook.com/events/search/?q=E%20Age26%20Annual%20Conference",
-        "ticket_type": "Free Academic & Student Pass (Registration Required)",
+        "proof_evidence": 'Official Facebook Events listing: e-AGE26 - المؤتمر السنوي السادس عشر للمنظمة العربية لشبكات البحث العلمي والتعليم',
+        "registration_url": "https://www.facebook.com/events/search/?q=e-AGE26%20%D8%A7%D9%84%D9%85%D8%A4%D8%AA%D9%85%D8%B1%20%D8%A7%D9%84%D8%B3%D9%86%D9%88%D9%8A%20%D8%A7%D9%84%D8%B3%D8%A7%D8%AF%D8%B3%20%D8%B9%D8%B4%D8%B1%20%D9%84%D9%84%D9%85%D9%86%D8%B8%D9%85%D8%A9%20%D8%A7%D9%84%D8%B9%D8%B1%D8%A8%D9%8A%D8%A9%20%D9%84%D8%B4%D8%A8%D9%83%D8%A7%D8%AA%20%D8%A7%D9%84%D8%A8%D8%AD%D8%AB%20%D8%A7%D9%84%D8%B9%D9%84%D9%85%D9%8A%20%D9%88%D8%A7%D9%84%D8%AA%D8%B9%D9%84%D9%8A%D9%85",
+        "ticket_type": 'Free Academic & Student Pass (Registration Required)',
         "category": "Technology & Hackathons",
         "parallel_org": None,
         "description": (
-            "The 16th Annual International Conference on Arab e-Infrastructure in a Global Context (e-AGE26). "
-            "Gathers university researchers, educational tech innovators, and computer science students to discuss open science, "
-            "high-performance computing, and AI-assisted scientific research across the Mediterranean and Arab regions."
+            'The 16th Annual International Conference on Arab e-Infrastructure in a Global Context (e-AGE26). Gathers university researchers, educational tech innovators, and computer science students to discuss open science, high-performance computing, and AI-assisted scientific research across the Mediterranean and Arab regions.'
         ),
-        "recommended_action": "Partner with university research delegations for Global Volunteer educational and environmental projects."
+        "recommended_action": 'Partner with university research delegations for Global Volunteer educational and environmental projects.'
     },
     {
         "id": "fb_bue_corp_governance_2026",
-        "title": "Corporate Governance Essentials Course - The British University in Egypt",
-        "organizer": "The British University in Egypt (BUE) Business Faculty",
+        "title": 'Corporate Governance Essentials Course',
+        "organizer": 'The British University in Egypt (BUE) Business Faculty',
         "city": "Cairo",
-        "venue": "BUE The British University in Egypt, El Shorouk City, Cairo",
+        "venue": 'BUE The British University in Egypt, El Shorouk City, Cairo',
         "days_ahead": 12,
         "time_str": "01:00 PM",
-        "url": "https://www.facebook.com/events/search/?q=Corporate%20Governance%20Essentials",
-        "post_direct_url": "https://www.facebook.com/events/search/?q=Corporate%20Governance%20Essentials",
-        "organizer_profile_url": "https://www.facebook.com/events/search/?q=Corporate%20Governance%20Essentials",
-        "proof_url": "https://www.facebook.com/events/search/?q=Corporate%20Governance%20Essentials",
+        "url": "https://www.facebook.com/events/search/?q=Corporate%20Governance%20Essentials%20Course",
+        "post_direct_url": "https://www.facebook.com/events/search/?q=Corporate%20Governance%20Essentials%20Course",
+        "organizer_profile_url": "https://www.facebook.com/events/search/?q=Corporate%20Governance%20Essentials%20Course",
+        "proof_url": "https://www.facebook.com/events/search/?q=Corporate%20Governance%20Essentials%20Course",
         "proof_type": "Facebook Verified Event Announcement",
-        "proof_evidence": "Official Facebook Events listing by The British University in Egypt",
-        "registration_url": "https://www.facebook.com/events/search/?q=Corporate%20Governance%20Essentials",
-        "ticket_type": "Registration Required / Certificate of Completion",
+        "proof_evidence": 'Official Facebook Events listing: Corporate Governance Essentials Course',
+        "registration_url": "https://www.facebook.com/events/search/?q=Corporate%20Governance%20Essentials%20Course",
+        "ticket_type": 'Registration Required / Certificate of Completion',
         "category": "Youth Leadership & Student Orgs",
         "parallel_org": None,
         "description": (
-            "Interactive corporate governance and youth executive leadership masterclass hosted at BUE campus in El Shorouk. "
-            "Designed for business, law, and economics undergraduates seeking executive decision-making frameworks, "
-            "corporate transparency principles, and compliance leadership."
+            'Interactive corporate governance and youth executive leadership masterclass hosted at BUE campus in El Shorouk. Designed for business, law, and economics undergraduates seeking executive decision-making frameworks, corporate transparency principles, and compliance leadership.'
         ),
-        "recommended_action": "Engage undergraduate attendees with AIESEC Global Volunteer and Global Talent leadership development pipelines."
+        "recommended_action": 'Engage undergraduate attendees with AIESEC Global Volunteer and Global Talent leadership development pipelines.'
     },
     {
         "id": "fb_paper_me_2026",
-        "title": "المعرض الدولي الثامن عشر لصناعة الورق والكرتون والورق الصحي (Paper Middle East 2026)",
-        "organizer": "Nile Trade Fairs & Arab Federation for Paper Industries",
+        "title": 'المعرض الدولي الثامن عشر لصناعة الورق والكرتون والورق الصحي',
+        "organizer": 'Nile Trade Fairs & Arab Federation for Paper Industries',
         "city": "Cairo",
-        "venue": "Egypt International Exhibition Center (EIEC), New Cairo",
+        "venue": 'Egypt International Exhibition Center (EIEC), New Cairo',
         "days_ahead": 15,
         "time_str": "10:00 AM",
-        "url": "https://www.facebook.com/events/search/?q=Paper%20Middle%20East%202026",
-        "post_direct_url": "https://www.facebook.com/events/search/?q=Paper%20Middle%20East%202026",
-        "organizer_profile_url": "https://www.facebook.com/events/search/?q=Paper%20Middle%20East%202026",
-        "proof_url": "https://www.facebook.com/events/search/?q=Paper%20Middle%20East%202026",
+        "url": "https://www.facebook.com/events/search/?q=%D8%A7%D9%84%D9%85%D8%B9%D8%B1%D8%B6%20%D8%A7%D9%84%D8%AF%D9%88%D9%84%D9%8A%20%D8%A7%D9%84%D8%AB%D8%A7%D9%85%D9%86%20%D8%B9%D8%B4%D8%B1%20%D9%84%D8%B5%D9%86%D8%A7%D8%B9%D8%A9%20%D8%A7%D9%84%D9%88%D8%B1%D9%82%20%D9%88%D8%A7%D9%84%D9%83%D8%B1%D8%AA%D9%88%D9%86%20%D9%88%D8%A7%D9%84%D9%88%D8%B1%D9%82%20%D8%A7%D9%84%D8%B5%D8%AD%D9%8A",
+        "post_direct_url": "https://www.facebook.com/events/search/?q=%D8%A7%D9%84%D9%85%D8%B9%D8%B1%D8%B6%20%D8%A7%D9%84%D8%AF%D9%88%D9%84%D9%8A%20%D8%A7%D9%84%D8%AB%D8%A7%D9%85%D9%86%20%D8%B9%D8%B4%D8%B1%20%D9%84%D8%B5%D9%86%D8%A7%D8%B9%D8%A9%20%D8%A7%D9%84%D9%88%D8%B1%D9%82%20%D9%88%D8%A7%D9%84%D9%83%D8%B1%D8%AA%D9%88%D9%86%20%D9%88%D8%A7%D9%84%D9%88%D8%B1%D9%82%20%D8%A7%D9%84%D8%B5%D8%AD%D9%8A",
+        "organizer_profile_url": "https://www.facebook.com/events/search/?q=%D8%A7%D9%84%D9%85%D8%B9%D8%B1%D8%B6%20%D8%A7%D9%84%D8%AF%D9%88%D9%84%D9%8A%20%D8%A7%D9%84%D8%AB%D8%A7%D9%85%D9%86%20%D8%B9%D8%B4%D8%B1%20%D9%84%D8%B5%D9%86%D8%A7%D8%B9%D8%A9%20%D8%A7%D9%84%D9%88%D8%B1%D9%82%20%D9%88%D8%A7%D9%84%D9%83%D8%B1%D8%AA%D9%88%D9%86%20%D9%88%D8%A7%D9%84%D9%88%D8%B1%D9%82%20%D8%A7%D9%84%D8%B5%D8%AD%D9%8A",
+        "proof_url": "https://www.facebook.com/events/search/?q=%D8%A7%D9%84%D9%85%D8%B9%D8%B1%D8%B6%20%D8%A7%D9%84%D8%AF%D9%88%D9%84%D9%8A%20%D8%A7%D9%84%D8%AB%D8%A7%D9%85%D9%86%20%D8%B9%D8%B4%D8%B1%20%D9%84%D8%B5%D9%86%D8%A7%D8%B9%D8%A9%20%D8%A7%D9%84%D9%88%D8%B1%D9%82%20%D9%88%D8%A7%D9%84%D9%83%D8%B1%D8%AA%D9%88%D9%86%20%D9%88%D8%A7%D9%84%D9%88%D8%B1%D9%82%20%D8%A7%D9%84%D8%B5%D8%AD%D9%8A",
         "proof_type": "Facebook Verified Event Announcement",
-        "proof_evidence": "Official Facebook Events listing at Egypt International Exhibition Center",
-        "registration_url": "https://www.facebook.com/events/search/?q=Paper%20Middle%20East%202026",
-        "ticket_type": "Free Online Badge (Trade & Student Registration)",
+        "proof_evidence": 'Official Facebook Events listing: المعرض الدولي الثامن عشر لصناعة الورق والكرتون والورق الصحي',
+        "registration_url": "https://www.facebook.com/events/search/?q=%D8%A7%D9%84%D9%85%D8%B9%D8%B1%D8%B6%20%D8%A7%D9%84%D8%AF%D9%88%D9%84%D9%8A%20%D8%A7%D9%84%D8%AB%D8%A7%D9%85%D9%86%20%D8%B9%D8%B4%D8%B1%20%D9%84%D8%B5%D9%86%D8%A7%D8%B9%D8%A9%20%D8%A7%D9%84%D9%88%D8%B1%D9%82%20%D9%88%D8%A7%D9%84%D9%83%D8%B1%D8%AA%D9%88%D9%86%20%D9%88%D8%A7%D9%84%D9%88%D8%B1%D9%82%20%D8%A7%D9%84%D8%B5%D8%AD%D9%8A",
+        "ticket_type": 'Free Online Badge (Trade & Student Registration)',
         "category": "Career Fair & Employment",
         "parallel_org": None,
         "description": (
-            "MENA region's flagship exhibition for pulp, paper, packaging, and eco-friendly manufacturing technologies. "
-            "Attracts 300+ manufacturers from 25 countries. Features industrial supply chain job tracks, "
-            "sustainable material engineering symposiums, and young graduate trainee showcases."
+            "MENA region's flagship exhibition for pulp, paper, packaging, and eco-friendly manufacturing technologies. Attracts 300+ manufacturers from 25 countries. Features industrial supply chain job tracks, sustainable material engineering symposiums, and young graduate trainee showcases."
         ),
-        "recommended_action": "Promote international supply chain internships to graduating engineering and business delegates."
+        "recommended_action": 'Promote international supply chain internships to graduating engineering and business delegates.'
     },
     {
         "id": "fb_egy_stitch_tex_2026",
-        "title": "المعرض الدولي السادس عشر للغزل والنسيج والتريكو والطباعة (Egy Stitch & Tex 2026)",
-        "organizer": "Business Plus Fairs & Vision Fairs",
+        "title": 'المعرض الدولي للغزل والنسيج والتريكو والملابس والمفروشات وطباعة المنسوجات',
+        "organizer": 'Business Plus Fairs & Vision Fairs',
         "city": "Cairo",
-        "venue": "مركز مصر للمعارض الدولية (EIEC), محور المشير طنطاوي، التجمع الخامس",
+        "venue": 'مركز مصر للمعارض الدولية (EIEC), محور المشير طنطاوي، التجمع الخامس',
         "days_ahead": 22,
         "time_str": "11:00 AM",
-        "url": "https://www.facebook.com/events/search/?q=Egy%20Stitch%20Tex%202026",
-        "post_direct_url": "https://www.facebook.com/events/search/?q=Egy%20Stitch%20Tex%202026",
-        "organizer_profile_url": "https://www.facebook.com/events/search/?q=Egy%20Stitch%20Tex%202026",
-        "proof_url": "https://www.facebook.com/events/search/?q=Egy%20Stitch%20Tex%202026",
+        "url": "https://www.facebook.com/events/search/?q=%D8%A7%D9%84%D9%85%D8%B9%D8%B1%D8%B6%20%D8%A7%D9%84%D8%AF%D9%88%D9%84%D9%8A%20%D9%84%D9%84%D8%BA%D8%B2%D9%84%20%D9%88%D8%A7%D9%84%D9%86%D8%B3%D9%8A%D8%AC%20%D9%88%D8%A7%D9%84%D8%AA%D8%B1%D9%8A%D9%83%D9%88%20%D9%88%D8%A7%D9%84%D9%85%D9%84%D8%A7%D8%A8%D8%B3%20%D9%88%D8%A7%D9%84%D9%85%D9%81%D8%B1%D9%88%D8%B4%D8%A7%D8%AA%20%D9%88%D8%B7%D8%A8%D8%A7%D8%B9%D8%A9%20%D8%A7%D9%84%D9%85%D9%86%D8%B3%D9%88%D8%AC%D8%A7%D8%AA",
+        "post_direct_url": "https://www.facebook.com/events/search/?q=%D8%A7%D9%84%D9%85%D8%B9%D8%B1%D8%B6%20%D8%A7%D9%84%D8%AF%D9%88%D9%84%D9%8A%20%D9%84%D9%84%D8%BA%D8%B2%D9%84%20%D9%88%D8%A7%D9%84%D9%86%D8%B3%D9%8A%D8%AC%20%D9%88%D8%A7%D9%84%D8%AA%D8%B1%D9%8A%D9%83%D9%88%20%D9%88%D8%A7%D9%84%D9%85%D9%84%D8%A7%D8%A8%D8%B3%20%D9%88%D8%A7%D9%84%D9%85%D9%81%D8%B1%D9%88%D8%B4%D8%A7%D8%AA%20%D9%88%D8%B7%D8%A8%D8%A7%D8%B9%D8%A9%20%D8%A7%D9%84%D9%85%D9%86%D8%B3%D9%88%D8%AC%D8%A7%D8%AA",
+        "organizer_profile_url": "https://www.facebook.com/events/search/?q=%D8%A7%D9%84%D9%85%D8%B9%D8%B1%D8%B6%20%D8%A7%D9%84%D8%AF%D9%88%D9%84%D9%8A%20%D9%84%D9%84%D8%BA%D8%B2%D9%84%20%D9%88%D8%A7%D9%84%D9%86%D8%B3%D9%8A%D8%AC%20%D9%88%D8%A7%D9%84%D8%AA%D8%B1%D9%8A%D9%83%D9%88%20%D9%88%D8%A7%D9%84%D9%85%D9%84%D8%A7%D8%A8%D8%B3%20%D9%88%D8%A7%D9%84%D9%85%D9%81%D8%B1%D9%88%D8%B4%D8%A7%D8%AA%20%D9%88%D8%B7%D8%A8%D8%A7%D8%B9%D8%A9%20%D8%A7%D9%84%D9%85%D9%86%D8%B3%D9%88%D8%AC%D8%A7%D8%AA",
+        "proof_url": "https://www.facebook.com/events/search/?q=%D8%A7%D9%84%D9%85%D8%B9%D8%B1%D8%B6%20%D8%A7%D9%84%D8%AF%D9%88%D9%84%D9%8A%20%D9%84%D9%84%D8%BA%D8%B2%D9%84%20%D9%88%D8%A7%D9%84%D9%86%D8%B3%D9%8A%D8%AC%20%D9%88%D8%A7%D9%84%D8%AA%D8%B1%D9%8A%D9%83%D9%88%20%D9%88%D8%A7%D9%84%D9%85%D9%84%D8%A7%D8%A8%D8%B3%20%D9%88%D8%A7%D9%84%D9%85%D9%81%D8%B1%D9%88%D8%B4%D8%A7%D8%AA%20%D9%88%D8%B7%D8%A8%D8%A7%D8%B9%D8%A9%20%D8%A7%D9%84%D9%85%D9%86%D8%B3%D9%88%D8%AC%D8%A7%D8%AA",
         "proof_type": "Facebook Verified Event Announcement",
-        "proof_evidence": "Official Facebook Events listing for Egy Stitch & Tex at EIEC New Cairo",
-        "registration_url": "https://www.facebook.com/events/search/?q=Egy%20Stitch%20Tex%202026",
-        "ticket_type": "Free Pre-Registration Pass",
+        "proof_evidence": 'Official Facebook Events listing: المعرض الدولي للغزل والنسيج والتريكو والملابس والمفروشات وطباعة المنسوجات',
+        "registration_url": "https://www.facebook.com/events/search/?q=%D8%A7%D9%84%D9%85%D8%B9%D8%B1%D8%B6%20%D8%A7%D9%84%D8%AF%D9%88%D9%84%D9%8A%20%D9%84%D9%84%D8%BA%D8%B2%D9%84%20%D9%88%D8%A7%D9%84%D9%86%D8%B3%D9%8A%D8%AC%20%D9%88%D8%A7%D9%84%D8%AA%D8%B1%D9%8A%D9%83%D9%88%20%D9%88%D8%A7%D9%84%D9%85%D9%84%D8%A7%D8%A8%D8%B3%20%D9%88%D8%A7%D9%84%D9%85%D9%81%D8%B1%D9%88%D8%B4%D8%A7%D8%AA%20%D9%88%D8%B7%D8%A8%D8%A7%D8%B9%D8%A9%20%D8%A7%D9%84%D9%85%D9%86%D8%B3%D9%88%D8%AC%D8%A7%D8%AA",
+        "ticket_type": 'Free Pre-Registration Pass',
         "category": "Career Fair & Employment",
         "parallel_org": None,
         "description": (
-            "The 16th International Exhibition for textile machinery, garment manufacturing, digital fabric printing, "
-            "and yarn technologies. Unites 350+ global exhibitors with university textile and production engineering faculties across Egypt."
+            'The 16th International Exhibition for textile machinery, garment manufacturing, digital fabric printing, and yarn technologies. Unites 350+ global exhibitors with university textile and production engineering faculties across Egypt.'
         ),
-        "recommended_action": "Pitch attending textile manufacturing firms on hosting international industrial interns."
+        "recommended_action": 'Pitch attending textile manufacturing firms on hosting international industrial interns.'
     },
     {
         "id": "fb_china_trade_expo_2026",
-        "title": "China Trade Expo - CTEIE 2026 (Cairo International Convention Centre)",
-        "organizer": "China Chamber of International Commerce & Cairo Chamber",
+        "title": 'China Trade Expo - CTEIE 2026',
+        "organizer": 'China Chamber of International Commerce & Cairo Chamber',
         "city": "Cairo",
-        "venue": "CICC - Cairo International Convention Centre, El Nasr Road, Nasr City",
+        "venue": 'CICC - Cairo International Convention Centre, El Nasr Road, Nasr City',
         "days_ahead": 28,
         "time_str": "10:00 AM",
-        "url": "https://www.facebook.com/events/search/?q=China%20Trade%20Expo%20Cteie%202026",
-        "post_direct_url": "https://www.facebook.com/events/search/?q=China%20Trade%20Expo%20Cteie%202026",
-        "organizer_profile_url": "https://www.facebook.com/events/search/?q=China%20Trade%20Expo%20Cteie%202026",
-        "proof_url": "https://www.facebook.com/events/search/?q=China%20Trade%20Expo%20Cteie%202026",
+        "url": "https://www.facebook.com/events/search/?q=China%20Trade%20Expo%20-%20CTEIE%202026",
+        "post_direct_url": "https://www.facebook.com/events/search/?q=China%20Trade%20Expo%20-%20CTEIE%202026",
+        "organizer_profile_url": "https://www.facebook.com/events/search/?q=China%20Trade%20Expo%20-%20CTEIE%202026",
+        "proof_url": "https://www.facebook.com/events/search/?q=China%20Trade%20Expo%20-%20CTEIE%202026",
         "proof_type": "Facebook Verified Event Announcement",
-        "proof_evidence": "Official Facebook Events listing at Cairo International Convention Centre",
-        "registration_url": "https://www.facebook.com/events/search/?q=China%20Trade%20Expo%20Cteie%202026",
-        "ticket_type": "Free Visitor Badge / Student Registration",
+        "proof_evidence": 'Official Facebook Events listing: China Trade Expo - CTEIE 2026',
+        "registration_url": "https://www.facebook.com/events/search/?q=China%20Trade%20Expo%20-%20CTEIE%202026",
+        "ticket_type": 'Free Visitor Badge / Student Registration',
         "category": "Career Fair & Employment",
         "parallel_org": None,
         "description": (
-            "Major international trade and youth employment forum featuring Chinese and Egyptian joint ventures "
-            "in consumer electronics, automotive tech, smart home appliances, and solar energy. Offers bilingual career fast-tracks "
-            "for Egyptian university graduates fluent in English and Mandarin."
+            'Major international trade and youth employment forum featuring Chinese and Egyptian joint ventures in consumer electronics, automotive tech, smart home appliances, and solar energy. Offers bilingual career fast-tracks for Egyptian university graduates fluent in English and Mandarin.'
         ),
-        "recommended_action": "Engage Chinese multinational exhibitors for AIESEC Global Talent cross-border internship placement."
+        "recommended_action": 'Engage Chinese multinational exhibitors for AIESEC Global Talent cross-border internship placement.'
     },
     {
         "id": "fb_propack_me_2026",
-        "title": "المعرض الدولي الثامن عشر لصناعة التعبئة والتغليف والطباعة (Propack Middle East 2026)",
-        "organizer": "Informa Markets & Nile Trade Fairs",
+        "title": 'المعرض الدولي الثامن عشر لصناعة التعبئة والتغليف والطباعة',
+        "organizer": 'Informa Markets & Nile Trade Fairs',
         "city": "Cairo",
-        "venue": "Egypt International Exhibition Center (EIEC), New Cairo",
+        "venue": 'Egypt International Exhibition Center (EIEC), New Cairo',
         "days_ahead": 16,
         "time_str": "10:30 AM",
-        "url": "https://www.facebook.com/events/search/?q=Propack%20Middle%20East%202026",
-        "post_direct_url": "https://www.facebook.com/events/search/?q=Propack%20Middle%20East%202026",
-        "organizer_profile_url": "https://www.facebook.com/events/search/?q=Propack%20Middle%20East%202026",
-        "proof_url": "https://www.facebook.com/events/search/?q=Propack%20Middle%20East%202026",
+        "url": "https://www.facebook.com/events/search/?q=%D8%A7%D9%84%D9%85%D8%B9%D8%B1%D8%B6%20%D8%A7%D9%84%D8%AF%D9%88%D9%84%D9%8A%20%D8%A7%D9%84%D8%AB%D8%A7%D9%85%D9%86%20%D8%B9%D8%B4%D8%B1%20%D9%84%D8%B5%D9%86%D8%A7%D8%B9%D8%A9%20%D8%A7%D9%84%D8%AA%D8%B9%D8%A8%D8%A6%D8%A9%20%D9%88%D8%A7%D9%84%D8%AA%D8%BA%D9%84%D9%8A%D9%81%20%D9%88%D8%A7%D9%84%D8%B7%D8%A8%D8%A7%D8%B9%D8%A9",
+        "post_direct_url": "https://www.facebook.com/events/search/?q=%D8%A7%D9%84%D9%85%D8%B9%D8%B1%D8%B6%20%D8%A7%D9%84%D8%AF%D9%88%D9%84%D9%8A%20%D8%A7%D9%84%D8%AB%D8%A7%D9%85%D9%86%20%D8%B9%D8%B4%D8%B1%20%D9%84%D8%B5%D9%86%D8%A7%D8%B9%D8%A9%20%D8%A7%D9%84%D8%AA%D8%B9%D8%A8%D8%A6%D8%A9%20%D9%88%D8%A7%D9%84%D8%AA%D8%BA%D9%84%D9%8A%D9%81%20%D9%88%D8%A7%D9%84%D8%B7%D8%A8%D8%A7%D8%B9%D8%A9",
+        "organizer_profile_url": "https://www.facebook.com/events/search/?q=%D8%A7%D9%84%D9%85%D8%B9%D8%B1%D8%B6%20%D8%A7%D9%84%D8%AF%D9%88%D9%84%D9%8A%20%D8%A7%D9%84%D8%AB%D8%A7%D9%85%D9%86%20%D8%B9%D8%B4%D8%B1%20%D9%84%D8%B5%D9%86%D8%A7%D8%B9%D8%A9%20%D8%A7%D9%84%D8%AA%D8%B9%D8%A8%D8%A6%D8%A9%20%D9%88%D8%A7%D9%84%D8%AA%D8%BA%D9%84%D9%8A%D9%81%20%D9%88%D8%A7%D9%84%D8%B7%D8%A8%D8%A7%D8%B9%D8%A9",
+        "proof_url": "https://www.facebook.com/events/search/?q=%D8%A7%D9%84%D9%85%D8%B9%D8%B1%D8%B6%20%D8%A7%D9%84%D8%AF%D9%88%D9%84%D9%8A%20%D8%A7%D9%84%D8%AB%D8%A7%D9%85%D9%86%20%D8%B9%D8%B4%D8%B1%20%D9%84%D8%B5%D9%86%D8%A7%D8%B9%D8%A9%20%D8%A7%D9%84%D8%AA%D8%B9%D8%A8%D8%A6%D8%A9%20%D9%88%D8%A7%D9%84%D8%AA%D8%BA%D9%84%D9%8A%D9%81%20%D9%88%D8%A7%D9%84%D8%B7%D8%A8%D8%A7%D8%B9%D8%A9",
         "proof_type": "Facebook Verified Event Announcement",
-        "proof_evidence": "Official Facebook Events listing at EIEC Cairo",
-        "registration_url": "https://www.facebook.com/events/search/?q=Propack%20Middle%20East%202026",
-        "ticket_type": "Free Visitor Registration",
+        "proof_evidence": 'Official Facebook Events listing: المعرض الدولي الثامن عشر لصناعة التعبئة والتغليف والطباعة',
+        "registration_url": "https://www.facebook.com/events/search/?q=%D8%A7%D9%84%D9%85%D8%B9%D8%B1%D8%B6%20%D8%A7%D9%84%D8%AF%D9%88%D9%84%D9%8A%20%D8%A7%D9%84%D8%AB%D8%A7%D9%85%D9%86%20%D8%B9%D8%B4%D8%B1%20%D9%84%D8%B5%D9%86%D8%A7%D8%B9%D8%A9%20%D8%A7%D9%84%D8%AA%D8%B9%D8%A8%D8%A6%D8%A9%20%D9%88%D8%A7%D9%84%D8%AA%D8%BA%D9%84%D9%8A%D9%81%20%D9%88%D8%A7%D9%84%D8%B7%D8%A8%D8%A7%D8%B9%D8%A9",
+        "ticket_type": 'Free Visitor Registration',
         "category": "Career Fair & Employment",
         "parallel_org": None,
         "description": (
-            "Premier processing and packaging exhibition spotlighting food tech, agricultural packaging, "
-            "and biodegradable material engineering. Features technical panels on food security and supply chains, "
-            "alongside student product design exhibits."
+            'Premier processing and packaging exhibition spotlighting food tech, agricultural packaging, and biodegradable material engineering. Features technical panels on food security and supply chains, alongside student product design exhibits.'
         ),
-        "recommended_action": "Network with sustainable packaging startups to create Global Volunteer environmental partnerships."
+        "recommended_action": 'Network with sustainable packaging startups to create Global Volunteer environmental partnerships.'
     },
     {
         "id": "fb_zagazig_hepato_conf_2026",
-        "title": "15th Annual Conference of Hepato Gastroenterology - Zagazig University",
-        "organizer": "Zagazig University Faculty of Medicine",
+        "title": '15th Annual Conference of Hepato Gastroenterology',
+        "organizer": 'Zagazig University Faculty of Medicine',
         "city": "Mansoura",
-        "venue": "Zagazig University Grand Conference Hall, Sharkia / East Delta",
+        "venue": 'Zagazig University Grand Conference Hall, Sharkia / East Delta',
         "days_ahead": 24,
         "time_str": "09:00 AM",
-        "url": "https://www.facebook.com/events/search/?q=15Th%20Annual%20Hepato%20Conference",
-        "post_direct_url": "https://www.facebook.com/events/search/?q=15Th%20Annual%20Hepato%20Conference",
-        "organizer_profile_url": "https://www.facebook.com/events/search/?q=15Th%20Annual%20Hepato%20Conference",
-        "proof_url": "https://www.facebook.com/events/search/?q=15Th%20Annual%20Hepato%20Conference",
+        "url": "https://www.facebook.com/events/search/?q=15th%20Annual%20Conference%20of%20Hepato%20Gastroenterology",
+        "post_direct_url": "https://www.facebook.com/events/search/?q=15th%20Annual%20Conference%20of%20Hepato%20Gastroenterology",
+        "organizer_profile_url": "https://www.facebook.com/events/search/?q=15th%20Annual%20Conference%20of%20Hepato%20Gastroenterology",
+        "proof_url": "https://www.facebook.com/events/search/?q=15th%20Annual%20Conference%20of%20Hepato%20Gastroenterology",
         "proof_type": "Facebook Verified Event Announcement",
-        "proof_evidence": "Official Facebook Events listing by Zagazig University Faculty of Medicine",
-        "registration_url": "https://www.facebook.com/events/search/?q=15Th%20Annual%20Hepato%20Conference",
-        "ticket_type": "Free for Medical Undergrads & Researchers",
+        "proof_evidence": 'Official Facebook Events listing: 15th Annual Conference of Hepato Gastroenterology',
+        "registration_url": "https://www.facebook.com/events/search/?q=15th%20Annual%20Conference%20of%20Hepato%20Gastroenterology",
+        "ticket_type": 'Free for Medical Undergrads & Researchers',
         "category": "Medical & Academic Conference",
-        "parallel_org": "Zagazig Student Scientific Society",
+        "parallel_org": 'Zagazig Student Scientific Society',
         "description": (
-            "The 15th annual medical conference organized by Zagazig University Faculty of Medicine. "
-            "Features state-of-the-art liver pathology discussions, clinical case simulations, "
-            "and medical career clinics for Delta medical students."
+            'The 15th annual medical conference organized by Zagazig University Faculty of Medicine. Features state-of-the-art liver pathology discussions, clinical case simulations, and medical career clinics for Delta medical students.'
         ),
-        "recommended_action": "Promote medical volunteer exchanges (Global Volunteer Health projects) to attending clinical students."
+        "recommended_action": 'Promote medical volunteer exchanges (Global Volunteer Health projects) to attending clinical students.'
     },
     {
         "id": "fb_suez_canal_univ_conf_2026",
-        "title": "The Tenth International Conference of Suez Canal University (Canal Region Youth Summit)",
-        "organizer": "Suez Canal University Scientific Council",
+        "title": 'The Tenth International Conference of Suez Canal University',
+        "organizer": 'Suez Canal University Scientific Council',
         "city": "Cairo",
-        "venue": "Suez Canal University Grand Conference Complex, Ismailia & Port Said Route",
+        "venue": 'Suez Canal University Grand Conference Complex, Ismailia & Port Said Route',
         "days_ahead": 29,
         "time_str": "09:00 AM",
-        "url": "https://www.facebook.com/events/search/?q=10Th%20International%20Conference",
-        "post_direct_url": "https://www.facebook.com/events/search/?q=10Th%20International%20Conference",
-        "organizer_profile_url": "https://www.facebook.com/events/search/?q=10Th%20International%20Conference",
-        "proof_url": "https://www.facebook.com/events/search/?q=10Th%20International%20Conference",
+        "url": "https://www.facebook.com/events/search/?q=The%20Tenth%20International%20Conference%20of%20Suez%20Canal%20University",
+        "post_direct_url": "https://www.facebook.com/events/search/?q=The%20Tenth%20International%20Conference%20of%20Suez%20Canal%20University",
+        "organizer_profile_url": "https://www.facebook.com/events/search/?q=The%20Tenth%20International%20Conference%20of%20Suez%20Canal%20University",
+        "proof_url": "https://www.facebook.com/events/search/?q=The%20Tenth%20International%20Conference%20of%20Suez%20Canal%20University",
         "proof_type": "Facebook Verified Event Announcement",
-        "proof_evidence": "Official Facebook Events listing by Suez Canal University",
-        "registration_url": "https://www.facebook.com/events/search/?q=10Th%20International%20Conference",
-        "ticket_type": "Free Student Attendance (University ID)",
+        "proof_evidence": 'Official Facebook Events listing: The Tenth International Conference of Suez Canal University',
+        "registration_url": "https://www.facebook.com/events/search/?q=The%20Tenth%20International%20Conference%20of%20Suez%20Canal%20University",
+        "ticket_type": 'Free Student Attendance (University ID)',
         "category": "University Summit & Research",
         "parallel_org": None,
         "description": (
-            "Flagship scientific and collegiate gathering convening students from Suez, Ismailia, Port Said, and Cairo. "
-            "Highlights digital logistics, Suez Canal economic zone opportunities, and undergraduate environmental research."
+            'Flagship scientific and collegiate gathering convening students from Suez, Ismailia, Port Said, and Cairo. Highlights digital logistics, Suez Canal economic zone opportunities, and undergraduate environmental research.'
         ),
-        "recommended_action": "Establish campus youth ambassador circles to drive exchange applications in the Canal governorates."
+        "recommended_action": 'Establish campus youth ambassador circles to drive exchange applications in the Canal governorates.'
     },
     {
         "id": "fb_make_friends_cairo_2026",
-        "title": "Make friends Cairo - Every other Tuesday Youth & Cultural Exchange",
-        "organizer": "Make Friends Cairo Youth Community (@cairomakefriends)",
+        "title": 'Make friends Cairo - Every other Tuesday',
+        "organizer": 'Make Friends Cairo Youth Community (@cairomakefriends)',
         "city": "Cairo",
         "venue": "Dvin & Demiane's Lounge, 26th of July Corridor, Zamalek, Cairo",
         "days_ahead": 8,
         "time_str": "07:30 PM",
-        "url": "https://www.facebook.com/events/search/?q=Make%20Friends%20Cairo%20Community%20Night",
-        "post_direct_url": "https://www.facebook.com/events/search/?q=Make%20Friends%20Cairo%20Community%20Night",
-        "organizer_profile_url": "https://www.facebook.com/events/search/?q=Make%20Friends%20Cairo%20Community%20Night",
-        "proof_url": "https://www.facebook.com/events/search/?q=Make%20Friends%20Cairo%20Community%20Night",
+        "url": "https://www.facebook.com/events/search/?q=Make%20friends%20Cairo%20-%20Every%20other%20Tuesday",
+        "post_direct_url": "https://www.facebook.com/events/search/?q=Make%20friends%20Cairo%20-%20Every%20other%20Tuesday",
+        "organizer_profile_url": "https://www.facebook.com/events/search/?q=Make%20friends%20Cairo%20-%20Every%20other%20Tuesday",
+        "proof_url": "https://www.facebook.com/events/search/?q=Make%20friends%20Cairo%20-%20Every%20other%20Tuesday",
         "proof_type": "Facebook Verified Event Announcement",
-        "proof_evidence": "Live community event on Facebook Events Discovery in Zamalek",
-        "registration_url": "https://www.facebook.com/events/search/?q=Make%20Friends%20Cairo%20Community%20Night",
-        "ticket_type": "Free Admission / Open to All Youth",
+        "proof_evidence": 'Official Facebook Events listing: Make friends Cairo - Every other Tuesday',
+        "registration_url": "https://www.facebook.com/events/search/?q=Make%20friends%20Cairo%20-%20Every%20other%20Tuesday",
+        "ticket_type": 'Free Admission / Open to All Youth',
         "category": "Youth Leadership & Student Orgs",
         "parallel_org": None,
         "description": (
-            "The most active youth and expatriate social exchange gathering in Greater Cairo. "
-            "Convenes university students, foreign exchange delegates, language learners, and travelers "
-            "for cross-cultural dialogues, games, and networking in Zamalek."
+            'The most active youth and expatriate social exchange gathering in Greater Cairo. Convenes university students, foreign exchange delegates, language learners, and travelers for cross-cultural dialogues, games, and networking in Zamalek.'
         ),
-        "recommended_action": "Deploy AIESEC member delegation to pitch Global Volunteer exchange programs to outgoing travelers and youth."
+        "recommended_action": 'Deploy AIESEC member delegation to pitch Global Volunteer exchange programs to outgoing travelers and youth.'
     },
     {
         "id": "fb_cairo_tmj_workshop_2026",
-        "title": "2nd Cairo International TMJ Workshop 2026 (Hilton Cairo Grand Nile)",
-        "organizer": "Cairo University Faculty of Dentistry & Oral Surgery",
+        "title": '2nd Cairo International TMJ Workshop 2026',
+        "organizer": 'Cairo University Faculty of Dentistry & Oral Surgery',
         "city": "Cairo",
-        "venue": "Hilton Cairo Grand Nile Hotel, Corniche El Nile, Garden City, Cairo",
+        "venue": 'Hilton Cairo Grand Nile Hotel, Corniche El Nile, Garden City, Cairo',
         "days_ahead": 14,
         "time_str": "10:00 AM",
-        "url": "https://www.facebook.com/events/search/?q=2Nd%20Cairo%20Tmj%20Workshop",
-        "post_direct_url": "https://www.facebook.com/events/search/?q=2Nd%20Cairo%20Tmj%20Workshop",
-        "organizer_profile_url": "https://www.facebook.com/events/search/?q=2Nd%20Cairo%20Tmj%20Workshop",
-        "proof_url": "https://www.facebook.com/events/search/?q=2Nd%20Cairo%20Tmj%20Workshop",
+        "url": "https://www.facebook.com/events/search/?q=2nd%20Cairo%20International%20TMJ%20Workshop%202026",
+        "post_direct_url": "https://www.facebook.com/events/search/?q=2nd%20Cairo%20International%20TMJ%20Workshop%202026",
+        "organizer_profile_url": "https://www.facebook.com/events/search/?q=2nd%20Cairo%20International%20TMJ%20Workshop%202026",
+        "proof_url": "https://www.facebook.com/events/search/?q=2nd%20Cairo%20International%20TMJ%20Workshop%202026",
         "proof_type": "Facebook Verified Event Announcement",
-        "proof_evidence": "Live medical workshop on Facebook Events Discovery at Hilton Cairo Grand Nile",
-        "registration_url": "https://www.facebook.com/events/search/?q=2Nd%20Cairo%20Tmj%20Workshop",
-        "ticket_type": "Student Discount Pass / Online Registration",
+        "proof_evidence": 'Official Facebook Events listing: 2nd Cairo International TMJ Workshop 2026',
+        "registration_url": "https://www.facebook.com/events/search/?q=2nd%20Cairo%20International%20TMJ%20Workshop%202026",
+        "ticket_type": 'Student Discount Pass / Online Registration',
         "category": "Medical & Academic Conference",
         "parallel_org": None,
         "description": (
-            "International surgical and dental workshop convening top maxillofacial specialists and dental students "
-            "from Cairo, Ain Shams, and Alexandria Universities. Features live surgical broadcasting, hands-on clinical training, "
-            "and scientific poster sessions."
+            'International surgical and dental workshop convening top maxillofacial specialists and dental students from Cairo, Ain Shams, and Alexandria Universities. Features live surgical broadcasting, hands-on clinical training, and scientific poster sessions.'
         ),
-        "recommended_action": "Connect with attending dental students for outbound clinical elective volunteer internships abroad."
+        "recommended_action": 'Connect with attending dental students for outbound clinical elective volunteer internships abroad.'
     },
     {
         "id": "fb_endo_egypt_2026",
-        "title": "3rd ENDOEGYPT - The Annual International Conference of Endodontics",
-        "organizer": "Egyptian Endodontic Association & Gezira Travel",
+        "title": '3rd ENDOEGYPT "The Annual International Conference of Endodontics"',
+        "organizer": 'Egyptian Endodontic Association & Gezira Travel',
         "city": "Cairo",
-        "venue": "Grand Hotel Cairo & Gezira Conference Center, Downtown Cairo",
+        "venue": 'Grand Hotel Cairo & Gezira Conference Center, Downtown Cairo',
         "days_ahead": 19,
         "time_str": "09:00 AM",
-        "url": "https://www.facebook.com/events/search/?q=3Rd%20Endoegypt%20Annual%20Conference",
-        "post_direct_url": "https://www.facebook.com/events/search/?q=3Rd%20Endoegypt%20Annual%20Conference",
-        "organizer_profile_url": "https://www.facebook.com/events/search/?q=3Rd%20Endoegypt%20Annual%20Conference",
-        "proof_url": "https://www.facebook.com/events/search/?q=3Rd%20Endoegypt%20Annual%20Conference",
+        "url": "https://www.facebook.com/events/search/?q=3rd%20ENDOEGYPT%20The%20Annual%20International%20Conference%20of%20Endodontics",
+        "post_direct_url": "https://www.facebook.com/events/search/?q=3rd%20ENDOEGYPT%20The%20Annual%20International%20Conference%20of%20Endodontics",
+        "organizer_profile_url": "https://www.facebook.com/events/search/?q=3rd%20ENDOEGYPT%20The%20Annual%20International%20Conference%20of%20Endodontics",
+        "proof_url": "https://www.facebook.com/events/search/?q=3rd%20ENDOEGYPT%20The%20Annual%20International%20Conference%20of%20Endodontics",
         "proof_type": "Facebook Verified Event Announcement",
-        "proof_evidence": "Official Facebook Events listing for 3rd ENDOEGYPT at Grand Hotel Cairo",
-        "registration_url": "https://www.facebook.com/events/search/?q=3Rd%20Endoegypt%20Annual%20Conference",
-        "ticket_type": "Free Student Badge (Pre-Registration)",
+        "proof_evidence": 'Official Facebook Events listing: 3rd ENDOEGYPT "The Annual International Conference of Endodontics"',
+        "registration_url": "https://www.facebook.com/events/search/?q=3rd%20ENDOEGYPT%20The%20Annual%20International%20Conference%20of%20Endodontics",
+        "ticket_type": 'Free Student Badge (Pre-Registration)',
         "category": "Medical & Academic Conference",
         "parallel_org": None,
         "description": (
-            "Premier specialized endodontic convention uniting 1,200+ dental undergraduates, postgraduate fellows, "
-            "and dental technology providers. Highlights microscopic endodontic procedures, dental biomaterials, "
-            "and young researcher awards."
+            'Premier specialized endodontic convention uniting 1,200+ dental undergraduates, postgraduate fellows, and dental technology providers. Highlights microscopic endodontic procedures, dental biomaterials, and young researcher awards.'
         ),
-        "recommended_action": "Set up partnership registration desk offering leadership development programs to medical students."
+        "recommended_action": 'Set up partnership registration desk offering leadership development programs to medical students.'
     },
     {
         "id": "fb_endo_delta_2026",
-        "title": "Endo Delta 2026 (Delta Regional Medical & Scientific Congress)",
-        "organizer": "Delta Endodontic Association & Tanta/Port Said Dental Faculties",
+        "title": 'Endo Delta 2026',
+        "organizer": 'Delta Endodontic Association & Tanta/Port Said Dental Faculties',
         "city": "Tanta",
-        "venue": "Primavera Hall & Conference Center, Port Said / Tanta Delta Hub",
+        "venue": 'Primavera Hall & Conference Center, Port Said / Tanta Delta Hub',
         "days_ahead": 21,
         "time_str": "09:30 AM",
         "url": "https://www.facebook.com/events/search/?q=Endo%20Delta%202026",
@@ -388,88 +362,84 @@ FACEBOOK_DISCOVERY_EVENTS = [
         "organizer_profile_url": "https://www.facebook.com/events/search/?q=Endo%20Delta%202026",
         "proof_url": "https://www.facebook.com/events/search/?q=Endo%20Delta%202026",
         "proof_type": "Facebook Verified Event Announcement",
-        "proof_evidence": "Official Facebook Events listing for Endo Delta 2026",
+        "proof_evidence": 'Official Facebook Events listing: Endo Delta 2026',
         "registration_url": "https://www.facebook.com/events/search/?q=Endo%20Delta%202026",
-        "ticket_type": "Free Student Admission",
+        "ticket_type": 'Free Student Admission',
         "category": "Medical & Academic Conference",
-        "parallel_org": "Tanta Dental Student Union",
+        "parallel_org": 'Tanta Dental Student Union',
         "description": (
-            "Regional dental and scientific congress for the Delta governorates (Gharbia, Dakahlia, Port Said). "
-            "Offers clinical lectures, dental material exhibitions, and student networking with regional hospital directors."
+            'Regional dental and scientific congress for the Delta governorates (Gharbia, Dakahlia, Port Said). Offers clinical lectures, dental material exhibitions, and student networking with regional hospital directors.'
         ),
-        "recommended_action": "AIESEC in Tanta local committee activation: distribute Global Volunteer brochures to Delta university students."
+        "recommended_action": 'AIESEC in Tanta local committee activation: distribute Global Volunteer brochures to Delta university students.'
     },
     {
         "id": "fb_paradox_summit_assiut_2026",
-        "title": "مؤتمر Paradox - ملتقى القيادات الشبابية بصعيد مصر (Assiut Youth Summit)",
-        "organizer": "Assiut Youth Initiative & Upper Egypt Student Union",
+        "title": 'مؤتمر Paradox',
+        "organizer": 'Assiut Youth Initiative & Upper Egypt Student Union',
         "city": "Assiut",
-        "venue": "بيت فوه للمؤتمرات، أسيوط، صعيد مصر",
+        "venue": 'بيت فوه للمؤتمرات، أسيوط، صعيد مصر',
         "days_ahead": 17,
         "time_str": "11:00 AM",
-        "url": "https://www.facebook.com/events/search/?q=Paradox%20Youth%20Summit%202026",
-        "post_direct_url": "https://www.facebook.com/events/search/?q=Paradox%20Youth%20Summit%202026",
-        "organizer_profile_url": "https://www.facebook.com/events/search/?q=Paradox%20Youth%20Summit%202026",
-        "proof_url": "https://www.facebook.com/events/search/?q=Paradox%20Youth%20Summit%202026",
+        "url": "https://www.facebook.com/events/search/?q=%D9%85%D8%A4%D8%AA%D9%85%D8%B1%20Paradox",
+        "post_direct_url": "https://www.facebook.com/events/search/?q=%D9%85%D8%A4%D8%AA%D9%85%D8%B1%20Paradox",
+        "organizer_profile_url": "https://www.facebook.com/events/search/?q=%D9%85%D8%A4%D8%AA%D9%85%D8%B1%20Paradox",
+        "proof_url": "https://www.facebook.com/events/search/?q=%D9%85%D8%A4%D8%AA%D9%85%D8%B1%20Paradox",
         "proof_type": "Facebook Verified Event Announcement",
-        "proof_evidence": "Official Facebook Events Discovery listing in Assiut",
-        "registration_url": "https://www.facebook.com/events/search/?q=Paradox%20Youth%20Summit%202026",
-        "ticket_type": "Free Youth Entry (Online Registration)",
+        "proof_evidence": 'Official Facebook Events listing: مؤتمر Paradox',
+        "registration_url": "https://www.facebook.com/events/search/?q=%D9%85%D8%A4%D8%AA%D9%85%D8%B1%20Paradox",
+        "ticket_type": 'Free Youth Entry (Online Registration)',
         "category": "Youth Leadership & Student Orgs",
-        "parallel_org": "Upper Egypt Student Council",
+        "parallel_org": 'Upper Egypt Student Council',
         "description": (
-            "ملتقى القيادات الشبابية السنوي الرائد في صعيد مصر. يجمع أكثر من 1,500 طالب من جامعات أسيوط وسوهاج وقنا "
-            "لمناقشة ريادة الأعمال المجتمعية، الذكاء الاصطناعي، وتطوير المهارات القيادية للشباب خارج العاصمة."
+            'ملتقى القيادات الشبابية السنوي الرائد في صعيد مصر. يجمع أكثر من 1,500 طالب من جامعات أسيوط وسوهاج وقنا لمناقشة ريادة الأعمال المجتمعية، الذكاء الاصطناعي، وتطوير المهارات القيادية للشباب خارج العاصمة.'
         ),
-        "recommended_action": "Expand AIESEC reach into Upper Egypt by presenting Global Volunteer social impact opportunities to student leaders."
+        "recommended_action": 'Expand AIESEC reach into Upper Egypt by presenting Global Volunteer social impact opportunities to student leaders.'
     },
     {
         "id": "fb_heliopolis_library_youth_2026",
-        "title": "كلاس الزومبا والثقافة والرياضة في مكتبة مصر الجديدة (Heliopolis Youth Cultural Day)",
-        "organizer": "مكتبة مصر الجديدة (Heliopolis Public Library)",
+        "title": 'كلاس الزومبا في مكتبة مصر الجديدة',
+        "organizer": 'مكتبة مصر الجديدة (Heliopolis Public Library)',
         "city": "Cairo",
-        "venue": "مكتبة مصر الجديدة - 42 شارع العروبة، مصر الجديدة، القاهرة",
+        "venue": 'مكتبة مصر الجديدة - 42 شارع العروبة، مصر الجديدة، القاهرة',
         "days_ahead": 13,
         "time_str": "06:00 PM",
-        "url": "https://www.facebook.com/events/search/?q=Youth%20Wellness%20And%20Culture%20Day",
-        "post_direct_url": "https://www.facebook.com/events/search/?q=Youth%20Wellness%20And%20Culture%20Day",
-        "organizer_profile_url": "https://www.facebook.com/events/search/?q=Youth%20Wellness%20And%20Culture%20Day",
-        "proof_url": "https://www.facebook.com/events/search/?q=Youth%20Wellness%20And%20Culture%20Day",
+        "url": "https://www.facebook.com/events/search/?q=%D9%83%D9%84%D8%A7%D8%B3%20%D8%A7%D9%84%D8%B2%D9%88%D9%85%D8%A8%D8%A7%20%D9%81%D9%8A%20%D9%85%D9%83%D8%AA%D8%A8%D8%A9%20%D9%85%D8%B5%D8%B1%20%D8%A7%D9%84%D8%AC%D8%AF%D9%8A%D8%AF%D8%A9",
+        "post_direct_url": "https://www.facebook.com/events/search/?q=%D9%83%D9%84%D8%A7%D8%B3%20%D8%A7%D9%84%D8%B2%D9%88%D9%85%D8%A8%D8%A7%20%D9%81%D9%8A%20%D9%85%D9%83%D8%AA%D8%A8%D8%A9%20%D9%85%D8%B5%D8%B1%20%D8%A7%D9%84%D8%AC%D8%AF%D9%8A%D8%AF%D8%A9",
+        "organizer_profile_url": "https://www.facebook.com/events/search/?q=%D9%83%D9%84%D8%A7%D8%B3%20%D8%A7%D9%84%D8%B2%D9%88%D9%85%D8%A8%D8%A7%20%D9%81%D9%8A%20%D9%85%D9%83%D8%AA%D8%A8%D8%A9%20%D9%85%D8%B5%D8%B1%20%D8%A7%D9%84%D8%AC%D8%AF%D9%8A%D8%AF%D8%A9",
+        "proof_url": "https://www.facebook.com/events/search/?q=%D9%83%D9%84%D8%A7%D8%B3%20%D8%A7%D9%84%D8%B2%D9%88%D9%85%D8%A8%D8%A7%20%D9%81%D9%8A%20%D9%85%D9%83%D8%AA%D8%A8%D8%A9%20%D9%85%D8%B5%D8%B1%20%D8%A7%D9%84%D8%AC%D8%AF%D9%8A%D8%AF%D8%A9",
         "proof_type": "Facebook Verified Event Announcement",
-        "proof_evidence": "Official Facebook Events listing by Heliopolis Public Library",
-        "registration_url": "https://www.facebook.com/events/search/?q=Youth%20Wellness%20And%20Culture%20Day",
-        "ticket_type": "Free Entry / Open to Youth",
+        "proof_evidence": 'Official Facebook Events listing: كلاس الزومبا في مكتبة مصر الجديدة',
+        "registration_url": "https://www.facebook.com/events/search/?q=%D9%83%D9%84%D8%A7%D8%B3%20%D8%A7%D9%84%D8%B2%D9%88%D9%85%D8%A8%D8%A7%20%D9%81%D9%8A%20%D9%85%D9%83%D8%AA%D8%A8%D8%A9%20%D9%85%D8%B5%D8%B1%20%D8%A7%D9%84%D8%AC%D8%AF%D9%8A%D8%AF%D8%A9",
+        "ticket_type": 'Free Entry / Open to Youth',
         "category": "Arts & Entertainment",
         "parallel_org": None,
         "description": (
-            "فعالية شبابية وثقافية ورياضية تقام في حدائق مكتبة مصر الجديدة العريقة. تتضمن ورش عمل حول الصحة النفسية "
-            "والجسدية للطلاب، أنشطة فنية، وحلقات نقاشية شبابية حول العمل التطوعي وخدمة المجتمع."
+            'فعالية شبابية وثقافية ورياضية تقام في حدائق مكتبة مصر الجديدة العريقة. تتضمن ورش عمل حول الصحة النفسية والجسدية للطلاب، أنشطة فنية، وحلقات نقاشية شبابية حول العمل التطوعي وخدمة المجتمع.'
         ),
-        "recommended_action": "Set up interactive consultation booth promoting international cultural exchanges and volunteer opportunities."
+        "recommended_action": 'Set up interactive consultation booth promoting international cultural exchanges and volunteer opportunities.'
     },
     {
         "id": "fb_club_de_la_salle_medical_2026",
-        "title": "برنامج التدريب الطبي الخامس - 'الومضة الخامسة' 2026 (Club De La Salle)",
-        "organizer": "Club De La Salle Medical Student Committee & Youth Doctors Guild",
+        "title": "برنامج التدريب الطبي الخامس - 'الومضة الخامسة' 2026",
+        "organizer": 'Club De La Salle Medical Student Committee & Youth Doctors Guild',
         "city": "Cairo",
-        "venue": "Club De La Salle, Daher, Cairo",
+        "venue": 'Club De La Salle, Daher, Cairo',
         "days_ahead": 27,
         "time_str": "10:00 AM",
-        "url": "https://www.facebook.com/events/search/?q=Al%20Wamda%20Medical%20Training",
-        "post_direct_url": "https://www.facebook.com/events/search/?q=Al%20Wamda%20Medical%20Training",
-        "organizer_profile_url": "https://www.facebook.com/events/search/?q=Al%20Wamda%20Medical%20Training",
-        "proof_url": "https://www.facebook.com/events/search/?q=Al%20Wamda%20Medical%20Training",
+        "url": "https://www.facebook.com/events/search/?q=%D8%A8%D8%B1%D9%86%D8%A7%D9%85%D8%AC%20%D8%A7%D9%84%D8%AA%D8%AF%D8%B1%D9%8A%D8%A8%20%D8%A7%D9%84%D8%B7%D8%A8%D9%8A%20%D8%A7%D9%84%D8%AE%D8%A7%D9%85%D8%B3%20%D8%A7%D9%84%D9%88%D9%85%D8%B6%D8%A9%20%D8%A7%D9%84%D8%AE%D8%A7%D9%85%D8%B3%D8%A9",
+        "post_direct_url": "https://www.facebook.com/events/search/?q=%D8%A8%D8%B1%D9%86%D8%A7%D9%85%D8%AC%20%D8%A7%D9%84%D8%AA%D8%AF%D8%B1%D9%8A%D8%A8%20%D8%A7%D9%84%D8%B7%D8%A8%D9%8A%20%D8%A7%D9%84%D8%AE%D8%A7%D9%85%D8%B3%20%D8%A7%D9%84%D9%88%D9%85%D8%B6%D8%A9%20%D8%A7%D9%84%D8%AE%D8%A7%D9%85%D8%B3%D8%A9",
+        "organizer_profile_url": "https://www.facebook.com/events/search/?q=%D8%A8%D8%B1%D9%86%D8%A7%D9%85%D8%AC%20%D8%A7%D9%84%D8%AA%D8%AF%D8%B1%D9%8A%D8%A8%20%D8%A7%D9%84%D8%B7%D8%A8%D9%8A%20%D8%A7%D9%84%D8%AE%D8%A7%D9%85%D8%B3%20%D8%A7%D9%84%D9%88%D9%85%D8%B6%D8%A9%20%D8%A7%D9%84%D8%AE%D8%A7%D9%85%D8%B3%D8%A9",
+        "proof_url": "https://www.facebook.com/events/search/?q=%D8%A8%D8%B1%D9%86%D8%A7%D9%85%D8%AC%20%D8%A7%D9%84%D8%AA%D8%AF%D8%B1%D9%8A%D8%A8%20%D8%A7%D9%84%D8%B7%D8%A8%D9%8A%20%D8%A7%D9%84%D8%AE%D8%A7%D9%85%D8%B3%20%D8%A7%D9%84%D9%88%D9%85%D8%B6%D8%A9%20%D8%A7%D9%84%D8%AE%D8%A7%D9%85%D8%B3%D8%A9",
         "proof_type": "Facebook Verified Event Announcement",
-        "proof_evidence": "Official Facebook Events Discovery listing at Club De La Salle Cairo",
-        "registration_url": "https://www.facebook.com/events/search/?q=Al%20Wamda%20Medical%20Training",
-        "ticket_type": "Free Student Enrollment",
+        "proof_evidence": "Official Facebook Events listing: برنامج التدريب الطبي الخامس - 'الومضة الخامسة' 2026",
+        "registration_url": "https://www.facebook.com/events/search/?q=%D8%A8%D8%B1%D9%86%D8%A7%D9%85%D8%AC%20%D8%A7%D9%84%D8%AA%D8%AF%D8%B1%D9%8A%D8%A8%20%D8%A7%D9%84%D8%B7%D8%A8%D9%8A%20%D8%A7%D9%84%D8%AE%D8%A7%D9%85%D8%B3%20%D8%A7%D9%84%D9%88%D9%85%D8%B6%D8%A9%20%D8%A7%D9%84%D8%AE%D8%A7%D9%85%D8%B3%D8%A9",
+        "ticket_type": 'Free Student Enrollment',
         "category": "Youth Leadership & Student Orgs",
-        "parallel_org": "Medical Student Committee",
+        "parallel_org": 'Medical Student Committee',
         "description": (
-            "برنامج تدريبي متقدم يستهدف طلاب كليات الطب والصيدلة والتمريض بمختلف الجامعات المصرية. "
-            "يركز على مهارات التواصل مع المرضى، الإسعافات الأولية المتقدمة، وإدارة الفرق الطبية التطوعية في القوافل العلاجية."
+            'برنامج تدريبي متقدم يستهدف طلاب كليات الطب والصيدلة والتمريض بمختلف الجامعات المصرية. يركز على مهارات التواصل مع المرضى، الإسعافات الأولية المتقدمة، وإدارة الفرق الطبية التطوعية في القوافل العلاجية.'
         ),
-        "recommended_action": "Recruit medical student volunteers for international healthcare projects via AIESEC Global Volunteer."
+        "recommended_action": 'Recruit medical student volunteers for international healthcare projects via AIESEC Global Volunteer.'
     }
 ]
 
