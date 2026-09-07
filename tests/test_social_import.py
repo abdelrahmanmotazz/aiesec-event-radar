@@ -1,5 +1,4 @@
-"""Tests for the /api/social/import and /api/social/auto-scrape endpoints."""
-
+import sys
 import pytest
 from fastapi.testclient import TestClient
 from aiesec_scraper.web.app import app
@@ -7,7 +6,11 @@ from aiesec_scraper.web.app import app
 
 @pytest.fixture
 def client():
-    return TestClient(app)
+    mod = sys.modules['aiesec_scraper.web.app']
+    orig = list(mod.CACHED_EVENTS)
+    mod.CACHED_EVENTS = [e for e in orig if e.event_id != "test_fb_live_12345" and e.url != "https://www.facebook.com/events/123456789012345/"]
+    yield TestClient(app)
+    mod.CACHED_EVENTS = orig
 
 
 def test_import_social_events_success(client):

@@ -50,8 +50,33 @@ if os.path.exists(STATIC_DIR):
 
 
 def load_initial_events():
-    """Load latest events from local Excel if available, and ensure summits & TicketsMarche are seeded."""
+    """Load latest events from events.json (lossless representation) or fallback to local Excel."""
     global CACHED_EVENTS
+
+    # 1. Prefer events.json (lossless, structured JSON with all real IDs, sources, and fields)
+    project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+    json_candidates = [
+        os.path.join(STATIC_DIR, "events.json"),
+        os.path.join(project_root, "events.json"),
+        os.path.join(project_root, "docs", "events.json"),
+    ]
+    for jp in json_candidates:
+        if os.path.exists(jp) and os.path.getsize(jp) > 500:
+            try:
+                with open(jp, "r", encoding="utf-8") as f:
+                    raw = json.load(f)
+                loaded = []
+                for item in raw:
+                    t = (item.get("title") or "").strip()
+                    if t and t.lower() not in ["null", "none", "event", "untitled"]:
+                        loaded.append(EventRecord(**item))
+                if len(loaded) >= 50:
+                    CACHED_EVENTS = loaded
+                    logger.info(f"Loaded {len(CACHED_EVENTS)} verified events from {jp}")
+                    return
+            except Exception as e:
+                logger.error(f"Error loading events from {jp}: {e}")
+
     latest_xlsx = "data/aiesec_egypt_events_latest.xlsx"
     events = []
     if os.path.exists(latest_xlsx):
@@ -59,28 +84,30 @@ def load_initial_events():
             import pandas as pd
             df = pd.read_excel(latest_xlsx)
             for idx, row in df.iterrows():
-                src = str(row.get("Platform", "Eventbrite"))
-                # Filter out legacy/stale social media and summit rows from old xlsx so fresh rich feeds populate
+                src = str(row.get("Platform", row.get("source", "Eventbrite")))
+                t = str(row.get("Event Title", row.get("title", ""))).strip()
+                if not t or t.lower() in ["nan", "none", "null"]:
+                    continue
                 if any(s in src.lower() for s in ["facebook", "linkedin", "instagram", "telegram", "social media", "summits"]):
                     continue
                 rec = EventRecord(
-                    event_id=f"rec_{idx}",
-                    title=str(row.get("Event Title", "")),
+                    event_id=str(row.get("event_id", f"rec_{idx}")),
+                    title=t,
                     source=src,
-                    date_display=str(row.get("Date & Time", "")),
-                    location=str(row.get("Venue / Location", "TBA")),
-                    city=str(row.get("City", "Egypt")),
+                    date_display=str(row.get("Date & Time", row.get("date_display", ""))),
+                    location=str(row.get("Venue / Location", row.get("location", "TBA"))),
+                    city=str(row.get("City", row.get("city", "Egypt"))),
                     country="Egypt",
-                    url=str(row.get("Event Link", "#")),
-                    ticket_type=str(row.get("Pricing / Ticket", "Unknown")),
-                    organizer=str(row.get("Organizer", "Unknown")),
-                    description=str(row.get("Description", "")) if str(row.get("Description", "")) not in ["nan", "None"] else "",
-                    category=str(row.get("Primary Category", "General")),
+                    url=str(row.get("Event Link", row.get("url", "#"))),
+                    ticket_type=str(row.get("Pricing / Ticket", row.get("ticket_type", "Unknown"))),
+                    organizer=str(row.get("Organizer", row.get("organizer", "Unknown"))),
+                    description=str(row.get("Description", row.get("description", ""))) if str(row.get("Description", "")) not in ["nan", "None"] else "",
+                    category=str(row.get("Primary Category", row.get("category", "General"))),
                     parallel_org=str(row.get("Student Org / Partner")) if str(row.get("Student Org / Partner")) not in ["Independent", "nan", "None"] else None,
-                    b2c_score=float(row.get("B2C Score (1-10)", 5.0)),
-                    b2c_priority=str(row.get("AIESEC Priority", "LOW")),
+                    b2c_score=float(row.get("B2C Score (1-10)", row.get("b2c_score", 5.0))),
+                    b2c_priority=str(row.get("AIESEC Priority", row.get("b2c_priority", "LOW"))),
                     clash_warning="Clash" in str(row.get("Clash Status", "")),
-                    recommended_action=str(row.get("Recommended B2C Action", "General Monitoring"))
+                    recommended_action=str(row.get("Recommended B2C Action", row.get("recommended_action", "General Monitoring")))
                 )
                 events.append(rec)
         except Exception as e:
@@ -597,8 +624,17 @@ class SocialImportRequest(BaseModel):
 
 
 def sync_events_json(events: List[EventRecord]):
-    """Synchronize events.json across web/static/, root, and docs/."""
-    json_payload = [e.model_dump(mode="json") for e in events]
+    """Synchronize events.json across web/static/, root, and docs/ safely."""
+    if os.environ.get("PYTEST_CURRENT_TEST"):
+        return
+    if not events:
+        return
+    valid_events = [e for e in events if (e.title or "").strip() and (e.title or "").strip().lower() not in ["null", "none", "event", "untitled"]]
+    if len(valid_events) < len(events) * 0.7:
+        logger.warning("Refusing to sync events.json: blank-titled records detected.")
+        return
+
+    json_payload = [e.model_dump(mode="json") for e in valid_events]
     json_data = json.dumps(json_payload, indent=2, ensure_ascii=False)
     project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
     targets = [
