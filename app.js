@@ -4637,37 +4637,58 @@ function initSocialIngest() {
 
   // Headless Auto-Scrape Trigger
   const btnAutoRun = document.getElementById("btn-trigger-headless-scrape");
-  const autoOutput = document.getElementById("headless-scrape-output");
   const citySelect = document.getElementById("auto-scrape-city");
+  const autoOutput = document.getElementById("headless-scrape-output");
 
   if (btnAutoRun) {
     btnAutoRun.addEventListener("click", async () => {
       const city = citySelect ? citySelect.value : "";
       btnAutoRun.disabled = true;
-      btnAutoRun.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Running Autonomous Harvester...`;
-      if (autoOutput) {
-        autoOutput.classList.remove("hidden");
-        autoOutput.innerText = `[${new Date().toLocaleTimeString()}] Launching Microsoft Edge in headless mode... Navigating to Facebook Events (${city || "Egypt"})...`;
-      }
+      btnAutoRun.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Initializing Scraper...`;
       if (window.lucide) lucide.createIcons();
 
-            // Check if running on static GitHub Pages
-      const isGitHubPages = window.location.hostname.includes("github.io");
-      if (isGitHubPages) {
-        showToast("Live Cloud Site: Please trigger scrape via GitHub Actions or run 4_SYNC_LIVE_SITE.bat on your PC!", "info");
+      if (autoOutput) {
+        autoOutput.classList.remove("hidden");
+        autoOutput.innerHTML = `<div class="text-cyan-300 font-mono text-xs"><span class="animate-pulse">●</span> Checking scraper environment...</div>`;
+      }
+
+      // Check if running on live cloud site (GitHub Pages) or static view
+      const isCloudOrStatic = window.location.hostname.includes("github.io") ||
+                              window.location.protocol === "file:" ||
+                              (window.location.port !== "8000" && !window.location.hostname.includes("127.0.0.1"));
+
+      if (isCloudOrStatic) {
+        showToast("Opening GitHub Actions: Click 'Run workflow' to start live cloud scraper!", "success", "Cloud Scraper Ready");
+        if (autoOutput) {
+          autoOutput.innerHTML = `
+            <div class="space-y-2 text-xs">
+              <div class="text-emerald-400 font-bold flex items-center gap-1.5">
+                <i data-lucide="check-circle" class="w-4 h-4"></i> Opened GitHub Actions Cloud Scraper!
+              </div>
+              <p class="text-slate-300 text-xs">
+                On the GitHub page that just opened: click <b>"Run workflow"</b> (green button) to run the scraper in the cloud using your account.
+              </p>
+              <div class="p-2 rounded bg-white/[0.04] text-[11px] text-slate-400">
+                ⚡ <b>Local PC Shortcut:</b> You can also double-click <code class="text-cyan-300 font-bold">4_SYNC_LIVE_SITE.bat</code> in your project folder anytime!
+              </div>
+            </div>`;
+          if (window.lucide) lucide.createIcons();
+        }
         window.open("https://github.com/abdelrahmanmotazz/aiesec-event-radar/actions/workflows/daily-scrape.yml", "_blank");
         btnAutoRun.disabled = false;
         btnAutoRun.innerHTML = `<i data-lucide="play" class="w-4 h-4 fill-current"></i> Run Autonomous Extraction Now`;
         if (window.lucide) lucide.createIcons();
         return;
       }
+
+      // Localhost environment: attempt direct local backend scrape
       try {
         const queryParam = city ? `?city=${encodeURIComponent(city)}` : "";
         const res = await fetch(`/api/social/auto-scrape${queryParam}`, { method: "POST" });
         if (res.ok) {
           const data = await res.json();
           if (autoOutput) {
-            autoOutput.innerText = `✓ Complete: Extracted ${data.harvested} events (${data.newly_added} newly added). Reloading radar...`;
+            autoOutput.innerHTML = `<div class="text-emerald-400 font-mono text-xs">✓ Complete: Extracted ${data.harvested} events (${data.newly_added} newly added). Reloading radar...</div>`;
           }
           showToast(`Autonomous Harvester: ${data.message}`, "success");
           setTimeout(() => {
@@ -4675,12 +4696,24 @@ function initSocialIngest() {
             if (modal) modal.classList.add("hidden");
           }, 1500);
         } else {
-          showToast("Server returned an error running headless scraper.", "error");
-          if (autoOutput) autoOutput.innerText = "Error executing autonomous scraper on server.";
+          showToast("Opening GitHub Actions cloud scraper...", "info");
+          if (autoOutput) {
+            autoOutput.innerHTML = `
+              <div class="text-amber-300 text-xs space-y-1">
+                <div>⚡ Run <code class="text-white font-bold bg-white/10 px-1 py-0.5 rounded">4_SYNC_LIVE_SITE.bat</code> on your PC for 1-click local sync, or trigger via GitHub Actions.</div>
+              </div>`;
+          }
+          window.open("https://github.com/abdelrahmanmotazz/aiesec-event-radar/actions/workflows/daily-scrape.yml", "_blank");
         }
       } catch (err) {
-        showToast("Connected error: Headless scraper requires local server running on port 8000.", "error");
-        if (autoOutput) autoOutput.innerText = "Connection failed. Please run 'python -m aiesec_scraper.web' locally.";
+        showToast("Opening GitHub Actions cloud scraper...", "info");
+        if (autoOutput) {
+          autoOutput.innerHTML = `
+            <div class="text-cyan-300 text-xs space-y-1">
+              <div>Opened GitHub Actions! Click <b>"Run workflow"</b> to scrape live in the cloud. Or run <code class="text-white font-bold bg-white/10 px-1 py-0.5 rounded">4_SYNC_LIVE_SITE.bat</code> on your PC.</div>
+            </div>`;
+        }
+        window.open("https://github.com/abdelrahmanmotazz/aiesec-event-radar/actions/workflows/daily-scrape.yml", "_blank");
       } finally {
         btnAutoRun.disabled = false;
         btnAutoRun.innerHTML = `<i data-lucide="play" class="w-4 h-4 fill-current"></i> Run Autonomous Extraction Now`;
