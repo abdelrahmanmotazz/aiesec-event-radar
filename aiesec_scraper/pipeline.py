@@ -31,10 +31,20 @@ NON_EGYPT_PATTERNS = [
 
 
 def normalize_event_url(url: str) -> str:
-    """Strip query parameters and anchors for canonical URL matching."""
+    """Strip query parameters and anchors for canonical URL matching, preserving search queries."""
     if not url:
         return ""
-    return url.split("?")[0].split("#")[0].rstrip("/").lower()
+    try:
+        parsed = urllib.parse.urlparse(url.strip())
+        netloc = parsed.netloc.lower().replace("www.", "")
+        path = parsed.path.rstrip("/").lower()
+        if "facebook.com" in netloc and "/events/search" in path:
+            qs = urllib.parse.parse_qs(parsed.query)
+            q_val = qs.get("q", [""])[0].strip().lower()
+            return f"https://www.facebook.com/events/search/?q={q_val}"
+        return f"{parsed.scheme}://{netloc}{path}"
+    except Exception:
+        return url.split("?")[0].split("#")[0].rstrip("/").lower()
 
 
 def clean_event_title(title: str) -> str:

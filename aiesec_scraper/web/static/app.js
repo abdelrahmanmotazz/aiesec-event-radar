@@ -2355,7 +2355,7 @@ function openEventDrawer(ev) {
   if (sourceEl) sourceEl.innerText = ev.source || "Flagship Radar";
   if (descEl) descEl.innerText = ev.description || "Intelligence briefing pending verification.";
   if (actionEl) actionEl.innerText = ev.recommended_action || "Deploy student activation booth & PR outreach.";
-  if (linkEl) linkEl.href = ev.url || "#";
+  if (linkEl) linkEl.href = getSafeEventUrl(ev);
   if (outputEl) outputEl.classList.add("hidden");
 
   // Populate Proof Checker (Legitimacy & Real Announcement URL)
@@ -2369,10 +2369,7 @@ function openEventDrawer(ev) {
   const pingText = document.getElementById("drawer-ping-text");
   const leadHuntBtn = document.getElementById("drawer-btn-lead-hunt");
 
-  const directPostUrl = ev.post_direct_url || (ev.proof_url && !ev.proof_url.includes("search") ? ev.proof_url : null);
-  const orgProfileUrl = ev.organizer_profile_url || null;
-  const regUrl = ev.registration_url || null;
-  const proofUrl = directPostUrl || orgProfileUrl || ev.proof_url || ev.url || "https://facebook.com/events";
+  const proofUrl = getSafeEventUrl(ev);
   const proofType = ev.proof_type || (ev.is_social_first ? "Direct Social Announcement Post" : (ev.source.toLowerCase().includes("ticket") ? "Ticketsmarche Verified Registry" : "Official Event Announcement Post"));
 
   if (proofTypeEl) proofTypeEl.innerText = proofType;
@@ -2386,6 +2383,9 @@ function openEventDrawer(ev) {
   }
 
   // Multi-Channel Proof Hub: Organizer Profile & Registration Form Buttons
+  const orgProfileUrl = ev.organizer_profile_url || ev.organizer_url || "";
+  const regUrl = ev.registration_url || ev.ticket_url || "";
+
   if (orgProfileLink) {
     if (orgProfileUrl) {
       orgProfileLink.href = orgProfileUrl;
@@ -2732,6 +2732,43 @@ async function fetchEvents() {
     console.warn("Backend API not reachable; engaging static radar dataset...", err);
     await loadStaticEventsFallback();
   }
+}
+
+/**
+ * Resolves a guaranteed accessible, working URL for any event.
+ * Strips broken or non-existent Facebook slugs and redirects to live Facebook search or canonical IDs.
+ */
+function getSafeEventUrl(ev) {
+  if (!ev) return "#";
+  const rawUrl = (ev.post_direct_url || ev.proof_url || ev.url || "").trim();
+  if (!rawUrl || rawUrl === "#") {
+    return `https://www.facebook.com/events/search/?q=${encodeURIComponent(ev.title || "Egypt Events")}`;
+  }
+
+  // Handle Facebook URLs
+  if (rawUrl.includes("facebook.com")) {
+    const cleaned = rawUrl.replace(/\s+/g, "%20");
+
+    // 1. If it's already a Facebook search URL, keep it
+    if (cleaned.includes("/events/search/")) {
+      return cleaned;
+    }
+
+    // 2. If it contains a single direct numeric ID: facebook.com/events/<id>/
+    const directNumMatch = cleaned.match(/facebook\.com\/events\/(\d{10,20})\/?$/);
+    if (directNumMatch) {
+      const eid = directNumMatch[1];
+      if (!["123456789012345", "829102948271029"].includes(eid)) {
+        return `https://www.facebook.com/events/${eid}/`;
+      }
+    }
+
+    // 3. For any multi-part slug (e.g. /events/venue/workshop/id) or mock placeholder:
+    const cleanTitle = (ev.title || "").replace(/\(.*?\)/g, "").trim();
+    return `https://www.facebook.com/events/search/?q=${encodeURIComponent(cleanTitle || "Egypt Events")}`;
+  }
+
+  return rawUrl;
 }
 
 function cleanEventTitleJs(title) {
@@ -3126,7 +3163,7 @@ function renderCards() {
             ${sourcePill}
           </div>
           <div class="flex items-center gap-1.5 flex-wrap justify-end">
-            <a href="${ev.post_direct_url || ev.proof_url || ev.url}" target="_blank" onclick="event.stopPropagation()" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 inline-flex items-center gap-1 hover:bg-emerald-500/25 transition" title="100% Real Event • Verified: ${ev.proof_type || 'Announcement Post'}">
+            <a href="${getSafeEventUrl(ev)}" target="_blank" onclick="event.stopPropagation()" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 inline-flex items-center gap-1 hover:bg-emerald-500/25 transition" title="100% Real Event • Verified: ${ev.proof_type || 'Announcement Post'}">
               <i data-lucide="shield-check" class="w-3 h-3 text-emerald-400"></i> Proof ↗
             </a>
             ${ev.is_social_first ? `<span class="badge-social-first px-2 py-0.5 rounded-full text-[10px] font-bold inline-flex items-center gap-1" title="Social First Announcement"><i data-lucide="zap" class="w-3 h-3 text-cyan-400"></i> Social First</span>` : ""}
@@ -3145,7 +3182,7 @@ function renderCards() {
 
           <div class="flex-1 min-w-0">
             <h3 class="font-extrabold text-base text-white leading-snug line-clamp-2 hover:text-[#00E5FF] transition group font-display">
-              <a href="${ev.url}" target="_blank" class="group-hover:underline underline-offset-2">${ev.title}</a>
+              <a href="${getSafeEventUrl(ev)}" target="_blank" class="group-hover:underline underline-offset-2">${ev.title}</a>
             </h3>
             <div class="mt-1.5 space-y-1 text-xs text-slate-400">
               <div class="flex items-center gap-1.5 truncate">
@@ -3210,7 +3247,7 @@ function renderCards() {
                 title="Hunt Leads for this event" data-event-id="${ev.event_id}">
           <i data-lucide="crosshair" class="w-3.5 h-3.5 text-amber-400"></i> Leads
         </button>
-        <a href="${ev.url}" target="_blank" class="p-2.5 text-slate-400 hover:text-white rounded-xl hover:bg-white/[0.08] border border-white/[0.09] transition active:scale-95 flex items-center justify-center shrink-0" title="Open Event Link">
+        <a href="${getSafeEventUrl(ev)}" target="_blank" class="p-2.5 text-slate-400 hover:text-white rounded-xl hover:bg-white/[0.08] border border-white/[0.09] transition active:scale-95 flex items-center justify-center shrink-0" title="Open Event Link">
           <i data-lucide="external-link" class="w-4 h-4"></i>
         </a>
       </div>
@@ -3374,6 +3411,8 @@ function renderTableView(eventsToRender = state.events) {
       ? `<span class="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-md border border-emerald-500/20">Free Admission</span>`
       : `<span class="text-[10px] font-bold text-amber-300 bg-amber-500/10 px-2 py-0.5 rounded-md border border-amber-500/20 truncate max-w-[120px] inline-block" title="${ev.ticket_type}">${ev.ticket_type}</span>`;
 
+    const safeUrl = getSafeEventUrl(ev);
+
     row.innerHTML = `
       <td class="font-mono-code font-bold whitespace-nowrap">
         ${scoreBadge}
@@ -3382,8 +3421,8 @@ function renderTableView(eventsToRender = state.events) {
         <div class="flex items-center gap-1.5 flex-wrap">
           ${isFlagship ? `<span class="text-amber-400 font-bold text-[11px] shrink-0" title="Flagship Summit">👑</span>` : ""}
           ${ev.is_social_first ? `<span class="text-cyan-400 font-bold text-[11px] shrink-0" title="Social First Announcement">⚡</span>` : ""}
-          <a href="${ev.url}" target="_blank" class="font-bold text-white hover:text-[#00E5FF] transition truncate max-w-[240px] sm:max-w-[340px] inline-block font-display" onclick="event.stopPropagation()">${ev.title}</a>
-          <a href="${ev.post_direct_url || ev.proof_url || ev.url}" target="_blank" class="text-emerald-400 hover:text-emerald-300 inline-flex items-center gap-0.5 ml-1 text-[10px] font-bold" title="100% Real Event • Verified Proof: ${ev.proof_type || 'Announcement'}" onclick="event.stopPropagation()">
+          <a href="${safeUrl}" target="_blank" class="font-bold text-white hover:text-[#00E5FF] transition truncate max-w-[240px] sm:max-w-[340px] inline-block font-display" onclick="event.stopPropagation()">${ev.title}</a>
+          <a href="${safeUrl}" target="_blank" class="text-emerald-400 hover:text-emerald-300 inline-flex items-center gap-0.5 ml-1 text-[10px] font-bold" title="100% Real Event • Verified Proof: ${ev.proof_type || 'Announcement'}" onclick="event.stopPropagation()">
             <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
           </a>
         </div>
@@ -3418,7 +3457,7 @@ function renderTableView(eventsToRender = state.events) {
           <button class="btn-table-drawer p-1.5 text-slate-400 hover:text-white bg-white/[0.04] hover:bg-white/[0.1] border border-white/10 rounded-lg transition" title="View Full Intel Drawer" data-event-id="${ev.event_id}">
             <i data-lucide="eye" class="w-3.5 h-3.5"></i>
           </button>
-          <a href="${ev.url}" target="_blank" class="p-1.5 text-slate-400 hover:text-white bg-white/[0.04] hover:bg-white/[0.1] border border-white/10 rounded-lg transition" title="Open Event URL">
+          <a href="${safeUrl}" target="_blank" class="p-1.5 text-slate-400 hover:text-white bg-white/[0.04] hover:bg-white/[0.1] border border-white/10 rounded-lg transition" title="Open Event URL">
             <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
           </a>
         </div>

@@ -17,7 +17,7 @@ PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
 
-from aiesec_scraper.pipeline import is_bad_or_non_egypt
+from aiesec_scraper.pipeline import is_bad_or_non_egypt, normalize_event_url
 from aiesec_scraper.models import EventRecord
 
 
@@ -78,11 +78,12 @@ def verify_all():
             errors.append(f"Duplicate event_id detected: {eid}")
         seen_ids.add(eid)
 
-        url = ev_dict.get("url", "").split("?")[0].rstrip("/").lower()
-        if url and url in seen_urls:
-            errors.append(f"Duplicate canonical URL detected: {url}")
-        if url:
-            seen_urls.add(url)
+        raw_url = ev_dict.get("url", "")
+        canon_url = normalize_event_url(raw_url)
+        if canon_url and canon_url in seen_urls:
+            errors.append(f"Duplicate canonical URL detected: {canon_url}")
+        if canon_url:
+            seen_urls.add(canon_url)
 
         # Check for invalid URL or non-Egypt bleed
         rec = EventRecord(**ev_dict)
