@@ -2785,8 +2785,11 @@ function cleanEventTitleJs(title) {
 }
 
 const NON_EGYPT_PATTERNS_JS = [
-  /,\s*(va|in|md|ca|tx|fl|ny|oh|pa|nc|ga|mi|il|nj|wa|az|ma|tn|mo|wi|mn|co|sc|al|la|ky|or|ok|ct|ut|ia|nv|ar|ms|ks|nm|ne|wv|id|hi|nh|me|mt|ri|de|sd|nd|ak|vt|wy)\b/i,
-  /\b(united states|usa|u\.s\.a|u\.s\.|canada|australia|united kingdom|\buk\b|germany|france|netherlands|switzerland|geneve|koln|valencia|istanbul)\b/i
+  /,\s*(?:va|md|ca|tx|fl|ny|oh|pa|nc|ga|mi|il|nj|wa|az|ma|tn|mo|wi|mn|sc|la|ky|or|ok|ct|ut|ia|nv|ar|ms|ks|nm|ne|wv|id|hi|nh|me|mt|ri|de|sd|nd|ak|vt|wy)\b(?:\s*,|\s*$|\s+\d{5})/i,
+  /,\s*[a-z]{2}\s+\d{5}/i,
+  /\b(united states|usa|u\.s\.a|u\.s\.|canada|australia|united kingdom|\buk\b)\b/i,
+  /allevents\.in\/alexandria\//i,
+  /allevents\.in\/mansura\//i
 ];
 
 function isBadOrNonEgyptJs(ev) {
@@ -2833,7 +2836,12 @@ function deduplicateClientEvents(eventsList) {
     // Check Canonical URL
     let canonUrl = "";
     if (ev.url && typeof ev.url === "string") {
-      canonUrl = ev.url.split("?")[0].split("#")[0].replace(/\/+$/, "").toLowerCase();
+      const u = ev.url.trim();
+      if (u.includes("facebook.com/events/search")) {
+        canonUrl = u.toLowerCase();
+      } else {
+        canonUrl = u.split("?")[0].split("#")[0].replace(/\/+$/, "").toLowerCase();
+      }
       if (canonUrl && seenUrls.has(canonUrl)) continue;
     }
 
@@ -2894,7 +2902,7 @@ let rawEventsCache = null;
 async function loadStaticEventsFallback() {
   try {
     if (!rawEventsCache) {
-      const res = await fetch("events.json");
+      const res = await fetch("events.json?v=" + Date.now());
       if (!res.ok) throw new Error("Could not load events.json");
       const loaded = await res.json();
       let customStored = [];
