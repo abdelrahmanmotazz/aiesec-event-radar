@@ -137,3 +137,88 @@ def test_deduplication_preserves_social_fields():
     assert record.proof_type == "Direct Social Announcement Post"
 
 
+def test_clean_event_title():
+    from aiesec_scraper.pipeline import clean_event_title
+
+    raw_noisy = "Thu, Jun 11 · 10:00 AM\nCairo Tech Meetup\n1.4K interested · 51 went\nInterested"
+    assert clean_event_title(raw_noisy) == "Cairo Tech Meetup"
+
+    single_line = "RiseUp Summit 2026"
+    assert clean_event_title(single_line) == "RiseUp Summit 2026"
+
+
+def test_bad_link_and_non_egypt_filter():
+    from aiesec_scraper.pipeline import is_bad_or_non_egypt
+
+    # Generic Facebook root without specific event
+    bad_root = EventRecord(
+        event_id="bad_1",
+        title="Valid Title",
+        source="Facebook",
+        url="https://www.facebook.com/events/"
+    )
+    assert is_bad_or_non_egypt(bad_root) is True
+
+    # Invalid protocol
+    bad_url = EventRecord(
+        event_id="bad_2",
+        title="Valid Title",
+        source="Web",
+        url="#"
+    )
+    assert is_bad_or_non_egypt(bad_url) is True
+
+    # Foreign US Virginia bleed
+    us_event = EventRecord(
+        event_id="us_1",
+        title="Oktoberfest 5k",
+        source="AllEvents",
+        location="3950 Wheeler Ave, Alexandria, VA 22304, United States",
+        url="https://allevents.in/alexandria/oktoberfest-5k/123"
+    )
+    assert is_bad_or_non_egypt(us_event) is True
+
+    # Valid Egyptian event
+    egypt_event = EventRecord(
+        event_id="eg_1",
+        title="Bibliotheca Alexandrina Youth Tech Forum",
+        source="AllEvents",
+        location="Chatby, Alexandria, Egypt",
+        url="https://allevents.in/alexandria-eg/youth-tech-forum/456"
+    )
+    assert is_bad_or_non_egypt(egypt_event) is False
+
+
+def test_fuzzy_token_deduplication():
+    pipeline = EventPipeline()
+    now = datetime.now() + timedelta(days=15)
+
+    ev1 = EventRecord(
+        event_id="ev_a",
+        title="27th Connected Banking Summit - Innovation & AI",
+        source="Eventbrite",
+        start_date=now,
+        url="https://eventbrite.com/cbs-27",
+        aiesec_tags=["Banking", "Fintech"],
+        description="Short description"
+    )
+    ev2 = EventRecord(
+        event_id="ev_b",
+        title="27th Edition Connected Banking Summit Innovation AI",
+        source="AllEvents",
+        start_date=now,
+        url="https://allevents.in/cairo/cbs-27/999",
+        aiesec_tags=["AI", "Career"],
+        description="Much more detailed description of the connected banking summit"
+    )
+
+    deduped = pipeline._deduplicate([ev1, ev2])
+    assert len(deduped) == 1
+    assert "Eventbrite" in deduped[0].source
+    assert "AllEvents" in deduped[0].source
+    assert "Banking" in deduped[0].aiesec_tags
+    assert "AI" in deduped[0].aiesec_tags
+    assert "detailed description" in deduped[0].description
+
+
+

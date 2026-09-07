@@ -51,13 +51,43 @@ def run_daily_scrape():
         logger.error(f"Critical error during pipeline execution: {e}")
         events = []
 
-    logger.info(f"Pipeline finished. Retrieved {len(events)} processed & scored events.")
+    logger.info(f"Scrape pass finished. Retrieved {len(events)} newly scraped events.")
 
-    # Safeguard: If live scraping produced zero events (e.g. rate limit), do not wipe existing data
+    # Load existing database to accumulate events across runs
+    existing_events = []
     root_events_json = os.path.join(PROJECT_ROOT, "events.json")
-    if not events and os.path.exists(root_events_json):
-        logger.warning("Zero events returned by live scrapers! Preserving existing database.")
+    if os.path.exists(root_events_json):
+        try:
+            with open(root_events_json, "r", encoding="utf-8") as f:
+                raw_existing = json.load(f)
+                for item in raw_existing:
+                    try:
+                        existing_events.append(EventRecord(**item))
+                    except Exception:
+                        pass
+            logger.info(f"Loaded {len(existing_events)} existing events from local database.")
+        except Exception as read_err:
+            logger.warning(f"Could not read existing events.json: {read_err}")
+
+    # Combine fresh live scraped events with existing accumulated events
+    combined_events = events + existing_events
+    if not combined_events:
+        logger.warning("Zero events available! Preserving existing database.")
         sys.exit(0)
+
+    # Re-apply date window filtering, quality filtering, and fuzzy deduplication
+    valid_events = pipeline._filter_date_window(combined_events)
+    deduped_events = pipeline._deduplicate(valid_events)
+    pipeline._apply_clash_detection(deduped_events)
+    pipeline._enrich_organizer_contacts(deduped_events)
+
+    deduped_events.sort(key=lambda x: (
+        x.start_date is None,
+        x.start_date or datetime.max,
+        -x.b2c_score
+    ))
+    events = deduped_events
+    logger.info(f"Combined & deduplicated database contains {len(events)} verified Egyptian events.")
 
     # 1. Export Excel and CSV to data/ directory
     data_dir = os.path.join(PROJECT_ROOT, "data")

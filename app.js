@@ -2734,9 +2734,45 @@ async function fetchEvents() {
   }
 }
 
+function cleanEventTitleJs(title) {
+  if (!title) return "";
+  const lines = title.split("\n").map(l => l.trim()).filter(l => l.length > 0);
+  if (!lines.length) return "";
+  for (const line of lines) {
+    if (/^(mon|tue|wed|thu|fri|sat|sun|today|tomorrow|happening|\d{1,2}:\d{2})/i.test(line)) continue;
+    if (/^\d+(\.\d+)?[KM]?\s+(interested|going|went)/i.test(line)) continue;
+    if (/^(interested|going|share|invite|save)$/i.test(line)) continue;
+    if (line.length >= 4) return line;
+  }
+  return lines[0];
+}
+
+const NON_EGYPT_PATTERNS_JS = [
+  /,\s*(va|in|md|ca|tx|fl|ny|oh|pa|nc|ga|mi|il|nj|wa|az|ma|tn|mo|wi|mn|co|sc|al|la|ky|or|ok|ct|ut|ia|nv|ar|ms|ks|nm|ne|wv|id|hi|nh|me|mt|ri|de|sd|nd|ak|vt|wy)\b/i,
+  /\b(united states|usa|u\.s\.a|u\.s\.|canada|australia|united kingdom|\buk\b|germany|france|netherlands|switzerland|geneve|koln|valencia|istanbul)\b/i
+];
+
+function isBadOrNonEgyptJs(ev) {
+  const url = (ev.url || "").trim();
+  if (!url || url === "#" || !(url.startsWith("http://") || url.startsWith("https://"))) return true;
+  try {
+    const parsed = new URL(url);
+    if (!parsed.hostname) return true;
+    if (["facebook.com", "www.facebook.com"].includes(parsed.hostname) && ["", "/events", "/events/"].includes(parsed.pathname)) return true;
+  } catch (e) {
+    return true;
+  }
+  if (ev.country && !["egypt", "eg", "مصر"].includes(ev.country.trim().toLowerCase())) return true;
+  const fullText = `${ev.title || ""} ${ev.location || ""} ${ev.description || ""}`;
+  for (const pat of NON_EGYPT_PATTERNS_JS) {
+    if (pat.test(fullText)) return true;
+  }
+  return false;
+}
+
 /**
- * Client-Side Deduplication Safeguard:
- * Guarantees that no duplicate event ID, canonical URL, or duplicate title+date is ever rendered.
+ * Client-Side Deduplication & Quality Safeguard:
+ * Guarantees that no duplicate event ID, canonical URL, fuzzy title, or bad/non-Egypt link is rendered.
  */
 function deduplicateClientEvents(eventsList) {
   if (!Array.isArray(eventsList)) return [];
@@ -2747,8 +2783,12 @@ function deduplicateClientEvents(eventsList) {
 
   for (const ev of eventsList) {
     if (!ev || !ev.title || typeof ev.title !== "string") continue;
+    ev.title = cleanEventTitleJs(ev.title);
     const titleClean = ev.title.trim();
-    if (titleClean.length < 3 || titleClean.toLowerCase() === "null" || titleClean.toLowerCase() === "none") continue;
+    if (titleClean.length < 3 || ["null", "none", "event", "events", "untitled"].includes(titleClean.toLowerCase())) continue;
+
+    // Filter bad links and foreign location bleed
+    if (isBadOrNonEgyptJs(ev)) continue;
 
     // Check ID
     if (ev.event_id && seenIds.has(ev.event_id)) continue;
@@ -2760,27 +2800,41 @@ function deduplicateClientEvents(eventsList) {
       if (canonUrl && seenUrls.has(canonUrl)) continue;
     }
 
-    // Check Normalized Title Tokens
-    const normTitle = titleClean.toLowerCase()
+    // Check Normalized Title Tokens & Fuzzy Matching
+    const tokens = titleClean.toLowerCase()
       .replace(/[^\w\s]/g, " ")
       .split(/\s+/)
-      .filter(w => !["the", "a", "an", "in", "at", "and", "of", "to", "for", "tickets", "ticket", "egypt", "live"].includes(w) && w.length > 1)
-      .join(" ");
+      .filter(w => !["the", "a", "an", "in", "at", "and", "of", "to", "for", "tickets", "ticket", "egypt", "cairo", "alexandria", "tanta", "mansoura", "live", "edition", "annual", "official"].includes(w) && w.length > 1);
+    const normTitle = tokens.join(" ");
+    const tokenSet = new Set(tokens);
 
     let isDuplicate = false;
     if (normTitle.length >= 4) {
       for (const t of seenTitles) {
-        if (t.normTitle === normTitle) {
-          if (ev.start_date && t.startDate) {
-            const d1 = new Date(ev.start_date).getTime();
-            const d2 = new Date(t.startDate).getTime();
-            if (Math.abs(d1 - d2) <= 4 * 86400000) {
+        let dateMatch = true;
+        if (ev.start_date && t.startDate) {
+          const d1 = new Date(ev.start_date).getTime();
+          const d2 = new Date(t.startDate).getTime();
+          dateMatch = Math.abs(d1 - d2) <= 4 * 86400000;
+        }
+
+        if (dateMatch) {
+          if (t.normTitle === normTitle) {
+            isDuplicate = true;
+            break;
+          }
+          // Fuzzy Jaccard similarity across token sets
+          if (tokenSet.size > 0 && t.tokenSet.size > 0) {
+            let intersection = 0;
+            for (const item of tokenSet) {
+              if (t.tokenSet.has(item)) intersection++;
+            }
+            const union = tokenSet.size + t.tokenSet.size - intersection;
+            const jaccard = intersection / Math.max(union, 1);
+            if (jaccard >= 0.75) {
               isDuplicate = true;
               break;
             }
-          } else {
-            isDuplicate = true;
-            break;
           }
         }
       }
@@ -2790,7 +2844,7 @@ function deduplicateClientEvents(eventsList) {
 
     if (ev.event_id) seenIds.add(ev.event_id);
     if (canonUrl) seenUrls.add(canonUrl);
-    seenTitles.push({ normTitle, startDate: ev.start_date });
+    seenTitles.push({ normTitle, tokenSet, startDate: ev.start_date });
     unique.push(ev);
   }
 

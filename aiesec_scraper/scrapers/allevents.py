@@ -10,6 +10,17 @@ from ..models import EventRecord
 logger = logging.getLogger(__name__)
 
 
+EGYPT_CITY_SLUGS = {
+    "cairo": ("cairo", "Cairo"),
+    "alexandria": ("alexandria-eg", "Alexandria"),
+    "alexandria-eg": ("alexandria-eg", "Alexandria"),
+    "tanta": ("tanta", "Tanta"),
+    "mansoura": ("al-mansurah", "Mansoura"),
+    "al-mansurah": ("al-mansurah", "Mansoura"),
+    "giza": ("cairo", "Giza"),
+}
+
+
 class AllEventsScraper(BaseScraper):
     """Scrapes AllEvents.in city event listings."""
 
@@ -20,12 +31,21 @@ class AllEventsScraper(BaseScraper):
         results: List[EventRecord] = []
         seen_ids = set()
 
-        # AllEvents organizes by city
-        target_cities = [city.lower()] if city and city.lower() not in ["all", "egypt", "nationwide", "country"] else ["cairo", "alexandria", "giza"]
+        # AllEvents uses specific slug names for Egyptian cities to avoid US namesake collision
+        if city and city.lower() not in ["all", "egypt", "nationwide", "country"]:
+            mapped = EGYPT_CITY_SLUGS.get(city.lower(), (city.lower(), city.capitalize()))
+            target_cities = [mapped]
+        else:
+            target_cities = [
+                ("cairo", "Cairo"),
+                ("alexandria-eg", "Alexandria"),
+                ("tanta", "Tanta"),
+                ("al-mansurah", "Mansoura"),
+            ]
 
-        for c in target_cities:
+        for slug, display_city in target_cities:
             for page in range(1, max_pages + 1):
-                url = f"https://allevents.in/{c}/all?page={page}"
+                url = f"https://allevents.in/{slug}/all?page={page}"
                 try:
                     resp = self.client.get(url)
                     if resp.status_code != 200:
@@ -83,7 +103,7 @@ class AllEventsScraper(BaseScraper):
                             end_date=None,
                             date_display=date_str or "Date TBA",
                             location=location.strip() or "TBA",
-                            city=c.capitalize(),
+                            city=display_city,
                             country=country.capitalize(),
                             url=link,
                             ticket_type=ticket_type,

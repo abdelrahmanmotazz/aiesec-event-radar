@@ -1,7 +1,9 @@
 import concurrent.futures
+import difflib
 import hashlib
 import logging
 import re
+import urllib.parse
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional
 
@@ -19,12 +21,66 @@ from .scrapers import (
 
 logger = logging.getLogger(__name__)
 
+NON_EGYPT_PATTERNS = [
+    re.compile(r",\s*(?:va|md|ca|tx|fl|ny|oh|pa|nc|ga|mi|il|nj|wa|az|ma|tn|mo|wi|mn|sc|la|ky|or|ok|ct|ut|ia|nv|ar|ms|ks|nm|ne|wv|id|hi|nh|me|mt|ri|de|sd|nd|ak|vt|wy)\b(?:\s*,|\s*$|\s+\d{5})", re.IGNORECASE),
+    re.compile(r",\s*[a-z]{2}\s+\d{5}", re.IGNORECASE),
+    re.compile(r"\b(united states|usa|u\.s\.a|u\.s\.|canada|australia|united kingdom|\buk\b)\b", re.IGNORECASE),
+    re.compile(r"allevents\.in/alexandria/", re.IGNORECASE),
+    re.compile(r"allevents\.in/mansura/", re.IGNORECASE),
+]
+
 
 def normalize_event_url(url: str) -> str:
     """Strip query parameters and anchors for canonical URL matching."""
     if not url:
         return ""
     return url.split("?")[0].split("#")[0].rstrip("/").lower()
+
+
+def clean_event_title(title: str) -> str:
+    """Sanitizes multiline raw social feed text into a clean single-line title."""
+    if not title:
+        return ""
+    lines = [line.strip() for line in title.split("\n") if line.strip()]
+    if not lines:
+        return ""
+    for line in lines:
+        if re.search(r'^(mon|tue|wed|thu|fri|sat|sun|today|tomorrow|happening|\d{1,2}:\d{2})', line, re.IGNORECASE):
+            continue
+        if re.search(r'^\d+(\.\d+)?[KM]?\s+(interested|going|went)', line, re.IGNORECASE):
+            continue
+        if re.search(r'^(interested|going|share|invite|save)$', line, re.IGNORECASE):
+            continue
+        if len(line) >= 4:
+            return line
+    return lines[0]
+
+
+def is_bad_or_non_egypt(ev: EventRecord) -> bool:
+    """Validates URL validity and filters out non-Egyptian / foreign search bleed."""
+    url = (ev.url or "").strip()
+    if not url or url == "#" or not (url.startswith("http://") or url.startswith("https://")):
+        return True
+    try:
+        parsed = urllib.parse.urlparse(url)
+        if not parsed.netloc:
+            return True
+        if parsed.netloc in ["facebook.com", "www.facebook.com"] and parsed.path.rstrip("/") in ["", "/events"]:
+            return True
+    except Exception:
+        return True
+
+    # Drop explicitly non-Egypt country
+    if ev.country and ev.country.strip().lower() not in ["egypt", "eg", "مصر"]:
+        return True
+
+    # Check for foreign state / country patterns in title, location, url
+    loc_and_url = f"{ev.title or ''} {ev.location or ''} {ev.url or ''}"
+    for pat in NON_EGYPT_PATTERNS:
+        if pat.search(loc_and_url):
+            return True
+
+    return False
 
 
 def are_dates_compatible(d1: Optional[datetime], d2: Optional[datetime]) -> bool:
@@ -40,6 +96,14 @@ def clean_title_for_comparison(title: str) -> str:
     """Normalize event title for deduplication comparison."""
     cleaned = re.sub(r"[^\w\s]", "", title.lower())
     tokens = [w for w in cleaned.split() if w not in ["the", "a", "an", "in", "at", "and", "of", "to", "for", "tickets"]]
+    return " ".join(tokens)
+
+
+def clean_title_for_fuzzy_matching(title: str) -> str:
+    """Normalize event title for fuzzy similarity calculation."""
+    cleaned = re.sub(r"[^\w\s]", " ", title.lower())
+    noise = {"the", "a", "an", "in", "at", "and", "of", "to", "for", "tickets", "edition", "annual", "official", "egypt", "cairo", "alexandria", "tanta", "mansoura"}
+    tokens = [w for w in cleaned.split() if w not in noise and len(w) > 1]
     return " ".join(tokens)
 
 
@@ -184,9 +248,17 @@ class EventPipeline:
         seen_title_buckets: List[Dict] = []
 
         for ev in events:
-            # Drop invalid, blank, or placeholder events
+            # 1. Clean title if multiline or noisy
+            if ev.title:
+                ev.title = clean_event_title(ev.title)
+
+            # 2. Drop invalid, blank, or placeholder events
             title_clean = (ev.title or "").strip()
             if not title_clean or len(title_clean) < 3 or title_clean.lower() in ["null", "none", "event", "untitled"]:
+                continue
+
+            # 3. Filter bad links and non-Egypt false positives
+            if is_bad_or_non_egypt(ev):
                 continue
 
             matched_existing: Optional[EventRecord] = None
@@ -200,13 +272,31 @@ class EventPipeline:
             if not matched_existing and canon_url and canon_url in seen_urls:
                 matched_existing = seen_urls[canon_url]
 
-            # 3. Match by normalized title tokens + date window
+            # 3. Match by normalized title tokens + date window (Exact or Fuzzy Jaccard >= 0.75 / Sequence >= 0.85)
             norm_title = clean_title_for_comparison(title_clean)
-            if not matched_existing and len(norm_title) >= 4:
+            fuzzy_title = clean_title_for_fuzzy_matching(title_clean)
+
+            if not matched_existing and (len(norm_title) >= 4 or len(fuzzy_title) >= 4):
+                tokens1 = set(fuzzy_title.split()) if fuzzy_title else set()
                 for bucket in seen_title_buckets:
-                    if norm_title == bucket["norm_title"] and are_dates_compatible(ev.start_date, bucket["start_date"]):
+                    # Check date proximity compatibility
+                    if not are_dates_compatible(ev.start_date, bucket["start_date"]):
+                        continue
+
+                    # Exact token match
+                    if norm_title and norm_title == bucket["norm_title"]:
                         matched_existing = bucket["record"]
                         break
+
+                    # Fuzzy similarity match
+                    b_fuzzy = bucket.get("fuzzy_title", "")
+                    if fuzzy_title and b_fuzzy:
+                        tokens2 = bucket.get("tokens", set())
+                        jaccard = len(tokens1 & tokens2) / max(len(tokens1 | tokens2), 1)
+                        ratio = difflib.SequenceMatcher(None, fuzzy_title, b_fuzzy).ratio()
+                        if jaccard >= 0.75 or ratio >= 0.85:
+                            matched_existing = bucket["record"]
+                            break
 
             if matched_existing:
                 # Merge intelligence
@@ -243,6 +333,8 @@ class EventPipeline:
                     seen_urls[canon_url] = ev
                 seen_title_buckets.append({
                     "norm_title": norm_title,
+                    "fuzzy_title": fuzzy_title,
+                    "tokens": set(fuzzy_title.split()) if fuzzy_title else set(),
                     "start_date": ev.start_date,
                     "record": ev
                 })

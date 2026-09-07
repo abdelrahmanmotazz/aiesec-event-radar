@@ -21,6 +21,31 @@ logger = logging.getLogger(__name__)
 DEFAULT_SESSION_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "data", "meta_session"))
 DEFAULT_STATE_FILE = os.path.join(DEFAULT_SESSION_DIR, "storage_state.json")
 
+NON_EGYPT_PATTERNS = [
+    re.compile(r",\s*(va|in|md|ca|tx|fl|ny|oh|pa|nc|ga|mi|il|nj|wa|az|ma|tn|mo|wi|mn|co|sc|al|la|ky|or|ok|ct|ut|ia|nv|ar|ms|ks|nm|ne|wv|id|hi|nh|me|mt|ri|de|sd|nd|ak|vt|wy)\b", re.IGNORECASE),
+    re.compile(r"\b(united states|usa|u\.s\.a|u\.s\.|canada|australia|united kingdom|\buk\b|germany|france|netherlands|switzerland|geneve|koln|valencia|istanbul)\b", re.IGNORECASE),
+]
+
+
+def clean_event_title(title: str) -> str:
+    """Sanitizes multiline raw social feed text into a clean single-line title."""
+    if not title:
+        return ""
+    lines = [line.strip() for line in title.split("\n") if line.strip()]
+    if not lines:
+        return ""
+    for line in lines:
+        if re.search(r'^(mon|tue|wed|thu|fri|sat|sun|today|tomorrow|happening|\d{1,2}:\d{2})', line, re.IGNORECASE):
+            continue
+        if re.search(r'^\d+(\.\d+)?[KM]?\s+(interested|going|went)', line, re.IGNORECASE):
+            continue
+        if re.search(r'^(interested|going|share|invite|save)$', line, re.IGNORECASE):
+            continue
+        if len(line) >= 4:
+            return line
+    return lines[0]
+
+
 # High-yield search queries across Egyptian university and tech ecosystems
 SEARCH_QUERIES = [
     ("National Discovery Feed", "https://www.facebook.com/events/"),
@@ -29,6 +54,9 @@ SEARCH_QUERIES = [
     ("Youth Leadership Conferences", "https://www.facebook.com/events/search/?q=youth%20conference%20egypt"),
     ("Delta & Tanta Universities", "https://www.facebook.com/events/search/?q=tanta%20university%20events"),
     ("Alexandria Student Events", "https://www.facebook.com/events/search/?q=alexandria%20events%20egypt"),
+    ("Startup & Entrepreneurship Egypt", "https://www.facebook.com/events/search/?q=startup%20summit%20cairo"),
+    ("Student Activity & Volunteering", "https://www.facebook.com/events/search/?q=student%20activity%20egypt"),
+    ("Mansoura Student Events", "https://www.facebook.com/events/search/?q=mansoura%20events%20egypt"),
 ]
 
 
@@ -85,12 +113,15 @@ class MetaPlaywrightScraper:
                     except Exception as edge_err:
                         logger.debug(f"Persistent Edge launch fallback: {edge_err}")
 
-                # Mode 2: Storage State Context (works on both Linux and Windows with Chromium)
+                # Mode 2: Storage State Context (works on both Linux and Windows)
                 if context is None:
-                    browser = p.chromium.launch(
-                        headless=True,
-                        args=["--disable-blink-features=AutomationControlled", "--no-sandbox", "--disable-dev-shm-usage"]
-                    )
+                    launch_kwargs = {
+                        "headless": True,
+                        "args": ["--disable-blink-features=AutomationControlled", "--no-sandbox", "--disable-dev-shm-usage"]
+                    }
+                    if use_edge:
+                        launch_kwargs["channel"] = "msedge"
+                    browser = p.chromium.launch(**launch_kwargs)
                     state_arg = self.state_file if os.path.exists(self.state_file) else None
                     context = browser.new_context(
                         storage_state=state_arg,
@@ -290,18 +321,30 @@ class MetaPlaywrightScraper:
 
     def _create_record(self, item: Dict[str, Any], city: Optional[str] = None) -> Optional[EventRecord]:
         """Convert raw extracted dictionary into enriched EventRecord."""
-        title = item.get("title", "").strip()
+        raw_title = item.get("title", "").strip()
+        title = clean_event_title(raw_title)
         if not title or len(title) < 4:
             return None
-        # Clean title if it contains attendee counts
+        # Clean title if it contains attendee counts or generic text
         if re.search(r'^\d+(\.\d+)?[KM]?\s+(interested|going)', title, re.IGNORECASE):
             return None
+        if title.lower() in ["facebook event", "null", "none", "event", "events"]:
+            return None
 
-        event_id = str(item.get("event_id") or re.sub(r'[^a-zA-Z0-9]', '', title)[:16])
-        url = item.get("url") or f"https://www.facebook.com/events/{event_id}/"
         location = item.get("location", "Egypt")
         desc = item.get("description", "")
         attendees = item.get("attendees", "")
+
+        # Non-Egypt location filter guardrail (prevents US Alexandria / VA / IN query bleed)
+        full_loc = f"{title} {location} {desc}"
+        for pat in NON_EGYPT_PATTERNS:
+            if pat.search(full_loc):
+                return None
+
+        event_id = str(item.get("event_id") or re.sub(r'[^a-zA-Z0-9]', '', title)[:16])
+        url = item.get("url") or f"https://www.facebook.com/events/{event_id}/"
+        if not url or url == "#" or not (url.startswith("http://") or url.startswith("https://")):
+            return None
 
         # City inference
         inferred_city = "Cairo"
