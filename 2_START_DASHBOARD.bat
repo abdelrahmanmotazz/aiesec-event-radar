@@ -11,5 +11,5 @@ echo Press Ctrl+C in this window to stop the server.
 echo.
 timeout /t 2 /nobreak >nul
 start http://localhost:8000
-call .venv\Scripts\python.exe -m aiesec_scraper.web
+call .venv\Scripts\python.exe -m aiesec_scraper.cli dashboard
 pause
