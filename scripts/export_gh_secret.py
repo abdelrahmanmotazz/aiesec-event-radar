@@ -38,7 +38,19 @@ def main():
 
     b64_val = base64.b64encode(content.encode("utf-8")).decode("ascii")
 
+    # Automatically copy directly to Windows clipboard
+    copied_to_clipboard = False
+    try:
+        import subprocess
+        subprocess.run("clip", input=b64_val, text=True, check=True)
+        copied_to_clipboard = True
+    except Exception:
+        pass
+
     print("\n[SUCCESS] Your Facebook authenticated session is ready for GitHub Actions!\n")
+    if copied_to_clipboard:
+        print(">>> SUCCESS: Secret has been AUTOMATICALLY COPIED to your clipboard! <<<")
+        print(">>> You can now just press Ctrl+V to paste it on GitHub! <<<\n")
     print("To enable 100% automated daily cloud scraping on your live website:")
     print("1. Go to your GitHub repository:")
     print("   https://github.com/abdelrahmanmotazz/aiesec-event-radar/settings/secrets/actions")
