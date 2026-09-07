@@ -692,26 +692,57 @@ function initThreeRadar() {
     // Only render Three.js when hero canvas is actually visible on screen.
     // When scrolled down to view cards, Three.js is completely paused to save 100% CPU/GPU!
     let isHeroVisible = true;
+    let isThreeRunning = false;
+    let threeRafId = null;
+
+    function startThreeLoop() {
+      if (isThreeRunning || !isHeroVisible || document.hidden) return;
+      isThreeRunning = true;
+      threeRafId = requestAnimationFrame(animate);
+    }
+
+    function stopThreeLoop() {
+      isThreeRunning = false;
+      if (threeRafId) {
+        cancelAnimationFrame(threeRafId);
+        threeRafId = null;
+      }
+    }
+
     if ("IntersectionObserver" in window) {
       const heroObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           isHeroVisible = entry.isIntersecting;
+          if (isHeroVisible && !document.hidden && !state.activeDrawerEvent) {
+            startThreeLoop();
+          } else {
+            stopThreeLoop();
+          }
         });
       }, { threshold: 0.05 });
       heroObserver.observe(container);
     }
 
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) {
+        stopThreeLoop();
+      } else if (isHeroVisible && !state.activeDrawerEvent) {
+        startThreeLoop();
+      }
+    });
+
     // Render Animation Loop with 3D Holographic Particle Wave Flow
     let waveClock = 0;
-    const isMobileViewport = window.innerWidth < 768 || ("ontouchstart" in window);
     function animate() {
-      requestAnimationFrame(animate);
+      if (!isThreeRunning) return;
 
       // Skip render if off-screen, tab hidden, drawer open, or actively scrolling
       if (!isHeroVisible || document.hidden || state.activeDrawerEvent || window.__isScrolling) {
+        stopThreeLoop();
         return;
       }
 
+      threeRafId = requestAnimationFrame(animate);
       waveClock += 0.022;
 
       if (state.activeSpatialMode === "mesh") {
@@ -745,21 +776,9 @@ function initThreeRadar() {
           }
         });
       } else {
-        // Subtle dynamic 3D undulating wave oscillation across particles (desktop only to prevent mobile stutter)
-        if (!isMobileViewport && partGeo && partGeo.attributes && partGeo.attributes.position) {
-          const posArr = partGeo.attributes.position.array;
-          for (let i = 0; i < particleCount; i++) {
-            const i3 = i * 3;
-            const bx = basePositions[i3];
-            const by = basePositions[i3 + 1];
-            const bz = basePositions[i3 + 2];
-            const wave = 1.0 + 0.038 * Math.sin(waveClock * 2.2 + (by * 0.09) + (bx * 0.07));
-            posArr[i3] = bx * wave;
-            posArr[i3 + 1] = by * wave;
-            posArr[i3 + 2] = bz * wave;
-          }
-          partGeo.attributes.position.needsUpdate = true;
-        }
+        // GPU-efficient breathing wave oscillation using matrix transform
+        const waveScale = 1.0 + 0.025 * Math.sin(waveClock * 2.2);
+        particleMesh.scale.set(waveScale, waveScale, waveScale);
 
         if (!isDragging) {
           wireframeGlobe.rotation.y += 0.002;
@@ -775,7 +794,7 @@ function initThreeRadar() {
 
       renderer.render(scene, camera);
     }
-    animate();
+    startThreeLoop();
 
     // Resize Observer for auto scaling
     if (window.ResizeObserver) {
@@ -2788,8 +2807,9 @@ const NON_EGYPT_PATTERNS_JS = [
   /,\s*(?:va|md|ca|tx|fl|ny|oh|pa|nc|ga|mi|il|nj|wa|az|ma|tn|mo|wi|mn|sc|la|ky|or|ok|ct|ut|ia|nv|ar|ms|ks|nm|ne|wv|id|hi|nh|me|mt|ri|de|sd|nd|ak|vt|wy)\b(?:\s*,|\s*$|\s+\d{5})/i,
   /,\s*[a-z]{2}\s+\d{5}/i,
   /\b(united states|usa|u\.s\.a|u\.s\.|canada|australia|united kingdom|\buk\b)\b/i,
-  /allevents\.in\/alexandria\//i,
-  /allevents\.in\/mansura\//i
+  /allevents\.in\/assisi\//i,
+  /\b(assisi|foligno|umbria|spello|perugia|lyrick|brunori|capossela)\b/i,
+  /\b(berlin-datatalks|stuttgart-english|founders-valencia|geneve|istanbul-english)\b/i
 ];
 
 function isBadOrNonEgyptJs(ev) {
@@ -3103,8 +3123,184 @@ function getSourcePill(source) {
   return `<span class="source-pill-default px-2 py-0.5 rounded-full text-[10px] font-medium">${source}</span>`;
 }
 
-// --- Render Cards View with GSAP Stagger Entrance ---
+function createCardNode(ev) {
+  const card = document.createElement("div");
+  const isHigh = ev.b2c_priority === "HIGH";
+  const isFlagship = (ev.category && ev.category.toLowerCase().includes("flagship")) || ev.source.toLowerCase().includes("summit") || ev.title.toLowerCase().includes("techne") || ev.title.toLowerCase().includes("riseup");
+  const hasPartner = !!ev.parallel_org;
+  const hasClash = ev.clash_warning;
+
+  let glowClass = "";
+  let beamClass = "beam-default";
+  if (isFlagship) {
+    glowClass = "card-summit-glow";
+    beamClass = "beam-summit";
+  } else if (isHigh) {
+    glowClass = "card-high-glow";
+    beamClass = "beam-high";
+  } else if (hasPartner) {
+    glowClass = "card-partner-glow";
+    beamClass = "beam-partner";
+  } else if (ev.is_social_first) {
+    beamClass = "beam-social";
+  }
+
+  card.className = `radar-card spotlight-card p-5 sm:p-6 flex flex-col justify-between h-full ${glowClass}`;
+
+  const contacts = enrichEventContacts(ev);
+  const badgeClass = isHigh ? "badge-neon-coral" : (ev.b2c_priority === "MEDIUM" ? "badge-neon-amber" : "badge-neon-slate");
+  const dateBadge = parseDateForTearoff(ev.date_display);
+  const sourcePill = getSourcePill(ev.source);
+
+  card.innerHTML = `
+    <!-- Linear Conic Laser Border Beam (GPU-Accelerated) -->
+    <div class="laser-border-beam ${beamClass}" aria-hidden="true"></div>
+
+    <!-- Prismatic Holographic Iridescent Sheen -->
+    <div class="holographic-sheen"></div>
+
+    <!-- Tactical Target Lock-On HUD Reticles -->
+    <div class="hud-reticle-bracket hud-reticle-tl"></div>
+    <div class="hud-reticle-bracket hud-reticle-tr"></div>
+    <div class="hud-reticle-bracket hud-reticle-bl"></div>
+    <div class="hud-reticle-bracket hud-reticle-br"></div>
+    <div class="hud-scan-line"></div>
+    <div class="hud-target-pill">LOCK ${ev.event_id ? ev.event_id.slice(-4).toUpperCase() : 'B2C'}</div>
+
+    <div class="space-y-3.5">
+      <!-- Top Tags & Meta Stream Bar -->
+      <div class="flex items-center justify-between gap-2 flex-wrap">
+        <div class="flex items-center gap-1.5">
+          <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold ${badgeClass}">
+            ★ ${ev.b2c_score.toFixed(1)} ${ev.b2c_priority}
+          </span>
+          ${sourcePill}
+        </div>
+        <div class="flex items-center gap-1.5 flex-wrap justify-end">
+          <a href="${getSafeEventUrl(ev)}" target="_blank" onclick="event.stopPropagation()" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 inline-flex items-center gap-1 hover:bg-emerald-500/25 transition" title="100% Real Event • Verified: ${ev.proof_type || 'Announcement Post'}">
+            <i data-lucide="shield-check" class="w-3 h-3 text-emerald-400"></i> Proof ↗
+          </a>
+          ${ev.is_social_first ? `<span class="badge-social-first px-2 py-0.5 rounded-full text-[10px] font-bold inline-flex items-center gap-1" title="Social First Announcement"><i data-lucide="zap" class="w-3 h-3 text-cyan-400"></i> Social First</span>` : ""}
+          ${isFlagship ? `<span class="badge-flagship-gold px-2.5 py-0.5 rounded-full text-[10px] inline-flex items-center gap-1">👑 Flagship</span>` : ""}
+          ${hasPartner ? `<span class="badge-neon-purple px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wide">${ev.parallel_org}</span>` : ""}
+          ${hasClash ? `<span class="badge-neon-amber px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wide">⚠️ Weekend Clash</span>` : ""}
+        </div>
+      </div>
+
+      <!-- Title Block with Physical Tear-Off Date Badge -->
+      <div class="flex items-start gap-3 pt-1">
+        <div class="date-tearoff-badge shrink-0" title="${ev.date_display || 'Date TBA'}">
+          <span class="date-tearoff-month">${dateBadge.month}</span>
+          <span class="date-tearoff-day">${dateBadge.day}</span>
+        </div>
+
+        <div class="flex-1 min-w-0">
+          <h3 class="font-extrabold text-base text-white leading-snug line-clamp-2 hover:text-[#00E5FF] transition group font-display">
+            <a href="${getSafeEventUrl(ev)}" target="_blank" class="group-hover:underline underline-offset-2">${ev.title}</a>
+          </h3>
+          <div class="mt-1.5 space-y-1 text-xs text-slate-400">
+            <div class="flex items-center gap-1.5 truncate">
+              <i data-lucide="map-pin" class="w-3.5 h-3.5 text-rose-400 shrink-0"></i>
+              <span class="truncate">${ev.location} • <strong class="text-slate-200 font-semibold">${ev.city}</strong></span>
+            </div>
+            <div class="flex items-center gap-1.5 text-slate-400 truncate">
+              <i data-lucide="calendar" class="w-3.5 h-3.5 text-sky-400 shrink-0"></i>
+              <span class="truncate">${ev.date_display || "Date TBA"}</span>
+              ${ev.ticket_type ? `<span class="text-slate-600">•</span><span class="text-slate-300 font-medium">${ev.ticket_type}</span>` : ""}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Specific Event Intelligence Briefing Box -->
+      <div class="event-desc-box p-3.5 text-xs space-y-1.5 my-1">
+        <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center justify-between">
+          <span class="flex items-center gap-1.5 text-sky-400">
+            <i data-lucide="file-text" class="w-3.5 h-3.5"></i> Event Intelligence Briefing
+          </span>
+          <span class="text-[9px] text-slate-500 font-mono-code font-medium">Granular Details</span>
+        </div>
+        <p class="text-slate-300 text-[11px] leading-relaxed line-clamp-3 hover:line-clamp-none transition-all duration-300 cursor-pointer" title="Hover to view full briefing">
+          ${ev.description || "No specific briefing available."}
+        </p>
+      </div>
+
+      <!-- AIESEC Strategic Recommendation Callout Box -->
+      <div class="dark-action-box p-3.5 text-xs mt-1">
+        <div class="text-[10px] font-bold text-[#00E5FF] uppercase tracking-wider mb-1 flex items-center gap-1.5 font-display">
+          <i data-lucide="zap" class="w-3.5 h-3.5 text-[#00E5FF]"></i> Recommended B2C Action
+        </div>
+        <div class="font-medium text-slate-200 leading-relaxed text-[11px]">
+          ${ev.recommended_action}
+        </div>
+      </div>
+
+      <!-- Organizer Scout Intelligence Strip -->
+      <div class="p-2.5 rounded-xl bg-white/[0.03] border border-white/[0.08] flex items-center justify-between gap-2 text-xs mt-1">
+        <div class="flex items-center gap-1.5 min-w-0">
+          <i data-lucide="user-check" class="w-3.5 h-3.5 text-emerald-400 shrink-0"></i>
+          <span class="text-[11px] font-semibold text-slate-300 truncate" title="${contacts.organizerName}">${contacts.organizerName}</span>
+        </div>
+        <div class="flex items-center gap-1.5 shrink-0 text-slate-400">
+          ${contacts.email ? `<span class="w-5 h-5 rounded-md bg-sky-500/15 text-sky-300 flex items-center justify-center text-[10px]" title="Email: ${contacts.email}"><i data-lucide="mail" class="w-3 h-3"></i></span>` : ""}
+          ${contacts.linkedin ? `<span class="w-5 h-5 rounded-md bg-[#0A66C2]/20 text-[#0A66C2] flex items-center justify-center text-[10px]" title="LinkedIn Verified"><svg class="w-3 h-3 fill-[#0A66C2]" viewBox="0 0 24 24"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.2V10.9H6.46M7.83 6.64a1.64 1.64 0 1 0 0 3.28 1.64 1.64 0 0 0 0-3.28Z"/></svg></span>` : ""}
+          ${contacts.instagram ? `<span class="w-5 h-5 rounded-md bg-[#E1306C]/20 text-[#E1306C] flex items-center justify-center text-[10px]" title="Instagram: @${contacts.instagram}"><svg class="w-3 h-3 text-[#E1306C] fill-none stroke-current stroke-2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><circle cx="12" cy="12" r="4"></circle><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg></span>` : ""}
+          ${contacts.phone ? `<span class="w-5 h-5 rounded-md bg-emerald-500/15 text-emerald-300 flex items-center justify-center text-[10px]" title="WhatsApp: ${contacts.phone}"><svg class="w-3 h-3 text-[#25D366] fill-none stroke-current stroke-2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span>` : ""}
+          <span class="text-[10px] text-sky-400 font-bold ml-1 hover:underline">Outreach →</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Footer -->
+    <div class="pt-3.5 mt-auto border-t border-white/[0.08] flex items-center justify-between gap-2">
+      <button class="btn-pitch-event flex-1 py-2.5 px-3 bg-gradient-to-r from-[#037EF3]/20 to-[#0266C8]/20 hover:from-[#037EF3] hover:to-[#0266C8] text-[#38BDF8] hover:text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 border border-[#38BDF8]/30 hover:border-transparent shadow-[0_0_12px_rgba(3,126,243,0.15)] active:scale-95"
+              data-event-id="${ev.event_id}">
+        <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Pitch
+      </button>
+      <button class="btn-card-lead-hunt py-2.5 px-3 bg-amber-500/15 hover:bg-amber-500 text-amber-300 hover:text-slate-950 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 border border-amber-500/30 hover:border-transparent shadow-[0_0_12px_rgba(245,158,11,0.15)] active:scale-95"
+              title="Hunt Leads for this event" data-event-id="${ev.event_id}">
+        <i data-lucide="crosshair" class="w-3.5 h-3.5 text-amber-400"></i> Leads
+      </button>
+      <a href="${getSafeEventUrl(ev)}" target="_blank" class="p-2.5 text-slate-400 hover:text-white rounded-xl hover:bg-white/[0.08] border border-white/[0.09] transition active:scale-95 flex items-center justify-center shrink-0" title="Open Event Link">
+        <i data-lucide="external-link" class="w-4 h-4"></i>
+      </a>
+    </div>
+  `;
+
+  // Clicking card opens the Slide-Over Drawer
+  card.addEventListener("click", (e) => {
+    if (e.target.closest("a") || e.target.closest("button")) return;
+    openEventDrawer(ev);
+  });
+
+  const pitchBtn = card.querySelector(".btn-pitch-event");
+  if (pitchBtn) {
+    pitchBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      openEventDrawer(ev);
+    });
+  }
+
+  const leadHuntBtn = card.querySelector(".btn-card-lead-hunt");
+  if (leadHuntBtn) {
+    leadHuntBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      openLeadHunter(ev.event_id);
+    });
+  }
+
+  return card;
+}
+
+// Progressive Chunked Card Renderer (Instant < 10ms response on filter/search)
+let activeCardRenderTimer = null;
+
 function renderCards() {
+  if (activeCardRenderTimer) {
+    clearTimeout(activeCardRenderTimer);
+    activeCardRenderTimer = null;
+  }
+
   containerCards.innerHTML = "";
 
   if (state.events.length === 0) {
@@ -3115,199 +3311,56 @@ function renderCards() {
         <p class="text-xs text-slate-400 mt-1">Try broadening your search term, switching city to 'All Egypt', or resetting filters.</p>
       </div>
     `;
-    if (window.lucide) lucide.createIcons();
+    if (window.lucide) lucide.createIcons({ root: containerCards });
     return;
   }
 
+  const BATCH_SIZE = 24;
+  const initialBatch = state.events.slice(0, BATCH_SIZE);
+  const remainingEvents = state.events.slice(BATCH_SIZE);
+
   const fragment = document.createDocumentFragment();
-
-  state.events.forEach((ev) => {
-    const card = document.createElement("div");
-    const isHigh = ev.b2c_priority === "HIGH";
-    const isFlagship = (ev.category && ev.category.toLowerCase().includes("flagship")) || ev.source.toLowerCase().includes("summit") || ev.title.toLowerCase().includes("techne") || ev.title.toLowerCase().includes("riseup");
-    const hasPartner = !!ev.parallel_org;
-    const hasClash = ev.clash_warning;
-
-    let glowClass = "";
-    let beamClass = "beam-default";
-    if (isFlagship) {
-      glowClass = "card-summit-glow";
-      beamClass = "beam-summit";
-    } else if (isHigh) {
-      glowClass = "card-high-glow";
-      beamClass = "beam-high";
-    } else if (hasPartner) {
-      glowClass = "card-partner-glow";
-      beamClass = "beam-partner";
-    } else if (ev.is_social_first) {
-      beamClass = "beam-social";
-    }
-
-    card.className = `radar-card spotlight-card p-5 sm:p-6 flex flex-col justify-between h-full ${glowClass}`;
-
-    // Priority badge class
-    const contacts = enrichEventContacts(ev);
-    const badgeClass = isHigh ? "badge-neon-coral" : (ev.b2c_priority === "MEDIUM" ? "badge-neon-amber" : "badge-neon-slate");
-    const dateBadge = parseDateForTearoff(ev.date_display);
-    const sourcePill = getSourcePill(ev.source);
-
-    card.innerHTML = `
-      <!-- Linear Conic Laser Border Beam (GPU-Accelerated) -->
-      <div class="laser-border-beam ${beamClass}" aria-hidden="true"></div>
-
-      <!-- Prismatic Holographic Iridescent Sheen (Feature 1) -->
-      <div class="holographic-sheen"></div>
-
-      <!-- Tactical Target Lock-On HUD Reticles (Feature B) -->
-      <div class="hud-reticle-bracket hud-reticle-tl"></div>
-      <div class="hud-reticle-bracket hud-reticle-tr"></div>
-      <div class="hud-reticle-bracket hud-reticle-bl"></div>
-      <div class="hud-reticle-bracket hud-reticle-br"></div>
-      <div class="hud-scan-line"></div>
-      <div class="hud-target-pill">LOCK ${ev.event_id ? ev.event_id.slice(-4).toUpperCase() : 'B2C'}</div>
-
-      <div class="space-y-3.5">
-        <!-- Top Tags & Meta Stream Bar -->
-        <div class="flex items-center justify-between gap-2 flex-wrap">
-          <div class="flex items-center gap-1.5">
-            <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold ${badgeClass}">
-              ★ ${ev.b2c_score.toFixed(1)} ${ev.b2c_priority}
-            </span>
-            ${sourcePill}
-          </div>
-          <div class="flex items-center gap-1.5 flex-wrap justify-end">
-            <a href="${getSafeEventUrl(ev)}" target="_blank" onclick="event.stopPropagation()" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 inline-flex items-center gap-1 hover:bg-emerald-500/25 transition" title="100% Real Event • Verified: ${ev.proof_type || 'Announcement Post'}">
-              <i data-lucide="shield-check" class="w-3 h-3 text-emerald-400"></i> Proof ↗
-            </a>
-            ${ev.is_social_first ? `<span class="badge-social-first px-2 py-0.5 rounded-full text-[10px] font-bold inline-flex items-center gap-1" title="Social First Announcement"><i data-lucide="zap" class="w-3 h-3 text-cyan-400"></i> Social First</span>` : ""}
-            ${isFlagship ? `<span class="badge-flagship-gold px-2.5 py-0.5 rounded-full text-[10px] inline-flex items-center gap-1">👑 Flagship</span>` : ""}
-            ${hasPartner ? `<span class="badge-neon-purple px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wide">${ev.parallel_org}</span>` : ""}
-            ${hasClash ? `<span class="badge-neon-amber px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wide">⚠️ Weekend Clash</span>` : ""}
-          </div>
-        </div>
-
-        <!-- Title Block with Physical Tear-Off Date Badge -->
-        <div class="flex items-start gap-3 pt-1">
-          <div class="date-tearoff-badge shrink-0" title="${ev.date_display || 'Date TBA'}">
-            <span class="date-tearoff-month">${dateBadge.month}</span>
-            <span class="date-tearoff-day">${dateBadge.day}</span>
-          </div>
-
-          <div class="flex-1 min-w-0">
-            <h3 class="font-extrabold text-base text-white leading-snug line-clamp-2 hover:text-[#00E5FF] transition group font-display">
-              <a href="${getSafeEventUrl(ev)}" target="_blank" class="group-hover:underline underline-offset-2">${ev.title}</a>
-            </h3>
-            <div class="mt-1.5 space-y-1 text-xs text-slate-400">
-              <div class="flex items-center gap-1.5 truncate">
-                <i data-lucide="map-pin" class="w-3.5 h-3.5 text-rose-400 shrink-0"></i>
-                <span class="truncate">${ev.location} • <strong class="text-slate-200 font-semibold">${ev.city}</strong></span>
-              </div>
-              <div class="flex items-center gap-1.5 text-slate-400 truncate">
-                <i data-lucide="calendar" class="w-3.5 h-3.5 text-sky-400 shrink-0"></i>
-                <span class="truncate">${ev.date_display || "Date TBA"}</span>
-                ${ev.ticket_type ? `<span class="text-slate-600">•</span><span class="text-slate-300 font-medium">${ev.ticket_type}</span>` : ""}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Specific Event Intelligence Briefing Box -->
-        <div class="event-desc-box p-3.5 text-xs space-y-1.5 my-1">
-          <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center justify-between">
-            <span class="flex items-center gap-1.5 text-sky-400">
-              <i data-lucide="file-text" class="w-3.5 h-3.5"></i> Event Intelligence Briefing
-            </span>
-            <span class="text-[9px] text-slate-500 font-mono-code font-medium">Granular Details</span>
-          </div>
-          <p class="text-slate-300 text-[11px] leading-relaxed line-clamp-3 hover:line-clamp-none transition-all duration-300 cursor-pointer" title="Hover to view full briefing">
-            ${ev.description || "No specific briefing available."}
-          </p>
-        </div>
-
-        <!-- AIESEC Strategic Recommendation Callout Box -->
-        <div class="dark-action-box p-3.5 text-xs mt-1">
-          <div class="text-[10px] font-bold text-[#00E5FF] uppercase tracking-wider mb-1 flex items-center gap-1.5 font-display">
-            <i data-lucide="zap" class="w-3.5 h-3.5 text-[#00E5FF]"></i> Recommended B2C Action
-          </div>
-          <div class="font-medium text-slate-200 leading-relaxed text-[11px]">
-            ${ev.recommended_action}
-          </div>
-        </div>
-
-        <!-- Organizer Scout Intelligence Strip (Official Logos) -->
-        <div class="p-2.5 rounded-xl bg-white/[0.03] border border-white/[0.08] flex items-center justify-between gap-2 text-xs mt-1">
-          <div class="flex items-center gap-1.5 min-w-0">
-            <i data-lucide="user-check" class="w-3.5 h-3.5 text-emerald-400 shrink-0"></i>
-            <span class="text-[11px] font-semibold text-slate-300 truncate" title="${contacts.organizerName}">${contacts.organizerName}</span>
-          </div>
-          <div class="flex items-center gap-1.5 shrink-0 text-slate-400">
-            ${contacts.email ? `<span class="w-5 h-5 rounded-md bg-sky-500/15 text-sky-300 flex items-center justify-center text-[10px]" title="Email: ${contacts.email}"><i data-lucide="mail" class="w-3 h-3"></i></span>` : ""}
-            ${contacts.linkedin ? `<span class="w-5 h-5 rounded-md bg-[#0A66C2]/20 text-[#0A66C2] flex items-center justify-center text-[10px]" title="LinkedIn Verified"><svg class="w-3 h-3 fill-[#0A66C2]" viewBox="0 0 24 24"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.2V10.9H6.46M7.83 6.64a1.64 1.64 0 1 0 0 3.28 1.64 1.64 0 0 0 0-3.28Z"/></svg></span>` : ""}
-            ${contacts.instagram ? `<span class="w-5 h-5 rounded-md bg-[#E1306C]/20 text-[#E1306C] flex items-center justify-center text-[10px]" title="Instagram: @${contacts.instagram}"><svg class="w-3 h-3 text-[#E1306C] fill-none stroke-current stroke-2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><circle cx="12" cy="12" r="4"></circle><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg></span>` : ""}
-            ${contacts.phone ? `<span class="w-5 h-5 rounded-md bg-emerald-500/15 text-emerald-300 flex items-center justify-center text-[10px]" title="WhatsApp: ${contacts.phone}"><svg class="w-3 h-3 text-[#25D366] fill-none stroke-current stroke-2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span>` : ""}
-            <span class="text-[10px] text-sky-400 font-bold ml-1 hover:underline">Outreach →</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Action Footer (mt-auto guarantees aligned bottom across grid cards) -->
-      <div class="pt-3.5 mt-auto border-t border-white/[0.08] flex items-center justify-between gap-2">
-        <button class="btn-pitch-event flex-1 py-2.5 px-3 bg-gradient-to-r from-[#037EF3]/20 to-[#0266C8]/20 hover:from-[#037EF3] hover:to-[#0266C8] text-[#38BDF8] hover:text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 border border-[#38BDF8]/30 hover:border-transparent shadow-[0_0_12px_rgba(3,126,243,0.15)] active:scale-95"
-                data-event-id="${ev.event_id}">
-          <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Pitch
-        </button>
-        <button class="btn-card-lead-hunt py-2.5 px-3 bg-amber-500/15 hover:bg-amber-500 text-amber-300 hover:text-slate-950 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 border border-amber-500/30 hover:border-transparent shadow-[0_0_12px_rgba(245,158,11,0.15)] active:scale-95"
-                title="Hunt Leads for this event" data-event-id="${ev.event_id}">
-          <i data-lucide="crosshair" class="w-3.5 h-3.5 text-amber-400"></i> Leads
-        </button>
-        <a href="${getSafeEventUrl(ev)}" target="_blank" class="p-2.5 text-slate-400 hover:text-white rounded-xl hover:bg-white/[0.08] border border-white/[0.09] transition active:scale-95 flex items-center justify-center shrink-0" title="Open Event Link">
-          <i data-lucide="external-link" class="w-4 h-4"></i>
-        </a>
-      </div>
-    `;
-
-    // Clicking card opens the Linear-style Slide-Over Drawer
-    card.addEventListener("click", (e) => {
-      if (e.target.closest("a") || e.target.closest("button")) return;
-      openEventDrawer(ev);
-    });
-
-    // Attach click for pitch button (opens drawer directly for integrated workflow)
-    const pitchBtn = card.querySelector(".btn-pitch-event");
-    pitchBtn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      openEventDrawer(ev);
-    });
-
-    // Attach click for lead hunter button
-    const leadHuntBtn = card.querySelector(".btn-card-lead-hunt");
-    if (leadHuntBtn) {
-      leadHuntBtn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        openLeadHunter(ev.event_id);
-      });
-    }
-
-    fragment.appendChild(card);
+  initialBatch.forEach((ev) => {
+    fragment.appendChild(createCardNode(ev));
   });
-
   containerCards.appendChild(fragment);
 
-  // Trigger GSAP Stagger Entrance only for visible above-the-fold cards (prevents 300 concurrent tweens)
+  // Trigger GSAP Stagger Entrance only on the first batch
   if (typeof gsap !== "undefined") {
     gsap.from("#container-cards > .radar-card:nth-child(-n+12)", {
       opacity: 0,
-      y: 20,
-      stagger: 0.035,
-      duration: 0.45,
+      y: 16,
+      stagger: 0.025,
+      duration: 0.35,
       ease: "power2.out",
       clearProps: "all"
     });
   }
 
   initMagneticButtons();
+  if (window.lucide) lucide.createIcons({ root: containerCards });
 
-  if (window.lucide) lucide.createIcons();
+  // Stream in remaining cards asynchronously in next frames
+  if (remainingEvents.length > 0) {
+    let offset = 0;
+    function renderNextChunk() {
+      if (offset >= remainingEvents.length) return;
+      const nextSlice = remainingEvents.slice(offset, offset + BATCH_SIZE);
+      offset += BATCH_SIZE;
+
+      const chunkFrag = document.createDocumentFragment();
+      nextSlice.forEach((ev) => {
+        chunkFrag.appendChild(createCardNode(ev));
+      });
+      containerCards.appendChild(chunkFrag);
+      if (window.lucide) lucide.createIcons({ root: chunkFrag });
+
+      if (offset < remainingEvents.length) {
+        activeCardRenderTimer = setTimeout(renderNextChunk, 20);
+      }
+    }
+    activeCardRenderTimer = setTimeout(renderNextChunk, 20);
+  }
 }
 
 // ============================================================

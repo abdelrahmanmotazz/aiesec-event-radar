@@ -58,6 +58,14 @@ class MeetupScraper(BaseScraper):
                                 continue
                             seen_urls.add(event_url)
 
+                            # Reject foreign or non-Egypt groups mistakenly returned by Meetup find
+                            ev_text = f"{title} {event_url} {ev.get('description', '')}".lower()
+                            if any(fk in ev_text for fk in [
+                                "berlin", "stuttgart", "valencia", "barcelona", "geneve", "istanbul",
+                                "cloud-native-muc", "cgjunghelpdesk", "avva-women", "medical-data-science"
+                            ]):
+                                continue
+
                             start_dt = self.parse_datetime(ev.get("startDate"))
                             end_dt = self.parse_datetime(ev.get("endDate"))
 
