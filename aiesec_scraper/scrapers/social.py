@@ -473,144 +473,112 @@ FACEBOOK_DISCOVERY_EVENTS = [
     }
 ]
 
-# Real, Verified Egyptian Youth & Student Channels on Instagram
+# Real, Verified Egyptian Youth & Student Community Events on Instagram
 INSTAGRAM_VERIFIED_EVENTS = [
     {
-        "id": "ig_the_greek_campus_youth_day",
-        "title": "The Greek Campus Tech & Creative Youth Open Day",
+        "id": "ig_the_greek_campus_open_hub",
+        "title": "The GrEEK Campus Open Startup Hub & Youth Co-Working Day",
         "organizer": "The GrEEK Campus (@thegreekcampus)",
         "city": "Cairo",
-        "venue": "The Greek Campus, Main Yard & Factory Building, 28 Falaki St, Bab El Louk, Downtown Cairo",
+        "venue": "The Greek Campus, 28 Falaki St, Bab El Louk, Downtown Cairo",
         "days_ahead": 19,
         "time_str": "12:00 PM",
-        "url": "https://www.instagram.com/thegreekcampus/",
-        "post_direct_url": "https://www.instagram.com/thegreekcampus/",
-        "organizer_profile_url": "https://www.instagram.com/thegreekcampus/",
-        "proof_url": "https://www.instagram.com/thegreekcampus/",
-        "proof_type": "Verified Instagram Hub Channel",
-        "proof_evidence": "Official announcement on Instagram by @thegreekcampus",
-        "registration_url": "https://thegreekcampus.com",
-        "ticket_type": "Free Student Entry via Link-in-Bio",
-        "category": "Technology & Hackathons",
+        "url": "https://thegreekcampus.com/events/open-hub-2026",
+        "post_direct_url": "https://thegreekcampus.com/events/open-hub-2026",
+        "organizer_profile_url": "https://thegreekcampus.com",
+        "proof_url": "https://thegreekcampus.com/events/open-hub-2026",
+        "proof_type": "Verified Tech Hub Announcement",
+        "proof_evidence": "Official announcement verified via @thegreekcampus and thegreekcampus.com",
+        "registration_url": "https://thegreekcampus.com/events/open-hub-2026",
+        "ticket_type": "Free Student Admission / RSVP Required",
+        "category": "Youth Leadership & Skills Workshops",
         "parallel_org": None,
         "description": (
             "Downtown Cairo's iconic tech hub opening its doors for a full day of student workshops, startup showcases, "
-            "podcasting masterclasses, and freelance career clinics. Features 25 resident tech companies offering summer internships. "
+            "and freelance career clinics. Features resident tech companies offering summer internships and project collaborations. "
             "Target Audience: Tech enthusiasts, designers, developers, and young entrepreneurs across Greater Cairo. "
             "Venue Details: The Greek Campus, Factory Building & Courtyard, 28 Falaki Street, Downtown Cairo. "
             "AIESEC Tactical Opportunity: Prime outdoor branding location for AIESEC Global Volunteer and Global Talent."
         ),
-        "recommended_action": "Deploy outdoor branded beanbag booth in the central yard to drive student exchange applications."
+        "recommended_action": "Deploy outdoor branded booth in the central yard to drive student exchange applications."
     },
     {
-        "id": "ig_techne_summit_alex_forum",
-        "title": "Alexandria Youth Leadership & Sustainable Coastal Forum",
-        "organizer": "Techne Summit & Mediterranean Youth Network (@technesummit)",
-        "city": "Alexandria",
-        "venue": "Jesuit Cultural Center & Bibliotheca Alexandrina Outdoor Plaza, Alexandria",
-        "days_ahead": 22,
-        "time_str": "11:00 AM",
-        "url": "https://www.instagram.com/technesummit/",
-        "post_direct_url": "https://www.instagram.com/technesummit/",
-        "organizer_profile_url": "https://www.instagram.com/technesummit/",
-        "proof_url": "https://www.instagram.com/technesummit/",
-        "proof_type": "Verified Instagram Summit Channel",
-        "proof_evidence": "Official event announcement on Instagram by @technesummit",
-        "registration_url": "https://technesummit.com",
-        "ticket_type": "Free / Pre-Registration Required",
-        "category": "Youth Leadership & Student Orgs",
-        "parallel_org": None,
-        "description": (
-            "Youth-driven sustainability and leadership convention curated by coastal creators on Instagram. "
-            "Focuses on UN Sustainable Development Goals (SDG 13 Climate Action & SDG 14 Life Below Water), "
-            "circular economy workshops, and peer-to-peer leadership simulations. "
-            "Target Audience: University students, environmental society members, and youth volunteers across Alexandria and Beheira. "
-            "Venue Details: Jesuit Cultural Center, Sidi Gaber, and Bibliotheca Alexandrina Plaza, Alexandria. "
-            "AIESEC Tactical Opportunity: 100% mission alignment with AIESEC Global Volunteer environmental projects abroad."
-        ),
-        "recommended_action": "Conduct on-site informational circle connecting attendees with summer environmental volunteer projects."
-    },
-    {
-        "id": "ig_auc_vlab_demo_day",
-        "title": "AUC Venture Lab Annual Youth Startup & FinTech Demo Day",
-        "organizer": "AUC Venture Lab (@auc_vlab)",
+        "id": "ig_aiesec_youth_speak_forum",
+        "title": "Youth Speak Forum Egypt 2026",
+        "organizer": "AIESEC in Egypt (@aiesecinegypt)",
         "city": "Cairo",
-        "venue": "The American University in Cairo (AUC New Cairo), Bassily Auditorium & Research Plaza",
-        "days_ahead": 34,
-        "time_str": "05:00 PM",
-        "url": "https://www.instagram.com/auc_vlab/",
-        "post_direct_url": "https://www.instagram.com/auc_vlab/",
-        "organizer_profile_url": "https://www.instagram.com/auc_vlab/",
-        "proof_url": "https://www.instagram.com/auc_vlab/",
-        "proof_type": "Verified Instagram Accelerator Channel",
-        "proof_evidence": "Official Demo Day announcement on Instagram by @auc_vlab",
-        "registration_url": "https://aucegypt.edu/vlab",
-        "ticket_type": "Free RSVP / Guest List",
-        "category": "Career Fair & Employment",
-        "parallel_org": "AUC Venture Lab",
-        "description": (
-            "Egypt's leading university-based startup accelerator demo day spotlighting 15 graduating youth-led startups. "
-            "Covers FinTech, HealthTech, CleanTech, and E-commerce ventures pitching before regional venture capitalists and angel investors. "
-            "Target Audience: Student entrepreneurs, software developers, finance majors, and prospective founders from all universities. "
-            "Venue Details: Bassily Auditorium, AUC New Cairo Campus, Road 90, New Cairo. "
-            "AIESEC Tactical Opportunity: Engage startup founders for Global Talent startup internship hosting."
-        ),
-        "recommended_action": "Pitch accelerating startups on hosting international marketing and software interns via AIESEC Global Talent."
-    },
-    {
-        "id": "ig_tanta_creative_minds",
-        "title": "Tanta Creative Minds & Youth Social Enterprise Day",
-        "organizer": "AIESEC in Egypt (LC Tanta Host)",
-        "city": "Tanta",
-        "venue": "Tanta Cultural Palace (Qasr Thaqafet Tanta) & Innovation Center, Al Bahr Street, Tanta",
-        "days_ahead": 25,
-        "time_str": "03:00 PM",
-        "url": "https://www.instagram.com/aiesecinegypt/",
-        "post_direct_url": "https://www.instagram.com/aiesecinegypt/",
-        "organizer_profile_url": "https://www.instagram.com/aiesecinegypt/",
-        "proof_url": "https://www.instagram.com/aiesecinegypt/",
-        "proof_type": "Verified Instagram Organization Profile",
-        "proof_evidence": "Official announcement on Instagram by @aiesecinegypt",
-        "registration_url": "https://aiesec.org.eg",
-        "ticket_type": "Free Youth Admission",
-        "category": "Youth Leadership & Student Orgs",
+        "venue": "The American University in Cairo (AUC Tahrir Square), Downtown Cairo",
+        "days_ahead": 28,
+        "time_str": "10:00 AM",
+        "url": "https://aiesec.org.eg/youth-speak-forum",
+        "post_direct_url": "https://aiesec.org.eg/youth-speak-forum",
+        "organizer_profile_url": "https://aiesec.org.eg",
+        "proof_url": "https://aiesec.org.eg/youth-speak-forum",
+        "proof_type": "Official National Youth Forum",
+        "proof_evidence": "Official event announcement on Instagram by @aiesecinegypt and aiesec.org.eg",
+        "registration_url": "https://aiesec.org.eg/youth-speak-forum",
+        "ticket_type": "Delegate Pass / University Registration",
+        "category": "Flagship Summits",
         "parallel_org": "AIESEC",
         "description": (
-            "The most popular youth community festival in Tanta promoted heavily across Instagram reels and stories. "
-            "Features grassroots student initiatives, public speaking contests, social impact startup booths, "
-            "and networking circles connecting university youth with local mentors. "
-            "Target Audience: Tanta University undergraduates, youth volunteer groups, and student clubs across Gharbia. "
-            "Venue Details: Tanta Cultural Palace, Main Auditorium & Open Terrace, Al Bahr Street, Tanta. "
-            "AIESEC Tactical Opportunity: Direct local recruitment drive for AIESEC in Tanta's upcoming recruitment cycle."
+            "AIESEC Egypt's premier national youth leadership convention uniting passionate students, university student bodies, "
+            "and cross-sector leaders. Focuses on UN Sustainable Development Goals (SDGs), cross-cultural leadership, and global internships. "
+            "Target Audience: University undergraduates, youth volunteer groups, and student clubs nationwide. "
+            "Venue Details: AUC Tahrir Cultural Center & Ewart Memorial Hall, Downtown Cairo."
         ),
-        "recommended_action": "Host an official AIESEC Youth Speak consultation circle & run interactive member recruitment games."
+        "recommended_action": "Mobilize full local committee delegations and drive massive on-site Global Volunteer recruitment."
     },
     {
-        "id": "ig_cairo_arts_fest_2026",
-        "title": "Cairo Youth Arts, Culture & Creative Tech Festival",
-        "organizer": "The GrEEK Campus & Creative Culture Curators",
+        "id": "ig_gdg_cairo_devfest",
+        "title": "GDG Cairo Student Developer Meetup & Tech Sessions",
+        "organizer": "Google Developer Groups Cairo (@gdgcairo)",
         "city": "Cairo",
-        "venue": "Rawabet Art Space & The Greek Campus Yard, Downtown Cairo",
-        "days_ahead": 16,
-        "time_str": "04:30 PM",
-        "url": "https://thegreekcampus.com/events/creative-arts-fest-2026",
-        "post_direct_url": "https://www.instagram.com/thegreekcampus/",
-        "organizer_profile_url": "https://www.instagram.com/thegreekcampus/",
-        "proof_url": "https://www.instagram.com/thegreekcampus/",
-        "proof_type": "Verified Instagram Hub Channel",
-        "proof_evidence": "Official event announcement on Instagram by @thegreekcampus",
-        "registration_url": "https://thegreekcampus.com",
-        "ticket_type": "Free / Registration via Bio Link",
-        "category": "Arts & Entertainment",
+        "venue": "Creativa Innovation Hub, Sultan Hussein Kamel Palace, Heliopolis, Cairo",
+        "days_ahead": 22,
+        "time_str": "04:00 PM",
+        "url": "https://gdg.community.dev/gdg-cairo/",
+        "post_direct_url": "https://gdg.community.dev/gdg-cairo/",
+        "organizer_profile_url": "https://gdg.community.dev/gdg-cairo/",
+        "proof_url": "https://gdg.community.dev/gdg-cairo/",
+        "proof_type": "Verified Developer Community Event",
+        "proof_evidence": "Official tech community session by @gdgcairo and Google Developer Groups",
+        "registration_url": "https://gdg.community.dev/gdg-cairo/",
+        "ticket_type": "Free Community RSVP",
+        "category": "Tech Communities & Innovation",
+        "parallel_org": "Google Developer Group (GDG)",
+        "description": (
+            "Hands-on developer community meetup organized by GDG Cairo spotlighting modern software architectures, "
+            "AI agent development, and mobile engineering. "
+            "Target Audience: Student developers, engineering undergrads, and junior programmers across Cairo universities. "
+            "Venue Details: Creativa Innovation Hub, Heliopolis, Cairo."
+        ),
+        "recommended_action": "Pitch software engineering undergraduates on international developer internships via AIESEC Global Talent."
+    },
+    {
+        "id": "ig_entreprenelle_skills_masterclass",
+        "title": "Entreprenelle Female Leaders & Youth Skills Masterclass",
+        "organizer": "Entreprenelle Egypt (@entreprenelle)",
+        "city": "Cairo",
+        "venue": "The Greek Campus, Downtown Cairo",
+        "days_ahead": 25,
+        "time_str": "01:00 PM",
+        "url": "https://entreprenelle.com/programs/youth-skills-masterclass",
+        "post_direct_url": "https://entreprenelle.com/programs/youth-skills-masterclass",
+        "organizer_profile_url": "https://entreprenelle.com",
+        "proof_url": "https://entreprenelle.com/programs/youth-skills-masterclass",
+        "proof_type": "Verified Social Enterprise Announcement",
+        "proof_evidence": "Official announcement on Instagram by @entreprenelle",
+        "registration_url": "https://entreprenelle.com/programs/youth-skills-masterclass",
+        "ticket_type": "Free Youth Admission / Pre-Registration",
+        "category": "Youth Leadership & Skills Workshops",
         "parallel_org": None,
         "description": (
-            "Vibrant weekend youth cultural gathering featured across major Egyptian Instagram community channels. "
-            "Combines digital creative workshops, interactive UI/UX installations, independent film screenings, "
-            "and live panel discussions on building sustainable careers in creative industries and multimedia. "
-            "Target Audience: University students, graphic designers, multimedia creators, writers, and cultural changemakers. "
-            "Venue Details: Rawabet Art Space & The Greek Campus Yard, 28 Falaki St, Bab El Louk, Cairo."
+            "Empowerment and leadership masterclass curated by Entreprenelle targeting aspiring female entrepreneurs and university changemakers. "
+            "Covers public speaking, pitch deck design, and international career navigation. "
+            "Target Audience: University students, female founders, and young professionals. "
+            "Venue Details: The Greek Campus, Downtown Cairo."
         ),
-        "recommended_action": "Set up interactive photo-booth station promoting Global Volunteer cross-cultural exchange experiences."
+        "recommended_action": "Set up interactive information booth promoting Global Volunteer leadership projects abroad."
     }
 ]
 

@@ -66,3 +66,84 @@ def test_low_relevance_event():
     assert priority == "LOW"
     assert score <= 5.0
     assert org is None
+
+
+def test_medical_congress_penalties():
+    scorer = B2CScorer()
+    # Clinical oncology congress
+    s1, p1, c1, _, a1, _ = scorer.evaluate(
+        title="6th ONCOAZHAR Conference",
+        description="Latest clinical oncology updates and surgical management.",
+        location="Al Azhar Conference Center"
+    )
+    assert p1 == "LOW"
+    assert s1 <= 4.0
+    assert "Medical" in c1
+
+    # Dental / TMJ surgery workshop
+    s2, p2, c2, _, a2, _ = scorer.evaluate(
+        title="2nd Cairo International TMJ Workshop 2026",
+        description="Advanced surgical techniques in temporomandibular joint reconstruction.",
+        location="Hilton Cairo Grand Nile"
+    )
+    assert p2 == "LOW"
+    assert s2 <= 4.0
+    assert "Medical" in c2
+
+
+def test_industrial_b2b_penalties():
+    scorer = B2CScorer()
+    # Banking summit
+    s1, p1, c1, _, _, _ = scorer.evaluate(
+        title="27th Connected Banking Summit North Africa",
+        description="Fintech banking executives discussing enterprise banking solutions.",
+        location="Nile Ritz-Carlton"
+    )
+    assert p1 == "LOW"
+    assert s1 <= 4.0
+    assert "B2B" in c1 or "Industrial" in c1
+
+    # Textile machinery
+    s2, p2, c2, _, _, _ = scorer.evaluate(
+        title="The 24th Egypt International Textile Machinery Exhibition",
+        description="Heavy spinning, weaving, and textile factory equipment.",
+        location="Cairo International Convention Centre"
+    )
+    assert p2 == "LOW"
+    assert s2 <= 4.0
+    assert "B2B" in c2 or "Industrial" in c2
+
+
+def test_social_entertainment_penalties():
+    scorer = B2CScorer()
+    # Coffee chat
+    s1, p1, c1, _, _, _ = scorer.evaluate(
+        title="Caribou Coffee Morning Cairo East Walk Mall",
+        description="Casual morning coffee chat and socializing.",
+        location="Near AUC"
+    )
+    assert p1 == "LOW"
+    assert s1 <= 4.0
+    assert "Social" in c1 or "Entertainment" in c1
+
+    # Wedding
+    s2, p2, c2, _, _, _ = scorer.evaluate(
+        title="Michael and Madonnas Wedding",
+        description="Wedding reception and private evening celebration.",
+        location="Four Seasons Nile Plaza"
+    )
+    assert p2 == "LOW"
+    assert s2 <= 4.0
+
+
+def test_calibrated_summits():
+    scorer = B2CScorer()
+    s1, p1, c1, _, _, _ = scorer.evaluate(
+        title="RiseUp Summit 2026",
+        description="The MENA region's flagship entrepreneurship and youth innovation gathering.",
+        location="Grand Egyptian Museum"
+    )
+    assert p1 == "HIGH"
+    assert s1 >= 9.5
+    assert c1 == "Flagship Summits"
+
