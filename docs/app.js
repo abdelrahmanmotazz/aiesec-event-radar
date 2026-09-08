@@ -3028,7 +3028,12 @@ async function loadStaticEventsFallback() {
       let customStored = [];
       try {
         const rawCustom = JSON.parse(localStorage.getItem("aiesec_radar_custom_events") || "[]");
-        if (Array.isArray(rawCustom)) {
+        if (Array.isArray(rawCustom) && rawCustom.length > 0) {
+          // Build canonical lookup sets from loaded database
+          const loadedUrls = new Set(loaded.map(l => (l.url || "").split("?")[0].split("#")[0].replace(/\/+$/, "").toLowerCase()).filter(Boolean));
+          const loadedNormTitles = new Set(loaded.map(l => (l.title || "").toLowerCase().replace(/[^\w\u0600-\u06FF]/g, "")));
+          const loadedIds = new Set(loaded.map(l => l.event_id).filter(Boolean));
+
           let storageModified = false;
           customStored = rawCustom.map(ev => {
             if (isBadEventTitle(ev.title)) {
@@ -3041,9 +3046,18 @@ async function loadStaticEventsFallback() {
               storageModified = true;
             }
             return ev;
-          }).filter(ev => !isBadEventTitle(ev.title));
+          }).filter(ev => {
+            if (!ev || !ev.title || isBadEventTitle(ev.title) || isBadOrNonEgyptJs(ev)) return false;
+            const u = (ev.url || "").split("?")[0].split("#")[0].replace(/\/+$/, "").toLowerCase();
+            const nt = (ev.title || "").toLowerCase().replace(/[^\w\u0600-\u06FF]/g, "");
+            // Drop if already part of the canonical database to prevent double counting
+            if (ev.event_id && loadedIds.has(ev.event_id)) return false;
+            if (u && loadedUrls.has(u)) return false;
+            if (nt && loadedNormTitles.has(nt)) return false;
+            return true;
+          });
 
-          if (storageModified) {
+          if (storageModified || customStored.length !== rawCustom.length) {
             try {
               localStorage.setItem("aiesec_radar_custom_events", JSON.stringify(customStored));
             } catch (e) {}
@@ -5128,17 +5142,13 @@ function initSocialIngest() {
       console.warn("Could not save to localStorage:", e);
     }
 
-    // Prepend to rawEventsCache
+    // Prepend to rawEventsCache with full fuzzy deduplication
     if (rawEventsCache) {
-      const cacheIds = new Set(rawEventsCache.map(e => e.event_id || e.url));
-      const newItems = enriched.filter(e => !cacheIds.has(e.event_id) && !cacheIds.has(e.url));
-      rawEventsCache = [...newItems, ...rawEventsCache];
+      rawEventsCache = deduplicateClientEvents([...enriched, ...rawEventsCache]);
     }
 
-    // Prepend to state.events
-    const stateIds = new Set(state.events.map(e => e.event_id || e.url));
-    const toState = enriched.filter(e => !stateIds.has(e.event_id) && !stateIds.has(e.url));
-    state.events = [...toState, ...state.events];
+    // Prepend to state.events with full fuzzy deduplication
+    state.events = deduplicateClientEvents([...enriched, ...state.events]);
 
     // Re-render UI views immediately
     if (state.activeView === "cards") {
