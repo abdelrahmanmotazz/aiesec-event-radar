@@ -69,7 +69,12 @@ def load_initial_events():
                 for item in raw:
                     t = (item.get("title") or "").strip()
                     if t and t.lower() not in ["null", "none", "event", "untitled"]:
-                        loaded.append(EventRecord(**item))
+                        rec = EventRecord(**item)
+                        if "summit" in rec.source.lower():
+                            rec.category = "Flagship Summits"
+                            rec.b2c_score = max(rec.b2c_score, 9.2)
+                            rec.b2c_priority = "HIGH"
+                        loaded.append(rec)
                 if len(loaded) >= 50:
                     CACHED_EVENTS = loaded
                     logger.info(f"Loaded {len(CACHED_EVENTS)} verified events from {jp}")

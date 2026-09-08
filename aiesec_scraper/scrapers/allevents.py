@@ -1,6 +1,7 @@
 """AllEvents.in Scraper for Egyptian cities and hubs."""
 
 import logging
+import re
 from typing import List, Optional
 from bs4 import BeautifulSoup
 
@@ -18,6 +19,11 @@ EGYPT_CITY_SLUGS = {
     "mansoura": ("al-mansurah", "Mansoura"),
     "al-mansurah": ("al-mansurah", "Mansoura"),
     "giza": ("cairo", "Giza"),
+    "hurghada": ("hurghada", "Hurghada"),
+    "port-said": ("port-said", "Port Said"),
+    "port said": ("port-said", "Port Said"),
+    "sharm-el-sheikh": ("sharm-el-sheikh", "Sharm El Sheikh"),
+    "sharm el sheikh": ("sharm-el-sheikh", "Sharm El Sheikh"),
 }
 
 
@@ -41,83 +47,88 @@ class AllEventsScraper(BaseScraper):
                 ("alexandria-eg", "Alexandria"),
                 ("tanta", "Tanta"),
                 ("al-mansurah", "Mansoura"),
+                ("hurghada", "Hurghada"),
+                ("port-said", "Port Said"),
+                ("sharm-el-sheikh", "Sharm El Sheikh"),
             ]
 
+        categories = ["all", "conferences", "workshops", "business"]
+
         for slug, display_city in target_cities:
-            for page in range(1, max_pages + 1):
-                url = f"https://allevents.in/{slug}/all?page={page}"
-                try:
-                    resp = self.client.get(url)
-                    if resp.status_code != 200:
-                        logger.warning(f"[AllEvents] Status {resp.status_code} for {url}")
+            for cat in categories:
+                for page in range(1, max_pages + 1):
+                    url = f"https://allevents.in/{slug}/{cat}?page={page}"
+                    try:
+                        resp = self.client.get(url)
+                        if resp.status_code != 200:
+                            break
+
+                        soup = BeautifulSoup(resp.text, "lxml")
+                        cards = soup.select("li.event-card, div.event-card")
+                        if not cards:
+                            break
+
+                        page_count = 0
+                        for card in cards:
+                            eid = card.get("data-eid") or card.get("data-id")
+                            title = card.get("data-name")
+                            link = card.get("data-link")
+
+                            # Fallback parsing within card elements
+                            if not title:
+                                title_el = card.select_one("h3, .title, .event-item__title")
+                                title = title_el.get_text(strip=True) if title_el else None
+
+                            if not link:
+                                a_el = card.select_one("a.event-card-link, a[href*='allevents.in/']")
+                                link = a_el.get("href") if a_el else None
+
+                            if not title or not isinstance(title, str) or len(title.strip()) < 3 or title.strip().lower() in ["null", "none", "event"] or re.match(r"^[\s\-_()\[\]{}|.,:;!?'\"]*$", title.strip()):
+                                continue
+                            if not link:
+                                continue
+
+                            event_id = f"ae_{eid or hash(link) & 0xffffffff}"
+                            if event_id in seen_ids:
+                                continue
+                            seen_ids.add(event_id)
+
+                            # Extract date
+                            date_el = card.select_one(".date, .meta-top-info .date, .datetime")
+                            date_str = date_el.get_text(strip=True) if date_el else ""
+                            start_dt = self.parse_datetime(date_str)
+
+                            # Extract venue/location
+                            loc_el = card.select_one(".subtitle, .location, .venue")
+                            location = loc_el.get_text(strip=True) if loc_el else "Venue TBA"
+
+                            # Pricing indicator
+                            is_free = "free" in card.get_text(strip=True).lower() or "free" in title.lower()
+                            ticket_type = "Free" if is_free else "Registration / Tickets"
+
+                            record = EventRecord(
+                                event_id=event_id,
+                                title=title.strip(),
+                                source=self.name,
+                                start_date=start_dt,
+                                end_date=None,
+                                date_display=date_str or "Date TBA",
+                                location=location.strip() or "TBA",
+                                city=display_city,
+                                country=country.capitalize(),
+                                url=link,
+                                ticket_type=ticket_type,
+                                organizer="AllEvents Organizer",
+                                description=""
+                            )
+                            results.append(record)
+                            page_count += 1
+
+                        if page_count == 0:
+                            break
+
+                    except Exception as e:
+                        logger.error(f"[AllEvents] Error scraping {url}: {e}")
                         break
-
-                    soup = BeautifulSoup(resp.text, "lxml")
-                    cards = soup.select("li.event-card, div.event-card")
-                    if not cards:
-                        break
-
-                    page_count = 0
-                    for card in cards:
-                        eid = card.get("data-eid") or card.get("data-id")
-                        title = card.get("data-name")
-                        link = card.get("data-link")
-
-                        # Fallback parsing within card elements
-                        if not title:
-                            title_el = card.select_one("h3, .title, .event-item__title")
-                            title = title_el.get_text(strip=True) if title_el else None
-
-                        if not link:
-                            a_el = card.select_one("a.event-card-link, a[href*='allevents.in/']")
-                            link = a_el.get("href") if a_el else None
-
-                        if not title or not isinstance(title, str) or len(title.strip()) < 3 or title.strip().lower() in ["null", "none", "event"]:
-                            continue
-                        if not link:
-                            continue
-
-                        event_id = f"ae_{eid or hash(link) & 0xffffffff}"
-                        if event_id in seen_ids:
-                            continue
-                        seen_ids.add(event_id)
-
-                        # Extract date
-                        date_el = card.select_one(".date, .meta-top-info .date, .datetime")
-                        date_str = date_el.get_text(strip=True) if date_el else ""
-                        start_dt = self.parse_datetime(date_str)
-
-                        # Extract venue/location
-                        loc_el = card.select_one(".subtitle, .location, .venue")
-                        location = loc_el.get_text(strip=True) if loc_el else "Venue TBA"
-
-                        # Pricing indicator
-                        is_free = "free" in card.get_text(strip=True).lower() or "free" in title.lower()
-                        ticket_type = "Free" if is_free else "Registration / Tickets"
-
-                        record = EventRecord(
-                            event_id=event_id,
-                            title=title.strip(),
-                            source=self.name,
-                            start_date=start_dt,
-                            end_date=None,
-                            date_display=date_str or "Date TBA",
-                            location=location.strip() or "TBA",
-                            city=display_city,
-                            country=country.capitalize(),
-                            url=link,
-                            ticket_type=ticket_type,
-                            organizer="AllEvents Organizer",
-                            description=""
-                        )
-                        results.append(record)
-                        page_count += 1
-
-                    if page_count == 0:
-                        break
-
-                except Exception as e:
-                    logger.error(f"[AllEvents] Error scraping {url}: {e}")
-                    break
 
         return results

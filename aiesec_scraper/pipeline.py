@@ -25,8 +25,9 @@ NON_EGYPT_PATTERNS = [
     re.compile(r",\s*(?:va|md|ca|tx|fl|ny|oh|pa|nc|ga|mi|il|nj|wa|az|ma|tn|mo|wi|mn|sc|la|ky|or|ok|ct|ut|ia|nv|ar|ms|ks|nm|ne|wv|id|hi|nh|me|mt|ri|de|sd|nd|ak|vt|wy)\b(?:\s*,|\s*$|\s+\d{5})", re.IGNORECASE),
     re.compile(r",\s*[a-z]{2}\s+\d{5}", re.IGNORECASE),
     re.compile(r"\b(united states|usa|u\.s\.a|u\.s\.|canada|australia|united kingdom|\buk\b)\b", re.IGNORECASE),
-    re.compile(r"allevents\.in/alexandria/", re.IGNORECASE),
-    re.compile(r"allevents\.in/mansura/", re.IGNORECASE),
+    re.compile(r"\balexandria,\s*va\b", re.IGNORECASE),
+    re.compile(r"\balexandria.*virginia\b", re.IGNORECASE),
+    re.compile(r"\b(berlin|stuttgart|valencia|barcelona|geneve|istanbul|assisi|foligno|umbria|spello|perugia)\b", re.IGNORECASE),
 ]
 
 
@@ -45,6 +46,41 @@ def normalize_event_url(url: str) -> str:
         return f"{parsed.scheme}://{netloc}{path}"
     except Exception:
         return url.split("?")[0].split("#")[0].rstrip("/").lower()
+
+
+def normalize_egypt_city(city_str: Optional[str], title: str = "", location: str = "") -> str:
+    """Normalizes Egyptian city, district, and neighborhood names to standard governorates."""
+    c_raw = (city_str or "").strip()
+    combined = f"{c_raw} {title} {location}".lower()
+
+    if any(k in combined for k in ["alexandria", "alex", "إسكندرية", "الإسكندرية", "kom ad dakah", "shatby", "smouha", "gleem", "roushdy", "san stefano", "stanley", "sidi gaber"]):
+        return "Alexandria"
+    if any(k in combined for k in ["giza", "جيزة", "الجيزة", "sheikh zayed", "october", "6th of october", "pyramids", "dokki", "mohandessin", "haram"]):
+        return "Giza"
+    if any(k in combined for k in ["tanta", "طنطا", "gharbia", "الغربية"]):
+        return "Tanta"
+    if any(k in combined for k in ["mansoura", "المنصورة", "mansura", "dakahlia", "الدقهلية", "al-mansurah"]):
+        return "Mansoura"
+    if any(k in combined for k in ["assiut", "أسيوط", "asyut"]):
+        return "Assiut"
+    if any(k in combined for k in ["hurghada", "الغردقة", "el gouna", "makadi", "red sea"]):
+        return "Hurghada"
+    if any(k in combined for k in ["sharm", "شرم الشيخ", "dahab", "sinai", "سيناء"]):
+        return "Sharm El Sheikh"
+    if any(k in combined for k in ["port said", "بورسعيد", "port-said"]):
+        return "Port Said"
+    if any(k in combined for k in ["suez", "السويس", "ismailia", "الإسماعيلية"]):
+        return "Suez"
+    if any(k in combined for k in ["new cairo", "new-cairo", "القاهرة الجديدة", "tagamoa", "التجمع"]):
+        return "New Cairo"
+    if any(k in combined for k in ["sharkia", "sharkya", "الشرقية", "zagazig", "الزقازيق"]):
+        return "Sharkia"
+    if any(k in combined for k in ["cairo", "القاهرة", "le caire", "maadi", "المعادي", "heliopolis", "مصر الجديدة", "nasr city", "مدينة نصر", "zamalek", "الزمالك", "downtown", "وسط البلد", "saqayin", "dawawin", "matar", "sheraton", "al hay al asher", "hay al asher", "الحي العاشر"]):
+        return "Cairo"
+
+    if c_raw.lower() in ["egypt", "مصر", "looll", "", "venue tba", "tba"]:
+        return "Cairo"
+    return c_raw.title()
 
 
 def clean_event_title(title: str) -> str:
@@ -86,6 +122,11 @@ def is_bad_or_non_egypt(ev: EventRecord) -> bool:
 
     # Drop explicitly non-Egypt country
     if ev.country and ev.country.strip().lower() not in ["egypt", "eg", "مصر"]:
+        return True
+
+    # Drop blank or punctuation-only titles
+    title = (ev.title or "").strip()
+    if not title or len(title) < 3 or re.match(r"^[\s\-_()\[\]{}|.,:;!?'\"]*$", title):
         return True
 
     # Check for foreign state / country patterns in title, location, url
@@ -202,12 +243,15 @@ class EventPipeline:
                 description=ev.description,
                 location=ev.location
             )
-            ev.b2c_score = score
-            ev.b2c_priority = priority
-            ev.category = category
+            is_summit = (ev.source == "Egypt Flagship Summits" or "summit" in ev.source.lower())
+            ev.b2c_score = max(score, 9.2) if is_summit else score
+            ev.b2c_priority = "HIGH" if is_summit else priority
+            ev.category = "Flagship Summits" if is_summit else category
             ev.aiesec_tags = tags
-            ev.recommended_action = action
-            ev.parallel_org = parallel_org
+            if not ev.recommended_action or not is_summit:
+                ev.recommended_action = action
+            if parallel_org and not ev.parallel_org:
+                ev.parallel_org = parallel_org
             scored_events.append(ev)
 
         # Apply 6-Month Date Filter
@@ -274,6 +318,9 @@ class EventPipeline:
             # 3. Filter bad links and non-Egypt false positives
             if is_bad_or_non_egypt(ev):
                 continue
+
+            # 4. Normalize city to standard Egyptian governorate/hub
+            ev.city = normalize_egypt_city(ev.city, ev.title, ev.location)
 
             matched_existing: Optional[EventRecord] = None
 

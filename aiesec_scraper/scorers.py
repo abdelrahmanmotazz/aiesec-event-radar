@@ -49,6 +49,44 @@ STUDENT_ORG_PATTERNS = [
     r"\bأسرة\s+طلابية\b", r"\bنموذج\s+محاكاة\b", r"\bstudent\s+branch\b", r"\bstudent\s+chapter\b"
 ]
 
+UNIVERSITY_ACADEMIC_PATTERNS = [
+    r"\buniversity\b", r"\bجامعة\b", r"\bfaculty\b", r"\bكلية\b", r"\bcampus\b", r"\bحرم\b",
+    r"\bacademic\b", r"\bأكاديمي\b", r"\bundergraduate\b", r"\bcollege\b",
+    r"\bconference\s+of\s+.*university\b", r"\buniversity.*conference\b",
+    r"\bannual\s+scientific\s+conference\b", r"\bannual\s+scientific\s+meeting\b",
+    r"\binternational\s+conference\b", r"\bscientific\s+conference\b",
+    r"\bsymposium\b", r"\bندوة\b", r"\bcolloquium\b", r"\bforum\b", r"\bمنتدى\b",
+    r"\bsuez\s+canal\b", r"\bain\s+shams\b", r"\bcairo\s+university\b",
+    r"\balexandria\s+university\b", r"\bmansoura\s+university\b", r"\bassiut\s+university\b",
+    r"\btanta\s+university\b", r"\bhelwan\s+university\b", r"\bzagazig\s+university\b",
+    r"\bbenha\s+university\b", r"\bmenoufia\s+university\b", r"\bfayoum\s+university\b",
+    r"\bbeni\s+suef\b", r"\bminya\s+university\b", r"\bsohag\s+university\b",
+    r"\bsouth\s+valley\b", r"\baswan\s+university\b", r"\bport\s+said\s+university\b",
+    r"\bdamietta\s+university\b", r"\bkafr\s+el\s+sheikh\b", r"\bdamanhour\b",
+    r"\bal-azhar\b", r"\bazhar\b", r"\bauc\b", r"\bguc\b", r"\bbue\b", r"\bgiu\b",
+    r"\bmust\b", r"\bmsa\b", r"\bfue\b", r"\bo6u\b", r"\bejust\b", r"\bnile\s+university\b",
+    r"\bzewail\b", r"\bgalala\b", r"\balamein\b", r"\bking\s+salman\b", r"\bsphinx\b",
+    r"\bمؤتمر\s+علمي\b", r"\bمؤتمر\s+دولي\b", r"\bالمؤتمر\s+السنوي\b", r"\bكلية\s+الهندسة\b",
+    r"\bكلية\s+التجارة\b", r"\bكلية\s+الحاسبات\b", r"\bكلية\s+العلوم\b", r"\bكلية\s+الألسن\b"
+]
+
+STUDENT_HEALTHCARE_PATTERNS = [
+    r"\bstudent\b", r"\bطلاب\b", r"\bundergraduate\b", r"\buniversity\b", r"\bجامعة\b",
+    r"\bfaculty\s+of\s+medicine\b", r"\bfaculty\s+of\s+pharmacy\b", r"\bfaculty\s+of\s+dentistry\b",
+    r"\bfaculty\s+of\s+physical\s+therapy\b", r"\bfaculty\s+of\s+nursing\b",
+    r"\bكلية\s+الطب\b", r"\bكلية\s+الصيدلة\b", r"\bكلية\s+طب\s+الأسنان\b", r"\bكلية\s+العلاج\s+الطبيعي\b",
+    r"\bifmsa\b", r"\bepsf\b", r"\bmedical\s+student\b", r"\btraining\s+program\b",
+    r"\bبرنامج\s+تدريب\b", r"\bkasr\s+al\s+ainy\b", r"\bain\s+shams\s+medicine\b",
+    r"\bazhar\s+assiut\b", r"\bsphinx\b", r"\bpaces\b", r"\bawareness\b"
+]
+
+TRAINING_EDUCATION_PATTERNS = [
+    r"\btraining\b", r"\bتدريب\b", r"\bdiploma\b", r"\bدبلومة\b", r"\bcertification\b",
+    r"\bشهادة\b", r"\bcourse\b", r"\bكورس\b", r"\bmasterclass\b", r"\bcurriculum\b",
+    r"\bمنهج\b", r"\bprogram\b", r"\bبرنامج\b", r"\bacademy\b", r"\bأكاديمية\b",
+    r"\bconsultation\b", r"\beducation\b", r"\bتعليم\b", r"\bexecutive\s+education\b"
+]
+
 SKILL_WORKSHOP_PATTERNS = [
     r"\bworkshop\b", r"\bmasterclass\b", r"\bpublic\s+speaking\b", r"\bsoft\s+skills\b",
     r"\bstartup\b", r"\bentrepreneur(ship)?\b", r"\bbootcamp\b", r"\bwebinar\b",
@@ -168,6 +206,19 @@ class B2CScorer:
         # Medical / Clinical check
         for p in MEDICAL_PATTERNS:
             if re.search(p, t_lower, re.IGNORECASE) or re.search(p, full_text, re.IGNORECASE):
+                # Distinguish student/university healthcare training from purely clinical adult surgeon congresses
+                if any(re.search(sp, full_text, re.IGNORECASE) for sp in STUDENT_HEALTHCARE_PATTERNS):
+                    tags = ["medical", "healthcare", "university", "student_training"]
+                    if detected_org:
+                        tags.insert(0, detected_org)
+                    return (
+                        7.2,
+                        "MEDIUM",
+                        "Healthcare & Medical Education",
+                        tags,
+                        "Target Medical, Dental & Pharmacy Undergraduates for AIESEC Global Volunteer Projects",
+                        detected_org
+                    )
                 tags = ["medical", "clinical", "b2b"]
                 if detected_org:
                     tags.insert(0, detected_org)
@@ -305,6 +356,37 @@ class B2CScorer:
                 detected_org
             )
 
+        # Check University & Academic Conferences (Major Campus Events)
+        is_univ = any(re.search(p, t_lower, re.IGNORECASE) for p in UNIVERSITY_ACADEMIC_PATTERNS)
+        is_conf = any(re.search(p, t_lower, re.IGNORECASE) for p in [
+            r"\bconference\b", r"\bcongress\b", r"\bsymposium\b", r"\bforum\b",
+            r"\binternational\b", r"\bannual\b", r"\bمؤتمر\b", r"\bندوة\b", r"\bمنتدى\b"
+        ])
+        if is_univ and is_conf:
+            tags = ["university", "academic", "conference", "campus", "youth"]
+            if detected_org:
+                tags.insert(0, detected_org)
+            return (
+                8.7,
+                "HIGH",
+                "University Conferences & Academic Forums",
+                tags,
+                "Major Campus Activation: Deploy LC Delegation, Booth Presence & Recruit University Students",
+                detected_org
+            )
+        elif is_univ or (is_conf and any(re.search(p, full_text, re.IGNORECASE) for p in UNIVERSITY_ACADEMIC_PATTERNS)):
+            tags = ["campus", "students", "youth", "education"]
+            if detected_org:
+                tags.insert(0, detected_org)
+            return (
+                7.8,
+                "MEDIUM",
+                "Campus & Student Activities",
+                tags,
+                "Campus Outreach: Engage Student Attendees & Student Union Partners",
+                detected_org
+            )
+
         for p in STUDENT_ORG_PATTERNS:
             if re.search(p, t_lower, re.IGNORECASE) or re.search(p, full_text, re.IGNORECASE):
                 tags = ["student_org", "campus", "youth", "leadership"]
@@ -317,8 +399,8 @@ class B2CScorer:
                     detected_org
                 )
 
-        # Check Youth Leadership & Skills Workshops
-        for p in SKILL_WORKSHOP_PATTERNS:
+        # Check Youth Leadership & Skills Workshops / Professional Training
+        for p in SKILL_WORKSHOP_PATTERNS + TRAINING_EDUCATION_PATTERNS:
             if re.search(p, t_lower, re.IGNORECASE):
                 tags = ["workshop", "skills", "leadership", "development"]
                 return (

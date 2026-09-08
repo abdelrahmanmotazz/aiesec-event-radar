@@ -2794,6 +2794,7 @@ function isBadEventTitle(title) {
   if (!title || typeof title !== "string") return true;
   const t = title.trim();
   if (t.length < 4) return true;
+  if (/^[\s\-_()[\]{}|.,:;!?'"]*$/.test(t)) return true;
   const lower = t.toLowerCase();
   // Action buttons
   if (/^(interested|going|share|invite|save|details|rsvp|view event|مهتم|يحضر|مشاركة|حفظ|تسجيل)$/i.test(lower)) return true;
@@ -5024,31 +5025,55 @@ function initSocialIngest() {
 
       // Smart Client-Side B2C Youth Scoring
       const combinedText = (finalTitle + " " + desc + " " + loc).toLowerCase();
-      let score = 8.8;
-      let priority = "HIGH";
-      let category = "Career & Professional Development";
-      let action = "Deploy physical student activation booth & scout youth attendees.";
+      let score = 7.5;
+      let priority = "MEDIUM";
+      let category = "Youth Leadership & Skills Workshops";
+      let action = "Deploy student activation booth & scout youth attendees.";
 
-      if (combinedText.includes("hackathon") || combinedText.includes("ai") || combinedText.includes("tech") || combinedText.includes("developer") || combinedText.includes("coding") || combinedText.includes("software")) {
-        score = 9.5;
-        category = "Technology & Innovation";
-        action = "Deploy tech-student exchange booth & engage engineering leaders.";
-      } else if (combinedText.includes("career") || combinedText.includes("employment") || combinedText.includes("job") || combinedText.includes("fair") || combinedText.includes("recruitment")) {
-        score = 9.8;
-        category = "Career & Professional Development";
-        action = "High B2C youth traffic! Deploy full booth team & collect CVs/signups.";
-      } else if (combinedText.includes("youth") || combinedText.includes("leadership") || combinedText.includes("student") || combinedText.includes("summit") || combinedText.includes("conference")) {
+      if (/(\bonco|cancer|gastro|cardio|derma|dental|surg|orthopedic|pediatric|clinical)\w*/i.test(combinedText) && !/(student|university|training|ifmsa|epsf|paces)/i.test(combinedText)) {
+        score = 2.5;
+        priority = "LOW";
+        category = "Medical & Clinical Congress";
+        action = "Do Not Deploy (Niche Clinical Target - Incompatible with Youth B2C)";
+      } else if (/(wedding|party|nightclub|disco|comedy|concert|dj night)\b/i.test(combinedText)) {
+        score = 2.8;
+        priority = "LOW";
+        category = "Social & Entertainment";
+        action = "General Monitoring (Social / Leisure)";
+      } else if (/(textile|heavy machiner|industrial expo|trade expo|freight|petrochem)\b/i.test(combinedText)) {
+        score = 3.0;
+        priority = "LOW";
+        category = "B2B & Industrial Trade Expo";
+      } else if (source.toLowerCase().includes("summit") || (ev.category && ev.category.toLowerCase().includes("summit")) || combinedText.includes("summit") || combinedText.includes("techne") || combinedText.includes("riseup") || combinedText.includes("flagship")) {
+        score = Math.max(ev.b2c_score || 9.8, 9.2);
+        priority = "HIGH";
+        category = "Flagship Summits";
+        action = ev.recommended_action || "Major National Activation: Deploy LC Delegation, Booth Presence & Global Volunteer Recruitment";
+      } else if (combinedText.includes("hackathon") || combinedText.includes("coding challenge") || combinedText.includes("code jam")) {
+        score = 8.9;
+        priority = "HIGH";
+        category = "Tech & Student Hackathons";
+        action = "Promote Global Talent IT & Tech Internship Opportunities";
+      } else if (combinedText.includes("career") || combinedText.includes("employment") || combinedText.includes("job fair") || combinedText.includes("recruitment fair")) {
         score = 9.2;
-        category = "Youth & Leadership";
-        action = "Engage student delegates & scout potential AIESEC applicants.";
-      } else if (combinedText.includes("startup") || combinedText.includes("entrepreneur") || combinedText.includes("pitch") || combinedText.includes("business")) {
-        score = 9.0;
-        category = "Startup & Business";
-        action = "Pitch corporate relations & leadership development programs.";
-      } else if (combinedText.includes("workshop") || combinedText.includes("training") || combinedText.includes("masterclass")) {
+        priority = "HIGH";
+        category = "Career & Recruitment Fairs";
+        action = "Booth Booking & Direct Lead Generation for Global Talent / Teacher";
+      } else if (/(university|faculty|campus|جامعة|كلية)/i.test(combinedText) && /(conference|congress|symposium|forum|مؤتمر|ندوة)/i.test(combinedText)) {
         score = 8.7;
-        category = "Capacity Building";
-        action = "Network with attending delegates for skill exchange partnerships.";
+        priority = "HIGH";
+        category = "University Conferences & Academic Forums";
+        action = "Major Campus Activation: Deploy LC Delegation, Booth Presence & Recruit University Students";
+      } else if (/(university|faculty|campus|student union|اتحاد طلاب)/i.test(combinedText)) {
+        score = 7.8;
+        priority = "MEDIUM";
+        category = "Campus & Student Activities";
+        action = "Campus Outreach: Engage Student Attendees & Student Union Partners";
+      } else if (combinedText.includes("tech") || combinedText.includes("developer") || combinedText.includes("software") || combinedText.includes("ai")) {
+        score = 7.2;
+        priority = "MEDIUM";
+        category = "Tech Communities & Innovation";
+        action = "Promote Global Talent IT Opportunities";
       }
 
       const eventId = ev.event_id || `social_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`;
