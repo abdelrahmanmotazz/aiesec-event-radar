@@ -54,10 +54,10 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add events.json docs/events.json aiesec_scraper/web/static/events.json data/
+          git add -A
           if ! git diff --staged --quiet; then
             git commit -m "chore(auto-sync): live event radar refresh [$(date +'%Y-%m-%d')]"
-            git pull --rebase origin main
+            git pull --rebase --autostash origin main
             git push origin main
           else
             echo "Radar database is already up to date. No changes detected."
