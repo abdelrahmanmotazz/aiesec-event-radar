@@ -119,6 +119,7 @@ def run_daily_scrape():
     json_data = json.dumps(json_payload, indent=2, ensure_ascii=False)
     js_data = (
         f"// Auto-generated AIESEC Radar Events Data\n"
+        f"window.RADAR_DATASET_VERSION = '{datetime.now().strftime('%Y-%m-%d_%H%M')}';\n"
         f"window.AIESEC_INITIAL_EVENTS = {json_data};\n"
         f"window.RADAR_STATIC_EVENTS = window.AIESEC_INITIAL_EVENTS;\n"
         f"window.__AIESEC_EVENTS__ = window.AIESEC_INITIAL_EVENTS;\n"
