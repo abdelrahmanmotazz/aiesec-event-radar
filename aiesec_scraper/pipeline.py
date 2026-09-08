@@ -57,13 +57,17 @@ def clean_event_title(title: str) -> str:
     for line in lines:
         if re.search(r'^(mon|tue|wed|thu|fri|sat|sun|today|tomorrow|happening|\d{1,2}:\d{2})', line, re.IGNORECASE):
             continue
-        if re.search(r'^\d+(\.\d+)?[KM]?\s+(interested|going|went)', line, re.IGNORECASE):
+        if re.search(r'\d+(\.\d+)?[KM]?\s*(interested|going|went|مهتم|يحضر)', line, re.IGNORECASE):
             continue
-        if re.search(r'^(interested|going|share|invite|save)$', line, re.IGNORECASE):
+        if re.search(r'^(interested|going|share|invite|save|مهتم|يحضر|مشاركة|حفظ|details|rsvp|view event)$', line, re.IGNORECASE):
             continue
         if len(line) >= 4:
             return line
-    return lines[0]
+    # If all candidate lines were skipped, do NOT return bad line
+    first = lines[0]
+    if not re.search(r'^(interested|going|share|invite|save|مهتم|يحضر|مشاركة|حفظ|details|rsvp|view event)$', first, re.IGNORECASE) and not re.search(r'\d+(\.\d+)?[KM]?\s*(interested|going|went|مهتم|يحضر)', first, re.IGNORECASE):
+        return first
+    return ""
 
 
 def is_bad_or_non_egypt(ev: EventRecord) -> bool:

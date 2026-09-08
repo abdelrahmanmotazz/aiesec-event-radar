@@ -37,13 +37,16 @@ def clean_event_title(title: str) -> str:
     for line in lines:
         if re.search(r'^(mon|tue|wed|thu|fri|sat|sun|today|tomorrow|happening|\d{1,2}:\d{2})', line, re.IGNORECASE):
             continue
-        if re.search(r'^\d+(\.\d+)?[KM]?\s+(interested|going|went)', line, re.IGNORECASE):
+        if re.search(r'\d+(\.\d+)?[KM]?\s*(interested|going|went|مهتم|يحضر)', line, re.IGNORECASE):
             continue
-        if re.search(r'^(interested|going|share|invite|save)$', line, re.IGNORECASE):
+        if re.search(r'^(interested|going|share|invite|save|مهتم|يحضر|مشاركة|حفظ|details|rsvp|view event)$', line, re.IGNORECASE):
             continue
         if len(line) >= 4:
             return line
-    return lines[0]
+    first = lines[0]
+    if not re.search(r'^(interested|going|share|invite|save|مهتم|يحضر|مشاركة|حفظ|details|rsvp|view event)$', first, re.IGNORECASE) and not re.search(r'\d+(\.\d+)?[KM]?\s*(interested|going|went|مهتم|يحضر)', first, re.IGNORECASE):
+        return first
+    return ""
 
 
 # High-yield search queries across Egyptian university and tech ecosystems
@@ -247,9 +250,14 @@ class MetaPlaywrightScraper:
                         }
                     });
 
-                    // Fallback to link innerText if detected title is empty or suspicious
-                    if (!detectedTitle || /\d+[KM]?\s+(interested|going)/i.test(detectedTitle)) {
-                        detectedTitle = a.innerText.trim() || lines[0] || "Facebook Event";
+                    // Fallback to link innerText if detected title is empty or suspicious, ensuring not attendee/button
+                    if (!detectedTitle || /\d+[KM]?\s*(interested|going)/i.test(detectedTitle) || /^(share|interested|going|invite|مشاركة|مهتم|تسجيل)$/i.test(detectedTitle)) {
+                        const linkTxt = a.innerText.trim();
+                        if (linkTxt && !/\d+[KM]?\s*(interested|going)/i.test(linkTxt) && !/^(share|interested|going|invite|مشاركة|مهتم|تسجيل)$/i.test(linkTxt)) {
+                            detectedTitle = linkTxt;
+                        } else {
+                            detectedTitle = lines.find(l => l.length >= 4 && !/\d+[KM]?\s*(interested|going)/i.test(l) && !/^(share|interested|going|invite|مشاركة|مهتم|تسجيل)$/i.test(l)) || "Facebook Event";
+                        }
                     }
 
                     // Extract image thumbnail if present

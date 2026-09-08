@@ -146,6 +146,12 @@ def test_clean_event_title():
     single_line = "RiseUp Summit 2026"
     assert clean_event_title(single_line) == "RiseUp Summit 2026"
 
+    # Attendee counts and action buttons must never be treated as valid titles
+    assert clean_event_title("Interested") == ""
+    assert clean_event_title("328 interested · 44 going") == ""
+    assert clean_event_title("104 interested · 9 going") == ""
+    assert clean_event_title("63 interested · 13 going") == ""
+
 
 def test_bad_link_and_non_egypt_filter():
     from aiesec_scraper.pipeline import is_bad_or_non_egypt

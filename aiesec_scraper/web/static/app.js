@@ -2790,17 +2790,88 @@ function getSafeEventUrl(ev) {
   return rawUrl;
 }
 
-function cleanEventTitleJs(title) {
-  if (!title) return "";
-  const lines = title.split("\n").map(l => l.trim()).filter(l => l.length > 0);
-  if (!lines.length) return "";
-  for (const line of lines) {
-    if (/^(mon|tue|wed|thu|fri|sat|sun|today|tomorrow|happening|\d{1,2}:\d{2})/i.test(line)) continue;
-    if (/^\d+(\.\d+)?[KM]?\s+(interested|going|went)/i.test(line)) continue;
-    if (/^(interested|going|share|invite|save)$/i.test(line)) continue;
-    if (line.length >= 4) return line;
+function isBadEventTitle(title) {
+  if (!title || typeof title !== "string") return true;
+  const t = title.trim();
+  if (t.length < 4) return true;
+  const lower = t.toLowerCase();
+  // Action buttons
+  if (/^(interested|going|share|invite|save|details|rsvp|view event|مهتم|يحضر|مشاركة|حفظ|تسجيل)$/i.test(lower)) return true;
+  // Attendee counts
+  if (/\d+(\.\d+)?[KM]?\s*(interested|going|went|مهتم|يحضر)/i.test(lower)) return true;
+  if (/(interested|going|مهتم|يحضر)\s*[·•|-]\s*\d+/i.test(lower)) return true;
+  if (/^\d+\s*(interested|going|went)/i.test(lower)) return true;
+  // Generic placeholders
+  if (["facebook event", "null", "undefined", "none", "event", "events", "imported live event"].includes(lower)) return true;
+  if (lower.startsWith("imported live event") || lower.startsWith("live social event")) return true;
+  // Pure date badges
+  if (/^(happening now|upcoming|today|tomorrow)/i.test(lower)) return true;
+  if (/^[a-z]{3},\s+[a-z]{3}\s+\d{1,2}/i.test(lower)) return true;
+  return false;
+}
+
+function cleanEventTitleFromDesc(badTitle, desc = "", location = "", url = "") {
+  if (!isBadEventTitle(badTitle)) return badTitle.trim();
+
+  // 1. Check if Facebook URL contains a named event slug
+  if (url && url.includes("facebook.com/events/")) {
+    try {
+      const parts = url.split("facebook.com/events/")[1].split(/[/?#]/).filter(Boolean);
+      for (const part of parts) {
+        if (isNaN(part) && part.length > 5 && !part.startsWith("explore") && !part.startsWith("search")) {
+          const decoded = decodeURIComponent(part).replace(/[-_]+/g, " ").replace(/\b\w/g, l => l.toUpperCase()).trim();
+          if (!isBadEventTitle(decoded)) {
+            return decoded;
+          }
+        }
+      }
+    } catch (e) {}
   }
-  return lines[0];
+
+  if (!desc || typeof desc !== "string" || desc.trim().length < 4) {
+    return "Facebook Community Event";
+  }
+
+  let text = desc.trim();
+
+  // 1. Remove attendee counts e.g. "328 interested · 44 going", "1.7K interested"
+  text = text.replace(/\d+(\.\d+)?[KM]?\s*(interested|going|went|مهتم|يحضر)(\s*[·•|-]\s*\d+(\.\d+)?[KM]?\s*(going|interested)?)?/gi, "");
+  // Remove standalone action buttons
+  text = text.replace(/\b(interested|going|share|invite|save|مهتم|يحضر|مشاركة|حفظ)\b/gi, "");
+  text = text.replace(/\.{3,}$/, "").trim();
+
+  // 2. Remove leading date badges & timestamps
+  text = text.replace(/^(happening now|upcoming|today|tomorrow)\s*/gi, "");
+  text = text.replace(/^[a-z]{3},\s+[a-z]{3}\s+\d{1,2}(\s*-\s*([a-z]{3}\s+)?\d{1,2})?(\s+at\s+\d{1,2}(:\d{2})?\s*(am|pm)?)?\s*/gi, "");
+  text = text.replace(/^[a-z]{3},\s+\d{1,2}\s+[a-z]{3}(\s*-\s*\d{1,2}\s+[a-z]{3})?(\s+at\s+\d{1,2}(:\d{2})?\s*(am|pm)?)?\s*/gi, "");
+
+  // 3. Strip trailing location if location string matches
+  if (location && location.toLowerCase().trim() !== "egypt" && location.toLowerCase().trim() !== "cairo") {
+    const locClean = location.trim();
+    const esc = locClean.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    text = text.replace(new RegExp("\\s*" + esc + ".*$", "i"), "");
+  }
+
+  // 4. Strip well known Egyptian venue indicators at the end
+  const venueRegex = /\s+(The GrEEK Campus|Hilton\s+[A-Za-z\s]+|Intercontinental\s+[A-Za-z\s]+|EG Intercontinental\s+[A-Za-z\s]+|Four Seasons\s+[A-Za-z\s]+|Marriott\s+[A-Za-z\s]+|Soham Yoga\s+[A-Za-z0-9\s,]+).*$/i;
+  text = text.replace(venueRegex, "");
+
+  // Clean trailing punctuation
+  let cleaned = text.replace(/^[\s\-·•|,:\t\r\n]+|[\s\-·•|,:\t\r\n]+$/g, "");
+  if (cleaned.length >= 4 && !isBadEventTitle(cleaned)) {
+    return cleaned;
+  }
+
+  return "Facebook Community Event";
+}
+
+function cleanEventTitleJs(title, desc = "", location = "", url = "") {
+  if (!title) return cleanEventTitleFromDesc("", desc, location, url);
+  const lines = title.split("\n").map(l => l.trim()).filter(l => l.length > 0);
+  for (const line of lines) {
+    if (!isBadEventTitle(line)) return line;
+  }
+  return cleanEventTitleFromDesc(lines[0] || "", desc, location, url);
 }
 
 const NON_EGYPT_PATTERNS_JS = [
@@ -2843,17 +2914,23 @@ function deduplicateClientEvents(eventsList) {
 
   for (const ev of eventsList) {
     if (!ev || !ev.title || typeof ev.title !== "string") continue;
-    ev.title = cleanEventTitleJs(ev.title);
+    ev.title = cleanEventTitleJs(ev.title, ev.description, ev.location, ev.url);
     const titleClean = ev.title.trim();
-    if (titleClean.length < 3 || ["null", "none", "event", "events", "untitled"].includes(titleClean.toLowerCase())) continue;
+    if (titleClean.length < 3 || isBadEventTitle(titleClean)) continue;
 
     // Filter bad links and foreign location bleed
     if (isBadOrNonEgyptJs(ev)) continue;
 
-    // Check ID
-    if (ev.event_id && seenIds.has(ev.event_id)) continue;
+    // Check ID - if seen, upgrade title if current is better
+    if (ev.event_id && seenIds.has(ev.event_id)) {
+      const existing = unique.find(u => u.event_id === ev.event_id);
+      if (existing && isBadEventTitle(existing.title) && !isBadEventTitle(ev.title)) {
+        existing.title = ev.title;
+      }
+      continue;
+    }
 
-    // Check Canonical URL
+    // Check Canonical URL - if seen, upgrade title if current is better
     let canonUrl = "";
     if (ev.url && typeof ev.url === "string") {
       const u = ev.url.trim();
@@ -2862,7 +2939,16 @@ function deduplicateClientEvents(eventsList) {
       } else {
         canonUrl = u.split("?")[0].split("#")[0].replace(/\/+$/, "").toLowerCase();
       }
-      if (canonUrl && seenUrls.has(canonUrl)) continue;
+      if (canonUrl && seenUrls.has(canonUrl)) {
+        const existing = unique.find(u => {
+          const uUrl = (u.url || "").split("?")[0].split("#")[0].replace(/\/+$/, "").toLowerCase();
+          return uUrl === canonUrl;
+        });
+        if (existing && isBadEventTitle(existing.title) && !isBadEventTitle(ev.title)) {
+          existing.title = ev.title;
+        }
+        continue;
+      }
     }
 
     // Check Normalized Title Tokens & Fuzzy Matching
@@ -2932,11 +3018,33 @@ async function loadStaticEventsFallback() {
       }
       let customStored = [];
       try {
-        customStored = JSON.parse(localStorage.getItem("aiesec_radar_custom_events") || "[]");
+        const rawCustom = JSON.parse(localStorage.getItem("aiesec_radar_custom_events") || "[]");
+        if (Array.isArray(rawCustom)) {
+          let storageModified = false;
+          customStored = rawCustom.map(ev => {
+            if (isBadEventTitle(ev.title)) {
+              const matchInLoaded = loaded.find(l => (ev.url && l.url === ev.url) || (ev.event_id && l.event_id === ev.event_id));
+              if (matchInLoaded && !isBadEventTitle(matchInLoaded.title)) {
+                ev.title = matchInLoaded.title;
+              } else {
+                ev.title = cleanEventTitleFromDesc(ev.title, ev.description, ev.location, ev.url);
+              }
+              storageModified = true;
+            }
+            return ev;
+          }).filter(ev => !isBadEventTitle(ev.title));
+
+          if (storageModified) {
+            try {
+              localStorage.setItem("aiesec_radar_custom_events", JSON.stringify(customStored));
+            } catch (e) {}
+          }
+        }
       } catch (e) {
         customStored = [];
       }
-      rawEventsCache = deduplicateClientEvents([...customStored, ...loaded]);
+      // Prioritize curated database over unverified custom items
+      rawEventsCache = deduplicateClientEvents([...loaded, ...customStored]);
     }
 
     let filtered = [...rawEventsCache];
@@ -3100,22 +3208,22 @@ function parseDateForTearoff(dateDisplay) {
 function getSourcePill(source) {
   const s = source.toLowerCase();
   if (s.includes("ticketsmarche")) {
-    return `<span class="source-pill-ticketsmarche px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wide inline-flex items-center gap-1"><i data-lucide="ticket" class="w-3 h-3"></i> TicketsMarche</span>`;
+    return `<span class="source-pill-ticketsmarche px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wide inline-flex items-center gap-1"><svg class="w-3 h-3 fill-none stroke-current stroke-2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M13 5v2"/><path d="M13 17v2"/><path d="M13 11v2"/></svg> TicketsMarche</span>`;
   }
   if (s.includes("summit") || s.includes("techne") || s.includes("flagship")) {
-    return `<span class="source-pill-summit px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wide inline-flex items-center gap-1"><i data-lucide="crown" class="w-3 h-3"></i> Flagship Summit</span>`;
+    return `<span class="source-pill-summit px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wide inline-flex items-center gap-1"><svg class="w-3 h-3 fill-none stroke-current stroke-2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14"/></svg> Flagship Summit</span>`;
   }
   if (s.includes("linkedin")) {
-    return `<span class="source-pill-linkedin px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wide inline-flex items-center gap-1"><i data-lucide="briefcase" class="w-3 h-3"></i> LinkedIn</span>`;
+    return `<span class="source-pill-linkedin px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wide inline-flex items-center gap-1"><svg class="w-3 h-3 fill-none stroke-current stroke-2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="7" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg> LinkedIn</span>`;
   }
   if (s.includes("instagram")) {
-    return `<span class="source-pill-instagram px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wide inline-flex items-center gap-1"><i data-lucide="camera" class="w-3 h-3"></i> Instagram</span>`;
+    return `<span class="source-pill-instagram px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wide inline-flex items-center gap-1"><svg class="w-3 h-3 fill-none stroke-current stroke-2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg> Instagram</span>`;
   }
   if (s.includes("telegram")) {
-    return `<span class="source-pill-telegram px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wide inline-flex items-center gap-1"><i data-lucide="send" class="w-3 h-3"></i> Telegram</span>`;
+    return `<span class="source-pill-telegram px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wide inline-flex items-center gap-1"><svg class="w-3 h-3 fill-none stroke-current stroke-2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg> Telegram</span>`;
   }
   if (s.includes("facebook")) {
-    return `<span class="source-pill-facebook px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wide inline-flex items-center gap-1"><i data-lucide="share-2" class="w-3 h-3"></i> Facebook</span>`;
+    return `<span class="source-pill-facebook px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wide inline-flex items-center gap-1"><svg class="w-3 h-3 fill-none stroke-current stroke-2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/></svg> Facebook</span>`;
   }
   if (s.includes("eventbrite")) {
     return `<span class="source-pill-eventbrite px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wide inline-flex items-center gap-1">Eventbrite</span>`;
@@ -3151,6 +3259,7 @@ function createCardNode(ev) {
   const badgeClass = isHigh ? "badge-neon-coral" : (ev.b2c_priority === "MEDIUM" ? "badge-neon-amber" : "badge-neon-slate");
   const dateBadge = parseDateForTearoff(ev.date_display);
   const sourcePill = getSourcePill(ev.source);
+  const displayTitle = isBadEventTitle(ev.title) ? cleanEventTitleFromDesc(ev.title, ev.description, ev.location, ev.url) : ev.title;
 
   card.innerHTML = `
     <!-- Linear Conic Laser Border Beam (GPU-Accelerated) -->
@@ -3178,9 +3287,9 @@ function createCardNode(ev) {
         </div>
         <div class="flex items-center gap-1.5 flex-wrap justify-end">
           <a href="${getSafeEventUrl(ev)}" target="_blank" onclick="event.stopPropagation()" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 inline-flex items-center gap-1 hover:bg-emerald-500/25 transition" title="100% Real Event • Verified: ${ev.proof_type || 'Announcement Post'}">
-            <i data-lucide="shield-check" class="w-3 h-3 text-emerald-400"></i> Proof ↗
+            <svg class="w-3 h-3 text-emerald-400 fill-none stroke-current stroke-2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg> Proof ↗
           </a>
-          ${ev.is_social_first ? `<span class="badge-social-first px-2 py-0.5 rounded-full text-[10px] font-bold inline-flex items-center gap-1" title="Social First Announcement"><i data-lucide="zap" class="w-3 h-3 text-cyan-400"></i> Social First</span>` : ""}
+          ${ev.is_social_first ? `<span class="badge-social-first px-2 py-0.5 rounded-full text-[10px] font-bold inline-flex items-center gap-1" title="Social First Announcement"><svg class="w-3 h-3 text-cyan-400 fill-none stroke-current stroke-2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Social First</span>` : ""}
           ${isFlagship ? `<span class="badge-flagship-gold px-2.5 py-0.5 rounded-full text-[10px] inline-flex items-center gap-1">👑 Flagship</span>` : ""}
           ${hasPartner ? `<span class="badge-neon-purple px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wide">${ev.parallel_org}</span>` : ""}
           ${hasClash ? `<span class="badge-neon-amber px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wide">⚠️ Weekend Clash</span>` : ""}
@@ -3196,15 +3305,15 @@ function createCardNode(ev) {
 
         <div class="flex-1 min-w-0">
           <h3 class="font-extrabold text-base text-white leading-snug line-clamp-2 hover:text-[#00E5FF] transition group font-display">
-            <a href="${getSafeEventUrl(ev)}" target="_blank" class="group-hover:underline underline-offset-2">${ev.title}</a>
+            <a href="${getSafeEventUrl(ev)}" target="_blank" class="group-hover:underline underline-offset-2">${displayTitle}</a>
           </h3>
           <div class="mt-1.5 space-y-1 text-xs text-slate-400">
             <div class="flex items-center gap-1.5 truncate">
-              <i data-lucide="map-pin" class="w-3.5 h-3.5 text-rose-400 shrink-0"></i>
+              <svg class="w-3.5 h-3.5 text-rose-400 shrink-0 fill-none stroke-current stroke-2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>
               <span class="truncate">${ev.location} • <strong class="text-slate-200 font-semibold">${ev.city}</strong></span>
             </div>
             <div class="flex items-center gap-1.5 text-slate-400 truncate">
-              <i data-lucide="calendar" class="w-3.5 h-3.5 text-sky-400 shrink-0"></i>
+              <svg class="w-3.5 h-3.5 text-sky-400 shrink-0 fill-none stroke-current stroke-2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>
               <span class="truncate">${ev.date_display || "Date TBA"}</span>
               ${ev.ticket_type ? `<span class="text-slate-600">•</span><span class="text-slate-300 font-medium">${ev.ticket_type}</span>` : ""}
             </div>
@@ -3216,7 +3325,7 @@ function createCardNode(ev) {
       <div class="event-desc-box p-3.5 text-xs space-y-1.5 my-1">
         <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center justify-between">
           <span class="flex items-center gap-1.5 text-sky-400">
-            <i data-lucide="file-text" class="w-3.5 h-3.5"></i> Event Intelligence Briefing
+            <svg class="w-3.5 h-3.5 fill-none stroke-current stroke-2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg> Event Intelligence Briefing
           </span>
           <span class="text-[9px] text-slate-500 font-mono-code font-medium">Granular Details</span>
         </div>
@@ -3228,7 +3337,7 @@ function createCardNode(ev) {
       <!-- AIESEC Strategic Recommendation Callout Box -->
       <div class="dark-action-box p-3.5 text-xs mt-1">
         <div class="text-[10px] font-bold text-[#00E5FF] uppercase tracking-wider mb-1 flex items-center gap-1.5 font-display">
-          <i data-lucide="zap" class="w-3.5 h-3.5 text-[#00E5FF]"></i> Recommended B2C Action
+          <svg class="w-3.5 h-3.5 text-[#00E5FF] fill-none stroke-current stroke-2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg> Recommended B2C Action
         </div>
         <div class="font-medium text-slate-200 leading-relaxed text-[11px]">
           ${ev.recommended_action}
@@ -3238,11 +3347,11 @@ function createCardNode(ev) {
       <!-- Organizer Scout Intelligence Strip -->
       <div class="p-2.5 rounded-xl bg-white/[0.03] border border-white/[0.08] flex items-center justify-between gap-2 text-xs mt-1">
         <div class="flex items-center gap-1.5 min-w-0">
-          <i data-lucide="user-check" class="w-3.5 h-3.5 text-emerald-400 shrink-0"></i>
+          <svg class="w-3.5 h-3.5 text-emerald-400 shrink-0 fill-none stroke-current stroke-2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg>
           <span class="text-[11px] font-semibold text-slate-300 truncate" title="${contacts.organizerName}">${contacts.organizerName}</span>
         </div>
         <div class="flex items-center gap-1.5 shrink-0 text-slate-400">
-          ${contacts.email ? `<span class="w-5 h-5 rounded-md bg-sky-500/15 text-sky-300 flex items-center justify-center text-[10px]" title="Email: ${contacts.email}"><i data-lucide="mail" class="w-3 h-3"></i></span>` : ""}
+          ${contacts.email ? `<span class="w-5 h-5 rounded-md bg-sky-500/15 text-sky-300 flex items-center justify-center text-[10px]" title="Email: ${contacts.email}"><svg class="w-3 h-3 fill-none stroke-current stroke-2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></span>` : ""}
           ${contacts.linkedin ? `<span class="w-5 h-5 rounded-md bg-[#0A66C2]/20 text-[#0A66C2] flex items-center justify-center text-[10px]" title="LinkedIn Verified"><svg class="w-3 h-3 fill-[#0A66C2]" viewBox="0 0 24 24"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.2V10.9H6.46M7.83 6.64a1.64 1.64 0 1 0 0 3.28 1.64 1.64 0 0 0 0-3.28Z"/></svg></span>` : ""}
           ${contacts.instagram ? `<span class="w-5 h-5 rounded-md bg-[#E1306C]/20 text-[#E1306C] flex items-center justify-center text-[10px]" title="Instagram: @${contacts.instagram}"><svg class="w-3 h-3 text-[#E1306C] fill-none stroke-current stroke-2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><circle cx="12" cy="12" r="4"></circle><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg></span>` : ""}
           ${contacts.phone ? `<span class="w-5 h-5 rounded-md bg-emerald-500/15 text-emerald-300 flex items-center justify-center text-[10px]" title="WhatsApp: ${contacts.phone}"><svg class="w-3 h-3 text-[#25D366] fill-none stroke-current stroke-2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span>` : ""}
@@ -3255,14 +3364,14 @@ function createCardNode(ev) {
     <div class="pt-3.5 mt-auto border-t border-white/[0.08] flex items-center justify-between gap-2">
       <button class="btn-pitch-event flex-1 py-2.5 px-3 bg-gradient-to-r from-[#037EF3]/20 to-[#0266C8]/20 hover:from-[#037EF3] hover:to-[#0266C8] text-[#38BDF8] hover:text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 border border-[#38BDF8]/30 hover:border-transparent shadow-[0_0_12px_rgba(3,126,243,0.15)] active:scale-95"
               data-event-id="${ev.event_id}">
-        <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Pitch
+        <svg class="w-3.5 h-3.5 fill-none stroke-current stroke-2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></svg> Pitch
       </button>
       <button class="btn-card-lead-hunt py-2.5 px-3 bg-amber-500/15 hover:bg-amber-500 text-amber-300 hover:text-slate-950 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 border border-amber-500/30 hover:border-transparent shadow-[0_0_12px_rgba(245,158,11,0.15)] active:scale-95"
               title="Hunt Leads for this event" data-event-id="${ev.event_id}">
-        <i data-lucide="crosshair" class="w-3.5 h-3.5 text-amber-400"></i> Leads
+        <svg class="w-3.5 h-3.5 text-amber-400 fill-none stroke-current stroke-2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="22" x2="18" y1="12" y2="12"/><line x1="6" x2="2" y1="12" y2="12"/><line x1="12" x2="12" y1="6" y2="2"/><line x1="12" x2="12" y1="22" y2="18"/></svg> Leads
       </button>
       <a href="${getSafeEventUrl(ev)}" target="_blank" class="p-2.5 text-slate-400 hover:text-white rounded-xl hover:bg-white/[0.08] border border-white/[0.09] transition active:scale-95 flex items-center justify-center shrink-0" title="Open Event Link">
-        <i data-lucide="external-link" class="w-4 h-4"></i>
+        <svg class="w-4 h-4 fill-none stroke-current stroke-2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>
       </a>
     </div>
   `;
@@ -3338,7 +3447,11 @@ function renderCards() {
   }
 
   initMagneticButtons();
-  if (window.lucide) lucide.createIcons({ root: containerCards });
+  if (window.lucide) {
+    try {
+      lucide.createIcons({ root: containerCards });
+    } catch (e) {}
+  }
 
   // Stream in remaining cards asynchronously in next frames
   if (remainingEvents.length > 0) {
@@ -3348,12 +3461,22 @@ function renderCards() {
       const nextSlice = remainingEvents.slice(offset, offset + BATCH_SIZE);
       offset += BATCH_SIZE;
 
+      const newCardNodes = [];
       const chunkFrag = document.createDocumentFragment();
       nextSlice.forEach((ev) => {
-        chunkFrag.appendChild(createCardNode(ev));
+        const node = createCardNode(ev);
+        newCardNodes.push(node);
+        chunkFrag.appendChild(node);
       });
       containerCards.appendChild(chunkFrag);
-      if (window.lucide) lucide.createIcons({ root: chunkFrag });
+      newCardNodes.forEach((node) => {
+        if (window.lucide) {
+          try {
+            lucide.createIcons({ root: node });
+          } catch (e) {}
+        }
+      });
+      initMagneticButtons();
 
       if (offset < remainingEvents.length) {
         activeCardRenderTimer = setTimeout(renderNextChunk, 20);
@@ -4893,18 +5016,11 @@ function initSocialIngest() {
       let city = (ev.city || "Cairo").trim();
       let source = ev.source || (url.includes("instagram") ? "Instagram Feeds" : "Facebook Events");
 
-      // Smart Title extraction from URL if generic or empty
-      if (!rawTitle || rawTitle.toLowerCase().startsWith("imported live event")) {
-        if (url.includes("facebook.com/events/")) {
-          const parts = url.split("facebook.com/events/")[1].split(/[/?#]/).filter(Boolean);
-          if (parts.length && isNaN(parts[0])) {
-            rawTitle = decodeURIComponent(parts[0]).replace(/[-_]+/g, " ").replace(/\b\w/g, l => l.toUpperCase());
-          } else if (parts.length > 1 && isNaN(parts[1])) {
-            rawTitle = decodeURIComponent(parts[1]).replace(/[-_]+/g, " ").replace(/\b\w/g, l => l.toUpperCase());
-          }
-        }
+      // Smart Title extraction and sanitization
+      if (isBadEventTitle(rawTitle)) {
+        rawTitle = cleanEventTitleFromDesc(rawTitle, desc, loc, url);
       }
-      const finalTitle = rawTitle || `Live Social Event (${city})`;
+      const finalTitle = (!isBadEventTitle(rawTitle) ? rawTitle : cleanEventTitleFromDesc(rawTitle, desc, loc, url)) || `Live Social Event (${city})`;
 
       // Smart Client-Side B2C Youth Scoring
       const combinedText = (finalTitle + " " + desc + " " + loc).toLowerCase();
