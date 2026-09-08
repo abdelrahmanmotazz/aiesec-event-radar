@@ -117,7 +117,12 @@ def run_daily_scrape():
     # Mode 'json' ensures datetimes and Pydantic models serialize cleanly
     json_payload = [e.model_dump(mode="json") for e in events]
     json_data = json.dumps(json_payload, indent=2, ensure_ascii=False)
-    js_data = f"// Auto-generated AIESEC Radar Events Data\nwindow.__AIESEC_EVENTS__ = {json_data};\n"
+    js_data = (
+        f"// Auto-generated AIESEC Radar Events Data\n"
+        f"window.AIESEC_INITIAL_EVENTS = {json_data};\n"
+        f"window.RADAR_STATIC_EVENTS = window.AIESEC_INITIAL_EVENTS;\n"
+        f"window.__AIESEC_EVENTS__ = window.AIESEC_INITIAL_EVENTS;\n"
+    )
 
     target_json_paths = [
         os.path.join(PROJECT_ROOT, "events.json"),

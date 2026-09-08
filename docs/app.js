@@ -3010,8 +3010,16 @@ async function loadStaticEventsFallback() {
   try {
     if (!rawEventsCache) {
       let loaded = [];
-      if (window.RADAR_STATIC_EVENTS && Array.isArray(window.RADAR_STATIC_EVENTS) && window.RADAR_STATIC_EVENTS.length > 0) {
-        loaded = window.RADAR_STATIC_EVENTS;
+      const preloadedData = (window.AIESEC_INITIAL_EVENTS && Array.isArray(window.AIESEC_INITIAL_EVENTS) && window.AIESEC_INITIAL_EVENTS.length > 0)
+        ? window.AIESEC_INITIAL_EVENTS
+        : (window.RADAR_STATIC_EVENTS && Array.isArray(window.RADAR_STATIC_EVENTS) && window.RADAR_STATIC_EVENTS.length > 0)
+        ? window.RADAR_STATIC_EVENTS
+        : (window.__AIESEC_EVENTS__ && Array.isArray(window.__AIESEC_EVENTS__) && window.__AIESEC_EVENTS__.length > 0)
+        ? window.__AIESEC_EVENTS__
+        : null;
+
+      if (preloadedData) {
+        loaded = preloadedData;
       } else {
         const res = await fetch("events.json?v=" + Date.now());
         if (!res.ok) throw new Error("Could not load events.json");

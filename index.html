@@ -66,58 +66,58 @@
 
   <!-- Top Floating Frosted Navigation Bar (Edge-to-Edge Action & Control Bar) -->
   <header class="bg-[#060B18]/90 backdrop-blur-2xl border-b border-white/[0.08] sticky top-0 z-30 shadow-2xl relative">
-    <div class="max-w-[1800px] w-full mx-auto px-3 sm:px-6 h-16 flex items-center justify-between gap-2 sm:gap-4 overflow-x-auto no-scrollbar">
+    <div class="max-w-[1800px] w-full mx-auto px-1.5 min-[380px]:px-2 sm:px-6 h-16 flex items-center justify-between gap-1 sm:gap-4 relative">
       
       <!-- Primary Intelligence & Operations Suite (Left Wing) -->
-      <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+      <div class="flex items-center gap-0.5 min-[380px]:gap-1 sm:gap-2 shrink-0">
         <!-- Scrape Now Action (Primary High-Contrast Trigger) -->
-        <button id="btn-scrape-now" class="px-3 sm:px-4 py-2 flex items-center justify-center gap-1.5 bg-gradient-to-r from-[#FF4D36] to-[#E03620] hover:brightness-110 text-white text-xs font-bold rounded-xl transition shadow-[0_0_22px_rgba(255,77,54,0.4)] active:scale-95 shrink-0" title="Refresh Live Radar Feed">
+        <button id="btn-scrape-now" class="px-1.5 min-[380px]:px-2 sm:px-3.5 py-1.5 sm:py-2 flex items-center justify-center gap-1 min-[380px]:gap-1.5 bg-gradient-to-r from-[#FF4D36] to-[#E03620] hover:brightness-110 text-white text-[11px] sm:text-xs font-bold rounded-xl transition shadow-[0_0_22px_rgba(255,77,54,0.4)] active:scale-95 shrink-0" title="Refresh Live Radar Feed">
           <i data-lucide="refresh-cw" class="w-3.5 h-3.5" id="scrape-icon"></i>
-          <span>Scrape Now</span>
+          <span>Scrape</span><span class="hidden xl:inline">&nbsp;Now</span>
         </button>
 
         <!-- Live Social Ingestion Hub Button -->
-        <button id="btn-open-social-ingest" class="flex items-center gap-1.5 bg-gradient-to-r from-sky-500/20 via-cyan-500/20 to-blue-600/20 hover:from-sky-500/30 hover:to-cyan-500/30 text-cyan-300 border border-cyan-500/40 hover:border-cyan-400 text-xs font-bold px-2.5 sm:px-3 py-2 rounded-xl transition shadow-[0_0_15px_rgba(0,229,255,0.2)] active:scale-95 group shrink-0" title="Live Social Ingestion Hub: Facebook & Instagram Auto-Harvester">
+        <button id="btn-open-social-ingest" class="flex items-center gap-1 min-[380px]:gap-1.5 bg-gradient-to-r from-sky-500/20 via-cyan-500/20 to-blue-600/20 hover:from-sky-500/30 hover:to-cyan-500/30 text-cyan-300 border border-cyan-500/40 hover:border-cyan-400 text-[11px] sm:text-xs font-bold px-1.5 min-[380px]:px-2 sm:px-3 py-1.5 sm:py-2 rounded-xl transition shadow-[0_0_15px_rgba(0,229,255,0.2)] active:scale-95 group shrink-0" title="Live Social Ingestion Hub: Facebook & Instagram Auto-Harvester">
           <i data-lucide="radio" class="w-3.5 h-3.5 text-cyan-400 group-hover:animate-pulse"></i>
-          <span>Social Ingest</span>
-          <span class="px-1.5 py-0.5 rounded bg-cyan-500/30 text-[9px] font-black uppercase text-cyan-200">AUTO</span>
+          <span>Social</span><span class="hidden lg:inline">&nbsp;Ingest</span>
+          <span class="hidden xl:inline px-1.5 py-0.5 rounded bg-cyan-500/30 text-[9px] font-black uppercase text-cyan-200">AUTO</span>
         </button>
 
         <!-- Autonomous Lead Hunter AI Button -->
-        <button id="btn-open-lead-hunter" class="flex items-center gap-1.5 bg-gradient-to-r from-amber-500/20 via-orange-500/20 to-amber-600/20 hover:from-amber-500/30 hover:to-orange-500/30 text-amber-300 border border-amber-500/40 hover:border-amber-400 text-xs font-bold px-2.5 sm:px-3 py-2 rounded-xl transition shadow-[0_0_15px_rgba(245,158,11,0.2)] active:scale-95 group shrink-0" title="Autonomous Lead Hunter AI: Discover Organizers & Key Contacts">
+        <button id="btn-open-lead-hunter" class="flex items-center gap-1 min-[380px]:gap-1.5 bg-gradient-to-r from-amber-500/20 via-orange-500/20 to-amber-600/20 hover:from-amber-500/30 hover:to-orange-500/30 text-amber-300 border border-amber-500/40 hover:border-amber-400 text-[11px] sm:text-xs font-bold px-1.5 min-[380px]:px-2 sm:px-3 py-1.5 sm:py-2 rounded-xl transition shadow-[0_0_15px_rgba(245,158,11,0.2)] active:scale-95 group shrink-0" title="Autonomous Lead Hunter AI: Discover Organizers & Key Contacts">
           <i data-lucide="crosshair" class="w-3.5 h-3.5 text-amber-400 group-hover:rotate-45 transition-transform"></i>
-          <span>Lead Hunter</span>
-          <span class="px-1.5 py-0.5 rounded bg-amber-500/30 text-[9px] font-black uppercase text-amber-200">AI</span>
+          <span>Lead</span><span class="hidden lg:inline">&nbsp;Hunter</span><span class="lg:hidden">s</span>
+          <span class="hidden xl:inline px-1.5 py-0.5 rounded bg-amber-500/30 text-[9px] font-black uppercase text-amber-200">AI</span>
         </button>
 
         <!-- Command Palette Quick Trigger -->
-        <button id="btn-open-cmd-palette" class="flex items-center gap-1.5 bg-white/[0.05] hover:bg-white/[0.1] text-slate-300 hover:text-white border border-white/10 hover:border-white/20 text-xs font-semibold px-2.5 sm:px-3 py-2 rounded-xl transition shadow-sm active:scale-95 group shrink-0" title="Open Command Palette (Ctrl+K)">
+        <button id="btn-open-cmd-palette" class="flex items-center gap-1.5 bg-white/[0.05] hover:bg-white/[0.1] text-slate-300 hover:text-white border border-white/10 hover:border-white/20 text-[11px] sm:text-xs font-semibold p-1.5 sm:px-2.5 sm:py-2 rounded-xl transition shadow-sm active:scale-95 group shrink-0" title="Open Command Palette (Ctrl+K)">
           <i data-lucide="search" class="w-3.5 h-3.5 text-sky-400 group-hover:scale-110 transition-transform"></i>
-          <span class="hidden sm:inline">Search</span>
-          <kbd class="inline-flex items-center px-1.5 py-0.5 text-[9px] font-mono text-slate-400 bg-white/10 rounded border border-white/10">⌘K</kbd>
+          <span class="hidden lg:inline">Search</span>
+          <kbd class="hidden xl:inline-flex items-center px-1.5 py-0.5 text-[9px] font-mono text-slate-400 bg-white/10 rounded border border-white/10">⌘K</kbd>
         </button>
       </div>
 
       <!-- Data Integrations, Atmosphere & Environment Suite (Right Wing) -->
-      <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+      <div class="flex items-center gap-0.5 min-[380px]:gap-1 sm:gap-2 shrink-0">
         <!-- Sync Sheets Button -->
-        <button id="btn-sync-sheets" class="flex items-center gap-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 hover:border-emerald-500/50 text-xs font-semibold px-2.5 sm:px-3 py-2 rounded-xl transition shadow-sm active:scale-95 shrink-0" title="Export / Sync to Google Sheets">
+        <button id="btn-sync-sheets" class="hidden xl:inline-flex items-center gap-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 hover:border-emerald-500/50 text-xs font-semibold px-2.5 sm:px-3 py-2 rounded-xl transition shadow-sm active:scale-95 shrink-0" title="Export / Sync to Google Sheets">
           <i data-lucide="sheet" class="w-3.5 h-3.5"></i>
           <span class="hidden sm:inline">Sync Sheets</span>
         </button>
 
         <!-- Email Digest Button -->
-        <button id="btn-send-email" class="flex items-center gap-1.5 bg-sky-500/10 hover:bg-sky-500/20 text-sky-400 border border-sky-500/30 hover:border-sky-500/50 text-xs font-semibold px-2.5 sm:px-3 py-2 rounded-xl transition shadow-sm active:scale-95 shrink-0" title="Generate Weekly EB Briefing Email">
+        <button id="btn-send-email" class="hidden xl:inline-flex items-center gap-1.5 bg-sky-500/10 hover:bg-sky-500/20 text-sky-400 border border-sky-500/30 hover:border-sky-500/50 text-xs font-semibold px-2.5 sm:px-3 py-2 rounded-xl transition shadow-sm active:scale-95 shrink-0" title="Generate Weekly EB Briefing Email">
           <i data-lucide="mail" class="w-3.5 h-3.5"></i>
           <span class="hidden sm:inline">Email Digest</span>
         </button>
 
         <!-- Export Dropdown -->
         <div class="relative flex items-center shrink-0">
-          <button id="btn-export-dropdown" class="flex items-center gap-1.5 bg-white/[0.05] hover:bg-white/[0.1] text-slate-300 hover:text-white border border-white/10 hover:border-white/20 text-xs font-semibold px-2.5 sm:px-3 py-2 rounded-xl transition shadow-sm active:scale-95 shrink-0" title="Export Data Feeds">
+          <button id="btn-export-dropdown" class="flex items-center gap-1 sm:gap-1.5 bg-white/[0.05] hover:bg-white/[0.1] text-slate-300 hover:text-white border border-white/10 hover:border-white/20 text-[11px] sm:text-xs font-semibold p-1.5 sm:px-2.5 sm:py-2 rounded-xl transition shadow-sm active:scale-95 shrink-0" title="Export Data Feeds">
             <i data-lucide="download" class="w-3.5 h-3.5 text-slate-300"></i>
-            <span class="hidden sm:inline">Export</span>
-            <i data-lucide="chevron-down" class="w-3 h-3 text-slate-400"></i>
+            <span class="hidden md:inline">Export</span>
+            <i data-lucide="chevron-down" class="w-3 h-3 text-slate-400 hidden md:inline"></i>
           </button>
           <div id="menu-export-dropdown" class="hidden absolute right-0 top-full mt-2 w-52 bg-[#080D1D] rounded-2xl shadow-2xl py-1.5 border border-white/15 z-50 text-slate-200 text-xs backdrop-blur-2xl">
             <div class="px-3.5 py-1.5 text-[10px] font-bold text-slate-500 uppercase tracking-wider border-b border-white/[0.06] mb-1">Export Data Feeds</div>
@@ -131,21 +131,21 @@
         </div>
 
         <!-- Subtle Vertical Divider -->
-        <div class="h-6 w-px bg-white/10 mx-0.5 sm:mx-1 shrink-0"></div>
+        <div class="hidden sm:block h-6 w-px bg-white/10 mx-0.5 sm:mx-1 shrink-0"></div>
 
         <!-- Cloud Radar Live Telemetry Badge -->
-        <div id="telemetry-cloud-badge" class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-[10px] font-semibold bg-cyan-500/10 text-cyan-300 border border-cyan-500/30 shrink-0" title="Live Cloud Synchronization Active">
+        <div id="telemetry-cloud-badge" class="hidden xl:inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-[10px] font-semibold bg-cyan-500/10 text-cyan-300 border border-cyan-500/30 shrink-0" title="Live Cloud Synchronization Active">
           <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
-          <span class="hidden md:inline">Cloud Live</span>
+          <span>Cloud Live</span>
         </div>
 
         <!-- Cairo Solar Cycle Dial & Dropdown -->
         <div class="relative shrink-0">
-          <button id="btn-solar-dial" class="h-9 px-2 sm:px-2.5 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] border border-white/10 flex items-center gap-1.5 text-slate-300 hover:text-white transition active:scale-95 group" title="Cairo Solar Atmosphere (Click to preview/switch)">
+          <button id="btn-solar-dial" class="h-8 sm:h-9 px-1.5 min-[380px]:px-2 sm:px-2.5 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] border border-white/10 flex items-center gap-1 sm:gap-1.5 text-slate-300 hover:text-white transition active:scale-95 group" title="Cairo Solar Atmosphere (Click to preview/switch)">
             <span class="solar-pulse-orb" id="solar-orb-indicator"></span>
             <span id="solar-dial-icon" class="text-xs">🌌</span>
-            <span id="solar-dial-clock" class="text-[10px] sm:text-[11px] font-mono text-slate-200 font-semibold">--:--</span>
-            <span id="solar-dial-phase" class="hidden xl:inline text-[10px] text-slate-400 font-sans font-normal">· Midnight</span>
+            <span id="solar-dial-clock" class="hidden lg:inline text-[10px] sm:text-[11px] font-mono text-slate-200 font-semibold">--:--</span>
+            <span id="solar-dial-phase" class="hidden 2xl:inline text-[10px] text-slate-400 font-sans font-normal">· Midnight</span>
           </button>
           
           <div id="menu-solar-dial" class="hidden absolute right-0 top-full mt-2 w-64 bg-[#080D1D]/98 border border-white/15 rounded-2xl shadow-2xl p-2.5 z-50 backdrop-blur-2xl text-xs">
@@ -198,7 +198,7 @@
 
         <!-- Theme Accent Switcher Dropdown -->
         <div class="relative shrink-0">
-          <button id="btn-theme-accent" class="w-9 h-9 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] border border-white/10 flex items-center justify-center text-slate-300 hover:text-white transition active:scale-95 group" title="Change Radar Color Accent & Canvas Mode (or press 'T')">
+          <button id="btn-theme-accent" class="w-8 sm:w-9 h-8 sm:h-9 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] border border-white/10 flex items-center justify-center text-slate-300 hover:text-white transition active:scale-95 group" title="Change Radar Color Accent & Canvas Mode (or press 'T')">
             <span class="w-3 h-3 rounded-full bg-[#037EF3] shadow-[0_0_10px_rgba(3,126,243,0.8)] group-hover:scale-110 transition-transform" id="theme-accent-indicator"></span>
           </button>
           <div id="menu-theme-accent" class="hidden absolute right-0 top-full mt-2 w-56 bg-[#080D1D]/98 border border-white/15 rounded-2xl shadow-2xl p-2.5 z-50 backdrop-blur-2xl text-xs">
@@ -1350,7 +1350,7 @@
           <i data-lucide="bot" class="w-4 h-4"></i> Autonomous Headless
         </button>
         <button id="tab-btn-ext-sync" class="tab-social-btn px-4 py-3 text-xs font-bold text-slate-400 hover:text-white border-b-2 border-transparent flex items-center gap-2">
-          <i data-lucide="chrome" class="w-4 h-4"></i> 1-Click Extension
+          <i data-lucide="globe" class="w-4 h-4"></i> 1-Click Extension
         </button>
         <button id="tab-btn-paste-ingest" class="tab-social-btn px-4 py-3 text-xs font-bold text-slate-400 hover:text-white border-b-2 border-transparent flex items-center gap-2">
           <i data-lucide="clipboard-paste" class="w-4 h-4"></i> Paste URL or JSON

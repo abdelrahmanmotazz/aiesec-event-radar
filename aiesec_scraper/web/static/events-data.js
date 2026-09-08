@@ -12260,3 +12260,6 @@ window.AIESEC_INITIAL_EVENTS = [
     "is_social_first": false
   }
 ];
+
+window.RADAR_STATIC_EVENTS = window.AIESEC_INITIAL_EVENTS;
+window.__AIESEC_EVENTS__ = window.AIESEC_INITIAL_EVENTS;
