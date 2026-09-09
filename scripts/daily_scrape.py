@@ -70,10 +70,20 @@ def run_daily_scrape():
             logger.warning(f"Could not read existing events.json: {read_err}")
 
     # Combine fresh live scraped events with existing accumulated events
-    combined_events = events + existing_events
-    if not combined_events:
+    raw_combined = events + existing_events
+    if not raw_combined:
         logger.warning("Zero events available! Preserving existing database.")
         sys.exit(0)
+
+    # Reject any synthetic or foreign bleed events
+    foreign_kws = ["italy", "italia", "cannara", "santa-maria-degli-angeli", "san jose job fair", "sjq - london", "genga an"]
+    combined_events = [
+        e for e in raw_combined
+        if not str(e.event_id or "").startswith("eg_campus_")
+        and not any(k in (e.title or "") for k in ["(Round 2)", "(Round 3)", "Fall Session"])
+        and not any(k in (e.location or "").lower() for k in foreign_kws)
+        and not any(k in (e.url or "").lower() for k in foreign_kws)
+    ]
 
     # Re-apply calibrated B2C scoring to all combined records
     for ev in combined_events:

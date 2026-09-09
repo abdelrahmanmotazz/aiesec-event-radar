@@ -68,13 +68,18 @@ def load_initial_events():
                 loaded = []
                 for item in raw:
                     t = (item.get("title") or "").strip()
-                    if t and t.lower() not in ["null", "none", "event", "untitled"]:
-                        rec = EventRecord(**item)
-                        if "summit" in rec.source.lower():
-                            rec.category = "Flagship Summits"
-                            rec.b2c_score = max(rec.b2c_score, 9.2)
-                            rec.b2c_priority = "HIGH"
-                        loaded.append(rec)
+                    if not t or t.lower() in ["null", "none", "event", "untitled"]:
+                        continue
+                    if str(item.get("event_id", "")).startswith("eg_campus_"):
+                        continue
+                    if any(k in t for k in ["(Round 2)", "(Round 3)", "Fall Session"]):
+                        continue
+                    rec = EventRecord(**item)
+                    if "summit" in rec.source.lower():
+                        rec.category = "Flagship Summits"
+                        rec.b2c_score = max(rec.b2c_score, 9.2)
+                        rec.b2c_priority = "HIGH"
+                    loaded.append(rec)
                 if len(loaded) >= 50:
                     CACHED_EVENTS = loaded
                     logger.info(f"Loaded {len(CACHED_EVENTS)} verified events from {jp}")

@@ -82,8 +82,38 @@ const btnSendEmail = document.getElementById("btn-send-email");
 const btnScrapeNow = document.getElementById("btn-scrape-now");
 const scrapeIcon = document.getElementById("scrape-icon");
 
+function purgeSyntheticAndStaleCache() {
+  try {
+    const raw = localStorage.getItem("aiesec_radar_custom_events");
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) {
+        const cleaned = parsed.filter(e => {
+          if (!e || !e.title) return false;
+          const eid = String(e.event_id || "");
+          const t = String(e.title || "");
+          if (eid.startsWith("eg_campus_")) return false;
+          if (/\(Round\s*\d+\)/i.test(t) || /Fall Session/i.test(t)) return false;
+          return true;
+        });
+        if (cleaned.length !== parsed.length) {
+          console.log(`[AIESEC Radar] Purged ${parsed.length - cleaned.length} synthetic items from localStorage.`);
+          if (cleaned.length > 0) {
+            localStorage.setItem("aiesec_radar_custom_events", JSON.stringify(cleaned));
+          } else {
+            localStorage.removeItem("aiesec_radar_custom_events");
+          }
+        }
+      }
+    }
+  } catch (e) {
+    console.warn("Could not sanitize localStorage:", e);
+  }
+}
+
 // --- Initialization ---
 document.addEventListener("DOMContentLoaded", () => {
+  purgeSyntheticAndStaleCache();
   initThemeAccent();
   initTopicChips();
   initEventDrawer();
@@ -3048,6 +3078,12 @@ async function loadStaticEventsFallback() {
             return ev;
           }).filter(ev => {
             if (!ev || !ev.title || isBadEventTitle(ev.title) || isBadOrNonEgyptJs(ev)) return false;
+            const eid = String(ev.event_id || "");
+            const t = String(ev.title || "");
+            // Reject any synthetic or repetitive template events
+            if (eid.startsWith("eg_campus_")) return false;
+            if (/\(Round\s*\d+\)/i.test(t) || /Fall Session/i.test(t)) return false;
+
             const u = (ev.url || "").split("?")[0].split("#")[0].replace(/\/+$/, "").toLowerCase();
             const nt = (ev.title || "").toLowerCase().replace(/[^\w\u0600-\u06FF]/g, "");
             // Drop if already part of the canonical database to prevent double counting
