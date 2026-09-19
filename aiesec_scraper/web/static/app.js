@@ -82,6 +82,98 @@ const btnSendEmail = document.getElementById("btn-send-email");
 const btnScrapeNow = document.getElementById("btn-scrape-now");
 const scrapeIcon = document.getElementById("scrape-icon");
 
+const MONTH_INDEX_MAP_JS = {
+  jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5,
+  jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11
+};
+
+function parseDisplayDateEndJs(dateDisplay, defaultYear = 2026) {
+  if (!dateDisplay || typeof dateDisplay !== "string") return null;
+  const s = dateDisplay.toLowerCase();
+  const mYr = s.match(/\b(202[0-9])\b/);
+  const yr = mYr ? parseInt(mYr[1], 10) : defaultYear;
+
+  // Multi-day ranges: e.g. 10-11-12 sep, 6-8 september, 17-20 sep
+  const mRange3 = s.match(/(\d{1,2})\s*(?:-|–)\s*(\d{1,2})\s*(?:-|–)\s*(\d{1,2})\s+([a-z]{3,9})/i);
+  if (mRange3) {
+    const endD = parseInt(mRange3[3], 10);
+    const mStr = mRange3[4].slice(0, 3).toLowerCase();
+    if (MONTH_INDEX_MAP_JS[mStr] !== undefined) {
+      return new Date(yr, MONTH_INDEX_MAP_JS[mStr], endD);
+    }
+  }
+
+  const mRange2 = s.match(/(\d{1,2})\s*(?:-|–|to)\s*(\d{1,2})\s+([a-z]{3,9})/i);
+  if (mRange2) {
+    const endD = parseInt(mRange2[2], 10);
+    const mStr = mRange2[3].slice(0, 3).toLowerCase();
+    if (MONTH_INDEX_MAP_JS[mStr] !== undefined) {
+      return new Date(yr, MONTH_INDEX_MAP_JS[mStr], endD);
+    }
+  }
+
+  // Single date e.g. '08 Sep' or 'Sep 08' or 'Sat, 19 Sep, 2026'
+  const mSingle1 = s.match(/(\d{1,2})\s+([a-z]{3,9})/i);
+  if (mSingle1) {
+    const d = parseInt(mSingle1[1], 10);
+    const mStr = mSingle1[2].slice(0, 3).toLowerCase();
+    if (MONTH_INDEX_MAP_JS[mStr] !== undefined) {
+      return new Date(yr, MONTH_INDEX_MAP_JS[mStr], d);
+    }
+  }
+
+  const mSingle2 = s.match(/([a-z]{3,9})\s+(\d{1,2})/i);
+  if (mSingle2) {
+    const mStr = mSingle2[1].slice(0, 3).toLowerCase();
+    const d = parseInt(mSingle2[2], 10);
+    if (MONTH_INDEX_MAP_JS[mStr] !== undefined) {
+      return new Date(yr, MONTH_INDEX_MAP_JS[mStr], d);
+    }
+  }
+
+  return null;
+}
+
+function isEventPassedJs(ev, refDate) {
+  if (!ev) return true;
+  const now = refDate || new Date();
+  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+
+  // 1. Check end_date
+  if (ev.end_date) {
+    const endT = new Date(ev.end_date).getTime();
+    if (!isNaN(endT) && endT < now.getTime()) {
+      return true;
+    }
+  }
+
+  // 2. Check date_display (concluding date of festival, exhibition, or multiday workshop)
+  const ddEnd = parseDisplayDateEndJs(ev.date_display, now.getFullYear());
+  if (ddEnd) {
+    const ddStart = new Date(ddEnd.getFullYear(), ddEnd.getMonth(), ddEnd.getDate()).getTime();
+    if (ddStart < todayStart) {
+      return true;
+    }
+  }
+
+  // 3. Check start_date
+  if (ev.start_date) {
+    const startT = new Date(ev.start_date).getTime();
+    if (!isNaN(startT)) {
+      const sDate = new Date(ev.start_date);
+      const sDayStart = new Date(sDate.getFullYear(), sDate.getMonth(), sDate.getDate()).getTime();
+      if (sDayStart < todayStart) {
+        return true;
+      }
+      if (sDayStart === todayStart && (now.getTime() - startT) > 6 * 3600 * 1000) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
 function purgeSyntheticAndStaleCache() {
   try {
     const raw = localStorage.getItem("aiesec_radar_custom_events");
@@ -94,10 +186,11 @@ function purgeSyntheticAndStaleCache() {
           const t = String(e.title || "");
           if (eid.startsWith("eg_campus_")) return false;
           if (/\(Round\s*\d+\)/i.test(t) || /Fall Session/i.test(t)) return false;
+          if (isEventPassedJs(e)) return false;
           return true;
         });
         if (cleaned.length !== parsed.length) {
-          console.log(`[AIESEC Radar] Purged ${parsed.length - cleaned.length} synthetic items from localStorage.`);
+          console.log(`[AIESEC Radar] Purged ${parsed.length - cleaned.length} synthetic or expired items from localStorage.`);
           if (cleaned.length > 0) {
             localStorage.setItem("aiesec_radar_custom_events", JSON.stringify(cleaned));
           } else {
@@ -2910,8 +3003,8 @@ const NON_EGYPT_PATTERNS_JS = [
   /,\s*[a-z]{2}\s+\d{5}/i,
   /\b(united states|usa|u\.s\.a|u\.s\.|canada|australia|united kingdom|\buk\b)\b/i,
   /allevents\.in\/assisi\//i,
-  /\b(assisi|foligno|umbria|spello|perugia|lyrick|brunori|capossela)\b/i,
-  /\b(berlin-datatalks|stuttgart-english|founders-valencia|geneve|istanbul-english)\b/i
+  /\b(assisi|foligno|umbria|spello|perugia|lyrick|brunori|capossela|urbino|offida|scarzuola|marche festival|senigallia|montegabbione|pesaro|cannara|santa-maria-degli-angeli|fabriano|pierosara|italy|italia)\b/i,
+  /\b(berlin-datatalks|stuttgart-english|founders-valencia|geneve|istanbul-english|louisiana|high school football|maryland high school)\b/i
 ];
 
 function isBadOrNonEgyptJs(ev) {
@@ -2934,7 +3027,8 @@ function isBadOrNonEgyptJs(ev) {
 
 /**
  * Client-Side Deduplication & Quality Safeguard:
- * Guarantees that no duplicate event ID, canonical URL, fuzzy title, or bad/non-Egypt link is rendered.
+ * Guarantees that no duplicate event ID, canonical URL, fuzzy title, bad/non-Egypt link,
+ * or passed-date event is rendered.
  */
 function deduplicateClientEvents(eventsList) {
   if (!Array.isArray(eventsList)) return [];
@@ -2951,6 +3045,9 @@ function deduplicateClientEvents(eventsList) {
 
     // Filter bad links and foreign location bleed
     if (isBadOrNonEgyptJs(ev)) continue;
+
+    // Filter events whose date has passed
+    if (isEventPassedJs(ev)) continue;
 
     // Check ID - if seen, upgrade title if current is better
     if (ev.event_id && seenIds.has(ev.event_id)) {

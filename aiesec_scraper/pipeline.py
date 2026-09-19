@@ -4,7 +4,7 @@ import hashlib
 import logging
 import re
 import urllib.parse
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 from typing import Dict, List, Optional
 
 from .models import EventRecord
@@ -27,8 +27,98 @@ NON_EGYPT_PATTERNS = [
     re.compile(r"\b(united states|usa|u\.s\.a|u\.s\.|canada|australia|united kingdom|\buk\b)\b", re.IGNORECASE),
     re.compile(r"\balexandria,\s*va\b", re.IGNORECASE),
     re.compile(r"\balexandria.*virginia\b", re.IGNORECASE),
-    re.compile(r"\b(berlin|stuttgart|valencia|barcelona|geneve|istanbul|assisi|foligno|umbria|spello|perugia)\b", re.IGNORECASE),
+    re.compile(r"\b(berlin|stuttgart|valencia|barcelona|geneve|istanbul|assisi|foligno|umbria|spello|perugia|urbino|offida|scarzuola|marche festival|senigallia|montegabbione|pesaro|cannara|santa-maria-degli-angeli|fabriano|pierosara|italy|italia)\b", re.IGNORECASE),
+    re.compile(r"\b(louisiana|high school football|maryland high school)\b", re.IGNORECASE),
 ]
+
+MONTHS_MAP = {
+    'jan': 1, 'feb': 2, 'mar': 3, 'apr': 4, 'may': 5, 'jun': 6,
+    'jul': 7, 'aug': 8, 'sep': 9, 'oct': 10, 'nov': 11, 'dec': 12
+}
+
+
+def parse_display_date_end(date_display: Optional[str], default_year: int = 2026) -> Optional[date]:
+    """Extract the concluding date from an event's date_display string."""
+    if not date_display:
+        return None
+    s = str(date_display).lower()
+    m_yr = re.search(r'\b(202[0-9])\b', s)
+    yr = int(m_yr.group(1)) if m_yr else default_year
+
+    # Check 3-day or 2-day ranges: e.g. 10-11-12 sep or 6-8 september or 17-20 sep
+    m_range = re.search(r'(\d{1,2})\s*(?:-|–|to)\s*(\d{1,2})\s+([a-z]{3,9})', s)
+    if not m_range:
+        m_range = re.search(r'(\d{1,2})\s*(?:-|–)\s*(\d{1,2})\s*(?:-|–)\s*(\d{1,2})\s+([a-z]{3,9})', s)
+        if m_range:
+            d_end = int(m_range.group(3))
+            m_str = m_range.group(4)[:3]
+            if m_str in MONTHS_MAP:
+                from datetime import date
+                try:
+                    return date(yr, MONTHS_MAP[m_str], d_end)
+                except ValueError:
+                    pass
+    if m_range:
+        d_end = int(m_range.group(2))
+        m_str = m_range.group(3)[:3]
+        if m_str in MONTHS_MAP:
+            from datetime import date
+            try:
+                return date(yr, MONTHS_MAP[m_str], d_end)
+            except ValueError:
+                pass
+
+    # Single date: e.g. '08 Sep' or 'Sep 08' or 'Sat, 19 Sep, 2026'
+    m_single1 = re.search(r'(\d{1,2})\s+([a-z]{3,9})', s)
+    if m_single1:
+        d = int(m_single1.group(1))
+        m_str = m_single1.group(2)[:3]
+        if m_str in MONTHS_MAP:
+            from datetime import date
+            try:
+                return date(yr, MONTHS_MAP[m_str], d)
+            except ValueError:
+                pass
+
+    m_single2 = re.search(r'([a-z]{3,9})\s+(\d{1,2})', s)
+    if m_single2:
+        m_str = m_single2.group(1)[:3]
+        d = int(m_single2.group(2))
+        if m_str in MONTHS_MAP:
+            from datetime import date
+            try:
+                return date(yr, MONTHS_MAP[m_str], d)
+            except ValueError:
+                pass
+
+    return None
+
+
+def is_event_passed(ev: EventRecord, ref_now: Optional[datetime] = None) -> bool:
+    """Check if an event has already ended or taken place in the past."""
+    if ref_now is None:
+        ref_now = datetime.now()
+    ref_date = ref_now.date()
+
+    # 1. Check end_date if available
+    if ev.end_date and ev.end_date < ref_now:
+        return True
+
+    # 2. Check date_display (concluding date of festival, exhibition, or multiday workshop)
+    dd_end = parse_display_date_end(ev.date_display, default_year=ref_date.year)
+    if dd_end and dd_end < ref_date:
+        return True
+
+    # 3. Check start_date
+    if ev.start_date:
+        # If event was on a previous calendar day, it has definitely passed
+        if ev.start_date.date() < ref_date:
+            return True
+        # If event started earlier today, consider ended if > 6 hours after start
+        if ev.start_date.date() == ref_date and (ref_now - ev.start_date).total_seconds() > 6 * 3600:
+            return True
+
+    return False
 
 
 def normalize_event_url(url: str) -> str:
@@ -277,17 +367,18 @@ class EventPipeline:
         return deduped_events
 
     def _filter_date_window(self, events: List[EventRecord]) -> List[EventRecord]:
-        """Keep events within the next 6 months (~180 days)."""
+        """Keep only upcoming and active events within the window_months (~180 days). Automatically purges all passed date events."""
         now = datetime.now()
         max_date = now + timedelta(days=self.window_months * 30)
 
         valid = []
         for ev in events:
-            if ev.start_date:
-                if ev.start_date < (now - timedelta(days=1)):
-                    continue
-                if ev.start_date > max_date:
-                    continue
+            # Purge any event that has already passed
+            if is_event_passed(ev, ref_now=now):
+                continue
+            # Purge events too far in the future (> 6 months)
+            if ev.start_date and ev.start_date > max_date:
+                continue
             valid.append(ev)
 
         return valid

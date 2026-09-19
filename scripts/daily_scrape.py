@@ -76,13 +76,18 @@ def run_daily_scrape():
         sys.exit(0)
 
     # Reject any synthetic or foreign bleed events
-    foreign_kws = ["italy", "italia", "cannara", "santa-maria-degli-angeli", "san jose job fair", "sjq - london", "genga an"]
+    foreign_kws = [
+        "italy", "italia", "cannara", "santa-maria-degli-angeli", "san jose job fair",
+        "sjq - london", "genga an", "louisiana", "football 2026", "urbino", "offida",
+        "scarzuola", "marche festival", "educare alla cura"
+    ]
     combined_events = [
         e for e in raw_combined
         if not str(e.event_id or "").startswith("eg_campus_")
         and not any(k in (e.title or "") for k in ["(Round 2)", "(Round 3)", "Fall Session"])
         and not any(k in (e.location or "").lower() for k in foreign_kws)
         and not any(k in (e.url or "").lower() for k in foreign_kws)
+        and not any(k in (e.title or "").lower() for k in foreign_kws)
     ]
 
     # Re-apply calibrated B2C scoring to all combined records

@@ -227,4 +227,49 @@ def test_fuzzy_token_deduplication():
     assert "detailed description" in deduped[0].description
 
 
+def test_is_event_passed_logic():
+    from aiesec_scraper.pipeline import is_event_passed
+    ref_now = datetime(2026, 9, 19, 15, 0, 0)
+
+    # 1. Past start_date
+    ev_past = EventRecord(
+        event_id="p1",
+        title="Yesterday Event",
+        source="Test",
+        start_date=datetime(2026, 9, 18, 10, 0, 0),
+        url="https://test.com/1"
+    )
+    assert is_event_passed(ev_past, ref_now=ref_now) is True
+
+    # 2. Upcoming event
+    ev_future = EventRecord(
+        event_id="f1",
+        title="Tomorrow Summit",
+        source="Test",
+        start_date=datetime(2026, 9, 20, 10, 0, 0),
+        url="https://test.com/2"
+    )
+    assert is_event_passed(ev_future, ref_now=ref_now) is False
+
+    # 3. Passed multiday range via date_display (even if start_date wasn't set or was inaccurate)
+    ev_passed_range = EventRecord(
+        event_id="pr1",
+        title="Neset El Cheque",
+        source="TicketsMarche",
+        date_display="6-8 September 2026",
+        url="https://test.com/3"
+    )
+    assert is_event_passed(ev_passed_range, ref_now=ref_now) is True
+
+    # 4. Ongoing/Upcoming multiday range
+    ev_active_range = EventRecord(
+        event_id="ar1",
+        title="Film Festival",
+        source="TicketsMarche",
+        date_display="17-20 Sep 2026",
+        url="https://test.com/4"
+    )
+    assert is_event_passed(ev_active_range, ref_now=ref_now) is False
+
+
 

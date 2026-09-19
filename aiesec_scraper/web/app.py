@@ -13,7 +13,7 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 from ..models import EventRecord
-from ..pipeline import EventPipeline
+from ..pipeline import EventPipeline, is_event_passed
 from ..exporters import GoogleSheetsExporter, LocalExporter
 from ..notifications import EmailNotificationService
 from ..analyzers.pitch_generator import PitchGenerator
@@ -75,6 +75,9 @@ def load_initial_events():
                     if any(k in t for k in ["(Round 2)", "(Round 3)", "Fall Session"]):
                         continue
                     rec = EventRecord(**item)
+                    # Automatically skip any event whose date has already passed
+                    if is_event_passed(rec):
+                        continue
                     if "summit" in rec.source.lower():
                         rec.category = "Flagship Summits"
                         rec.b2c_score = max(rec.b2c_score, 9.2)
@@ -82,7 +85,7 @@ def load_initial_events():
                     loaded.append(rec)
                 if len(loaded) >= 50:
                     CACHED_EVENTS = loaded
-                    logger.info(f"Loaded {len(CACHED_EVENTS)} verified events from {jp}")
+                    logger.info(f"Loaded {len(CACHED_EVENTS)} verified upcoming events from {jp}")
                     return
             except Exception as e:
                 logger.error(f"Error loading events from {jp}: {e}")
@@ -222,9 +225,15 @@ def get_aiesec_logo():
 
 @app.get("/events.json")
 def get_events_json():
+    global CACHED_EVENTS
+    now = datetime.now()
+    active = [e for e in CACHED_EVENTS if not is_event_passed(e, ref_now=now)]
+    if len(active) != len(CACHED_EVENTS):
+        CACHED_EVENTS = active
+        sync_events_json(CACHED_EVENTS)
+
     json_path = os.path.join(STATIC_DIR, "events.json")
     if not os.path.exists(json_path) and CACHED_EVENTS:
-        import json
         with open(json_path, "w", encoding="utf-8") as f:
             json.dump([e.model_dump(mode="json") for e in CACHED_EVENTS], f, ensure_ascii=False, indent=2)
     return FileResponse(json_path, media_type="application/json")
@@ -243,6 +252,17 @@ def get_events(
     social_only: bool = False
 ):
     """Retrieve filtered and sorted events with summary metrics."""
+    global CACHED_EVENTS
+    now = datetime.now()
+    # Dynamically purge passed date events on every refresh/request
+    active = [e for e in CACHED_EVENTS if not is_event_passed(e, ref_now=now)]
+    if len(active) != len(CACHED_EVENTS):
+        CACHED_EVENTS = active
+        try:
+            sync_events_json(CACHED_EVENTS)
+        except Exception:
+            pass
+
     filtered = list(CACHED_EVENTS)
 
     # City filter
@@ -581,12 +601,16 @@ def trigger_scrape(req: Optional[ScrapeRequest] = None):
     city = req.city if req else None
     country = req.country if req else "egypt"
     events = PIPELINE.run(city=city, country=country)
+    # Guarantee only non-passed events are cached and synced
+    now = datetime.now()
+    events = [e for e in events if not is_event_passed(e, ref_now=now)]
     CACHED_EVENTS = events
     LOCAL_EXPORTER.export(events)
+    sync_events_json(events)
     return {
         "success": True,
         "events_count": len(events),
-        "message": f"Successfully scraped and scored {len(events)} events!"
+        "message": f"Successfully scraped, scored, and refreshed {len(events)} upcoming events!"
     }
 
 
