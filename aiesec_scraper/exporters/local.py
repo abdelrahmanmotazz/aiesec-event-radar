@@ -39,10 +39,10 @@ class LocalExporter:
         # Export Styled Excel
         for filepath in [latest_xlsx, timestamped_xlsx]:
             with pd.ExcelWriter(filepath, engine="openpyxl") as writer:
-                df.to_excel(writer, sheet_name="AIESEC Event Radar", index=False)
+                df.to_excel(writer, sheet_name="Event Radar", index=False)
                 
                 # Auto-adjust column widths
-                ws = writer.sheets["AIESEC Event Radar"]
+                ws = writer.sheets["Event Radar"]
                 for col in ws.columns:
                     max_len = max(len(str(cell.value or "")) for cell in col)
                     col_letter = col[0].column_letter

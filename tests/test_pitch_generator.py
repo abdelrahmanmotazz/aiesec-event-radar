@@ -20,14 +20,14 @@ def test_event_collaboration_pitch():
     pitch = PitchGenerator.generate_pitch(
         event=ev,
         member_name="Nour El-Din",
-        member_email="nour.eldin@aiesec.net",
+        member_email="nour.eldin@eventradar.eg",
         member_phone="+201001122334",
         purpose="event_collaboration"
     )
 
     assert "Event Collaboration & Booth Partnership" in pitch["subject"]
     assert "Nour El-Din" in pitch["body"]
-    assert "nour.eldin@aiesec.net" in pitch["body"]
+    assert "nour.eldin@eventradar.eg" in pitch["body"]
     assert "+201001122334" in pitch["body"]
     assert "booth" in pitch["body"].lower()
     assert "mailto:" in pitch["mailto_url"]
@@ -49,13 +49,13 @@ def test_pr_collaboration_pitch():
     pitch = PitchGenerator.generate_pitch(
         event=ev,
         member_name="Salma Farouk",
-        member_email="salma.farouk@aiesec.net",
+        member_email="salma.farouk@eventradar.eg",
         member_phone="+201223344556",
         purpose="pr_collaboration"
     )
 
     assert "PR & Media Partnership" in pitch["subject"]
     assert "Salma Farouk" in pitch["body"]
-    assert "salma.farouk@aiesec.net" in pitch["body"]
+    assert "salma.farouk@eventradar.eg" in pitch["body"]
     assert "social media" in pitch["body"].lower()
     assert "cross-promotion" in pitch["body"].lower()

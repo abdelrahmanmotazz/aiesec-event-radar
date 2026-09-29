@@ -128,9 +128,9 @@ notifications:
   smtp_port: 587
   smtp_user: ""          # Configure in .env (SMTP_USER)
   smtp_password: ""      # Configure in .env (SMTP_PASSWORD)
-  sender_name: "AIESEC Egypt B2C Event Radar"
+  sender_name: "Egypt B2C Event Radar"
   recipients:
-    - "b2c.egypt@aiesec.net"
+    - "b2c.egypt@eventradar.eg"
 
 # Output settings
 output:
@@ -139,11 +139,11 @@ output:
   output_dir: "data"
   google_sheets:
     enabled: true
-    sheet_name: "AIESEC Egypt B2C Event Radar"
+    sheet_name: "Egypt B2C Event Radar"
     service_account_file: "service_account.json"
 
 # Web Dashboard Settings
 web:
   host: "0.0.0.0"
   port: 8000
-  title: "AIESEC Egypt B2C Event Radar"
+  title: "Egypt B2C Event Radar"

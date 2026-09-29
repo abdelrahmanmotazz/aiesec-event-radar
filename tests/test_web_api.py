@@ -10,7 +10,6 @@ client = TestClient(app)
 def test_dashboard_root_html():
     response = client.get("/")
     assert response.status_code == 200
-    assert "AIESEC in Tanta" in response.text
     assert "B2C RADAR" in response.text
 
 
@@ -27,7 +26,7 @@ def test_api_pitch_generation():
     payload = {
         "event_id": "test_1",
         "member_name": "Karim Mostafa",
-        "member_email": "karim.mostafa@aiesec.net",
+        "member_email": "karim.mostafa@eventradar.eg",
         "member_phone": "+201098765432",
         "purpose": "event_collaboration"
     }

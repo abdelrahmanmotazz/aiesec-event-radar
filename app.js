@@ -1,5 +1,5 @@
 /**
- * @fileoverview AIESEC in Tanta - B2C Event Radar & Command Center
+ * @fileoverview Egypt - B2C Event Radar & Command Center
  * Modern Frontend Controller integrating Three.js 3D WebGL, GSAP Motion Choreography,
  * Dynamic Telemetry, and World-Class SaaS Aesthetics.
  *
@@ -82,8 +82,132 @@ const btnSendEmail = document.getElementById("btn-send-email");
 const btnScrapeNow = document.getElementById("btn-scrape-now");
 const scrapeIcon = document.getElementById("scrape-icon");
 
+const MONTH_INDEX_MAP_JS = {
+  jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5,
+  jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11
+};
+
+function parseDisplayDateEndJs(dateDisplay, defaultYear = 2026) {
+  if (!dateDisplay || typeof dateDisplay !== "string") return null;
+  const s = dateDisplay.toLowerCase();
+  const mYr = s.match(/\b(202[0-9])\b/);
+  const yr = mYr ? parseInt(mYr[1], 10) : defaultYear;
+
+  // Multi-day ranges: e.g. 10-11-12 sep, 6-8 september, 17-20 sep
+  const mRange3 = s.match(/(\d{1,2})\s*(?:-|–)\s*(\d{1,2})\s*(?:-|–)\s*(\d{1,2})\s+([a-z]{3,9})/i);
+  if (mRange3) {
+    const endD = parseInt(mRange3[3], 10);
+    const mStr = mRange3[4].slice(0, 3).toLowerCase();
+    if (MONTH_INDEX_MAP_JS[mStr] !== undefined) {
+      return new Date(yr, MONTH_INDEX_MAP_JS[mStr], endD);
+    }
+  }
+
+  const mRange2 = s.match(/(\d{1,2})\s*(?:-|–|to)\s*(\d{1,2})\s+([a-z]{3,9})/i);
+  if (mRange2) {
+    const endD = parseInt(mRange2[2], 10);
+    const mStr = mRange2[3].slice(0, 3).toLowerCase();
+    if (MONTH_INDEX_MAP_JS[mStr] !== undefined) {
+      return new Date(yr, MONTH_INDEX_MAP_JS[mStr], endD);
+    }
+  }
+
+  // Single date e.g. '08 Sep' or 'Sep 08' or 'Sat, 19 Sep, 2026'
+  const mSingle1 = s.match(/(\d{1,2})\s+([a-z]{3,9})/i);
+  if (mSingle1) {
+    const d = parseInt(mSingle1[1], 10);
+    const mStr = mSingle1[2].slice(0, 3).toLowerCase();
+    if (MONTH_INDEX_MAP_JS[mStr] !== undefined) {
+      return new Date(yr, MONTH_INDEX_MAP_JS[mStr], d);
+    }
+  }
+
+  const mSingle2 = s.match(/([a-z]{3,9})\s+(\d{1,2})/i);
+  if (mSingle2) {
+    const mStr = mSingle2[1].slice(0, 3).toLowerCase();
+    const d = parseInt(mSingle2[2], 10);
+    if (MONTH_INDEX_MAP_JS[mStr] !== undefined) {
+      return new Date(yr, MONTH_INDEX_MAP_JS[mStr], d);
+    }
+  }
+
+  return null;
+}
+
+function isEventPassedJs(ev, refDate) {
+  if (!ev) return true;
+  const now = refDate || new Date();
+  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+
+  // 1. Check end_date
+  if (ev.end_date) {
+    const endT = new Date(ev.end_date).getTime();
+    if (!isNaN(endT) && endT < now.getTime()) {
+      return true;
+    }
+  }
+
+  // 2. Check date_display (concluding date of festival, exhibition, or multiday workshop)
+  const ddEnd = parseDisplayDateEndJs(ev.date_display, now.getFullYear());
+  if (ddEnd) {
+    const ddStart = new Date(ddEnd.getFullYear(), ddEnd.getMonth(), ddEnd.getDate()).getTime();
+    if (ddStart < todayStart) {
+      return true;
+    }
+  }
+
+  // 3. Check start_date
+  if (ev.start_date) {
+    const startT = new Date(ev.start_date).getTime();
+    if (!isNaN(startT)) {
+      const sDate = new Date(ev.start_date);
+      const sDayStart = new Date(sDate.getFullYear(), sDate.getMonth(), sDate.getDate()).getTime();
+      if (sDayStart < todayStart) {
+        return true;
+      }
+      if (sDayStart === todayStart && (now.getTime() - startT) > 6 * 3600 * 1000) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+function purgeSyntheticAndStaleCache() {
+  try {
+    const raw = localStorage.getItem("radar_custom_events") || localStorage.getItem("aiesec_radar_custom_events");
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) {
+        const cleaned = parsed.filter(e => {
+          if (!e || !e.title) return false;
+          const eid = String(e.event_id || "");
+          const t = String(e.title || "");
+          if (eid.startsWith("eg_campus_")) return false;
+          if (/\(Round\s*\d+\)/i.test(t) || /Fall Session/i.test(t)) return false;
+          if (isEventPassedJs(e)) return false;
+          return true;
+        });
+        if (cleaned.length !== parsed.length) {
+          console.log(`[Event Radar] Purged ${parsed.length - cleaned.length} synthetic or expired items from localStorage.`);
+          if (cleaned.length > 0) {
+            localStorage.setItem("radar_custom_events", JSON.stringify(cleaned));
+          } else {
+            localStorage.removeItem("radar_custom_events");
+          }
+          localStorage.removeItem("aiesec_radar_custom_events");
+        }
+      }
+    }
+  } catch (e) {
+    console.warn("Could not sanitize localStorage:", e);
+  }
+}
+
 // --- Initialization ---
 document.addEventListener("DOMContentLoaded", () => {
+  purgeSyntheticAndStaleCache();
   initThemeAccent();
   initTopicChips();
   initEventDrawer();
@@ -144,7 +268,7 @@ function initThreeRadar() {
 
     const interactiveMeshNodes = [];
     const entityNodes = [
-      { id: "aiesec-core", name: "AIESEC in Egypt (Tanta)", type: "National Youth Hub", city: "tanta", x: 0, y: 0, z: 0, radius: 7.5, color: 0x00e5ff, isCore: true, desc: "Leadership Pipeline & Global Talent Dispatch" },
+      { id: "radar-core", name: "National Youth Hub (Tanta)", type: "National Youth Hub", city: "tanta", x: 0, y: 0, z: 0, radius: 7.5, color: 0x00e5ff, isCore: true, desc: "Leadership Pipeline & Talent Dispatch" },
       { id: "univ-tanta", name: "Tanta University", type: "Delta Campus Hub", city: "tanta", x: -38, y: 18, z: 12, radius: 5.0, color: 0x037ef3, desc: "Gharbia Academic Anchor • 100k+ Undergrads" },
       { id: "univ-cairo", name: "Cairo University", type: "Capital Campus Hub", city: "cairo", x: 38, y: 20, z: -15, radius: 5.2, color: 0x00e5ff, desc: "Flagship Campus • Giza/Cairo Student Gateway" },
       { id: "univ-alex", name: "Alexandria University", type: "Coastal Campus Hub", city: "alexandria", x: -28, y: -28, z: 18, radius: 5.0, color: 0x38bdf8, desc: "Mediterranean Coast • Techne Summit Partner" },
@@ -198,16 +322,16 @@ function initThreeRadar() {
 
     // Edges
     const entityEdges = [
-      ["aiesec-core", "univ-tanta"],
-      ["aiesec-core", "univ-cairo"],
-      ["aiesec-core", "univ-alex"],
-      ["aiesec-core", "univ-mansoura"],
-      ["aiesec-core", "univ-ainshams"],
-      ["aiesec-core", "univ-assiut"],
-      ["aiesec-core", "summit-techne"],
-      ["aiesec-core", "summit-riseup"],
-      ["aiesec-core", "org-ieee"],
-      ["aiesec-core", "org-enactus"],
+      ["radar-core", "univ-tanta"],
+      ["radar-core", "univ-cairo"],
+      ["radar-core", "univ-alex"],
+      ["radar-core", "univ-mansoura"],
+      ["radar-core", "univ-ainshams"],
+      ["radar-core", "univ-assiut"],
+      ["radar-core", "summit-techne"],
+      ["radar-core", "summit-riseup"],
+      ["radar-core", "org-ieee"],
+      ["radar-core", "org-enactus"],
       ["univ-alex", "summit-techne"],
       ["univ-tanta", "summit-techne"],
       ["univ-mansoura", "summit-techne"],
@@ -230,9 +354,9 @@ function initThreeRadar() {
 
       const edgeGeo = new THREE.BufferGeometry().setFromPoints([nFrom.position, nTo.position]);
       const edgeMat = new THREE.LineBasicMaterial({
-        color: fromId === "aiesec-core" ? 0x00e5ff : 0x037ef3,
+        color: fromId === "radar-core" ? 0x00e5ff : 0x037ef3,
         transparent: true,
-        opacity: fromId === "aiesec-core" ? 0.35 : 0.18,
+        opacity: fromId === "radar-core" ? 0.35 : 0.18,
         blending: THREE.AdditiveBlending
       });
       const edgeLine = new THREE.Line(edgeGeo, edgeMat);
@@ -453,7 +577,7 @@ function initThreeRadar() {
       if (mode === "mesh") {
         if (btnSpatialMesh) btnSpatialMesh.className = "px-2 py-0.5 rounded-md bg-[#037EF3] text-white shadow-sm transition active:scale-95 flex items-center gap-1";
         if (btnSpatialGlobe) btnSpatialGlobe.className = "px-2 py-0.5 rounded-md text-slate-400 hover:text-white transition active:scale-95 flex items-center gap-1";
-        if (spatialTitle) spatialTitle.innerText = "AIESEC Knowledge Mesh (3D Entity Network)";
+        if (spatialTitle) spatialTitle.innerText = "Event Radar Knowledge Mesh (3D Entity Network)";
         if (statusPill) statusPill.innerText = "12 Entity Nodes Active";
 
         globeGroup.visible = false;
@@ -915,7 +1039,7 @@ function initSmoothMouseLighting() {
 // DYNAMIC EGYPTIAN SOLAR CYCLE (Atmospheric Cairo Time-Engine)
 // ============================================================
 let solarCycleState = {
-  mode: localStorage.getItem("aiesec_solar_mode") || "auto", // 'auto' | 'dawn' | 'meridian' | 'dusk' | 'midnight'
+  mode: localStorage.getItem("radar_solar_mode") || localStorage.getItem("aiesec_solar_mode") || "auto", // 'auto' | 'dawn' | 'meridian' | 'dusk' | 'midnight'
   activePhase: "midnight",
   cairoHour: 5,
   cairoMinute: 0,
@@ -1092,7 +1216,7 @@ function initSolarCycle() {
       const mode = item.getAttribute("data-solar-mode");
       if (!mode) return;
       solarCycleState.mode = mode;
-      localStorage.setItem("aiesec_solar_mode", mode);
+      localStorage.setItem("radar_solar_mode", mode);
 
       if (mode === "auto") {
         const autoPhase = getCairoSolarPhase(solarCycleState.cairoHour, solarCycleState.cairoMinute);
@@ -1988,7 +2112,7 @@ function setTheme(themeName) {
   applyThemeTokens(themeName);
 
   try {
-    localStorage.setItem("aiesec_theme", themeName);
+    localStorage.setItem("radar_theme", themeName);
   } catch (e) {
     console.warn("Could not save theme to localStorage:", e);
   }
@@ -2030,7 +2154,7 @@ function setCanvasContrast(mode) {
     document.documentElement.removeAttribute("data-canvas");
   }
   try {
-    localStorage.setItem("aiesec_canvas_mode", mode);
+    localStorage.setItem("radar_canvas_mode", mode);
   } catch (e) {}
 
   const btnNebula = document.getElementById("btn-canvas-nebula");
@@ -2050,8 +2174,8 @@ function initThemeAccent() {
   let saved = "blue";
   let savedCanvas = "nebula";
   try {
-    saved = localStorage.getItem("aiesec_theme") || "blue";
-    savedCanvas = localStorage.getItem("aiesec_canvas_mode") || "nebula";
+    saved = localStorage.getItem("radar_theme") || localStorage.getItem("aiesec_theme") || "blue";
+    savedCanvas = localStorage.getItem("radar_canvas_mode") || localStorage.getItem("aiesec_canvas_mode") || "nebula";
   } catch (e) {
     saved = "blue";
   }
@@ -2267,10 +2391,17 @@ const KNOWN_ORGANIZER_CONTACTS = {
     phone: null
   },
   aiesec: {
-    name: "AIESEC in Egypt LC Network",
-    email: "contact@aiesec.org.eg",
-    instagram: "aiesecinegypt",
-    linkedin: "company/aiesecinegypt",
+    name: "Youth Event Radar Egypt",
+    email: "contact@eventradar.eg",
+    instagram: "eventradareg",
+    linkedin: "company/eventradareg",
+    phone: null
+  },
+  eventradar: {
+    name: "Youth Event Radar Egypt",
+    email: "contact@eventradar.eg",
+    instagram: "eventradareg",
+    linkedin: "company/eventradareg",
     phone: null
   }
 };
@@ -2521,7 +2652,7 @@ function openEventDrawer(ev) {
   if (emailBtn) {
     emailBtn.onclick = (e) => {
       e.preventDefault();
-      const defaultPitch = generateClientPitch(ev, "Abdelrahman Motazz", "abdelrahman.motazz@aiesec.net", "+20 10 1234 5678", "booth");
+      const defaultPitch = generateClientPitch(ev, "Abdelrahman Motazz", "abdelrahman.motazz@eventradar.eg", "+20 10 1234 5678", "booth");
       const toStr = contacts.email || "";
       const mailto = `mailto:${toStr}?subject=${encodeURIComponent(defaultPitch.subject)}&body=${encodeURIComponent(defaultPitch.body)}`;
       window.open(mailto, "_blank");
@@ -2544,7 +2675,7 @@ function openEventDrawer(ev) {
   if (igBtn) {
     igBtn.onclick = (e) => {
       e.preventDefault();
-      const pitchMsg = `Hello ${contacts.organizerName}! Reaching out on behalf of AIESEC in Egypt (LC Tanta). We're excited about "${ev.title}" and would love to collaborate as an official Youth / Media Partner. Can we connect with your team?`;
+      const pitchMsg = `Hello ${contacts.organizerName}! Reaching out on behalf of Youth Event Radar Egypt. We're excited about "${ev.title}" and would love to collaborate as an official Youth / Media Partner. Can we connect with your team?`;
       navigator.clipboard.writeText(pitchMsg).then(() => {
         showToast("Instagram DM pitch copied to clipboard! Opening Instagram...", "success");
       });
@@ -2562,7 +2693,7 @@ function openEventDrawer(ev) {
       e.preventDefault();
       if (contacts.phone) {
         const cleanPhone = contacts.phone.replace(/[^0-9]/g, '');
-        const waMsg = `Hello! Reaching out from AIESEC in Egypt regarding partnership opportunities for "${ev.title}".`;
+        const waMsg = `Hello! Reaching out from Youth Event Radar Egypt regarding partnership opportunities for "${ev.title}".`;
         window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(waMsg)}`, "_blank");
         showToast(`Opening WhatsApp chat with ${contacts.phone}...`, "success");
       } else {
@@ -2609,7 +2740,7 @@ async function handleGenerateDrawerPitch() {
 
   const btnGen = document.getElementById("drawer-btn-generate");
   const name = document.getElementById("drawer-pitch-name").value.trim() || "Abdelrahman Motazz";
-  const email = document.getElementById("drawer-pitch-email").value.trim() || "abdelrahman.motazz@aiesec.net";
+  const email = document.getElementById("drawer-pitch-email").value.trim() || "abdelrahman.motazz@eventradar.eg";
   const purpose = document.getElementById("drawer-pitch-purpose").value;
 
   btnGen.disabled = true;
@@ -2880,8 +3011,8 @@ const NON_EGYPT_PATTERNS_JS = [
   /,\s*[a-z]{2}\s+\d{5}/i,
   /\b(united states|usa|u\.s\.a|u\.s\.|canada|australia|united kingdom|\buk\b)\b/i,
   /allevents\.in\/assisi\//i,
-  /\b(assisi|foligno|umbria|spello|perugia|lyrick|brunori|capossela)\b/i,
-  /\b(berlin-datatalks|stuttgart-english|founders-valencia|geneve|istanbul-english)\b/i
+  /\b(assisi|foligno|umbria|spello|perugia|lyrick|brunori|capossela|urbino|offida|scarzuola|marche festival|senigallia|montegabbione|pesaro|cannara|santa-maria-degli-angeli|fabriano|pierosara|italy|italia)\b/i,
+  /\b(berlin-datatalks|stuttgart-english|founders-valencia|geneve|istanbul-english|louisiana|high school football|maryland high school)\b/i
 ];
 
 function isBadOrNonEgyptJs(ev) {
@@ -2904,7 +3035,8 @@ function isBadOrNonEgyptJs(ev) {
 
 /**
  * Client-Side Deduplication & Quality Safeguard:
- * Guarantees that no duplicate event ID, canonical URL, fuzzy title, or bad/non-Egypt link is rendered.
+ * Guarantees that no duplicate event ID, canonical URL, fuzzy title, bad/non-Egypt link,
+ * or passed-date event is rendered.
  */
 function deduplicateClientEvents(eventsList) {
   if (!Array.isArray(eventsList)) return [];
@@ -2921,6 +3053,9 @@ function deduplicateClientEvents(eventsList) {
 
     // Filter bad links and foreign location bleed
     if (isBadOrNonEgyptJs(ev)) continue;
+
+    // Filter events whose date has passed
+    if (isEventPassedJs(ev)) continue;
 
     // Check ID - if seen, upgrade title if current is better
     if (ev.event_id && seenIds.has(ev.event_id)) {
@@ -3027,8 +3162,13 @@ async function loadStaticEventsFallback() {
       }
       let customStored = [];
       try {
-        const rawCustom = JSON.parse(localStorage.getItem("aiesec_radar_custom_events") || "[]");
-        if (Array.isArray(rawCustom)) {
+        const rawCustom = JSON.parse(localStorage.getItem("radar_custom_events") || localStorage.getItem("aiesec_radar_custom_events") || "[]");
+        if (Array.isArray(rawCustom) && rawCustom.length > 0) {
+          // Build canonical lookup sets from loaded database
+          const loadedUrls = new Set(loaded.map(l => (l.url || "").split("?")[0].split("#")[0].replace(/\/+$/, "").toLowerCase()).filter(Boolean));
+          const loadedNormTitles = new Set(loaded.map(l => (l.title || "").toLowerCase().replace(/[^\w\u0600-\u06FF]/g, "")));
+          const loadedIds = new Set(loaded.map(l => l.event_id).filter(Boolean));
+
           let storageModified = false;
           customStored = rawCustom.map(ev => {
             if (isBadEventTitle(ev.title)) {
@@ -3041,11 +3181,27 @@ async function loadStaticEventsFallback() {
               storageModified = true;
             }
             return ev;
-          }).filter(ev => !isBadEventTitle(ev.title));
+          }).filter(ev => {
+            if (!ev || !ev.title || isBadEventTitle(ev.title) || isBadOrNonEgyptJs(ev)) return false;
+            const eid = String(ev.event_id || "");
+            const t = String(ev.title || "");
+            // Reject any synthetic or repetitive template events
+            if (eid.startsWith("eg_campus_")) return false;
+            if (/\(Round\s*\d+\)/i.test(t) || /Fall Session/i.test(t)) return false;
 
-          if (storageModified) {
+            const u = (ev.url || "").split("?")[0].split("#")[0].replace(/\/+$/, "").toLowerCase();
+            const nt = (ev.title || "").toLowerCase().replace(/[^\w\u0600-\u06FF]/g, "");
+            // Drop if already part of the canonical database to prevent double counting
+            if (ev.event_id && loadedIds.has(ev.event_id)) return false;
+            if (u && loadedUrls.has(u)) return false;
+            if (nt && loadedNormTitles.has(nt)) return false;
+            return true;
+          });
+
+          if (storageModified || customStored.length !== rawCustom.length) {
             try {
-              localStorage.setItem("aiesec_radar_custom_events", JSON.stringify(customStored));
+              localStorage.setItem("radar_custom_events", JSON.stringify(customStored));
+              localStorage.removeItem("aiesec_radar_custom_events");
             } catch (e) {}
           }
         }
@@ -3822,21 +3978,21 @@ function closePitchModal() {
 // Client-side partnership proposal generator for static deployments
 function generateClientPitch(event, memberName, memberEmail, memberPhone, purpose) {
   const name = memberName || "Abdelrahman Motazz";
-  const email = memberEmail || "tanta@aiesec.net";
+  const email = memberEmail || "contact@eventradar.eg";
   const phone = memberPhone || "+20 10 0000 0000";
   const title = event?.title || "Upcoming Youth Event";
   const org = event?.organizer || "Organizing Committee";
 
   if (purpose === "pr_media") {
     return {
-      subject: `AIESEC in Egypt x ${title} - Official Youth Media & PR Partnership`,
-      body: `Dear ${org} Organizing Committee,\n\nI hope this email finds you well.\n\nMy name is ${name}, representing AIESEC in Egypt (LC Tanta) — the world's largest youth-led leadership organization present in over 100+ countries and across Egyptian universities.\n\nWe have been following the preparations for "${title}" with great admiration for its impact on youth and students.\n\nWe would love to explore a formal PR & Media Collaboration with your team:\n- Amplifying ${title} across our campus network of 10,000+ university students in the Delta and Egypt.\n- Social media cross-promotional campaigns and student community blasts.\n- Co-branding opportunities to drive delegate registration.\n\nCould we schedule a brief 10-minute discovery call this week to coordinate?\n\nWarm regards,\n\n${name}\nBusiness Development & B2C Team\nAIESEC in Egypt\nEmail: ${email}\nPhone: ${phone}\nWebsite: https://aiesec.org.eg`
+      subject: `Youth Event Radar Egypt x ${title} - Official Youth Media & PR Partnership`,
+      body: `Dear ${org} Organizing Committee,\n\nI hope this email finds you well.\n\nMy name is ${name}, representing Youth Event Radar Egypt — an active youth leadership and event intelligence network across Egyptian universities.\n\nWe have been following the preparations for "${title}" with great admiration for its impact on youth and students.\n\nWe would love to explore a formal PR & Media Collaboration with your team:\n- Amplifying ${title} across our student network of 10,000+ university students in the Delta and Egypt.\n- Social media cross-promotional campaigns and student community blasts.\n- Co-branding opportunities to drive delegate registration.\n\nCould we schedule a brief 10-minute discovery call this week to coordinate?\n\nWarm regards,\n\n${name}\nBusiness Development & Partnerships Team\nYouth Event Radar Egypt\nEmail: ${email}\nPhone: ${phone}\nWebsite: https://eventradar.org.eg`
     };
   }
 
   return {
-    subject: `AIESEC in Egypt - Partnership & Booth Activation Proposal for ${title}`,
-    body: `Dear ${org} Organizing Committee,\n\nI hope this message finds you in high spirits.\n\nMy name is ${name}, representing AIESEC in Egypt (LC Tanta). We are reaching out regarding the upcoming "${title}".\n\nGiven the exceptional gathering of ambitious youth and university talent at ${title}, AIESEC would be thrilled to participate as an Official Youth Partner:\n\n1. Physical Engagement Booth: Interactive student activation space showcasing Global Volunteer & Global Talent leadership internships abroad.\n2. Interactive Youth Workshop / Speaking Slot: Practical session on global leadership and cross-cultural career skills.\n3. Delegate Perks: Tailored career and exchange opportunities exclusively for your attendees.\n\nWe would appreciate the opportunity to connect with your Partnerships Lead for a 10-minute briefing.\n\nBest regards,\n\n${name}\nB2C & Strategic Partnerships\nAIESEC in Egypt\nEmail: ${email}\nPhone: ${phone}\nWebsite: https://aiesec.org.eg`
+    subject: `Youth Event Radar Egypt - Partnership & Booth Activation Proposal for ${title}`,
+    body: `Dear ${org} Organizing Committee,\n\nI hope this message finds you in high spirits.\n\nMy name is ${name}, representing Youth Event Radar Egypt. We are reaching out regarding the upcoming "${title}".\n\nGiven the exceptional gathering of ambitious youth and university talent at ${title}, Youth Event Radar Egypt would be thrilled to participate as an Official Partner:\n\n1. Physical Engagement Booth: Interactive student activation space showcasing leadership and skill-building opportunities.\n2. Interactive Youth Workshop / Speaking Slot: Practical session on global leadership and cross-cultural career skills.\n3. Delegate Perks: Tailored career and youth opportunities exclusively for your attendees.\n\nWe would appreciate the opportunity to connect with your Partnerships Lead for a 10-minute briefing.\n\nBest regards,\n\n${name}\nStrategic Partnerships & Youth Outreach\nYouth Event Radar Egypt\nEmail: ${email}\nPhone: ${phone}\nWebsite: https://eventradar.org.eg`
   };
 }
 
@@ -3844,7 +4000,7 @@ async function handleGeneratePitch() {
   if (!state.activePitchEvent) return;
 
   const memberName = document.getElementById("pitch-name").value.trim() || "Abdelrahman Motazz";
-  const memberEmail = document.getElementById("pitch-email").value.trim() || "abdelrahman.motazz@aiesec.net";
+  const memberEmail = document.getElementById("pitch-email").value.trim() || "abdelrahman.motazz@eventradar.eg";
   const memberPhone = document.getElementById("pitch-phone").value.trim() || "+20 10 1234 5678";
   const purpose = document.getElementById("pitch-purpose").value;
 
@@ -3935,7 +4091,7 @@ function exportEventsToCSV(events) {
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = `aiesec_tanta_events_${new Date().toISOString().slice(0, 10)}.csv`;
+  a.download = `egypt_events_${new Date().toISOString().slice(0, 10)}.csv`;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
@@ -4005,16 +4161,16 @@ async function handleSendEmail() {
 
     if (!sentOnServer) {
       const top5 = state.events.slice(0, 5);
-      const subject = `AIESEC in Tanta - B2C Weekly Event Radar Briefing (${new Date().toLocaleDateString("en-GB")})`;
-      let body = `Dear AIESEC in Tanta Executive Board & B2C Team,\n\nHere is your high-priority event intelligence briefing for this week:\n\n`;
+      const subject = `Egypt B2C Weekly Event Radar Briefing (${new Date().toLocaleDateString("en-GB")})`;
+      let body = `Dear Executive Board & B2C Team,\n\nHere is your high-priority event intelligence briefing for this week:\n\n`;
       top5.forEach((e, idx) => {
         body += `${idx + 1}. ${e.title} (${e.city})\n   • Date: ${e.date_display || "TBA"}\n   • Score: ${e.b2c_score?.toFixed(1) || "8.0"} (${e.b2c_priority || "HIGH"})\n   • Strategic Action: ${e.recommended_action || "Deploy youth booth"}\n   • Link: ${e.url}\n\n`;
       });
-      body += `Best regards,\nB2C Business Development Team\nAIESEC in Egypt (LC Tanta)\nhttps://aiesec.org.eg`;
+      body += `Best regards,\nB2C Business Development Team\nYouth Event Radar Egypt\nhttps://eventradar.org.eg`;
 
       const mailto = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
       window.open(mailto, "_blank");
-      showToast("Opened mail client with LC Tanta weekly briefing draft!", "success", "Briefing Draft Ready");
+      showToast("Opened mail client with weekly briefing draft!", "success", "Briefing Draft Ready");
     }
   } catch (err) {
     showToast("Email briefing compiled", "info", "Briefing Ready");
@@ -4767,8 +4923,8 @@ function renderDiscoveredLeads() {
     };
     const badgeClass = roleColors[lead.role_category] || "text-slate-300 bg-white/10 border-white/15";
 
-    const mailSubject = encodeURIComponent(`AIESEC Egypt Partnership • ${lead.event_title}`);
-    const mailBody = encodeURIComponent(`Dear ${lead.name},\n\nI hope this email finds you well. I am reaching out from AIESEC in Egypt regarding ${lead.event_title}.\n\nWe would love to discuss synergy, student engagement, and brand activation.\n\nBest regards,\nAIESEC in Egypt Team`);
+    const mailSubject = encodeURIComponent(`Youth Event Radar Egypt Partnership • ${lead.event_title}`);
+    const mailBody = encodeURIComponent(`Dear ${lead.name},\n\nI hope this email finds you well. I am reaching out from Youth Event Radar Egypt regarding ${lead.event_title}.\n\nWe would love to discuss synergy, student engagement, and brand activation.\n\nBest regards,\nYouth Event Radar Egypt Team`);
 
     return `
       <div class="p-4 rounded-2xl bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.08] hover:border-amber-500/30 transition duration-200 flex flex-col justify-between gap-3 shadow-lg group">
@@ -4848,7 +5004,7 @@ function exportLeadsToCsv() {
   const encodedUri = encodeURI(csvContent);
   const link = document.createElement("a");
   link.setAttribute("href", encodedUri);
-  link.setAttribute("download", `aiesec_event_leads_${new Date().toISOString().slice(0, 10)}.csv`);
+  link.setAttribute("download", `event_leads_${new Date().toISOString().slice(0, 10)}.csv`);
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
@@ -5119,26 +5275,23 @@ function initSocialIngest() {
 
     // Save to localStorage for permanent persistence
     try {
-      const existing = JSON.parse(localStorage.getItem("aiesec_radar_custom_events") || "[]");
+      const existing = JSON.parse(localStorage.getItem("radar_custom_events") || localStorage.getItem("aiesec_radar_custom_events") || "[]");
       const existingIds = new Set(existing.map(e => e.event_id || e.url));
       const toAdd = enriched.filter(e => !existingIds.has(e.event_id) && !existingIds.has(e.url));
       const updated = [...toAdd, ...existing];
-      localStorage.setItem("aiesec_radar_custom_events", JSON.stringify(updated));
+      localStorage.setItem("radar_custom_events", JSON.stringify(updated));
+      localStorage.removeItem("aiesec_radar_custom_events");
     } catch (e) {
       console.warn("Could not save to localStorage:", e);
     }
 
-    // Prepend to rawEventsCache
+    // Prepend to rawEventsCache with full fuzzy deduplication
     if (rawEventsCache) {
-      const cacheIds = new Set(rawEventsCache.map(e => e.event_id || e.url));
-      const newItems = enriched.filter(e => !cacheIds.has(e.event_id) && !cacheIds.has(e.url));
-      rawEventsCache = [...newItems, ...rawEventsCache];
+      rawEventsCache = deduplicateClientEvents([...enriched, ...rawEventsCache]);
     }
 
-    // Prepend to state.events
-    const stateIds = new Set(state.events.map(e => e.event_id || e.url));
-    const toState = enriched.filter(e => !stateIds.has(e.event_id) && !stateIds.has(e.url));
-    state.events = [...toState, ...state.events];
+    // Prepend to state.events with full fuzzy deduplication
+    state.events = deduplicateClientEvents([...enriched, ...state.events]);
 
     // Re-render UI views immediately
     if (state.activeView === "cards") {

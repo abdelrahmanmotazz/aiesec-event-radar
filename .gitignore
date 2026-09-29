@@ -22,6 +22,8 @@ __pycache__/
 data/*
 !data/aiesec_egypt_events_latest.xlsx
 !data/aiesec_egypt_events_latest.csv
+!data/egypt_events_latest.xlsx
+!data/egypt_events_latest.csv
 
 # OS Specific
 .DS_Store

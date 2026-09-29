@@ -27,7 +27,7 @@ async def lifespan(app_instance: FastAPI):
     yield
 
 
-app = FastAPI(title="AIESEC Egypt B2C Event Radar", version="2.0.0", lifespan=lifespan)
+app = FastAPI(title="Egypt B2C Event Radar", version="2.0.0", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
@@ -205,7 +205,7 @@ def get_dashboard_root():
     if os.path.exists(index_path):
         with open(index_path, "r", encoding="utf-8") as f:
             return f.read()
-    return "<h1>AIESEC Egypt B2C Event Radar</h1><p>Dashboard static files initializing...</p>"
+    return "<h1>Egypt B2C Event Radar</h1><p>Dashboard static files initializing...</p>"
 
 
 @app.get("/style.css")
@@ -218,9 +218,12 @@ def get_app_js():
     return FileResponse(os.path.join(STATIC_DIR, "app.js"), media_type="application/javascript")
 
 
+@app.get("/logo.svg")
+@app.get("/radar-logo.svg")
 @app.get("/aiesec-logo.svg")
 def get_aiesec_logo():
-    return FileResponse(os.path.join(STATIC_DIR, "aiesec-logo.svg"), media_type="image/svg+xml")
+    logo_file = "aiesec-logo.svg" if os.path.exists(os.path.join(STATIC_DIR, "aiesec-logo.svg")) else "logo.svg"
+    return FileResponse(os.path.join(STATIC_DIR, logo_file), media_type="image/svg+xml")
 
 
 @app.get("/events.json")
@@ -336,7 +339,7 @@ def get_events(
 class PitchRequest(BaseModel):
     event_id: str
     member_name: str = "Abdelrahman Motazz"
-    member_email: str = "abdelrahman.motazz@aiesec.net"
+    member_email: str = "abdelrahman.motazz@eventradar.eg"
     member_phone: str = "+20 10 1234 5678"
     purpose: str = "event_collaboration"
     custom_notes: Optional[str] = None
@@ -351,8 +354,8 @@ def generate_pitch(req: PitchRequest):
         target_event = EventRecord(
             event_id=req.event_id,
             title="Campus Career & Leadership Summit",
-            source="AIESEC Radar",
-            url="http://aiesec.org.eg",
+            source="Event Radar",
+            url="https://eventradar.org.eg",
             organizer="Organizing Committee"
         )
 
@@ -484,7 +487,7 @@ def generate_smart_leads(
             "email_prefix": "speakers",
             "match": 9.2,
             "pitch_purpose": "pr_media",
-            "pitch_focus": "Keynote speaker slot for AIESEC Youth Leadership"
+            "pitch_focus": "Keynote speaker slot for Youth Leadership & Innovation"
         }
     ]
 
@@ -638,11 +641,11 @@ def download_export(file_format: str):
     if file_format.lower() == "excel" or file_format.lower() == "xlsx":
         path = "data/aiesec_egypt_events_latest.xlsx"
         media_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        filename = "AIESEC_Egypt_Events_Latest.xlsx"
+        filename = "Egypt_Events_Latest.xlsx"
     elif file_format.lower() == "csv":
         path = "data/aiesec_egypt_events_latest.csv"
         media_type = "text/csv"
-        filename = "AIESEC_Egypt_Events_Latest.csv"
+        filename = "Egypt_Events_Latest.csv"
     else:
         raise HTTPException(status_code=400, detail="Invalid format. Use 'excel' or 'csv'.")
 

@@ -606,7 +606,7 @@ class EventPipeline:
                 "phone": None,
             },
             "aiesec": {
-                "email": "contact@aiesec.org.eg",
+                "email": "contact@eventradar.eg",
                 "instagram": "aiesecinegypt",
                 "linkedin": "company/aiesecinegypt",
                 "phone": None,

@@ -23,7 +23,7 @@ An enterprise-grade, intelligent event scraping, outreach, and synchronization e
    - **Accessible to Anyone with the Link:** Shareable across your local network or via public instant URL with zero installation!
 2. **Automated Partnership & PR Pitch Generator (Interactive Modal):**
    - Click *"Pitch Event"* on any card.
-   - Enter your name, AIESEC email (`@aiesec.net`), phone number, and choose between:
+   - Enter your name, email (`@eventradar.eg`), phone number, and choose between:
      - **Event Collaboration:** Physical booth booking, flyer distribution, speaking slot, youth workshop co-hosting.
      - **PR & Media Collaboration:** Social media cross-promotion, student network blast, co-marketing.
    - Generates a customized, formal, high-converting outreach email ready to copy or open in your email client!
@@ -85,7 +85,7 @@ python -m aiesec_scraper.cli run --city cairo
 python -m aiesec_scraper.cli notify
 
 # Send to specific team member emails
-python -m aiesec_scraper.cli notify --to "nour@aiesec.net,karim@aiesec.net"
+python -m aiesec_scraper.cli notify --to "nour@eventradar.eg,karim@eventradar.eg"
 ```
 
 ### 3. Automated 3-Day Refreshes
@@ -103,7 +103,7 @@ python -m aiesec_scraper.cli setup-task
 
 ### 1. Google Sheets Integration
 1. Place your Google Cloud Service Account JSON file as `service_account.json` in the project root.
-2. Create a Google Sheet named `AIESEC Egypt B2C Event Radar`.
+2. Create a Google Sheet named `Egypt B2C Event Radar`.
 3. Share the Google Sheet with your service account email as **Editor**.
 
 ### 2. Email Notifications (SMTP)
@@ -113,7 +113,7 @@ SMTP_USER=your_email@gmail.com
 SMTP_PASSWORD=your_app_password
 SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
-NOTIFICATION_RECIPIENTS=b2c.egypt@aiesec.net
+NOTIFICATION_RECIPIENTS=b2c.egypt@eventradar.eg
 ```
 *(For Gmail, generate a 16-character App Password at [myaccount.google.com/apppasswords](https://myaccount.google.com/apppasswords))*
 

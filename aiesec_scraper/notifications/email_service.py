@@ -24,7 +24,7 @@ class EmailNotificationService:
         self.smtp_port = int(os.getenv("SMTP_PORT", notif_cfg.get("smtp_port", 587)))
         self.smtp_user = os.getenv("SMTP_USER", notif_cfg.get("smtp_user", ""))
         self.smtp_password = os.getenv("SMTP_PASSWORD", notif_cfg.get("smtp_password", ""))
-        self.sender_name = notif_cfg.get("sender_name", "AIESEC Egypt B2C Event Radar")
+        self.sender_name = notif_cfg.get("sender_name", "Egypt B2C Event Radar")
         self.min_score = float(notif_cfg.get("min_score_threshold", 8.5))
 
         # Recipients list from env or config
@@ -32,7 +32,7 @@ class EmailNotificationService:
         if env_recipients:
             self.recipients = [r.strip() for r in env_recipients.split(",") if r.strip()]
         else:
-            self.recipients = notif_cfg.get("recipients", ["b2c.egypt@aiesec.net"])
+            self.recipients = notif_cfg.get("recipients", ["b2c.egypt@eventradar.eg"])
 
     def is_configured(self) -> bool:
         """Check if SMTP credentials are provided."""
@@ -117,12 +117,12 @@ class EmailNotificationService:
 
         try:
             msg = MIMEMultipart("alternative")
-            msg["Subject"] = f"🎯 AIESEC B2C Opportunity Alert: {len(events)} Upcoming Events in Egypt"
+            msg["Subject"] = f"🎯 Egypt B2C Opportunity Alert: {len(events)} Upcoming Events in Egypt"
             msg["From"] = f"{self.sender_name} <{self.smtp_user}>"
             msg["To"] = ", ".join(target_recipients)
 
             # Plain text fallback
-            text_body = f"AIESEC Egypt B2C Event Alert\nTotal Events Found: {len(events)}\n\nView full details on your dashboard: http://localhost:8000"
+            text_body = f"Egypt B2C Event Alert\nTotal Events Found: {len(events)}\n\nView full details on your dashboard: http://localhost:8000"
             msg.attach(MIMEText(text_body, "plain"))
             msg.attach(MIMEText(html_content, "html"))
 
