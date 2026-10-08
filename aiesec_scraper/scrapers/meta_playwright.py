@@ -16,6 +16,7 @@ from ..models import EventRecord
 from ..scorers import B2CScorer
 from ..analyzers.caption_analyzer import CaptionAnalyzer
 from .base import BaseScraper
+from .campus_watchlist import EGYPT_CAMPUS_WATCHLIST, get_priority_watchlist_queries
 from ..pipeline import is_date_or_garbage_title, NON_EGYPT_PATTERNS
 
 logger = logging.getLogger(__name__)
@@ -161,15 +162,16 @@ class MetaPlaywrightScraper:
 
                 page.on("response", handle_response)
 
-                # Build queries to execute
+                # Build queries to execute (Bilingual Search Queries + Curated Campus Watchlist)
                 queries_to_run = []
                 if city:
                     clean_c = city.lower().strip()
                     queries_to_run.append((f"{city.capitalize()} Local Events", f"https://www.facebook.com/events/search/?q={clean_c}%20egypt%20events"))
                     queries_to_run.append((f"{city.capitalize()} Career Fairs", f"https://www.facebook.com/events/search/?q={clean_c}%20egypt%20career%20fair"))
                     queries_to_run.append((f"{city.capitalize()} University Events", f"https://www.facebook.com/events/search/?q={clean_c}%20university%20events"))
+                    queries_to_run.extend(get_priority_watchlist_queries(city=city, limit=4))
                 else:
-                    queries_to_run = SEARCH_QUERIES[:6]
+                    queries_to_run = list(SEARCH_QUERIES[:6]) + get_priority_watchlist_queries(limit=6)
 
                 all_dom_events = []
                 for q_label, q_url in queries_to_run:

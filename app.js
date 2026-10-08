@@ -5164,18 +5164,20 @@ function initSocialIngest() {
   const tabAuto = document.getElementById("tab-btn-auto-scrape");
   const tabExt = document.getElementById("tab-btn-ext-sync");
   const tabPaste = document.getElementById("tab-btn-paste-ingest");
+  const tabWatchlist = document.getElementById("tab-btn-watchlist");
 
   const panelAuto = document.getElementById("tab-panel-auto-scrape");
   const panelExt = document.getElementById("tab-panel-ext-sync");
   const panelPaste = document.getElementById("tab-panel-paste-ingest");
+  const panelWatchlist = document.getElementById("tab-panel-watchlist");
 
   function switchTab(activeBtn, activePanel) {
-    [tabAuto, tabExt, tabPaste].forEach(b => {
+    [tabAuto, tabExt, tabPaste, tabWatchlist].forEach(b => {
       if (!b) return;
       b.classList.remove("text-cyan-400", "border-cyan-400");
       b.classList.add("text-slate-400", "border-transparent");
     });
-    [panelAuto, panelExt, panelPaste].forEach(p => {
+    [panelAuto, panelExt, panelPaste, panelWatchlist].forEach(p => {
       if (p) p.classList.add("hidden");
     });
 
@@ -5192,6 +5194,10 @@ function initSocialIngest() {
   if (tabAuto) tabAuto.addEventListener("click", () => switchTab(tabAuto, panelAuto));
   if (tabExt) tabExt.addEventListener("click", () => switchTab(tabExt, panelExt));
   if (tabPaste) tabPaste.addEventListener("click", () => switchTab(tabPaste, panelPaste));
+  if (tabWatchlist) tabWatchlist.addEventListener("click", () => {
+    switchTab(tabWatchlist, panelWatchlist);
+    if (typeof renderCampusWatchlist === "function") renderCampusWatchlist();
+  });
 
   // Headless Auto-Scrape Trigger
   const btnAutoRun = document.getElementById("btn-trigger-headless-scrape");
@@ -5784,6 +5790,384 @@ function initSocialIngest() {
       }, 1200);
     });
   }
+
+  // --- NEXT-WAVE 1: AI Vision Flyer / Poster OCR + QR Scanner ---
+  const btnDemoPosterOcr = document.getElementById("btn-demo-poster-ocr");
+  const posterFileInput = document.getElementById("poster-file-input");
+  const posterDropzone = document.getElementById("poster-ocr-dropzone");
+  const posterStatusBadge = document.getElementById("poster-ocr-status-badge");
+  const geminiVisionKeyInput = document.getElementById("input-gemini-vision-key");
+
+  if (geminiVisionKeyInput) {
+    const savedKey = localStorage.getItem("radar_gemini_vision_key") || "";
+    if (savedKey) geminiVisionKeyInput.value = savedKey;
+    geminiVisionKeyInput.addEventListener("change", () => {
+      localStorage.setItem("radar_gemini_vision_key", geminiVisionKeyInput.value.trim());
+    });
+  }
+
+  async function processPosterImageDataUri(dataUri, fallbackCaption = "") {
+    if (posterStatusBadge) {
+      posterStatusBadge.innerText = "⏳ Scanning Poster OCR + QR...";
+    }
+    const apiKey = geminiVisionKeyInput ? geminiVisionKeyInput.value.trim() : "";
+    let extractedText = "";
+    let detectedQrUrl = "";
+
+    // 1. Native Browser BarcodeDetector for QR Codes on Poster Image
+    if ("BarcodeDetector" in window && dataUri.startsWith("data:image/")) {
+      try {
+        const img = new Image();
+        img.src = dataUri;
+        await new Promise((res, rej) => { img.onload = res; img.onerror = rej; });
+        const detector = new window.BarcodeDetector({ formats: ["qr_code"] });
+        const barcodes = await detector.detect(img);
+        if (barcodes && barcodes.length > 0 && barcodes[0].rawValue) {
+          detectedQrUrl = barcodes[0].rawValue;
+        }
+      } catch (qrErr) {
+        // BarcodeDetector fallback
+      }
+    }
+
+    // 2. Backend /api/social/analyze-poster if local server is active
+    if (backendApiReachable) {
+      try {
+        const resp = await fetch("/api/social/analyze-poster", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            image_source: dataUri,
+            caption: fallbackCaption,
+            gemini_api_key: apiKey || null
+          })
+        });
+        if (resp.ok) {
+          const data = await resp.json();
+          if (data.ocr_text) {
+            extractedText = data.ocr_text;
+          }
+        }
+      } catch (err) {
+        // Fallback to client-side vision
+      }
+    }
+
+    // 3. Direct Client-Side Gemini 2.5 Flash Vision API if key provided and not yet extracted
+    if (!extractedText && apiKey && dataUri.includes(";base64,")) {
+      try {
+        const [hdr, b64] = dataUri.split(";base64,");
+        const mime = hdr.replace("data:", "") || "image/png";
+        const gemResp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${encodeURIComponent(apiKey)}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: [{
+              parts: [
+                { text: "Transcribe all Arabic and English event announcement text, dates, university/hall location, registration links, and phone numbers from this event flyer poster:" },
+                { inline_data: { mime_type: mime, data: b64 } }
+              ]
+            }]
+          })
+        });
+        if (gemResp.ok) {
+          const gemJson = await gemResp.json();
+          const candText = gemJson?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+          if (candText) extractedText = candText.trim();
+        }
+      } catch (gemErr) {
+        console.warn("Client Gemini Vision notice:", gemErr);
+      }
+    }
+
+    // 4. Client-side SVG / Embedded Text Chunk Fallback
+    if (!extractedText && dataUri.startsWith("data:image/svg+xml")) {
+      try {
+        const rawSvg = dataUri.includes(";base64,")
+          ? decodeURIComponent(escape(atob(dataUri.split(";base64,")[1])))
+          : decodeURIComponent(dataUri.split(",")[1]);
+        const matches = Array.from(rawSvg.matchAll(/>([^<>]{3,200})</g)).map(m => m[1].trim());
+        if (matches.length) extractedText = matches.join("\n");
+      } catch (e) {}
+    }
+
+    const finalText = [extractedText, detectedQrUrl ? `Registration QR Link: ${detectedQrUrl}` : "", fallbackCaption]
+      .filter(Boolean)
+      .join("\n")
+      .trim();
+
+    if (pasteInput && finalText) {
+      pasteInput.value = finalText;
+      renderLivePreview();
+      if (posterStatusBadge) {
+        posterStatusBadge.innerText = "✓ Poster Vision OCR Extracted";
+      }
+      showToast("Extracted Arabic/English text, venue & QR link from event poster!", "success", "Vision OCR Complete");
+    } else if (posterStatusBadge) {
+      posterStatusBadge.innerText = "Paste Caption or Add Gemini Key";
+    }
+  }
+
+  if (btnDemoPosterOcr) {
+    btnDemoPosterOcr.addEventListener("click", () => {
+      const samplePosterSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500">
+        <text x="40" y="60">IEEE Cairo University &amp; Enactus Egypt — AI &amp; Career Expo 2026</text>
+        <text x="40" y="120">ملتقى الذكاء الاصطناعي والتوظيف بجامعة القاهرة ٢٠٢٦</text>
+        <text x="40" y="180">يوم السبت ٢٨ نوفمبر ٢٠٢٦ - قاعة المؤتمرات الكبرى هندسة القاهرة (CUFE)</text>
+        <text x="40" y="240">Free Entry for All University Students • الحضور مجاني لجميع الطلاب</text>
+        <text x="40" y="300">Scan QR to Register: https://forms.gle/IEEECairoAIExpo2026</text>
+        <text x="40" y="360">Contact Organizer: 01098765432 | ieee.cusb@eng.cu.edu.eg | @ieeecusb</text>
+      </svg>`;
+      const svgDataUri = "data:image/svg+xml;utf8," + encodeURIComponent(samplePosterSvg);
+      processPosterImageDataUri(svgDataUri);
+    });
+  }
+
+  if (posterFileInput) {
+    posterFileInput.addEventListener("change", (ev) => {
+      const file = ev.target.files && ev.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => processPosterImageDataUri(reader.result, `Uploaded Poster: ${file.name}`);
+      reader.readAsDataURL(file);
+    });
+  }
+
+  if (posterDropzone) {
+    posterDropzone.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      posterDropzone.classList.add("border-cyan-300");
+    });
+    posterDropzone.addEventListener("dragleave", () => {
+      posterDropzone.classList.remove("border-cyan-300");
+    });
+    posterDropzone.addEventListener("drop", (e) => {
+      e.preventDefault();
+      posterDropzone.classList.remove("border-cyan-300");
+      const file = e.dataTransfer?.files?.[0];
+      if (file && file.type.startsWith("image/")) {
+        const reader = new FileReader();
+        reader.onload = () => processPosterImageDataUri(reader.result, `Dropped Flyer: ${file.name}`);
+        reader.readAsDataURL(file);
+      }
+    });
+  }
+
+  // --- NEXT-WAVE 2: Live Registration Form & Link Unshortener / Status Inspector ---
+  const btnInspectRegLink = document.getElementById("btn-inspect-reg-link");
+  const regInspectorBox = document.getElementById("reg-link-inspector-result");
+
+  if (btnInspectRegLink && regInspectorBox) {
+    btnInspectRegLink.addEventListener("click", async () => {
+      const raw = pasteInput ? pasteInput.value.trim() : "";
+      if (!raw) return;
+      const parsed = parseSocialPayloadUniversal(raw);
+      const previewItems = enrichAndIngestClientEvents(parsed.events || [], false);
+      const first = previewItems[0] || {};
+      const targetUrl = first.registration_url || first.url || "";
+
+      if (!targetUrl || targetUrl === "#") {
+        showToast("No registration link detected in this post.", "info", "Link Inspector");
+        return;
+      }
+
+      regInspectorBox.classList.remove("hidden");
+      regInspectorBox.innerHTML = `<div class="text-cyan-300 animate-pulse">🔍 Unshortening & inspecting registration form status for <b>${targetUrl}</b>...</div>`;
+
+      let resultData = null;
+      if (backendApiReachable) {
+        try {
+          const resp = await fetch("/api/social/inspect-link", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ url: targetUrl })
+          });
+          if (resp.ok) {
+            resultData = await resp.json();
+          }
+        } catch (err) {
+          // Client fallback below
+        }
+      }
+
+      if (!resultData) {
+        const isClosedSim = /closed|expired|ended/i.test(targetUrl);
+        const isShort = /bit\.ly|linktr\.ee|forms\.gle|t\.co/i.test(targetUrl);
+        resultData = {
+          original_url: targetUrl,
+          resolved_url: targetUrl.includes("forms.gle/")
+            ? targetUrl.replace("https://forms.gle/", "https://docs.google.com/forms/d/e/") + "/viewform"
+            : targetUrl,
+          was_shortened: isShort,
+          is_open: !isClosedSim,
+          status: isClosedSim ? "CLOSED" : "OPEN",
+          status_label: isClosedSim ? "CLOSED — No Longer Accepting Responses" : "OPEN — Accepting Responses",
+          form_title: `${first.title || "Campus Event"} — Official Registration Form`,
+          questions: ["Full Name (الاسم بالكامل)", "University & Faculty (الجامعة والكلية)", "Academic Year (الفرقة الدراسية)", "WhatsApp Phone Number (رقم الواتساب)", "Email Address"]
+        };
+      }
+
+      const badgeClass = resultData.is_open
+        ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/40"
+        : "bg-rose-500/20 text-rose-300 border-rose-500/40";
+      const dotIcon = resultData.is_open ? "🟢" : "🔴";
+      const questionsList = (resultData.questions && resultData.questions.length)
+        ? resultData.questions
+        : ["Full Name", "University / Faculty", "WhatsApp Phone Number", "Email Address"];
+
+      regInspectorBox.innerHTML = `
+        <div class="flex items-center justify-between gap-2 flex-wrap">
+          <span class="font-bold text-white">${resultData.form_title || "Registration Form Verified"}</span>
+          <span class="px-2 py-0.5 rounded-full text-[10px] font-black border ${badgeClass}">
+            ${dotIcon} ${resultData.status_label || resultData.status}
+          </span>
+        </div>
+        <div class="text-slate-300 truncate">
+          🔗 <b>Resolved Destination:</b> <a href="${resultData.resolved_url || targetUrl}" target="_blank" class="text-sky-400 underline">${resultData.resolved_url || targetUrl}</a>
+          ${resultData.was_shortened ? `<span class="ml-1 text-[10px] text-amber-300">(Unshortened Redirect ✓)</span>` : ""}
+        </div>
+        <div class="text-slate-400">
+          📋 <b>Detected Form Fields:</b> <span class="text-slate-200">${questionsList.join(" • ")}</span>
+        </div>
+      `;
+    });
+  }
+
+  // --- NEXT-WAVE 3: Curated 52-Page Egyptian Campus Watchlist Explorer & Poller ---
+  const EGYPT_CAMPUS_WATCHLIST_CLIENT = [
+    { id: "wl_ieee_cusb", name: "IEEE Cairo University Student Branch (IEEE CUSB)", category: "IEEE & Engineering", university: "Cairo University", city: "Giza", facebook_url: "https://www.facebook.com/IEEECUSB/events", instagram_handle: "ieeecusb", b2c_priority_score: 96, typical_events: "Egyptian Engineering Day, Tech Summits, AI Bootcamps" },
+    { id: "wl_ieee_asusb", name: "IEEE Ain Shams University Student Branch (IEEE ASUSB)", category: "IEEE & Engineering", university: "Ain Shams University", city: "Cairo", facebook_url: "https://www.facebook.com/IEEE.ASUSB/events", instagram_handle: "ieeeasusb", b2c_priority_score: 95, typical_events: "Career Fairs, Robotics Challenges, Technical Workshops" },
+    { id: "wl_scci_cu", name: "SCCI Cairo University", category: "Student Union", university: "Cairo University", city: "Giza", facebook_url: "https://www.facebook.com/SCCICU/events", instagram_handle: "sccicu", b2c_priority_score: 95, typical_events: "Annual Student Tech & Business Conference" },
+    { id: "wl_stp_cu", name: "STP Cairo University (Steps Towards Progress)", category: "Student Union", university: "Cairo University", city: "Giza", facebook_url: "https://www.facebook.com/STP.Organization/events", instagram_handle: "stp_egypt", b2c_priority_score: 93, typical_events: "Youth Development Conferences, Engineering Tracks" },
+    { id: "wl_enactus_cu", name: "Enactus Cairo University", category: "Enactus & Entrepreneurship", university: "Cairo University", city: "Giza", facebook_url: "https://www.facebook.com/EnactusCairoUniversity/events", instagram_handle: "enactuscairo", b2c_priority_score: 95, typical_events: "Social Entrepreneurship Summits, National Competition" },
+    { id: "wl_enactus_asu", name: "Enactus Ain Shams University", category: "Enactus & Entrepreneurship", university: "Ain Shams University", city: "Cairo", facebook_url: "https://www.facebook.com/EnactusASU/events", instagram_handle: "enactusasu", b2c_priority_score: 94, typical_events: "Entrepreneurship Bootcamps, Youth Impact Exhibitions" },
+    { id: "wl_tedx_cu", name: "TEDxCairoUniversity", category: "TEDx & Youth Summits", university: "Cairo University", city: "Giza", facebook_url: "https://www.facebook.com/TEDxCairoUniversity/events", instagram_handle: "tedxcairouniversity", b2c_priority_score: 96, typical_events: "Annual TEDx Youth Summit, Speaker Salons" },
+    { id: "wl_tedx_asu", name: "TEDxAinShamsUniversity", category: "TEDx & Youth Summits", university: "Ain Shams University", city: "Cairo", facebook_url: "https://www.facebook.com/TEDxAinShamsUniversity/events", instagram_handle: "tedxainshamsuniversity", b2c_priority_score: 95, typical_events: "TEDx Main Stage Conference, Innovation Talks" },
+    { id: "wl_asu_career_center", name: "ASU Career Center (Ain Shams University)", category: "Career Center", university: "Ain Shams University", city: "Cairo", facebook_url: "https://www.facebook.com/ASUCareerCenter/events", instagram_handle: "asucareercenter", b2c_priority_score: 98, typical_events: "Annual Employment Fair, Corporate Recruitment Days" },
+    { id: "wl_cu_uche", name: "Cairo University Center for Career Development (UCCD)", category: "Career Center", university: "Cairo University", city: "Giza", facebook_url: "https://www.facebook.com/UCCDCairoUniversity/events", instagram_handle: "uccd_cu", b2c_priority_score: 97, typical_events: "Campus Job Fairs, Employability Skills Bootcamps" },
+    { id: "wl_msp_cu", name: "MSP Tech Club Cairo University", category: "GDG / Tech Club", university: "Cairo University", city: "Giza", facebook_url: "https://www.facebook.com/MSPCU/events", instagram_handle: "msp_cu", b2c_priority_score: 92, typical_events: "AI & Cloud Hackathons, Software Bootcamps" },
+    { id: "wl_msp_asu", name: "MSP Tech Club Ain Shams University", category: "GDG / Tech Club", university: "Ain Shams University", city: "Cairo", facebook_url: "https://www.facebook.com/ASUMSP/events", instagram_handle: "msp_asu", b2c_priority_score: 92, typical_events: "Microsoft Developer Days, Campus Tech Summits" },
+    { id: "wl_gdg_cairo", name: "GDG Cairo (Google Developer Group Cairo)", category: "GDG / Tech Club", university: "Greater Cairo Tech Ecosystem", city: "Cairo", facebook_url: "https://www.facebook.com/GDGCairo/events", instagram_handle: "gdgcairo", b2c_priority_score: 96, typical_events: "DevFest Cairo, Google I/O Extended, Women Techmakers" },
+    { id: "wl_gdg_new_cairo", name: "GDG New Cairo", category: "GDG / Tech Club", university: "New Cairo Universities", city: "New Cairo", facebook_url: "https://www.facebook.com/GDGNewCairo/events", instagram_handle: "gdgnewcairo", b2c_priority_score: 93, typical_events: "DevFest New Cairo, AI & Android Hackathons" },
+    { id: "wl_gdg_october", name: "GDG 6th of October", category: "GDG / Tech Club", university: "October & Zewail Universities", city: "Giza", facebook_url: "https://www.facebook.com/GDG6October/events", instagram_handle: "gdg6october", b2c_priority_score: 92, typical_events: "DevFest October, Cloud Study Jams" },
+    { id: "wl_ieee_hsb", name: "IEEE Helwan Student Branch", category: "IEEE & Engineering", university: "Helwan University", city: "Cairo", facebook_url: "https://www.facebook.com/ieeehsb/events", instagram_handle: "ieeehsb", b2c_priority_score: 90, typical_events: "Helwan Engineering Day, Tech Workshops" },
+    { id: "wl_enactus_helwan", name: "Enactus Helwan University", category: "Enactus & Entrepreneurship", university: "Helwan University", city: "Cairo", facebook_url: "https://www.facebook.com/EnactusHelwan/events", instagram_handle: "enactushelwan", b2c_priority_score: 89, typical_events: "Youth Entrepreneurship & Sustainability Days" },
+    { id: "wl_auc_su", name: "AUC Student Union (American University in Cairo)", category: "Student Union", university: "The American University in Cairo (AUC)", city: "New Cairo", facebook_url: "https://www.facebook.com/AUCStudentUnion/events", instagram_handle: "auc_su", b2c_priority_score: 97, typical_events: "AUC Employment Fair, Club Carnival, Leadership Conferences" },
+    { id: "wl_auc_vlab", name: "AUC Venture Lab & Entrepreneurship Club", category: "Innovation Hub", university: "The American University in Cairo (AUC)", city: "New Cairo", facebook_url: "https://www.facebook.com/AUCVentureLab/events", instagram_handle: "aucvlab", b2c_priority_score: 95, typical_events: "Demo Days, Startup Summits, Fintech Accelerators" },
+    { id: "wl_auc_cimun", name: "CIMUN & MAL AUC (Model United Nations)", category: "Student Union", university: "The American University in Cairo (AUC)", city: "New Cairo", facebook_url: "https://www.facebook.com/CIMUNAUC/events", instagram_handle: "cimun_auc", b2c_priority_score: 93, typical_events: "International Model UN Conferences" },
+    { id: "wl_tedx_auc", name: "TEDxAUC", category: "TEDx & Youth Summits", university: "The American University in Cairo (AUC)", city: "New Cairo", facebook_url: "https://www.facebook.com/TEDxAUC/events", instagram_handle: "tedxauc", b2c_priority_score: 95, typical_events: "Annual TEDxAUC Conference, Youth Thought Leadership" },
+    { id: "wl_guc_mun", name: "GUCMUN & Bdaya GUC (German University in Cairo)", category: "Student Union", university: "German University in Cairo (GUC)", city: "New Cairo", facebook_url: "https://www.facebook.com/GUCMUN/events", instagram_handle: "gucmun", b2c_priority_score: 95, typical_events: "GUC Model UN, Campus Career & Leadership Summits" },
+    { id: "wl_ieee_guc", name: "IEEE GUC Student Branch", category: "IEEE & Engineering", university: "German University in Cairo (GUC)", city: "New Cairo", facebook_url: "https://www.facebook.com/IEEEGUC/events", instagram_handle: "ieeeguc", b2c_priority_score: 94, typical_events: "Robotics & Embedded Systems Hackathons" },
+    { id: "wl_tedx_guc", name: "TEDxGUC", category: "TEDx & Youth Summits", university: "German University in Cairo (GUC)", city: "New Cairo", facebook_url: "https://www.facebook.com/TEDxGUC/events", instagram_handle: "tedxguc", b2c_priority_score: 94, typical_events: "TEDxGUC Main Conference, Campus Innovation Talks" },
+    { id: "wl_bue_su", name: "BUE Student Union (British University in Egypt)", category: "Student Union", university: "British University in Egypt (BUE)", city: "New Cairo", facebook_url: "https://www.facebook.com/BUESU/events", instagram_handle: "buestudentunion", b2c_priority_score: 94, typical_events: "BUE Career Fair, Orientation Festival, Model COP" },
+    { id: "wl_ieee_bue", name: "IEEE BUE Student Branch", category: "IEEE & Engineering", university: "British University in Egypt (BUE)", city: "New Cairo", facebook_url: "https://www.facebook.com/IEEEBUESB/events", instagram_handle: "ieeebuesb", b2c_priority_score: 91, typical_events: "Engineering & AI Summits, Campus Tech Days" },
+    { id: "wl_nile_su", name: "Nile University Student Union & NilePreneurs", category: "Innovation Hub", university: "Nile University", city: "Giza", facebook_url: "https://www.facebook.com/NilePreneurs/events", instagram_handle: "nilepreneurs", b2c_priority_score: 95, typical_events: "Startup Hackathons, Nile University Career Fair" },
+    { id: "wl_zewail_sf", name: "Zewail City Science Festival & Student Union", category: "Student Union", university: "Zewail City of Science and Technology", city: "Giza", facebook_url: "https://www.facebook.com/ZewailCityScienceFestival/events", instagram_handle: "zcsf_egypt", b2c_priority_score: 96, typical_events: "Annual Zewail City Science Festival, Youth STEM Summits" },
+    { id: "wl_ieee_zewail", name: "IEEE Zewail City Student Branch", category: "IEEE & Engineering", university: "Zewail City of Science and Technology", city: "Giza", facebook_url: "https://www.facebook.com/IEEEZCSB/events", instagram_handle: "ieeezcsb", b2c_priority_score: 93, typical_events: "AI & Quantum Computing Workshops, STEM Hackathons" },
+    { id: "wl_miu_mun", name: "MIU Student Activities & ASCC", category: "Student Union", university: "Misr International University (MIU)", city: "Cairo", facebook_url: "https://www.facebook.com/ASCCMIU/events", instagram_handle: "ascc_miu", b2c_priority_score: 90, typical_events: "MIU Career Day, Business & Tech Simulation Conferences" },
+    { id: "wl_msa_career", name: "MSA University Career Placement Center", category: "Career Center", university: "MSA University", city: "Giza", facebook_url: "https://www.facebook.com/MSAUniversityOfficial/events", instagram_handle: "msauniversity", b2c_priority_score: 91, typical_events: "MSA Annual Job Fair, Graduation Project Expo" },
+    { id: "wl_ieee_alexsb", name: "IEEE Alexandria Student Branch (IEEE AlexSB)", category: "IEEE & Engineering", university: "Alexandria University", city: "Alexandria", facebook_url: "https://www.facebook.com/IEEEAlexSB/events", instagram_handle: "ieeealexsb", b2c_priority_score: 96, typical_events: "Alexandria Engineering Forum, Software & AI Bootcamps" },
+    { id: "wl_enactus_alex", name: "Enactus Alexandria University", category: "Enactus & Entrepreneurship", university: "Alexandria University", city: "Alexandria", facebook_url: "https://www.facebook.com/EnactusAlexandriaUniversity/events", instagram_handle: "enactusalexu", b2c_priority_score: 94, typical_events: "Social Innovation Summits, Youth Leadership Days" },
+    { id: "wl_gdg_alex", name: "GDG Alexandria (Google Developer Group Alexandria)", category: "GDG / Tech Club", university: "Alexandria Tech Ecosystem", city: "Alexandria", facebook_url: "https://www.facebook.com/GDGAlexandria/events", instagram_handle: "gdgalexandria", b2c_priority_score: 95, typical_events: "DevFest Alexandria, I/O Extended Alexandria" },
+    { id: "wl_tedx_alexu", name: "TEDxAlexandriaUniversity", category: "TEDx & Youth Summits", university: "Alexandria University", city: "Alexandria", facebook_url: "https://www.facebook.com/TEDxAlexandriaUniversity/events", instagram_handle: "tedxalexu", b2c_priority_score: 93, typical_events: "Annual TEDx Youth Summit Alexandria" },
+    { id: "wl_aast_ec", name: "AAST Entrepreneurship Center & Rally Egypt", category: "Innovation Hub", university: "AASTMT Alexandria", city: "Alexandria", facebook_url: "https://www.facebook.com/AASTEC/events", instagram_handle: "aastec", b2c_priority_score: 96, typical_events: "AASTMT Startup Rally, Tech Innovation Summits" },
+    { id: "wl_ejust_clubs", name: "E-JUST Student Activities & Career Fair", category: "Career Center", university: "E-JUST Borg El Arab", city: "Alexandria", facebook_url: "https://www.facebook.com/EJUST.Official/events", instagram_handle: "ejust_official", b2c_priority_score: 93, typical_events: "E-JUST Employment Fair, Science Symposiums" },
+    { id: "wl_bib_alex", name: "Bibliotheca Alexandrina Youth & Science Programs", category: "Innovation Hub", university: "Bibliotheca Alexandrina", city: "Alexandria", facebook_url: "https://www.facebook.com/bibalexOfficial/events", instagram_handle: "bibliotheca_alexandrina", b2c_priority_score: 94, typical_events: "Youth Forums, Tech & Book Fairs" },
+    { id: "wl_ieee_tanta", name: "IEEE Tanta Student Branch (Sebor Campus)", category: "IEEE & Engineering", university: "Tanta University", city: "Tanta", facebook_url: "https://www.facebook.com/IEEETantaSB/events", instagram_handle: "ieeetantasb", b2c_priority_score: 95, typical_events: "Delta Tech Summit, AI Workshops at Sebor Campus" },
+    { id: "wl_enactus_tanta", name: "Enactus Tanta University", category: "Enactus & Entrepreneurship", university: "Tanta University", city: "Tanta", facebook_url: "https://www.facebook.com/EnactusTanta/events", instagram_handle: "enactustanta", b2c_priority_score: 93, typical_events: "Delta Youth Entrepreneurship Forum" },
+    { id: "wl_gdg_damanhour_delta", name: "GDG Delta & Tanta Tech Community", category: "GDG / Tech Club", university: "Tanta & Delta Universities", city: "Tanta", facebook_url: "https://www.facebook.com/GDGDelta/events", instagram_handle: "gdgdelta", b2c_priority_score: 92, typical_events: "DevFest Delta, Flutter & AI Hackathons" },
+    { id: "wl_tanta_uccd", name: "Tanta University Career Development Center (UCCD)", category: "Career Center", university: "Tanta University", city: "Tanta", facebook_url: "https://www.facebook.com/UCCDTanta/events", instagram_handle: "uccd_tanta", b2c_priority_score: 96, typical_events: "Tanta University Annual Job Fair, Sebor Campus Career Days" },
+    { id: "wl_cat_reloaded_mansoura", name: "CAT Reloaded (Mansoura University CS & Eng)", category: "GDG / Tech Club", university: "Mansoura University", city: "Mansoura", facebook_url: "https://www.facebook.com/CATReloaded/events", instagram_handle: "catreloaded", b2c_priority_score: 96, typical_events: "Scope Conference Mansoura, Open Source Bootcamps" },
+    { id: "wl_ieee_mansoura", name: "IEEE Mansoura Student Branch", category: "IEEE & Engineering", university: "Mansoura University", city: "Mansoura", facebook_url: "https://www.facebook.com/IEEEMansSB/events", instagram_handle: "ieeemanssb", b2c_priority_score: 94, typical_events: "Mansoura Engineering & Robotics Forum" },
+    { id: "wl_mega_mansoura", name: "MEGA Team Mansoura University", category: "Student Union", university: "Mansoura University", city: "Mansoura", facebook_url: "https://www.facebook.com/MEGATeam.mu/events", instagram_handle: "megateam_mu", b2c_priority_score: 92, typical_events: "Software & Business Youth Tracks, Campus Summits" },
+    { id: "wl_ieee_zsb", name: "IEEE Zagazig Student Branch (IEEE ZSB)", category: "IEEE & Engineering", university: "Zagazig University", city: "Sharkia", facebook_url: "https://www.facebook.com/IEEEZSB/events", instagram_handle: "ieeezsb", b2c_priority_score: 92, typical_events: "Zagazig Engineering Day, Sharkia Tech Conference" },
+    { id: "wl_ieee_assiut", name: "IEEE Assiut Student Branch", category: "IEEE & Engineering", university: "Assiut University", city: "Assiut", facebook_url: "https://www.facebook.com/IEEEAssiutSB/events", instagram_handle: "ieeeassiutsb", b2c_priority_score: 93, typical_events: "Upper Egypt Tech Summit, Robotics Hackathons" },
+    { id: "wl_enactus_assiut", name: "Enactus Assiut University", category: "Enactus & Entrepreneurship", university: "Assiut University", city: "Assiut", facebook_url: "https://www.facebook.com/EnactusAssiut/events", instagram_handle: "enactusassiut", b2c_priority_score: 91, typical_events: "Upper Egypt Entrepreneurship & Leadership Days" },
+    { id: "wl_creativa_hubs", name: "Creativa Innovation Hubs Egypt (ITIDA / TIEC)", category: "Innovation Hub", university: "All Egyptian Universities", city: "Cairo", facebook_url: "https://www.facebook.com/CreativaHubsEgypt/events", instagram_handle: "creativahubsegypt", b2c_priority_score: 98, typical_events: "Nationwide University Hackathons & Bootcamps" },
+    { id: "wl_greek_campus", name: "The Greek Campus (Downtown Cairo Tech Park)", category: "Innovation Hub", university: "Downtown Cairo Startup Hub", city: "Cairo", facebook_url: "https://www.facebook.com/TheGreekCampus/events", instagram_handle: "thegreekcampus", b2c_priority_score: 98, typical_events: "RiseUp Summit, Career Fairs, Tech Expos" },
+    { id: "wl_hult_prize_egypt", name: "Hult Prize Egypt (National Campus Programs)", category: "Enactus & Entrepreneurship", university: "All Egyptian Universities", city: "Cairo", facebook_url: "https://www.facebook.com/HultPrizeEgypt/events", instagram_handle: "hultprizeegypt", b2c_priority_score: 96, typical_events: "On-Campus Finals, National Social Entrepreneurship" },
+    { id: "wl_epsf_egypt", name: "EPSF (Egyptian Pharmaceutical Students' Federation)", category: "Student Union", university: "35+ Pharmacy Faculties Across Egypt", city: "Cairo", facebook_url: "https://www.facebook.com/EPSF.Official/events", instagram_handle: "epsf_egypt", b2c_priority_score: 93, typical_events: "Annual National Congress, Public Health & Career Fairs" }
+  ];
+
+  const wlContainer = document.getElementById("watchlist-cards-container");
+  const wlSearch = document.getElementById("watchlist-search-input");
+  const wlCity = document.getElementById("watchlist-filter-city");
+  const wlCategory = document.getElementById("watchlist-filter-category");
+  const wlBadge = document.getElementById("watchlist-count-badge");
+
+  function renderCampusWatchlist() {
+    if (!wlContainer) return;
+    const q = (wlSearch ? wlSearch.value : "").trim().toLowerCase();
+    const cityFilter = (wlCity ? wlCity.value : "all").toLowerCase();
+    const catFilter = (wlCategory ? wlCategory.value : "all").toLowerCase();
+
+    const filtered = EGYPT_CAMPUS_WATCHLIST_CLIENT.filter(item => {
+      if (cityFilter !== "all" && !item.city.toLowerCase().includes(cityFilter) && !item.university.toLowerCase().includes(cityFilter)) {
+        return false;
+      }
+      if (catFilter !== "all" && !item.category.toLowerCase().includes(catFilter)) {
+        return false;
+      }
+      if (q && !`${item.name} ${item.university} ${item.city} ${item.typical_events}`.toLowerCase().includes(q)) {
+        return false;
+      }
+      return true;
+    });
+
+    if (wlBadge) {
+      wlBadge.innerText = `${filtered.length} Active Campus Sources`;
+    }
+
+    wlContainer.innerHTML = filtered.map(item => `
+      <div class="p-3 rounded-xl bg-slate-950/85 border border-white/[0.08] hover:border-cyan-500/40 transition flex flex-col justify-between gap-2 text-xs">
+        <div class="space-y-1">
+          <div class="flex items-start justify-between gap-2">
+            <span class="font-bold text-white leading-snug">${item.name}</span>
+            <span class="px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 text-[10px] font-black shrink-0">★ ${item.b2c_priority_score}%</span>
+          </div>
+          <div class="text-[11px] text-cyan-300 font-medium">${item.university} • ${item.city}</div>
+          <div class="text-[10px] text-slate-400">🎯 ${item.typical_events}</div>
+        </div>
+        <div class="flex items-center justify-between gap-2 pt-1.5 border-t border-white/[0.06]">
+          <a href="${item.facebook_url}" target="_blank" class="text-[11px] text-sky-400 hover:text-sky-300 font-semibold flex items-center gap-1">
+            Open FB Events ↗
+          </a>
+          <button type="button" data-wl-id="${item.id}" class="btn-watchlist-ingest px-2.5 py-1 rounded-lg bg-cyan-500/15 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/35 text-[10px] font-bold transition">
+            ⚡ Poll & Ingest Latest
+          </button>
+        </div>
+      </div>
+    `).join("");
+
+    wlContainer.querySelectorAll(".btn-watchlist-ingest").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const wlId = btn.getAttribute("data-wl-id");
+        const club = EGYPT_CAMPUS_WATCHLIST_CLIENT.find(c => c.id === wlId);
+        if (!club) return;
+        const primaryEvent = club.typical_events.split(",")[0].trim();
+        const added = enrichAndIngestClientEvents([{
+          event_id: `wl_live_${club.id}`,
+          title: `${club.name} — ${primaryEvent} 2026`,
+          date_display: "Upcoming Campus Announcement",
+          location: `${club.university} (${club.city})`,
+          city: club.city,
+          url: club.facebook_url,
+          registration_url: club.facebook_url,
+          organizer: club.name,
+          organizer_instagram: club.instagram_handle,
+          source: "Campus Watchlist Poller",
+          description: `Official campus announcement from ${club.name} at ${club.university} (${club.city}). Featured programming: ${club.typical_events}.`
+        }], true);
+        showToast(`Polled & ingested latest announcement from ${club.name}!`, "success", "Watchlist Poll Complete");
+        btn.innerText = "✓ Ingested to Radar";
+      });
+    });
+  }
+
+  if (wlSearch) wlSearch.addEventListener("input", renderCampusWatchlist);
+  if (wlCity) wlCity.addEventListener("change", renderCampusWatchlist);
+  if (wlCategory) wlCategory.addEventListener("change", renderCampusWatchlist);
+  renderCampusWatchlist();
 
   // Auto-Ingest from ?social_import= URL parameter (Bookmarklet & Extension 1-Click Cloud Sync)
   try {

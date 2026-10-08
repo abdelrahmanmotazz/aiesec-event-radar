@@ -692,9 +692,85 @@ class UrlResolveRequest(BaseModel):
     url: str
 
 
+class LinkInspectRequest(BaseModel):
+    url: str
+    html_override: Optional[str] = None
+
+
+class PosterAnalyzeRequest(BaseModel):
+    image_source: Optional[str] = None
+    caption: Optional[str] = ""
+    gemini_api_key: Optional[str] = None
+
+
+@app.get("/api/social/watchlist")
+def get_social_campus_watchlist(city: Optional[str] = None, category: Optional[str] = None):
+    """Return the curated 52-page Egyptian Campus Watchlist for student activities & career hubs."""
+    from ..scrapers.campus_watchlist import get_campus_watchlist
+    items = get_campus_watchlist(city=city, category=category)
+    return {
+        "success": True,
+        "total": len(items),
+        "items": items,
+    }
+
+
+@app.post("/api/social/inspect-link")
+def inspect_social_registration_link(req: LinkInspectRequest):
+    """Unshorten bit.ly / linktr.ee / forms.gle links and verify if a registration form is OPEN or CLOSED."""
+    from ..analyzers.caption_analyzer import CaptionAnalyzer
+    analyzer = CaptionAnalyzer()
+    result = analyzer.inspect_registration_link(req.url, html_override=req.html_override)
+    return {"success": True, **result}
+
+
+@app.post("/api/social/analyze-poster")
+def analyze_social_poster(req: PosterAnalyzeRequest):
+    """Extract event title, Arabic/English date, venue, QR link, and contacts from an event flyer/poster."""
+    from ..analyzers.caption_analyzer import CaptionAnalyzer
+    from ..scorers import B2CScorer
+
+    analyzer = CaptionAnalyzer(gemini_api_key=req.gemini_api_key)
+    scorer = B2CScorer()
+    result = analyzer.analyze_poster_image(
+        image_source=req.image_source,
+        caption=req.caption or "",
+        gemini_api_key=req.gemini_api_key,
+    )
+    title = result.get("title") or "Campus Poster Event Announcement"
+    desc = result.get("ocr_text") or result.get("summary") or req.caption or ""
+    loc = result.get("venue") or "Cairo, Egypt"
+    city = result.get("city") or "Cairo"
+    score, priority, cat, tags, action, _ = scorer.evaluate(title, desc, loc)
+    start_iso = result["start_date"].strftime("%Y-%m-%d") if isinstance(result.get("start_date"), datetime) else None
+
+    return {
+        "success": True,
+        "is_event": bool(result.get("is_event", True)),
+        "title": title,
+        "date_display": result.get("date_display") or "Upcoming / Live",
+        "start_date": start_iso,
+        "location": loc,
+        "city": city,
+        "ticket_type": result.get("ticket_type") or "Free / RSVP",
+        "organizer": result.get("organizer") or "Campus Activity Host",
+        "organizer_email": result.get("organizer_email"),
+        "organizer_phone": result.get("organizer_phone"),
+        "organizer_instagram": result.get("organizer_instagram"),
+        "registration_url": result.get("registration_url"),
+        "ocr_text": result.get("ocr_text") or desc,
+        "vision_engine": result.get("vision_engine", "hybrid-poster-nlp"),
+        "b2c_score": score,
+        "b2c_priority": priority,
+        "category": cat,
+        "aiesec_tags": tags,
+        "recommended_action": action,
+    }
+
+
 @app.post("/api/social/resolve-url")
 def resolve_social_url(req: UrlResolveRequest):
-    """Fetch OpenGraph and JSON-LD metadata from a public event URL and analyze its caption."""
+    """Fetch OpenGraph and JSON-LD metadata from a public event URL and analyze its caption & og:image flyer."""
     import httpx
     from bs4 import BeautifulSoup
     from ..analyzers.caption_analyzer import CaptionAnalyzer
@@ -705,6 +781,7 @@ def resolve_social_url(req: UrlResolveRequest):
     scorer = B2CScorer()
     title = ""
     desc = ""
+    og_image_url = None
     location = "Cairo, Egypt"
     city = "Cairo"
     date_display = "Upcoming / Live"
@@ -722,10 +799,13 @@ def resolve_social_url(req: UrlResolveRequest):
                 soup = BeautifulSoup(resp.text, "html.parser")
                 og_title = soup.find("meta", property="og:title") or soup.find("title")
                 og_desc = soup.find("meta", property="og:description") or soup.find("meta", attrs={"name": "description"})
+                og_img = soup.find("meta", property="og:image")
                 if og_title:
                     title = (og_title.get("content") if og_title.has_attr("content") else og_title.get_text() or "").strip()
                 if og_desc:
                     desc = (og_desc.get("content") or "").strip()
+                if og_img and og_img.has_attr("content"):
+                    og_image_url = (og_img.get("content") or "").strip()
                 for ld in soup.find_all("script", type="application/ld+json"):
                     try:
                         data = json.loads(ld.string or "{}")
@@ -746,7 +826,7 @@ def resolve_social_url(req: UrlResolveRequest):
     except Exception as e:
         logger.debug(f"URL resolve fallback for {url}: {e}")
 
-    analyzed = analyzer.analyze(f"{title}\n{desc}")
+    analyzed = analyzer.analyze(f"{title}\n{desc}", flyer_url=og_image_url)
     if not title or title.lower() in ("facebook", "instagram", "log in or sign up to view"):
         title = analyzed.get("title") if analyzed.get("is_event") else "Verified Youth & Campus Event — Cairo"
     if analyzed.get("is_event"):
@@ -759,18 +839,20 @@ def resolve_social_url(req: UrlResolveRequest):
         if analyzed.get("start_date"):
             start_date_iso = analyzed["start_date"].strftime("%Y-%m-%d")
 
+    reg_url = analyzed.get("registration_url") or url
     score, priority, cat, _, action, _ = scorer.evaluate(title, desc, location)
     return {
         "success": True,
         "url": url,
         "title": title,
         "description": desc,
+        "og_image": og_image_url,
         "location": location,
         "city": city,
         "date_display": date_display,
         "start_date": start_date_iso,
         "organizer": organizer,
-        "registration_url": analyzed.get("registration_url") or url,
+        "registration_url": reg_url,
         "b2c_score": score,
         "b2c_priority": priority,
         "category": cat,

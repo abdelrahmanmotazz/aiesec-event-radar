@@ -83,3 +83,71 @@ def test_bilingual_caption_date_and_contact_extraction():
     assert analysis["organizer_instagram"] == "tanta_youth_summit"
 
 
+def test_poster_vision_ocr_extraction():
+    from urllib.parse import quote
+    analyzer = CaptionAnalyzer()
+    svg_poster = (
+        '<svg xmlns="http://www.w3.org/2000/svg">'
+        "<text>IEEE Cairo University &amp; Enactus Egypt — AI &amp; Career Expo 2026</text>"
+        "<text>يوم السبت ٢٨ نوفمبر ٢٠٢٦ - هندسة القاهرة (CUFE)</text>"
+        "<text>Scan QR to Register: https://forms.gle/IEEECairoAIExpo2026</text>"
+        "<text>Contact: 01098765432 | ieee@cu.edu.eg | @ieeecusb</text>"
+        "</svg>"
+    )
+    data_uri = "data:image/svg+xml;utf8," + quote(svg_poster)
+    result = analyzer.analyze_poster_image(image_source=data_uri, caption="Wait for us tomorrow! 🔥")
+    assert result["is_event"] is True
+    assert "IEEE Cairo University" in result["title"]
+    assert "Cairo University" in result["venue"]
+    assert result["registration_url"] == "https://forms.gle/IEEECairoAIExpo2026"
+    assert result["organizer_phone"] == "01098765432"
+    assert result["organizer_instagram"] == "ieeecusb"
+
+
+def test_registration_link_inspector_open_and_closed():
+    analyzer = CaptionAnalyzer()
+    open_html = """
+    <html>
+      <head><title>IEEE CUFE AI Summit 2026 Registration</title></head>
+      <body>
+        <div role="heading">Full Name</div>
+        <div role="heading">University & Faculty</div>
+        <div role="heading">WhatsApp Phone Number</div>
+      </body>
+    </html>
+    """
+    open_res = analyzer.inspect_registration_link("https://forms.gle/OpenForm123", html_override=open_html)
+    assert open_res["is_open"] is True
+    assert open_res["status"] == "OPEN"
+    assert open_res["was_shortened"] is True
+    assert "Full Name" in open_res["questions"]
+
+    closed_html = """
+    <html>
+      <head><title>AUC Career Fair Registration</title></head>
+      <body>
+        <div>This form is no longer accepting responses. لم يعد هذا النموذج يقبل الردود</div>
+      </body>
+    </html>
+    """
+    closed_res = analyzer.inspect_registration_link("https://forms.gle/ClosedForm999", html_override=closed_html)
+    assert closed_res["is_open"] is False
+    assert closed_res["status"] == "CLOSED"
+
+
+def test_campus_watchlist_52_pages():
+    from aiesec_scraper.scrapers.campus_watchlist import (
+        EGYPT_CAMPUS_WATCHLIST,
+        get_campus_watchlist,
+        get_priority_watchlist_queries,
+    )
+    assert len(EGYPT_CAMPUS_WATCHLIST) >= 45
+    tanta_pages = get_campus_watchlist(city="tanta")
+    assert len(tanta_pages) >= 4
+    ieee_pages = get_campus_watchlist(category="ieee")
+    assert len(ieee_pages) >= 8
+    priority_queries = get_priority_watchlist_queries(limit=6)
+    assert len(priority_queries) == 6
+    assert all(url.startswith("https://www.facebook.com/") for _, url in priority_queries)
+
+

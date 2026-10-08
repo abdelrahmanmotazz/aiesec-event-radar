@@ -1,5 +1,6 @@
 """Caption and Content Intelligence Analyzer for Social Media Event Announcements."""
 
+import base64
 import json
 import logging
 import os
@@ -321,36 +322,69 @@ class CaptionAnalyzer:
             "summary": caption[:280]
         }
 
-    def _analyze_with_gemini(self, caption: str, flyer_url: Optional[str] = None) -> Optional[Dict[str, Any]]:
-        """Call Gemini API via google-genai to extract structured event data."""
+    def _analyze_with_gemini(
+        self,
+        caption: str,
+        flyer_url: Optional[str] = None,
+        image_bytes: Optional[bytes] = None,
+        mime_type: str = "image/png",
+        api_key_override: Optional[str] = None,
+    ) -> Optional[Dict[str, Any]]:
+        """Call Gemini 2.5 Flash (Text + Multimodal Vision) via google-genai to extract structured event data."""
+        active_key = api_key_override or self.api_key
+        if not active_key:
+            return None
         try:
             from google import genai
-            client = genai.Client(api_key=self.api_key)
+            from google.genai import types
+
+            client = genai.Client(api_key=active_key)
+
+            if not image_bytes and flyer_url and flyer_url.startswith(("http://", "https://")):
+                try:
+                    import httpx
+                    with httpx.Client(timeout=6.0, follow_redirects=True) as http_client:
+                        img_resp = http_client.get(flyer_url)
+                        if img_resp.status_code == 200 and len(img_resp.content) > 100:
+                            image_bytes = img_resp.content
+                            ct = img_resp.headers.get("content-type", "")
+                            if "image/" in ct:
+                                mime_type = ct.split(";")[0].strip()
+                except Exception as img_err:
+                    logger.debug(f"Flyer fetch notice for {flyer_url}: {img_err}")
 
             prompt = (
-                "You are an event extraction intelligence tool for Youth Event Radar in Egypt.\n"
-                "Analyze this social media announcement and extract structured details in JSON.\n"
+                "You are an event extraction & poster OCR intelligence engine for Youth Event Radar in Egypt.\n"
+                "Analyze this social media announcement and/or event flyer image (Arabic & English) and extract structured details in JSON.\n"
+                "Read all visible text on the flyer image including event title, Arabic/English dates, university campus/hall, QR/registration URL, and contacts.\n"
                 "JSON format:\n"
                 "{\n"
                 '  "is_event": true,\n'
                 '  "title": "Clear concise event title",\n'
                 '  "start_date_iso": "YYYY-MM-DDTHH:MM:SS or null",\n'
-                '  "venue": "Venue name or TBA",\n'
-                '  "city": "Egyptian city (e.g. Cairo, Alexandria, Tanta, Mansoura, Giza, Assiut)",\n'
+                '  "date_display": "Human readable date e.g. Nov 21, 2026",\n'
+                '  "venue": "Venue/University hall name or TBA",\n'
+                '  "city": "Egyptian city (e.g. Cairo, Alexandria, Tanta, Mansoura, Giza, Assiut, New Cairo)",\n'
                 '  "ticket_type": "Free or Paid",\n'
-                '  "organizer": "Hosting entity or club",\n'
+                '  "organizer": "Hosting student club, university, or entity",\n'
+                '  "registration_url": "Direct registration form URL if visible or null",\n'
+                '  "ocr_text": "All key text transcribed from the poster image",\n'
                 '  "youth_relevance_score": 8.5,\n'
                 '  "summary": "1-2 sentence summary"\n'
                 "}\n"
-                f"Post Text:\n{caption}"
+                f"Post Caption:\n{caption or '(Poster image only)'}"
             )
+
+            contents_payload: list[Any] = [prompt]
+            if image_bytes:
+                contents_payload.append(types.Part.from_bytes(data=image_bytes, mime_type=mime_type))
 
             response = client.models.generate_content(
                 model="gemini-2.5-flash",
-                contents=prompt,
+                contents=contents_payload,
             )
 
-            text_resp = response.text
+            text_resp = response.text or ""
             json_match = re.search(r"\{.*\}", text_resp, re.DOTALL)
             if json_match:
                 data = json.loads(json_match.group(0))
@@ -358,12 +392,251 @@ class CaptionAnalyzer:
                     start_dt = None
                     if data.get("start_date_iso"):
                         try:
-                            start_dt = datetime.fromisoformat(data["start_date_iso"].replace("Z", ""))
+                            start_dt = datetime.fromisoformat(str(data["start_date_iso"]).replace("Z", ""))
                         except Exception:
                             pass
                     data["start_date"] = start_dt
                     return data
         except Exception as e:
-            logger.debug(f"Gemini caption analysis notice: {e}")
+            logger.debug(f"Gemini caption/vision analysis notice: {e}")
 
         return None
+
+    @staticmethod
+    def _extract_embedded_poster_text(image_bytes: Optional[bytes], image_source: Optional[str] = None) -> str:
+        """Extract embedded text chunks from SVG posters, PNG tEXt/iTXt chunks, or ASCII/UTF-8 flyer comments."""
+        extracted_chunks: list[str] = []
+        if image_source and image_source.startswith("data:image/svg+xml"):
+            try:
+                from urllib.parse import unquote
+                if ";base64," in image_source:
+                    b64_part = image_source.split(";base64,", 1)[1]
+                    raw_svg = base64.b64decode(b64_part).decode("utf-8", errors="ignore")
+                else:
+                    raw_svg = unquote(image_source.split(",", 1)[1])
+                text_nodes = re.findall(r">([^<>]{2,200})<", raw_svg)
+                if text_nodes:
+                    extracted_chunks.append("\n".join(t.strip() for t in text_nodes if t.strip()))
+            except Exception:
+                pass
+
+        if not image_bytes:
+            return "\n".join(extracted_chunks).strip()
+
+        # Check if raw bytes are SVG/XML
+        if b"<svg" in image_bytes[:500].lower():
+            try:
+                raw_svg = image_bytes.decode("utf-8", errors="ignore")
+                text_nodes = re.findall(r">([^<>]{2,200})<", raw_svg)
+                if text_nodes:
+                    extracted_chunks.append("\n".join(t.strip() for t in text_nodes if t.strip()))
+            except Exception:
+                pass
+
+        # Check PNG tEXt / iTXt metadata chunks
+        if image_bytes[:8] == b"\x89PNG\r\n\x1a\n":
+            pos = 8
+            while pos + 8 <= len(image_bytes):
+                try:
+                    length = int.from_bytes(image_bytes[pos:pos + 4], "big")
+                    chunk_type = image_bytes[pos + 4:pos + 8]
+                    chunk_data = image_bytes[pos + 8:pos + 8 + length]
+                    if chunk_type in (b"tEXt", b"iTXt"):
+                        decoded = chunk_data.replace(b"\x00", b" ").decode("utf-8", errors="ignore").strip()
+                        if len(decoded) >= 5:
+                            extracted_chunks.append(decoded)
+                    pos += 12 + length
+                except Exception:
+                    break
+
+        return "\n".join(extracted_chunks).strip()
+
+    def analyze_poster_image(
+        self,
+        image_source: Optional[str] = None,
+        image_bytes: Optional[bytes] = None,
+        mime_type: str = "image/png",
+        caption: str = "",
+        gemini_api_key: Optional[str] = None,
+    ) -> Dict[str, Any]:
+        """Analyze an event flyer/poster image using Gemini 2.5 Flash Vision + embedded text/NLP fallback."""
+        import base64
+
+        if not image_bytes and image_source:
+            src = image_source.strip()
+            if src.startswith("data:"):
+                try:
+                    header, encoded = src.split(",", 1)
+                    if "image/" in header:
+                        mime_type = header.split("data:")[1].split(";")[0]
+                    if ";base64" in header:
+                        image_bytes = base64.b64decode(encoded)
+                    else:
+                        from urllib.parse import unquote
+                        image_bytes = unquote(encoded).encode("utf-8")
+                except Exception as dec_err:
+                    logger.debug(f"Data URI decode notice: {dec_err}")
+            elif src.startswith(("http://", "https://")):
+                try:
+                    import httpx
+                    with httpx.Client(timeout=7.0, follow_redirects=True) as client:
+                        resp = client.get(src)
+                        if resp.status_code == 200:
+                            image_bytes = resp.content
+                            ct = resp.headers.get("content-type", "")
+                            if "image/" in ct:
+                                mime_type = ct.split(";")[0].strip()
+                except Exception as fetch_err:
+                    logger.debug(f"Image URL fetch notice: {fetch_err}")
+
+        embedded_text = self._extract_embedded_poster_text(image_bytes, image_source)
+        combined_caption = "\n".join(part for part in [embedded_text, caption] if part).strip()
+
+        active_key = gemini_api_key or self.api_key
+        if active_key and (image_bytes or image_source):
+            ai_res = self._analyze_with_gemini(
+                combined_caption,
+                flyer_url=image_source if (image_source and image_source.startswith("http")) else None,
+                image_bytes=image_bytes,
+                mime_type=mime_type,
+                api_key_override=active_key,
+            )
+            if ai_res and ai_res.get("is_event"):
+                ocr_text = ai_res.get("ocr_text") or combined_caption
+                full_text = f"{ocr_text}\n{combined_caption}".strip()
+                if not ai_res.get("registration_url"):
+                    ai_res["registration_url"] = self.extract_registration_url(full_text)
+                contacts = self.extract_contacts(full_text)
+                ai_res.setdefault("organizer_email", contacts["email"])
+                ai_res.setdefault("organizer_phone", contacts["phone"])
+                ai_res.setdefault("organizer_instagram", contacts["instagram"])
+                ai_res["ocr_text"] = ocr_text
+                ai_res["vision_engine"] = "gemini-2.5-flash-vision"
+                return ai_res
+
+        # Fallback: Bilingual NLP analysis over extracted poster text + caption
+        if combined_caption:
+            rule_res = self._analyze_with_rules(combined_caption)
+            if rule_res.get("is_event"):
+                rule_res["ocr_text"] = combined_caption
+                rule_res["vision_engine"] = "hybrid-poster-nlp"
+                return rule_res
+
+        return {"is_event": False, "ocr_text": combined_caption, "vision_engine": "none"}
+
+    def inspect_registration_link(
+        self,
+        url: str,
+        html_override: Optional[str] = None,
+        timeout: float = 7.0,
+    ) -> Dict[str, Any]:
+        """Unshorten bit.ly / linktr.ee / forms.gle links and inspect whether a registration form is OPEN or CLOSED."""
+        clean_url = (url or "").strip()
+        if not clean_url or not clean_url.startswith(("http://", "https://")):
+            return {"valid": False, "original_url": clean_url, "status": "INVALID"}
+
+        resolved_url = clean_url
+        was_shortened = any(d in clean_url.lower() for d in ("bit.ly/", "linktr.ee/", "forms.gle/", "t.co/", "tinyurl.com/"))
+        html_text = html_override or ""
+        http_status = 200 if html_override is not None else 0
+
+        if html_override is None:
+            try:
+                import httpx
+                headers = {
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+                    "Accept-Language": "en-US,en;q=0.9,ar;q=0.8",
+                }
+                with httpx.Client(timeout=timeout, follow_redirects=True, headers=headers) as client:
+                    resp = client.get(clean_url)
+                    http_status = resp.status_code
+                    resolved_url = str(resp.url)
+                    html_text = resp.text or ""
+
+                    # If Linktree, look for embedded Google Form / Luma / Eventbrite registration link
+                    if "linktr.ee" in resolved_url.lower() and html_text:
+                        deep_m = FORM_URL_REGEX.search(html_text)
+                        if deep_m and "linktr.ee" not in deep_m.group(0).lower():
+                            deep_url = deep_m.group(0)
+                            resolved_url = deep_url
+                            was_shortened = True
+                            resp2 = client.get(deep_url)
+                            http_status = resp2.status_code
+                            resolved_url = str(resp2.url)
+                            html_text = resp2.text or ""
+            except Exception as exc:
+                logger.debug(f"Registration link inspection fallback for {clean_url}: {exc}")
+                return {
+                    "valid": True,
+                    "original_url": clean_url,
+                    "resolved_url": resolved_url,
+                    "was_shortened": was_shortened,
+                    "is_open": True,
+                    "status": "UNVERIFIED_OFFLINE",
+                    "status_label": "Link Captured (Live Check Offline)",
+                    "form_title": None,
+                    "questions": [],
+                }
+
+        if resolved_url != clean_url:
+            was_shortened = True
+
+        # Parse HTML for form status, title, and questions
+        html_lower = html_text.lower()
+        closed_phrases = [
+            "this form is no longer accepting responses",
+            "no longer accepting responses",
+            "لم يعد هذا النموذج يقبل الردود",
+            "تم إغلاق باب التسجيل",
+            "انتهى التسجيل",
+            "registration is closed",
+            "registration closed",
+            "event has ended",
+            "sales have ended",
+            "sold out",
+        ]
+        is_closed = any(phrase in html_lower for phrase in closed_phrases)
+        if http_status in (404, 410):
+            is_closed = True
+
+        form_title = None
+        form_desc = None
+        questions: list[str] = []
+
+        if html_text:
+            try:
+                from bs4 import BeautifulSoup
+                soup = BeautifulSoup(html_text, "html.parser")
+                og_title = soup.find("meta", property="og:title") or soup.find("title")
+                if og_title:
+                    form_title = (og_title.get("content") if og_title.has_attr("content") else og_title.get_text() or "").strip()
+                og_desc = soup.find("meta", property="og:description") or soup.find("meta", attrs={"name": "description"})
+                if og_desc and og_desc.has_attr("content"):
+                    form_desc = (og_desc.get("content") or "").strip()
+
+                # Extract Google Form / Registration field labels
+                for heading in soup.select('[role="heading"], .M7eMe, label'):
+                    q_txt = heading.get_text(" ", strip=True).rstrip(" *")
+                    if 3 <= len(q_txt) <= 85 and q_txt != form_title and q_txt not in questions:
+                        questions.append(q_txt)
+                        if len(questions) >= 8:
+                            break
+            except Exception:
+                pass
+
+        deadline_dt, deadline_display = self.extract_datetime_from_caption(f"{form_title or ''}\n{form_desc or ''}")
+
+        return {
+            "valid": True,
+            "original_url": clean_url,
+            "resolved_url": resolved_url,
+            "was_shortened": was_shortened,
+            "is_open": not is_closed,
+            "status": "CLOSED" if is_closed else "OPEN",
+            "status_label": "CLOSED — No Longer Accepting Responses" if is_closed else "OPEN — Accepting Responses",
+            "form_title": form_title,
+            "form_description": form_desc,
+            "questions": questions[:6],
+            "deadline_display": deadline_display,
+        }
+
