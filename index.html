@@ -1423,14 +1423,36 @@
           </div>
         </div>
 
-        <!-- Tab 2: 1-Click Browser Extension -->
+        <!-- Tab 2: 1-Click Browser Clipper & Extension -->
         <div id="tab-panel-ext-sync" class="hidden space-y-4">
+          <div class="p-4 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-xs space-y-2.5">
+            <div class="flex items-center justify-between gap-2 flex-wrap">
+              <div class="font-bold text-white text-sm flex items-center gap-2">
+                <i data-lucide="zap" class="w-4 h-4 text-cyan-400"></i> Option A: Zero-Install 1-Click Bookmarklet Clipper
+              </div>
+              <span class="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-bold">Instant • No Setup</span>
+            </div>
+            <p class="text-slate-300 text-xs leading-relaxed">
+              Drag the button below to your browser's Bookmarks Bar, or copy the 1-click Console Harvester script. When browsing <a href="https://www.facebook.com/events/" target="_blank" class="text-sky-400 underline">facebook.com/events</a> or Instagram, click it to harvest all visible events directly into your Radar!
+            </p>
+            <div class="flex items-center gap-2.5 pt-1 flex-wrap">
+              <a id="bookmarklet-clip-radar" href="javascript:(function(){const e=[];const s=new Set();document.querySelectorAll('a[href*=\x22/events/\x22]').forEach(a=>{const m=a.href.match(/\/events\/(\d+)/);if(!m||s.has(m[1]))return;s.add(m[1]);const c=a.closest('div[role=\x22article\x22]')||a.closest('div[role=\x22listitem\x22]')||a.parentElement;const t=(c?c.innerText:a.innerText).split('\n').map(l=>l.trim()).filter(l=>l.length>3);if(t.length)e.push({event_id:'fb_'+m[1],title:t[0],date_display:t[1]||'Upcoming',location:t[2]||'Cairo, Egypt',url:'https://www.facebook.com/events/'+m[1]+'/',source:'Facebook Events'});});if(!e.length){alert('Scroll down on facebook.com/events first to load event cards!');return;}const p=encodeURIComponent(JSON.stringify(e.slice(0,15)));window.open('https://aiesec-event-radar.vercel.app/?social_import='+p,'_blank');})();"
+                 class="px-3.5 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-slate-950 font-black text-xs shadow-[0_0_15px_rgba(0,229,255,0.35)] flex items-center gap-1.5 cursor-grab active:cursor-grabbing"
+                 title="Drag me to your Bookmarks Bar!">
+                <i data-lucide="bookmark-plus" class="w-4 h-4"></i> ⚡ Clip to Egypt Radar
+              </a>
+              <button id="btn-copy-console-harvester" class="px-3 py-2 rounded-xl bg-white/[0.08] hover:bg-white/[0.14] text-slate-200 border border-white/15 font-bold text-xs flex items-center gap-1.5 transition active:scale-95">
+                <i data-lucide="terminal" class="w-3.5 h-3.5 text-cyan-400"></i> Copy 1-Click Console Script
+              </button>
+            </div>
+          </div>
+
           <div class="p-4 rounded-xl bg-white/[0.03] border border-white/[0.08] text-xs space-y-2">
             <div class="font-bold text-white text-sm flex items-center gap-2">
-              <i data-lucide="puzzle" class="w-4 h-4 text-cyan-400"></i> Event Radar Chrome & Edge Extension
+              <i data-lucide="puzzle" class="w-4 h-4 text-cyan-400"></i> Option B: Dedicated Chrome & Edge Extension
             </div>
             <p class="text-slate-300 text-xs">
-              Install the dedicated extension to extract events directly while browsing Facebook or Instagram on your PC.
+              Install the dedicated unpacked extension to extract events directly while browsing Facebook or Instagram on your PC:
             </p>
             <ol class="list-decimal list-inside text-slate-400 text-xs space-y-1 pt-1">
               <li>Open Chrome or Edge and go to <code class="text-cyan-300 bg-white/5 px-1 py-0.5 rounded">chrome://extensions</code> or <code class="text-cyan-300 bg-white/5 px-1 py-0.5 rounded">edge://extensions</code></li>
@@ -1441,13 +1463,30 @@
           </div>
         </div>
 
-        <!-- Tab 3: Paste URL or JSON -->
-        <div id="tab-panel-paste-ingest" class="hidden space-y-4">
+        <!-- Tab 3: Smart Caption, URL or JSON Ingest -->
+        <div id="tab-panel-paste-ingest" class="hidden space-y-3.5">
           <div>
-            <label class="text-xs font-bold text-slate-300 block mb-1.5">Paste Facebook / Instagram Event URL or JSON Payload</label>
-            <textarea id="input-social-payload" rows="6" class="w-full bg-slate-950/80 border border-white/[0.1] rounded-xl p-3 text-xs text-white focus:outline-none focus:border-cyan-500 font-mono" placeholder="https://www.facebook.com/events/1045928170882914/&#10;or paste extracted JSON array..."></textarea>
+            <div class="flex items-center justify-between gap-2 mb-1.5 flex-wrap">
+              <label class="text-xs font-bold text-slate-200">Paste Event URL, Full Arabic/English Social Post Caption, or JSON</label>
+              <button id="btn-load-sample-caption" type="button" class="text-[11px] font-bold text-cyan-400 hover:text-cyan-300 bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 px-2.5 py-1 rounded-lg transition flex items-center gap-1">
+                <i data-lucide="wand-2" class="w-3 h-3"></i> Try Sample Arabic/English Post
+              </button>
+            </div>
+            <textarea id="input-social-payload" rows="5" class="w-full bg-slate-950/80 border border-white/[0.12] rounded-xl p-3 text-xs text-white focus:outline-none focus:border-cyan-500 font-mono leading-relaxed" placeholder="Paste any of the following:&#10;1) Full Facebook / Instagram event caption (Arabic, English, or Franco)&#10;2) Direct Event URLs (https://www.facebook.com/events/...)&#10;3) Extracted JSON array..."></textarea>
           </div>
-                    <div class="flex items-center gap-2">
+
+          <!-- Real-Time NLP Extraction Preview Box -->
+          <div id="social-live-preview-box" class="hidden p-3.5 rounded-xl bg-slate-950/90 border border-cyan-500/35 space-y-2 text-xs">
+            <div class="flex items-center justify-between border-b border-white/[0.08] pb-2">
+              <span class="text-[10px] font-black uppercase tracking-wider text-cyan-400 flex items-center gap-1.5">
+                <i data-lucide="cpu" class="w-3.5 h-3.5"></i> Live AI / NLP Caption Extraction Preview
+              </span>
+              <span id="social-preview-count" class="px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 text-[10px] font-bold">1 Event Detected</span>
+            </div>
+            <div id="social-live-preview-content" class="space-y-1.5"></div>
+          </div>
+
+          <div class="flex items-center gap-2">
             <button id="btn-submit-social-paste" class="flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white font-extrabold text-xs tracking-wide uppercase transition shadow-md active:scale-95 flex items-center justify-center gap-2">
               <i data-lucide="sparkles" class="w-4 h-4"></i> Ingest & Auto-Enrich to Radar
             </button>
@@ -1455,10 +1494,17 @@
               <i data-lucide="download" class="w-4 h-4"></i> Export JSON
             </button>
           </div>
-          <p class="text-[11px] text-slate-400 mt-2 flex items-center gap-1.5">
-            <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-400"></i>
-            <span>Works everywhere (Live GitHub site & local). Auto-scored & saved to your browser session.</span>
-          </p>
+
+          <!-- Custom Ingested Events Queue Manager -->
+          <div id="custom-ingested-queue-box" class="p-3 rounded-xl bg-white/[0.02] border border-white/[0.08] flex items-center justify-between gap-2 text-xs">
+            <div class="flex items-center gap-2 text-slate-300">
+              <i data-lucide="database" class="w-3.5 h-3.5 text-emerald-400"></i>
+              <span>Custom Session Events Saved: <strong id="custom-ingested-count" class="text-emerald-400">0</strong></span>
+            </div>
+            <button id="btn-clear-custom-events" type="button" class="text-[11px] font-semibold text-rose-400 hover:text-rose-300 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/25 px-2.5 py-1 rounded-lg transition">
+              Clear Custom Queue
+            </button>
+          </div>
         </div>
       </div>
     </div>

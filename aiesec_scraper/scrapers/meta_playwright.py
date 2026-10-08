@@ -39,7 +39,7 @@ def clean_event_title(title: str) -> str:
     return ""
 
 
-# High-yield search queries across Egyptian university and tech ecosystems
+# High-yield bilingual search queries across Egyptian university and tech ecosystems
 SEARCH_QUERIES = [
     ("Cairo & Egypt Events", "https://www.facebook.com/events/search/?q=cairo%20egypt%20events"),
     ("Tech & Hackathons Egypt", "https://www.facebook.com/events/search/?q=hackathon%20egypt"),
@@ -50,6 +50,8 @@ SEARCH_QUERIES = [
     ("Startup & Entrepreneurship Egypt", "https://www.facebook.com/events/search/?q=startup%20summit%20cairo"),
     ("Student Activity & Volunteering", "https://www.facebook.com/events/search/?q=student%20activity%20egypt"),
     ("Mansoura Student Events", "https://www.facebook.com/events/search/?q=mansoura%20events%20egypt"),
+    ("Arabic Career Fairs Egypt", "https://www.facebook.com/events/search/?q=%D9%85%D9%84%D8%AA%D9%82%D9%89%20%D8%AA%D9%88%D8%B8%D9%8A%D9%81%20%D9%85%D8%B5%D8%B1"),
+    ("Arabic Youth Conferences Egypt", "https://www.facebook.com/events/search/?q=%D9%85%D8%A4%D8%AA%D9%85%D8%B1%20%D8%B4%D8%A8%D8%A7%D8%A8%20%D8%A7%D9%84%D9%82%D8%A7%D9%87%D8%B1%D8%A9"),
 ]
 
 
@@ -73,7 +75,7 @@ class MetaPlaywrightScraper:
         default_profile = os.path.join(self.session_dir, "Default")
         return os.path.exists(default_profile) and len(os.listdir(default_profile)) > 5
 
-    def scrape(self, city: Optional[str] = None, max_events: int = 40) -> List[EventRecord]:
+    def scrape(self, city: Optional[str] = None, max_events: int = 50) -> List[EventRecord]:
         """Launch headless browser, navigate targeted event discovery queries, and extract live items."""
         events: List[EventRecord] = []
         try:
@@ -82,9 +84,8 @@ class MetaPlaywrightScraper:
             logger.warning("Playwright not installed in virtual environment.")
             return events
 
-        logger.info("Launching autonomous headless browser for Facebook Events harvesting...")
+        logger.info("Launching turbo headless browser for Facebook Events harvesting...")
 
-        # Determine browser channel and context mode
         use_edge = (sys.platform == "win32") and os.path.exists(r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe")
 
         try:
@@ -100,13 +101,13 @@ class MetaPlaywrightScraper:
                             channel="msedge",
                             headless=True,
                             viewport={"width": 1440, "height": 900},
-                            user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+                            user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
                             args=["--disable-blink-features=AutomationControlled", "--no-sandbox", "--disable-dev-shm-usage"]
                         )
                     except Exception as edge_err:
                         logger.debug(f"Persistent Edge launch fallback: {edge_err}")
 
-                # Mode 2: Storage State Context (works on both Linux and Windows)
+                # Mode 2: Storage State Context (works on both Linux/GitHub Actions and Windows)
                 if context is None:
                     launch_kwargs = {
                         "headless": True,
@@ -119,11 +120,23 @@ class MetaPlaywrightScraper:
                     context = browser.new_context(
                         storage_state=state_arg,
                         viewport={"width": 1440, "height": 900},
-                        user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
+                        user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
                     )
 
                 page = context.new_page()
-                page.set_default_timeout(25000)
+                page.set_default_timeout(20000)
+
+                # Turbo Resource Blocker: Skip heavy images, videos, and fonts for 3x faster scraping
+                def intercept_route(route):
+                    try:
+                        if route.request.resource_type in ("image", "media", "font"):
+                            route.abort()
+                        else:
+                            route.continue_()
+                    except Exception:
+                        pass
+
+                page.route("**/*", intercept_route)
 
                 # Intercept GraphQL responses that contain event payloads
                 intercepted_events: List[Dict[str, Any]] = []
@@ -132,11 +145,17 @@ class MetaPlaywrightScraper:
                     try:
                         if "graphql" in response.url and response.status == 200:
                             content_type = response.headers.get("content-type", "")
-                            if "json" in content_type:
+                            if "json" in content_type or "text" in content_type:
                                 text = response.text()
                                 if "event" in text.lower() or "event_place" in text.lower():
-                                    data = json.loads(text)
-                                    self._extract_events_from_graphql(data, intercepted_events)
+                                    for line in text.splitlines():
+                                        line = line.strip()
+                                        if line.startswith("{"):
+                                            try:
+                                                data = json.loads(line)
+                                                self._extract_events_from_graphql(data, intercepted_events)
+                                            except Exception:
+                                                pass
                     except Exception:
                         pass
 
@@ -148,24 +167,25 @@ class MetaPlaywrightScraper:
                     clean_c = city.lower().strip()
                     queries_to_run.append((f"{city.capitalize()} Local Events", f"https://www.facebook.com/events/search/?q={clean_c}%20egypt%20events"))
                     queries_to_run.append((f"{city.capitalize()} Career Fairs", f"https://www.facebook.com/events/search/?q={clean_c}%20egypt%20career%20fair"))
+                    queries_to_run.append((f"{city.capitalize()} University Events", f"https://www.facebook.com/events/search/?q={clean_c}%20university%20events"))
                 else:
-                    queries_to_run = SEARCH_QUERIES[:3]
+                    queries_to_run = SEARCH_QUERIES[:6]
 
                 all_dom_events = []
                 for q_label, q_url in queries_to_run:
                     logger.info(f"Harvesting: {q_label} ({q_url})...")
                     try:
                         page.goto(q_url, wait_until="domcontentloaded")
-                        time.sleep(2.5)
+                        time.sleep(1.5)
 
                         # Progressive scroll to trigger lazy loading
                         for _ in range(3):
-                            page.evaluate("window.scrollBy(0, 1000)")
-                            time.sleep(1.2)
+                            page.evaluate("window.scrollBy(0, 1200)")
+                            time.sleep(0.8)
 
                         dom_items = self._extract_events_from_dom(page)
                         all_dom_events.extend(dom_items)
-                        logger.info(f"  -> Found {len(dom_items)} events on {q_label}")
+                        logger.info(f"  -> Found {len(dom_items)} DOM events on {q_label}")
                     except Exception as q_err:
                         logger.debug(f"Query {q_label} error: {q_err}")
 
@@ -188,14 +208,43 @@ class MetaPlaywrightScraper:
         return events
 
     def _extract_events_from_dom(self, page) -> List[Dict[str, Any]]:
-        """Extract event data from rendered DOM with clean title and attendee filtering."""
+        """Extract event data from rendered DOM and JSON-LD blocks with clean title and attendee filtering."""
         raw_items = []
         try:
             js_extract = r"""
             () => {
                 const results = [];
-                const links = Array.from(document.querySelectorAll('a[href*="/events/"]'));
                 const seenIds = new Set();
+
+                // 1. Extract structured JSON-LD Event schemas if present on page
+                const ldScripts = Array.from(document.querySelectorAll('script[type="application/ld+json"]'));
+                ldScripts.forEach(scr => {
+                    try {
+                        const parsed = JSON.parse(scr.textContent || "{}");
+                        const items = Array.isArray(parsed) ? parsed : [parsed];
+                        items.forEach(obj => {
+                            if (obj && (obj["@type"] === "Event" || obj["@type"] === "EducationEvent" || obj["@type"] === "SocialEvent") && obj.name) {
+                                const url = obj.url || window.location.href;
+                                const idMatch = url.match(/\/events\/(\d+)/);
+                                const evId = idMatch ? idMatch[1] : ("ld_" + Math.random().toString(36).slice(2, 10));
+                                if (!seenIds.has(evId)) {
+                                    seenIds.add(evId);
+                                    results.push({
+                                        event_id: evId,
+                                        url: url,
+                                        title: obj.name,
+                                        date_display: obj.startDate || "Upcoming",
+                                        location: (obj.location && obj.location.name) ? obj.location.name : "Egypt",
+                                        organizer: (obj.organizer && obj.organizer.name) ? obj.organizer.name : "Facebook Event Host",
+                                        description: obj.description || obj.name
+                                    });
+                                }
+                            }
+                        });
+                    } catch (e) {}
+                });
+
+                const links = Array.from(document.querySelectorAll('a[href*="/events/"]'));
 
                 const isDateLine = (str) => {
                     if (/^(happening now|today|tomorrow|upcoming|this week|this weekend)$/i.test(str.trim())) return true;
@@ -264,13 +313,6 @@ class MetaPlaywrightScraper:
                         return;
                     }
 
-                    // Extract image thumbnail if present
-                    let imgUrl = "";
-                    if (container) {
-                        const img = container.querySelector('img[src*="fbcdn"]');
-                        if (img) imgUrl = img.src;
-                    }
-
                     results.push({
                         event_id: eventId,
                         url: `https://www.facebook.com/events/${eventId}/`,
@@ -278,8 +320,7 @@ class MetaPlaywrightScraper:
                         date_display: detectedDate,
                         location: detectedLocation,
                         attendees: detectedAttendees,
-                        image_url: imgUrl,
-                        description: rawText.slice(0, 500)
+                        description: rawText.slice(0, 600)
                     });
                 });
                 return results;
@@ -297,7 +338,6 @@ class MetaPlaywrightScraper:
             if "id" in data and ("name" in data or "event_place" in data or "start_timestamp" in data):
                 name = data.get("name") or data.get("title")
                 if name and isinstance(name, str) and len(name) > 3:
-                    # Skip generic or attendee titles
                     if not re.search(r'\d+[KM]?\s+(interested|going)', name, re.IGNORECASE) and not is_date_or_garbage_title(name):
                         event_id = str(data.get("id"))
                         start_ts = data.get("start_timestamp")
@@ -337,7 +377,6 @@ class MetaPlaywrightScraper:
         location = item.get("location", "Egypt").strip()
         date_display = item.get("date_display", "Upcoming").strip()
 
-        # If title is a date/garbage string and location is a real title, swap them
         if is_date_or_garbage_title(raw_title) and not is_date_or_garbage_title(location) and location.lower() not in ["egypt", "cairo", "alexandria", "giza", "tanta", "mansoura"]:
             if date_display in ["Upcoming", "TBA", ""]:
                 date_display = raw_title
@@ -351,7 +390,7 @@ class MetaPlaywrightScraper:
         desc = item.get("description", "")
         attendees = item.get("attendees", "")
 
-        # Non-Egypt location filter guardrail (prevents US Alexandria / VA / IN query bleed)
+        # Non-Egypt location filter guardrail
         full_loc = f"{title} {location} {desc}"
         for pat in NON_EGYPT_PATTERNS:
             if pat.search(full_loc):
@@ -365,20 +404,30 @@ class MetaPlaywrightScraper:
         # City inference
         inferred_city = "Cairo"
         loc_lower = f"{title} {location} {desc}".lower()
-        if "alex" in loc_lower:
+        if "alex" in loc_lower or "إسكندرية" in loc_lower or "اسكندرية" in loc_lower:
             inferred_city = "Alexandria"
-        elif "tanta" in loc_lower:
+        elif "tanta" in loc_lower or "طنطا" in loc_lower:
             inferred_city = "Tanta"
-        elif "mansoura" in loc_lower:
+        elif "mansoura" in loc_lower or "المنصورة" in loc_lower:
             inferred_city = "Mansoura"
-        elif "assiut" in loc_lower:
+        elif "assiut" in loc_lower or "أسيوط" in loc_lower:
             inferred_city = "Assiut"
-        elif "giza" in loc_lower or "smart village" in loc_lower:
+        elif "giza" in loc_lower or "smart village" in loc_lower or "جيزة" in loc_lower:
             inferred_city = "Giza"
         elif city:
             inferred_city = city.capitalize()
 
         parsed_start = BaseScraper.parse_datetime(date_display)
+        if not parsed_start and desc:
+            cap_dt, cap_dd = self.caption_analyzer.extract_datetime_from_caption(desc)
+            if cap_dt:
+                parsed_start = cap_dt
+                if date_display in ("Upcoming", "TBA", "") and cap_dd:
+                    date_display = cap_dd
+
+        reg_url = self.caption_analyzer.extract_registration_url(desc) or url
+        contacts = self.caption_analyzer.extract_contacts(desc)
+
         score, priority, category, tags, action, parallel = self.scorer.evaluate(title, desc, location)
 
         full_desc = desc
@@ -397,8 +446,11 @@ class MetaPlaywrightScraper:
             city=inferred_city,
             country="Egypt",
             url=url,
-            ticket_type="Free / RSVP" if "free" in desc.lower() else "Registration Required",
-            organizer="Facebook Event Host",
+            ticket_type="Free / RSVP" if "free" in desc.lower() or "مجاني" in desc else "Registration Required",
+            organizer=item.get("organizer") or "Facebook Event Host",
+            organizer_email=contacts.get("email"),
+            organizer_phone=contacts.get("phone"),
+            organizer_instagram=contacts.get("instagram"),
             description=full_desc,
             category=category,
             aiesec_tags=tags,
@@ -410,7 +462,7 @@ class MetaPlaywrightScraper:
             proof_type="Live Facebook Event Announcement",
             is_verified_proof=True,
             proof_evidence=f"Live Harvested from Facebook Events Stream ({attendees or 'Active Community RSVP'})",
-            registration_url=url,
+            registration_url=reg_url,
             organizer_profile_url=url,
             post_direct_url=url,
             is_social_first=True

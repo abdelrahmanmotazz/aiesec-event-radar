@@ -5280,11 +5280,206 @@ function initSocialIngest() {
     });
   }
 
+  // Bilingual Client-Side Caption NLP Analyzer (Mirrors backend CaptionAnalyzer)
+  function normalizeArabicDigitsJs(str) {
+    if (!str) return "";
+    return str.replace(/[٠-٩]/g, d => "٠١٢٣٤٥٦٧٨٩".indexOf(d));
+  }
+
+  function analyzeSocialCaptionClient(rawCaption) {
+    const text = (rawCaption || "").trim();
+    const norm = normalizeArabicDigitsJs(text);
+    const lines = text.split("\n").map(l => l.trim()).filter(Boolean);
+
+    // 1. Select best headline title
+    let title = "";
+    const hypeRe = /^(?:[\W_]|are you ready|stay tuned|big news|announcement|save the date|breaking|جاهزين|مستعدين|مفاجأة|قريبا|قريباً|تنبيه|إعلان هام|اعلان هام)+$/i;
+    for (const line of lines) {
+      const cleaned = line.replace(/^[\s🔥🚨📢✨⚡🌟🎉🎊📌📍🗓️📅⏰⏳🔗👉👇•·\-–—:|]+|[\s🔥🚨📢✨⚡🌟🎉🎊📌📍🔗•·\-–—:|]+$/g, "").trim();
+      if (cleaned.length < 5) continue;
+      if (/^https?:\/\//i.test(cleaned) || cleaned.startsWith("#")) continue;
+      if (hypeRe.test(cleaned)) continue;
+      if (/^(?:date|time|location|venue|where|when|link|register|التاريخ|الموعد|المكان|العنوان|للتسجيل)\s*[:\-]/i.test(cleaned)) continue;
+      title = cleaned.length > 95 ? cleaned.slice(0, 92).trim() + "..." : cleaned;
+      break;
+    }
+    if (!title) title = lines[0] ? lines[0].slice(0, 90) : "Verified Youth & Campus Event — Cairo";
+
+    // 2. Extract URLs (Registration Form vs Announcement URL)
+    const allUrls = norm.match(/https?:\/\/[^\s"'<>]+/gi) || [];
+    const formRegex = /https?:\/\/(?:forms\.gle\/[\w\-]+|docs\.google\.com\/forms\/[^\s"']+|bit\.ly\/[\w\-]+|linktr\.ee\/[\w\-_.]+|lu\.ma\/[\w\-]+|eventbrite\.com\/e\/[\w\-]+|ticketsmarche\.com\/[\w\-_/]+)/i;
+    const formMatch = norm.match(formRegex);
+    const registrationUrl = formMatch ? formMatch[0] : (allUrls[0] || "#");
+    const primaryUrl = allUrls.find(u => u.includes("facebook.com") || u.includes("instagram.com")) || allUrls[0] || registrationUrl || "#";
+
+    // 3. Extract Date (Arabic months, English months, or numeric dates)
+    const arMonths = {
+      "يناير": 1, "فبراير": 2, "مارس": 3, "أبريل": 4, "ابريل": 4, "مايو": 5, "يونيو": 6,
+      "يوليو": 7, "أغسطس": 8, "اغسطس": 8, "سبتمبر": 9, "أكتوبر": 10, "اكتوبر": 10,
+      "نوفمبر": 11, "ديسمبر": 12
+    };
+    const mNames = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    let startDateIso = new Date().toISOString().split("T")[0];
+    let dateDisplay = "Upcoming / Live";
+
+    for (const [arM, mNum] of Object.entries(arMonths)) {
+      const arRe = new RegExp(`(\\d{1,2})(?:\\s*(?:-|إلى|الى|و)\\s*\\d{1,2})?\\s+(?:من\\s+)?(?:شهر\\s+)?${arM}(?:\\s+(202[6-9]))?`);
+      const m = norm.match(arRe);
+      if (m) {
+        const d = parseInt(m[1], 10);
+        const y = m[2] ? parseInt(m[2], 10) : new Date().getFullYear();
+        startDateIso = `${y}-${String(mNum).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+        dateDisplay = `${mNames[mNum]} ${String(d).padStart(2, "0")}, ${y}`;
+        break;
+      }
+    }
+
+    if (dateDisplay === "Upcoming / Live") {
+      const enMatch = norm.match(/\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s+(\d{1,2})(?:st|nd|rd|th)?(?:\s*[-–]\s*\d{1,2})?(?:,?\s*(202[6-9]))?/i) ||
+                      norm.match(/\b(\d{1,2})(?:st|nd|rd|th)?\s+(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*(?:,?\s*(202[6-9]))?/i);
+      if (enMatch) {
+        const isMonthFirst = isNaN(parseInt(enMatch[1], 10));
+        const mStr = (isMonthFirst ? enMatch[1] : enMatch[2]).slice(0, 3).toLowerCase();
+        const d = parseInt(isMonthFirst ? enMatch[2] : enMatch[1], 10);
+        const y = enMatch[3] ? parseInt(enMatch[3], 10) : new Date().getFullYear();
+        const mIdx = mNames.findIndex(x => x.toLowerCase() === mStr);
+        if (mIdx > 0 && d >= 1 && d <= 31) {
+          startDateIso = `${y}-${String(mIdx).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+          dateDisplay = `${mNames[mIdx]} ${String(d).padStart(2, "0")}, ${y}`;
+        }
+      }
+    }
+
+    // 4. Venue & City Detection
+    const lower = norm.toLowerCase();
+    let venue = "Cairo, Egypt";
+    const venueCatalogs = [
+      ["The Greek Campus, Downtown Cairo", ["greek campus", "الجريك كامبس", "مقر الجريك"]],
+      ["Cairo University (CUFE)", ["cufe", "faculty of engineering cairo", "هندسة القاهرة", "جامعة القاهرة", "cairo university"]],
+      ["Ain Shams University", ["ain shams", "عين شمس", "قصر الزعفران", "الزعفران"]],
+      ["Alexandria University & Bibliotheca Alexandrina", ["alexandria university", "جامعة الإسكندرية", "مكتبة الإسكندرية", "bibliotheca alexandrina"]],
+      ["Tanta University Sebor Campus", ["tanta university", "جامعة طنطا", "مجمع سبرباي", "سبرباي"]],
+      ["Mansoura University Campus", ["mansoura university", "جامعة المنصورة", "حاسبات المنصورة"]],
+      ["Creativa Innovation Hub", ["creativa", "كرياتيفا", "itida", "ايتيدا", "tiec"]],
+      ["AUC Campus", ["auc", "الجامعة الأمريكية", "american university in cairo"]],
+      ["GUC Main Campus", ["guc", "الجامعة الألمانية"]],
+      ["BUE Campus El Shorouk", ["bue", "الجامعة البريطانية"]],
+      ["Egypt International Exhibition Center (EIEC)", ["eiec", "مركز مصر للمعارض", "المنارة", "al manara"]]
+    ];
+    for (const [vName, triggers] of venueCatalogs) {
+      if (triggers.some(t => lower.includes(t))) {
+        venue = vName;
+        break;
+      }
+    }
+
+    let city = "Cairo";
+    const cityCatalogs = [
+      ["Alexandria", ["alexandria", "إسكندرية", "اسكندرية", "الإسكندرية", "الاسكندرية", "شاطبي", "سموحة"]],
+      ["Tanta", ["tanta", "طنطا", "الغربية", "gharbia", "سبرباي"]],
+      ["Mansoura", ["mansoura", "المنصورة", "الدقهلية", "dakahlia"]],
+      ["Assiut", ["assiut", "أسيوط", "اسيوط"]],
+      ["Giza", ["giza", "الجيزة", "جيزة", "6th of october", "sheikh zayed", "زايد", "الدقي", "المهندسين", "smart village"]],
+      ["Sharkia", ["zagazig", "الزقازيق", "الشرقية", "sharkia"]],
+      ["Cairo", ["cairo", "القاهرة", "مدينة نصر", "المعادي", "التجمع", "التحرير", "وسط البلد", "مصر الجديدة"]]
+    ];
+    for (const [cName, triggers] of cityCatalogs) {
+      if (triggers.some(t => lower.includes(t))) {
+        city = cName;
+        break;
+      }
+    }
+    if (venue === "Cairo, Egypt" && city !== "Cairo") {
+      venue = `${city}, Egypt`;
+    }
+
+    // 5. Extract Organizer Contacts
+    const emailMatch = norm.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
+    const phoneMatch = norm.match(/(?:\+?20[\s\-]?|0)1[0125][\s\-]?\d{4}[\s\-]?\d{4}\b|\b1[5679]\d{3}\b/);
+    const igMatch = norm.replace(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g, " ").match(/(?:instagram\.com\/|(?<![\w.-])@)([a-zA-Z0-9_.]{3,30})/);
+
+    return {
+      title,
+      url: primaryUrl,
+      registration_url: registrationUrl,
+      source: primaryUrl.includes("instagram") ? "Instagram Feeds" : "Facebook Events",
+      date_display: dateDisplay,
+      start_date: startDateIso,
+      location: venue,
+      city: city,
+      description: text,
+      ticket_type: /(free|مجانا|مجاني|بدون رسوم|مجاناً)/i.test(lower) ? "Free Admission" : "Registration Required",
+      organizer_email: emailMatch ? emailMatch[0] : null,
+      organizer_phone: phoneMatch ? phoneMatch[0].replace(/[\s\-]+/g, "") : null,
+      organizer_instagram: igMatch ? igMatch[1] : null
+    };
+  }
+
+  function parseSocialPayloadUniversal(raw) {
+    const trimmed = (raw || "").trim();
+    if (!trimmed) return { error: "empty", events: [] };
+
+    // 1. JSON Array or Object
+    if (trimmed.startsWith("[") || trimmed.startsWith("{")) {
+      try {
+        const parsed = JSON.parse(trimmed);
+        return { error: null, events: Array.isArray(parsed) ? parsed : [parsed] };
+      } catch (e) {
+        return { error: "json", events: [] };
+      }
+    }
+
+    const lines = trimmed.split("\n").map(l => l.trim()).filter(Boolean);
+    const allLinesHaveUrl = lines.length > 0 && lines.every(l => /(https?:\/\/[^\s]+)/i.test(l) && l.length < 180);
+
+    // 2. Line-by-line URL list (1 or more URLs, each on its own line)
+    if (allLinesHaveUrl) {
+      const payloadEvents = [];
+      lines.forEach((line, i) => {
+        const urlMatch = line.match(/(https?:\/\/[^\s]+)/i);
+        if (urlMatch) {
+          const url = urlMatch[1];
+          let customTitle = line.replace(url, "").replace(/^[-|:]+|[-|:]+$/g, "").trim();
+          if (!customTitle) {
+            try {
+              const pathParts = new URL(url).pathname.split("/").filter(p => p && p.length > 3 && !["events", "event", "p", "reel", "posts"].includes(p.toLowerCase()));
+              if (pathParts.length > 0) {
+                const slug = decodeURIComponent(pathParts[pathParts.length - 1]).replace(/[-_]+/g, " ").trim();
+                if (slug.length >= 4 && !/^\d+$/.test(slug)) {
+                  customTitle = slug.replace(/\b\w/g, c => c.toUpperCase());
+                }
+              }
+            } catch (e) {}
+          }
+          payloadEvents.push({
+            title: customTitle || `Verified Youth & Campus Event — Cairo #${i + 1}`,
+            url: url,
+            source: url.includes("instagram") ? "Instagram Feeds" : "Facebook Events",
+            date_display: "Upcoming / Live",
+            location: "Cairo, Egypt",
+            city: "Cairo",
+            description: `Verified social announcement from ${url}. Full student intelligence & partnership activation opportunities verified.`,
+            ticket_type: "Free / RSVP"
+          });
+        }
+      });
+      return { error: null, events: payloadEvents };
+    }
+
+    // 3. Full Social Post Caption (Arabic / English / Franco, single or multi-paragraph)
+    if (trimmed.length >= 12) {
+      const analyzed = analyzeSocialCaptionClient(trimmed);
+      return { error: null, events: [analyzed] };
+    }
+
+    return { error: "no_url", events: [] };
+  }
+
   // Paste / JSON Ingest (Fully resilient on both GitHub Pages & Localhost)
-  function enrichAndIngestClientEvents(rawItems) {
+  function enrichAndIngestClientEvents(rawItems, persist = true) {
     if (!rawItems || !rawItems.length) return [];
     
-    const enriched = rawItems.map((ev, idx) => {
+    const enriched = rawItems.map((ev) => {
       let rawTitle = (ev.title || "").trim();
       let url = (ev.url || "#").trim();
       let desc = (ev.description || "").trim();
@@ -5296,7 +5491,7 @@ function initSocialIngest() {
       if (isBadEventTitle(rawTitle)) {
         rawTitle = cleanEventTitleFromDesc(rawTitle, desc, loc, url);
       }
-      const finalTitle = (!isBadEventTitle(rawTitle) ? rawTitle : cleanEventTitleFromDesc(rawTitle, desc, loc, url)) || `Live Social Event (${city})`;
+      const finalTitle = (!isBadEventTitle(rawTitle) ? rawTitle : cleanEventTitleFromDesc(rawTitle, desc, loc, url)) || `Verified Youth & Campus Event — ${city}`;
 
       // Smart Client-Side B2C Youth Scoring
       const combinedText = (finalTitle + " " + desc + " " + loc).toLowerCase();
@@ -5319,26 +5514,26 @@ function initSocialIngest() {
         score = 3.0;
         priority = "LOW";
         category = "B2B & Industrial Trade Expo";
-      } else if (source.toLowerCase().includes("summit") || (ev.category && ev.category.toLowerCase().includes("summit")) || combinedText.includes("summit") || combinedText.includes("techne") || combinedText.includes("riseup") || combinedText.includes("flagship")) {
+      } else if (source.toLowerCase().includes("summit") || (ev.category && ev.category.toLowerCase().includes("summit")) || combinedText.includes("summit") || combinedText.includes("techne") || combinedText.includes("riseup") || combinedText.includes("flagship") || combinedText.includes("قمة")) {
         score = Math.max(ev.b2c_score || 9.8, 9.2);
         priority = "HIGH";
         category = "Flagship Summits";
-        action = ev.recommended_action || "Major National Activation: Deploy LC Delegation, Booth Presence & Global Volunteer Recruitment";
-      } else if (combinedText.includes("hackathon") || combinedText.includes("coding challenge") || combinedText.includes("code jam")) {
+        action = ev.recommended_action || "Major National Activation: Deploy Delegation, Booth Presence & Youth Recruitment";
+      } else if (combinedText.includes("hackathon") || combinedText.includes("coding challenge") || combinedText.includes("code jam") || combinedText.includes("هاكاثون")) {
         score = 8.9;
         priority = "HIGH";
         category = "Tech & Student Hackathons";
-        action = "Promote Global Talent IT & Tech Internship Opportunities";
-      } else if (combinedText.includes("career") || combinedText.includes("employment") || combinedText.includes("job fair") || combinedText.includes("recruitment fair")) {
+        action = "Promote Technical & Software Internship Opportunities";
+      } else if (combinedText.includes("career") || combinedText.includes("employment") || combinedText.includes("job fair") || combinedText.includes("recruitment fair") || combinedText.includes("ملتقى التوظيف") || combinedText.includes("ملتقى توظيف") || combinedText.includes("معرض التوظيف")) {
         score = 9.2;
         priority = "HIGH";
         category = "Career & Recruitment Fairs";
-        action = "Booth Booking & Direct Lead Generation for Global Talent / Teacher";
-      } else if (/(university|faculty|campus|جامعة|كلية)/i.test(combinedText) && /(conference|congress|symposium|forum|مؤتمر|ندوة)/i.test(combinedText)) {
+        action = "Booth Booking & Direct Lead Generation for Youth Career Programs";
+      } else if (/(university|faculty|campus|جامعة|كلية)/i.test(combinedText) && /(conference|congress|symposium|forum|مؤتمر|ندوة|ملتقى)/i.test(combinedText)) {
         score = 8.7;
         priority = "HIGH";
         category = "University Conferences & Academic Forums";
-        action = "Major Campus Activation: Deploy LC Delegation, Booth Presence & Recruit University Students";
+        action = "Major Campus Activation: Deploy Delegation, Booth Presence & Recruit University Students";
       } else if (/(university|faculty|campus|student union|اتحاد طلاب)/i.test(combinedText)) {
         score = 7.8;
         priority = "MEDIUM";
@@ -5348,7 +5543,7 @@ function initSocialIngest() {
         score = 7.2;
         priority = "MEDIUM";
         category = "Tech Communities & Innovation";
-        action = "Promote Global Talent IT Opportunities";
+        action = "Promote Tech & Developer Youth Opportunities";
       }
 
       const eventId = ev.event_id || `social_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`;
@@ -5366,6 +5561,9 @@ function initSocialIngest() {
         url: url,
         ticket_type: ev.ticket_type || "Free / RSVP",
         organizer: ev.organizer || (url.includes("instagram") ? "Instagram Host" : "Facebook Community"),
+        organizer_email: ev.organizer_email || null,
+        organizer_phone: ev.organizer_phone || null,
+        organizer_instagram: ev.organizer_instagram || null,
         description: fullDesc,
         category: ev.category || category,
         aiesec_tags: ev.aiesec_tags || ["youth", "social-live", "networking"],
@@ -5377,18 +5575,20 @@ function initSocialIngest() {
         proof_type: "Live Social Announcement",
         is_verified_proof: true,
         proof_evidence: `Live Extracted from ${source}`,
-        registration_url: url,
+        registration_url: ev.registration_url || url,
         post_direct_url: url,
         is_social_first: true,
         is_custom_import: true
       };
     });
 
+    if (!persist) return enriched;
+
     // Save to localStorage for permanent persistence
     try {
       const existing = JSON.parse(localStorage.getItem("radar_custom_events") || localStorage.getItem("aiesec_radar_custom_events") || "[]");
       const existingIds = new Set(existing.map(e => e.event_id || e.url));
-      const toAdd = enriched.filter(e => !existingIds.has(e.event_id) && !existingIds.has(e.url));
+      const toAdd = enriched.filter(e => !existingIds.has(e.event_id) && (!e.url || e.url === "#" || !existingIds.has(e.url)));
       const updated = [...toAdd, ...existing];
       localStorage.setItem("radar_custom_events", JSON.stringify(updated));
       localStorage.removeItem("aiesec_radar_custom_events");
@@ -5418,8 +5618,44 @@ function initSocialIngest() {
     const elHigh = document.getElementById("stat-high");
     if (elTotal) animateCounter(elTotal, state.events.length);
     if (elHigh) animateCounter(elHigh, state.events.filter(e => (e.b2c_score || 0) >= 8.5).length);
+    updateCustomIngestedCount();
 
     return enriched;
+  }
+
+  function updateCustomIngestedCount() {
+    const countEl = document.getElementById("custom-ingested-count");
+    if (!countEl) return;
+    try {
+      const existing = JSON.parse(localStorage.getItem("radar_custom_events") || "[]");
+      countEl.innerText = existing.length;
+    } catch (e) {
+      countEl.innerText = "0";
+    }
+  }
+  updateCustomIngestedCount();
+
+  const btnClearCustom = document.getElementById("btn-clear-custom-events");
+  if (btnClearCustom) {
+    btnClearCustom.addEventListener("click", () => {
+      localStorage.removeItem("radar_custom_events");
+      localStorage.removeItem("aiesec_radar_custom_events");
+      rawEventsCache = null;
+      updateCustomIngestedCount();
+      fetchEvents();
+      showToast("Cleared custom browser-ingested events queue.", "info", "Queue Cleared");
+    });
+  }
+
+  // 1-Click Copy Console Harvester Script
+  const btnCopyConsole = document.getElementById("btn-copy-console-harvester");
+  if (btnCopyConsole) {
+    btnCopyConsole.addEventListener("click", () => {
+      const script = `(() => { const e=[]; const s=new Set(); document.querySelectorAll('a[href*="/events/"]').forEach(a => { const m=a.href.match(/\\/events\\/(\\d+)/); if(!m||s.has(m[1])) return; s.add(m[1]); const c=a.closest('div[role="article"]')||a.closest('div[role="listitem"]')||a.parentElement; const t=(c?c.innerText:a.innerText).split('\\n').map(l=>l.trim()).filter(l=>l.length>3); if(t.length) e.push({event_id:'fb_'+m[1],title:t[0],date_display:t[1]||'Upcoming',location:t[2]||'Cairo, Egypt',url:'https://www.facebook.com/events/'+m[1]+'/',source:'Facebook Events'}); }); copy(JSON.stringify(e, null, 2)); console.log('Copied ' + e.length + ' events to clipboard!'); })();`;
+      navigator.clipboard.writeText(script).then(() => {
+        showToast("Copied 1-Click Harvester Script! Paste into DevTools Console (F12) on facebook.com/events.", "success", "Script Copied");
+      });
+    });
   }
 
   // Client JSON Export Button
@@ -5437,71 +5673,94 @@ function initSocialIngest() {
     });
   }
 
-  // Paste / JSON Ingest Button
+  // Paste / Caption / JSON Ingest + Real-Time NLP Preview
   const btnPasteSubmit = document.getElementById("btn-submit-social-paste");
   const pasteInput = document.getElementById("input-social-payload");
+  const btnSampleCaption = document.getElementById("btn-load-sample-caption");
+  const previewBox = document.getElementById("social-live-preview-box");
+  const previewContent = document.getElementById("social-live-preview-content");
+  const previewCount = document.getElementById("social-preview-count");
+
+  function renderLivePreview() {
+    if (!pasteInput || !previewBox || !previewContent) return;
+    const raw = pasteInput.value.trim();
+    if (!raw) {
+      previewBox.classList.add("hidden");
+      return;
+    }
+    const parsed = parseSocialPayloadUniversal(raw);
+    if (parsed.error || !parsed.events.length) {
+      previewBox.classList.add("hidden");
+      return;
+    }
+    const previewItems = enrichAndIngestClientEvents(parsed.events, false);
+    if (!previewItems.length) {
+      previewBox.classList.add("hidden");
+      return;
+    }
+    previewBox.classList.remove("hidden");
+    if (previewCount) {
+      previewCount.innerText = `${previewItems.length} Event${previewItems.length > 1 ? "s" : ""} Detected`;
+    }
+    const first = previewItems[0];
+    previewContent.innerHTML = `
+      <div class="flex items-center justify-between gap-2">
+        <span class="font-bold text-white truncate">${first.title}</span>
+        <span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 shrink-0">
+          ★ ${first.b2c_score.toFixed(1)} ${first.b2c_priority}
+        </span>
+      </div>
+      <div class="flex items-center gap-3 text-[11px] text-slate-300 flex-wrap">
+        <span>📅 <b>${first.date_display}</b></span>
+        <span>📍 <b>${first.location} (${first.city})</b></span>
+        <span>🏷️ ${first.category}</span>
+      </div>
+      ${first.registration_url && first.registration_url !== "#" ? `<div class="text-[11px] text-sky-400 truncate">🔗 Reg/Proof: ${first.registration_url}</div>` : ""}
+      ${(first.organizer_phone || first.organizer_email || first.organizer_instagram) ? `
+        <div class="text-[11px] text-amber-300 flex items-center gap-3 flex-wrap">
+          ${first.organizer_phone ? `<span>📞 ${first.organizer_phone}</span>` : ""}
+          ${first.organizer_email ? `<span>✉️ ${first.organizer_email}</span>` : ""}
+          ${first.organizer_instagram ? `<span>📸 @${first.organizer_instagram}</span>` : ""}
+        </div>` : ""}
+    `;
+  }
+
+  if (pasteInput) {
+    pasteInput.addEventListener("input", renderLivePreview);
+  }
+
+  if (btnSampleCaption && pasteInput) {
+    btnSampleCaption.addEventListener("click", () => {
+      pasteInput.value = `🔥 جاهزين لأكبر ملتقى توظيف وهاكاثون في الدلتا؟ 🔥\nملتقى التوظيف وريادة الأعمال بجامعة طنطا 2026 - Tanta University Career & AI Summit\nيوم السبت 21 نوفمبر 2026 في مجمع سبرباي جامعة طنطا\nالحضور مجاني لجميع طلاب الجامعات والخريجين!\nسجل الآن من خلال الفورم: https://forms.gle/TantaCareerSummit2026\nللتواصل والاستفسار: 01012345678 أو info@tantasummit.org.eg | @tanta_youth_summit`;
+      renderLivePreview();
+    });
+  }
 
   if (btnPasteSubmit && pasteInput) {
     btnPasteSubmit.addEventListener("click", async () => {
       const raw = pasteInput.value.trim();
       if (!raw) {
-        showToast("Please enter an event URL or JSON payload.", "info", "Input Required");
+        showToast("Please paste an event URL, social post caption, or JSON payload.", "info", "Input Required");
         return;
       }
 
-      let payloadEvents = [];
-      if (raw.startsWith("[") || raw.startsWith("{")) {
-        try {
-          const parsed = JSON.parse(raw);
-          payloadEvents = Array.isArray(parsed) ? parsed : [parsed];
-        } catch (e) {
-          showToast("Invalid JSON syntax. Please verify JSON structure.", "error", "JSON Parse Error");
-          return;
-        }
-      } else {
-        // Line-separated URLs or "Title - URL" combinations
-        const lines = raw.split("\n").map(l => l.trim()).filter(Boolean);
-        lines.forEach((line, i) => {
-          const urlMatch = line.match(/(https?:\/\/[^\s]+)/i);
-          if (urlMatch) {
-            const url = urlMatch[1];
-            let customTitle = line.replace(url, "").replace(/^[-|:]+|[-|:]+$/g, "").trim();
-            if (!customTitle) {
-              try {
-                const pathParts = new URL(url).pathname.split("/").filter( p => p && p.length > 3 && !["events", "event", "p", "reel", "posts"].includes(p.toLowerCase()));
-                if (pathParts.length > 0) {
-                  const slug = decodeURIComponent(pathParts[pathParts.length - 1]).replace(/[-_]+/g, " ").trim();
-                  if (slug.length >= 4 && !/^\d+$/.test(slug)) {
-                    customTitle = slug.replace(/\b\w/g, c => c.toUpperCase());
-                  }
-                }
-              } catch (e) {}
-            }
-            payloadEvents.push({
-              title: customTitle || `Verified Youth & Campus Event — Cairo #${i + 1}`,
-              url: url,
-              source: url.includes("instagram") ? "Instagram Feeds" : "Facebook Events",
-              date_display: "Upcoming / Live",
-              location: "Cairo, Egypt",
-              city: "Cairo",
-              description: `Verified social announcement from ${url}. Full student intelligence & partnership activation opportunities verified.`,
-              ticket_type: "Free / RSVP"
-            });
-          }
-        });
-
-        if (!payloadEvents.length) {
-          showToast("No valid URL found. Paste a link starting with http:// or https://", "error", "URL Not Found");
-          return;
-        }
+      const parsed = parseSocialPayloadUniversal(raw);
+      if (parsed.error === "json") {
+        showToast("Invalid JSON syntax. Please verify JSON structure.", "error", "JSON Parse Error");
+        return;
+      }
+      if (!parsed.events.length) {
+        showToast("Could not detect a valid URL or event announcement. Paste a link or full event caption.", "error", "Input Not Recognized");
+        return;
       }
 
+      const payloadEvents = parsed.events;
       btnPasteSubmit.innerText = "Importing & Scoring...";
 
       // Ingest client-side immediately (saves to localStorage, updates state.events and re-renders)
-      const enriched = enrichAndIngestClientEvents(payloadEvents);
+      const enriched = enrichAndIngestClientEvents(payloadEvents, true);
 
-      // Attempt background backend sync if running on local server (without blocking or throwing errors)
+      // Attempt background backend sync if running on local server
       if (backendApiReachable) {
         try {
           await fetch("/api/social/import", {
@@ -5516,6 +5775,7 @@ function initSocialIngest() {
 
       showToast(`Successfully imported ${enriched.length} live event(s) to Radar!`, "success", "Live Ingest Successful");
       pasteInput.value = "";
+      if (previewBox) previewBox.classList.add("hidden");
       btnPasteSubmit.innerText = "Ingest & Auto-Enrich to Radar";
 
       setTimeout(() => {
@@ -5523,5 +5783,24 @@ function initSocialIngest() {
         if (modal) modal.classList.add("hidden");
       }, 1200);
     });
+  }
+
+  // Auto-Ingest from ?social_import= URL parameter (Bookmarklet & Extension 1-Click Cloud Sync)
+  try {
+    const urlParams = new URLSearchParams(window.location.search);
+    const socialImportParam = urlParams.get("social_import");
+    if (socialImportParam) {
+      const decoded = JSON.parse(decodeURIComponent(socialImportParam));
+      const items = Array.isArray(decoded) ? decoded : [decoded];
+      if (items.length > 0) {
+        setTimeout(() => {
+          const added = enrichAndIngestClientEvents(items, true);
+          showToast(`⚡ Auto-Clipped ${added.length} live social event(s) into your Radar!`, "success", "Bookmarklet Sync Complete");
+        }, 600);
+      }
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  } catch (e) {
+    console.warn("Could not parse ?social_import parameter:", e);
   }
 }

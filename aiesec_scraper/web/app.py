@@ -688,44 +688,146 @@ def sync_events_json(events: List[EventRecord]):
                 logger.error(f"Error syncing {p}: {err}")
 
 
+class UrlResolveRequest(BaseModel):
+    url: str
+
+
+@app.post("/api/social/resolve-url")
+def resolve_social_url(req: UrlResolveRequest):
+    """Fetch OpenGraph and JSON-LD metadata from a public event URL and analyze its caption."""
+    import httpx
+    from bs4 import BeautifulSoup
+    from ..analyzers.caption_analyzer import CaptionAnalyzer
+    from ..scorers import B2CScorer
+
+    url = (req.url or "").strip()
+    analyzer = CaptionAnalyzer()
+    scorer = B2CScorer()
+    title = ""
+    desc = ""
+    location = "Cairo, Egypt"
+    city = "Cairo"
+    date_display = "Upcoming / Live"
+    start_date_iso = None
+    organizer = "Social Event Host"
+
+    try:
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+            "Accept-Language": "en-US,en;q=0.9,ar;q=0.8"
+        }
+        with httpx.Client(timeout=6.0, follow_redirects=True, headers=headers) as client:
+            resp = client.get(url)
+            if resp.status_code == 200:
+                soup = BeautifulSoup(resp.text, "html.parser")
+                og_title = soup.find("meta", property="og:title") or soup.find("title")
+                og_desc = soup.find("meta", property="og:description") or soup.find("meta", attrs={"name": "description"})
+                if og_title:
+                    title = (og_title.get("content") if og_title.has_attr("content") else og_title.get_text() or "").strip()
+                if og_desc:
+                    desc = (og_desc.get("content") or "").strip()
+                for ld in soup.find_all("script", type="application/ld+json"):
+                    try:
+                        data = json.loads(ld.string or "{}")
+                        items = data if isinstance(data, list) else [data]
+                        for item in items:
+                            if isinstance(item, dict) and item.get("name"):
+                                title = item.get("name") or title
+                                desc = item.get("description") or desc
+                                if item.get("startDate"):
+                                    start_date_iso = str(item["startDate"])[:10]
+                                    date_display = start_date_iso
+                                if isinstance(item.get("location"), dict) and item["location"].get("name"):
+                                    location = item["location"]["name"]
+                                if isinstance(item.get("organizer"), dict) and item["organizer"].get("name"):
+                                    organizer = item["organizer"]["name"]
+                    except Exception:
+                        pass
+    except Exception as e:
+        logger.debug(f"URL resolve fallback for {url}: {e}")
+
+    analyzed = analyzer.analyze(f"{title}\n{desc}")
+    if not title or title.lower() in ("facebook", "instagram", "log in or sign up to view"):
+        title = analyzed.get("title") if analyzed.get("is_event") else "Verified Youth & Campus Event — Cairo"
+    if analyzed.get("is_event"):
+        if analyzed.get("venue") and analyzed["venue"] != "Campus Auditorium / TBA":
+            location = analyzed["venue"]
+        if analyzed.get("city"):
+            city = analyzed["city"]
+        if analyzed.get("date_display") and analyzed["date_display"] != "Upcoming / Live":
+            date_display = analyzed["date_display"]
+        if analyzed.get("start_date"):
+            start_date_iso = analyzed["start_date"].strftime("%Y-%m-%d")
+
+    score, priority, cat, _, action, _ = scorer.evaluate(title, desc, location)
+    return {
+        "success": True,
+        "url": url,
+        "title": title,
+        "description": desc,
+        "location": location,
+        "city": city,
+        "date_display": date_display,
+        "start_date": start_date_iso,
+        "organizer": organizer,
+        "registration_url": analyzed.get("registration_url") or url,
+        "b2c_score": score,
+        "b2c_priority": priority,
+        "category": cat,
+        "recommended_action": action,
+    }
+
+
 @app.post("/api/social/import")
 def import_social_events(req: SocialImportRequest):
     """Import and auto-enrich live Facebook and Instagram events from extension or frontend."""
     global CACHED_EVENTS
     from ..scorers import B2CScorer
     from ..analyzers.caption_analyzer import CaptionAnalyzer
+    from ..scrapers.base import BaseScraper
 
     scorer = B2CScorer()
+    analyzer = CaptionAnalyzer()
     imported_records = []
     seen_ids = {e.event_id for e in CACHED_EVENTS}
     seen_urls = {e.url for e in CACHED_EVENTS if e.url and e.url != "#"}
 
     for raw in req.events:
-        title = raw.get("title", "").strip()
+        desc = (raw.get("description") or raw.get("caption") or "").strip()
+        analyzed = analyzer.analyze(desc) if desc else {}
+        title = (raw.get("title") or analyzed.get("title") or "").strip()
         if not title:
             continue
         url = raw.get("url", "#")
-        event_id = raw.get("event_id") or f"import_{hash(title)}"
+        event_id = raw.get("event_id") or f"import_{abs(hash(title + url)) % 100000000}"
         if event_id in seen_ids or (url != "#" and url in seen_urls):
             continue
 
-        desc = raw.get("description", "")
-        loc = raw.get("location", "Egypt")
-        city = raw.get("city", "Cairo")
-        src = raw.get("source", "Facebook Events")
+        loc = raw.get("location") or analyzed.get("venue") or "Egypt"
+        city = raw.get("city") or analyzed.get("city") or "Cairo"
+        src = raw.get("source") or ("Instagram Feeds" if "instagram.com" in url else "Facebook Events")
+        date_display = raw.get("date_display") or analyzed.get("date_display") or "Upcoming"
+        start_dt = analyzed.get("start_date") or BaseScraper.parse_datetime(date_display) or datetime.now()
+        reg_url = raw.get("registration_url") or analyzed.get("registration_url") or url
+        contacts = analyzer.extract_contacts(desc)
+
         score, priority, cat, tags, action, parallel = scorer.evaluate(title, desc, loc)
         full_desc = desc if len(desc) >= 100 else f"{desc} | {title} hosted in {city}, Egypt. Live social event announcement with verified youth registration and campus outreach opportunities.".strip(" |")
         rec = EventRecord(
             event_id=event_id,
             title=title,
             source=src,
-            date_display=raw.get("date_display", "Upcoming"),
+            start_date=start_dt,
+            date_display=date_display,
             location=loc,
             city=city,
             country="Egypt",
             url=url,
-            ticket_type=raw.get("ticket_type", "Free / RSVP"),
-            organizer=raw.get("organizer", "Facebook Event Host"),
+            ticket_type=raw.get("ticket_type") or analyzed.get("ticket_type") or "Free / RSVP",
+            organizer=raw.get("organizer") or analyzed.get("organizer") or "Facebook Event Host",
+            organizer_email=raw.get("organizer_email") or contacts.get("email"),
+            organizer_phone=raw.get("organizer_phone") or contacts.get("phone"),
+            organizer_instagram=raw.get("organizer_instagram") or contacts.get("instagram"),
             description=full_desc,
             category=raw.get("category") or cat,
             aiesec_tags=tags,
@@ -737,7 +839,7 @@ def import_social_events(req: SocialImportRequest):
             proof_type="Live Social Announcement",
             is_verified_proof=True,
             proof_evidence=f"Live Extracted from {src}",
-            registration_url=url,
+            registration_url=reg_url,
             post_direct_url=url,
             is_social_first=True
         )

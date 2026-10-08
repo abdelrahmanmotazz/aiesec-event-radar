@@ -12,7 +12,7 @@ function isBadTitle(title) {
   if (/(interested|going|مهتم|يحضر)\s*[·•|-]\s*\d+/i.test(lower)) return true;
   if (/^\d+\s*(interested|going|went)/i.test(lower)) return true;
   if (["facebook event", "null", "undefined", "none", "event", "events", "imported live event"].includes(lower)) return true;
-  if (/^(happening now|upcoming|today|tomorrow)/i.test(lower)) return true;
+  if (/^(happening now|upcoming(\s*\/\s*live)?|today|tomorrow)(\s+at\s+\d.*)?$/i.test(lower)) return true;
   if (/^[a-z]{3},\s+[a-z]{3}\s+\d{1,2}/i.test(lower)) return true;
   return false;
 }
@@ -20,7 +20,6 @@ function isBadTitle(title) {
 function cleanEventTitleFromDesc(badTitle, desc = "", location = "", url = "") {
   if (!isBadTitle(badTitle)) return badTitle.trim();
 
-  // 1. Check if Facebook URL contains a named event slug
   if (url && url.includes("facebook.com/events/")) {
     try {
       const parts = url.split("facebook.com/events/")[1].split(/[/?#]/).filter(Boolean);
@@ -50,9 +49,6 @@ function cleanEventTitleFromDesc(badTitle, desc = "", location = "", url = "") {
     const esc = locClean.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     text = text.replace(new RegExp("\\s*" + esc + ".*$", "i"), "");
   }
-
-  const venueRegex = /\s+(The GrEEK Campus|Hilton\s+[A-Za-z\s]+|Intercontinental\s+[A-Za-z\s]+|EG Intercontinental\s+[A-Za-z\s]+|Four Seasons\s+[A-Za-z\s]+|Marriott\s+[A-Za-z\s]+|Soham Yoga\s+[A-Za-z0-9\s,]+).*$/i;
-  text = text.replace(venueRegex, "");
 
   let cleaned = text.replace(/^[\s\-·•|,:\t\r\n]+|[\s\-·•|,:\t\r\n]+$/g, "");
   if (cleaned.length >= 4 && !isBadTitle(cleaned)) {
@@ -109,23 +105,27 @@ function extractFacebookEvents() {
       }
     }
 
-    // 3. Parse lines for date, location, and potential title
+    // 3. Parse lines: capture date, then title FIRST, then location
     lines.forEach(line => {
-      if (/\b(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec|mon|tue|wed|thu|fri|sat|sun|today|tomorrow|am|pm)\b/i.test(line)) {
+      if (/^(mon|tue|wed|thu|fri|sat|sun)\b.*?\b(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)\b/i.test(line) ||
+          /^(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)\s+\d{1,2}/i.test(line) ||
+          /^\d{1,2}\s+(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)/i.test(line)) {
         if (date === "Upcoming") date = line;
-      } else if (/\b(cairo|alexandria|tanta|mansoura|giza|assiut|hall|center|centre|hotel|campus|university)\b/i.test(line)) {
-        if (location === "Egypt") location = line;
-      } else if (!title && !isBadTitle(line)) {
+        return;
+      }
+      if (!title && !isBadTitle(line)) {
         title = line;
+        return;
+      }
+      if (line !== title && location === "Egypt" && !isBadTitle(line) && line.length >= 3 && line.length <= 120) {
+        location = line;
       }
     });
 
-    // 4. Sanitize title from description if still bad or missing
     if (isBadTitle(title)) {
       title = cleanEventTitleFromDesc(title, rawText, location, `https://www.facebook.com/events/${eventId}/`);
     }
 
-    // Check for image
     let img = "";
     if (container) {
       const imgEl = container.querySelector('img[src*="fbcdn"]');
@@ -140,7 +140,7 @@ function extractFacebookEvents() {
       location: location,
       source: "Facebook Events",
       image_url: img,
-      description: rawText.slice(0, 400),
+      description: rawText.slice(0, 500),
       is_social_first: true,
       proof_url: `https://www.facebook.com/events/${eventId}/`,
       proof_type: "Live Facebook Event Announcement"
@@ -153,10 +153,10 @@ function extractFacebookEvents() {
 function extractInstagramEvents() {
   const events = [];
   const articles = Array.from(document.querySelectorAll('article, div[role="presentation"]'));
-  articles.forEach((art, idx) => {
+  articles.forEach((art) => {
     const text = art.innerText || "";
-    if (/\b(event|summit|conference|workshop|webinar|hackathon|مؤتمر|ورشة|معرض)\b/i.test(text)) {
-      const linkEl = art.querySelector('a[href*="/p/"]');
+    if (/\b(event|summit|conference|workshop|webinar|hackathon|career fair|مؤتمر|ورشة|معرض|ملتقى|هاكاثون)\b/i.test(text)) {
+      const linkEl = art.querySelector('a[href*="/p/"], a[href*="/reel/"]');
       const postUrl = linkEl ? linkEl.href : window.location.href;
       const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
       let title = "";
@@ -173,7 +173,7 @@ function extractInstagramEvents() {
         date_display: "Upcoming",
         location: "Egypt",
         source: "Instagram Feeds",
-        description: text.slice(0, 400),
+        description: text.slice(0, 500),
         is_social_first: true,
         proof_url: postUrl,
         proof_type: "Direct Social Announcement Post"
@@ -183,7 +183,6 @@ function extractInstagramEvents() {
   return events;
 }
 
-// Message Listener from Popup
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === "extract_events") {
     let extracted = [];

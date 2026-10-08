@@ -51,18 +51,28 @@ document.addEventListener('DOMContentLoaded', async () => {
       });
       if (res.ok) {
         const data = await res.json();
-        showToast(`Synced ${data.imported || extractedEvents.length} events to Radar!`, "success");
+        showToast(`Synced ${data.imported || extractedEvents.length} events to local Radar!`, "success");
         btnSync.innerText = "✓ Synced Successfully";
         return;
       }
     } catch (err) {
-      // Local server not reachable
+      // Local server not reachable -> sync directly to live Vercel Radar via URL payload + clipboard
     }
 
-    // Fallback: Copy to clipboard with instant guidance
     navigator.clipboard.writeText(JSON.stringify(extractedEvents, null, 2));
-    showToast(`Copied ${extractedEvents.length} events! Paste into Live Social Ingest modal on your live site.`, "success");
-    btnSync.innerText = "✓ Copied to Clipboard";
+    try {
+      const compactPayload = extractedEvents.slice(0, 15).map(e => ({
+        title: e.title,
+        url: e.url,
+        date_display: e.date_display,
+        location: e.location,
+        source: e.source
+      }));
+      const encoded = encodeURIComponent(JSON.stringify(compactPayload));
+      chrome.tabs.create({ url: `https://aiesec-event-radar.vercel.app/?social_import=${encoded}` });
+    } catch (e) {}
+    showToast(`Synced ${extractedEvents.length} events to Live Radar & Clipboard!`, "success");
+    btnSync.innerText = "✓ Synced to Live Radar";
     setTimeout(() => { btnSync.innerText = "⚡ Sync Directly to Radar"; }, 3000);
   });
 

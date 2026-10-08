@@ -58,3 +58,28 @@ def test_franco_and_student_union_caption():
     assert analysis["is_event"] is True
     assert analysis["city"] == "Tanta"
 
+
+def test_bilingual_caption_date_and_contact_extraction():
+    analyzer = CaptionAnalyzer()
+    post = (
+        "🔥 جاهزين؟ 🔥\n"
+        "ملتقى التوظيف وريادة الأعمال بجامعة طنطا 2026 - Tanta Career Summit\n"
+        "يوم السبت ٢١ نوفمبر ٢٠٢٦ في مجمع سبرباي جامعة طنطا\n"
+        "سجل الآن: https://forms.gle/TantaCareerSummit2026\n"
+        "للتواصل: 01012345678 | info@tantasummit.org.eg | @tanta_youth_summit"
+    )
+    analysis = analyzer.analyze(post)
+    assert analysis["is_event"] is True
+    assert "ملتقى التوظيف" in analysis["title"]
+    assert analysis["city"] == "Tanta"
+    assert "Tanta University" in analysis["venue"]
+    assert analysis["start_date"] is not None
+    assert analysis["start_date"].year == 2026
+    assert analysis["start_date"].month == 11
+    assert analysis["start_date"].day == 21
+    assert analysis["registration_url"] == "https://forms.gle/TantaCareerSummit2026"
+    assert analysis["organizer_phone"] == "01012345678"
+    assert analysis["organizer_email"] == "info@tantasummit.org.eg"
+    assert analysis["organizer_instagram"] == "tanta_youth_summit"
+
+

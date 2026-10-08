@@ -1,14 +1,14 @@
-name: Daily AIESEC Radar Scrape & Live Site Sync
+name: Automated Egypt Event Radar Scrape & Live Cloud Sync
 
 on:
   schedule:
-    # Runs everyday at 03:00 UTC (05:00 AM Cairo Time)
-    - cron: '0 3 * * *'
+    # Runs twice daily: 03:00 UTC (05:00 AM Cairo) and 15:00 UTC (05:00 PM Cairo)
+    - cron: '0 3,15 * * *'
   workflow_dispatch: # Enables 1-click manual trigger button in GitHub Actions tab
 
 jobs:
   scrape-and-sync:
-    name: Execute Scrapers & Update Live Radar
+    name: Execute Multi-Engine Scrapers & Update Live Radar
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -46,17 +46,19 @@ jobs:
             echo "No FB_STORAGE_STATE secret found. Running in public discovery mode."
           fi
 
-      - name: Run Scraping Pipeline
+      - name: Run Scraping & Deduplication Pipeline
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
           python scripts/daily_scrape.py
 
-      - name: Commit & Push Changes to Live Site
+      - name: Commit & Push Changes to Live Site (Vercel + GitHub Pages)
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add -A
           if ! git diff --staged --quiet; then
-            git commit -m "chore(auto-sync): live event radar refresh [$(date +'%Y-%m-%d')]"
+            git commit -m "chore(auto-sync): live event radar refresh [$(date +'%Y-%m-%d %H:%M')]"
             git pull --rebase --autostash origin main
             git push origin main
           else
