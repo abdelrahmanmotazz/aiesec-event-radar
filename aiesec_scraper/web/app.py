@@ -90,7 +90,7 @@ def load_initial_events():
             except Exception as e:
                 logger.error(f"Error loading events from {jp}: {e}")
 
-    latest_xlsx = "data/aiesec_egypt_events_latest.xlsx"
+    latest_xlsx = "data/egypt_b2c_events_latest.xlsx" if os.path.exists("data/egypt_b2c_events_latest.xlsx") else "data/aiesec_egypt_events_latest.xlsx"
     events = []
     if os.path.exists(latest_xlsx):
         try:
@@ -639,11 +639,11 @@ def trigger_email_alert(req: EmailRequest):
 def download_export(file_format: str):
     """Directly download the latest Excel (.xlsx) or CSV file."""
     if file_format.lower() == "excel" or file_format.lower() == "xlsx":
-        path = "data/aiesec_egypt_events_latest.xlsx"
+        path = "data/egypt_b2c_events_latest.xlsx" if os.path.exists("data/egypt_b2c_events_latest.xlsx") else "data/aiesec_egypt_events_latest.xlsx"
         media_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         filename = "Egypt_Events_Latest.xlsx"
     elif file_format.lower() == "csv":
-        path = "data/aiesec_egypt_events_latest.csv"
+        path = "data/egypt_b2c_events_latest.csv" if os.path.exists("data/egypt_b2c_events_latest.csv") else "data/aiesec_egypt_events_latest.csv"
         media_type = "text/csv"
         filename = "Egypt_Events_Latest.csv"
     else:

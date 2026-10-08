@@ -272,4 +272,61 @@ def test_is_event_passed_logic():
     assert is_event_passed(ev_active_range, ref_now=ref_now) is False
 
 
+def test_ticketsmarche_date_in_location_repair():
+    from aiesec_scraper.pipeline import repair_swapped_title_location
+    ev = EventRecord(
+        event_id="tm_omar",
+        title="Omar Khairat",
+        source="TicketsMarche",
+        date_display="Omar Khairat",
+        location="15 - 16 Oct 2026",
+        city="Cairo",
+        url="https://www.ticketsmarche.com/event_123"
+    )
+    repair_swapped_title_location(ev)
+    assert ev.date_display == "15 - 16 Oct 2026"
+    assert ev.location == "Cairo Cultural Hub"
+    assert ev.start_date is not None
+    assert ev.start_date.month == 10 and ev.start_date.day == 15
+
+
+def test_source_string_deduplication():
+    from aiesec_scraper.pipeline import deduplicate_source_string
+    bloated = "AllEvents, Eventbrite, AllEvents, Eventbrite, AllEvents, TicketsMarche"
+    assert deduplicate_source_string(bloated) == "AllEvents, Eventbrite, TicketsMarche"
+
+
+def test_multiday_and_bullet_date_parsing():
+    from aiesec_scraper.scrapers.base import BaseScraper
+    dt1 = BaseScraper.parse_datetime("Sun, 25 Oct • 07:00 PM + 1 more")
+    assert dt1 is not None and dt1.month == 10 and dt1.day == 25 and dt1.hour == 19
+
+    dt2 = BaseScraper.parse_datetime("Oct 29 - 31, 2026 · 09:00 AM")
+    assert dt2 is not None and dt2.year == 2026 and dt2.month == 10 and dt2.day == 29
+
+    dt3 = BaseScraper.parse_datetime("Nov 12,13 & 14 · 08:00 PM")
+    assert dt3 is not None and dt3.month == 11 and dt3.day == 12
+
+
+def test_dataset_integrity_and_zero_aiesec():
+    import json
+    import os
+    from aiesec_scraper.pipeline import is_date_or_garbage_title, is_bad_or_non_egypt
+    root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+    with open(os.path.join(root, "events.json"), "r", encoding="utf-8") as f:
+        events = json.load(f)
+    assert len(events) >= 200
+    for item in events:
+        rec = EventRecord(**item)
+        assert rec.start_date is not None, f"Null start_date in {rec.event_id}"
+        assert not is_date_or_garbage_title(rec.title), f"Bad title: {rec.title}"
+        assert not is_bad_or_non_egypt(rec), f"Foreign/bad event: {rec.title}"
+        for k, v in item.items():
+            if k == "aiesec_tags":
+                continue
+            if isinstance(v, str):
+                assert "aiesec" not in v.lower(), f"AIESEC text in {rec.event_id}.{k}: {v}"
+
+
+
 

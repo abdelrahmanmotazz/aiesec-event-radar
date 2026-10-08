@@ -111,11 +111,21 @@ class TicketsMarcheScraper(BaseScraper):
         """Climb ancestor DOM to find text containing date, time, and venue."""
         curr = anchor_tag
         ancestor_text = ""
+        month_word_re = re.compile(
+            r"\b(jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec|january|february|march|april|june|july|august|september|october|november|december)\b",
+            re.IGNORECASE,
+        )
+        date_part_re = re.compile(
+            r"(?:\b(?:jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec|january|february|march|april|june|july|august|september|october|november|december)\b[^|]*?\d|\d[^|]*?\b(?:jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec|january|february|march|april|june|july|august|september|october|november|december)\b)",
+            re.IGNORECASE,
+        )
+        time_part_re = re.compile(r"^(?:from\s+)?\d{1,2}(?::\d{2})?\s*(?:am|pm)(?:\s*to\s*\d{1,2}(?::\d{2})?\s*(?:am|pm))?$", re.IGNORECASE)
+
         for _ in range(7):
             if not curr:
                 break
             text = curr.get_text(" | ", strip=True)
-            if any(m in text for m in ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "PM", "AM"]):
+            if date_part_re.search(text):
                 ancestor_text = text
                 break
             curr = curr.parent
@@ -123,19 +133,46 @@ class TicketsMarcheScraper(BaseScraper):
         venue = "Cairo Cultural Hub"
         detected_city = "Cairo"
         date_dt = None
-        date_disp = "Date on TicketsMarche"
+        date_disp = "TBA"
+        time_disp = ""
 
         if ancestor_text:
             parts = [p.strip() for p in ancestor_text.split("|") if p.strip()]
-            # Find date part
+            title_norm = title.strip().lower()
+
+            # 1. Find genuine date part (must contain month word + digit, and not be the event title)
             for part in parts:
-                if any(m in part.lower() for m in ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"]):
+                if part.lower() == title_norm:
+                    continue
+                if date_part_re.search(part):
                     date_disp = part
-                    date_dt = self._parse_date_string(part)
+                    date_dt = self._parse_date_string(part) or self.parse_datetime(part)
                     break
 
-            # Find venue
-            venue_candidates = [p for p in parts if p not in ["Organized by", "Book Now", "More Info", date_disp, title] and len(p) > 2]
+            # 2. Find time part if separate
+            for part in parts:
+                if time_part_re.match(part):
+                    time_disp = part
+                    break
+
+            if time_disp and date_disp != "TBA" and time_disp.lower() not in date_disp.lower():
+                date_disp = f"{date_disp} · {time_disp}"
+
+            # 3. Find venue (exclude title, date parts, time parts, prices, and button labels)
+            venue_candidates = []
+            for p in parts:
+                p_low = p.lower()
+                if p_low == title_norm or p == date_disp or p == time_disp:
+                    continue
+                if p in ["Organized by", "Book Now", "More Info", "Buy Tickets", "Tickets"]:
+                    continue
+                if date_part_re.search(p) or time_part_re.match(p):
+                    continue
+                if re.match(r"^(?:egp\s*)?\d+(?:[.,]\d+)?(?:\s*egp)?$", p_low):
+                    continue
+                if len(p) > 2:
+                    venue_candidates.append(p)
+
             if venue_candidates:
                 venue = venue_candidates[0]
 
@@ -152,26 +189,20 @@ class TicketsMarcheScraper(BaseScraper):
         else:
             detected_city = "Cairo"
 
-        if not date_dt:
-            date_dt = datetime.now() + timedelta(days=14)
-            if date_disp == "Date on TicketsMarche":
-                date_disp = date_dt.strftime("%b %d, %Y · 08:00 PM")
-
         return date_dt, date_disp, venue, detected_city
 
     def _parse_date_string(self, text: str) -> Optional[datetime]:
         """Parse TicketsMarche date strings e.g. 'Sep 12', 'From 11th to 14th SEPT', '6-8 September 2026'."""
         try:
             current_year = datetime.now().year
-            # Check for standard 'Sep 12' or 'Sep 05'
-            m = re.search(r"([A-Za-z]{3,9})\s+(\d{1,2})", text)
+            # Check for standard 'Oct 16' or 'Nov 5 to Nov 7, 2026'
+            m = re.search(r"\b(jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec)[a-z]*\s+(\d{1,2})\b", text, re.IGNORECASE)
             if m:
                 month_str = m.group(1).lower()[:3]
                 day = int(m.group(2))
                 if month_str in MONTH_MAP:
                     month = MONTH_MAP[month_str]
                     hour = 20  # default 8:00 PM
-                    # check if hour is in text
                     time_m = re.search(r"(\d{1,2}):(\d{2})\s*(PM|AM)?", text, re.IGNORECASE)
                     if time_m:
                         h = int(time_m.group(1))
@@ -181,8 +212,8 @@ class TicketsMarcheScraper(BaseScraper):
                         hour = h
                     return datetime(current_year, month, day, hour, 0)
 
-            # Check for '11th to 14th SEPT'
-            m2 = re.search(r"(\d{1,2})(?:st|nd|rd|th)?\s*(?:to\s*\d{1,2}(?:st|nd|rd|th)?)?\s*([A-Za-z]{3,9})", text, re.IGNORECASE)
+            # Check for '11th to 14th SEPT' or 'From 24 Sep to 2 Oct'
+            m2 = re.search(r"\b(\d{1,2})(?:st|nd|rd|th)?\s*(?:to\s*\d{1,2}(?:st|nd|rd|th)?\s*)?(jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec)[a-z]*\b", text, re.IGNORECASE)
             if m2:
                 day = int(m2.group(1))
                 month_str = m2.group(2).lower()[:3]

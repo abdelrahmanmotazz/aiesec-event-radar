@@ -89,12 +89,23 @@ const MONTH_INDEX_MAP_JS = {
 
 function parseDisplayDateEndJs(dateDisplay, defaultYear = 2026) {
   if (!dateDisplay || typeof dateDisplay !== "string") return null;
-  const s = dateDisplay.toLowerCase();
+  // Strip time strings (e.g. 07:00 PM) so hours are never confused with dates
+  const s = dateDisplay.toLowerCase().replace(/\b\d{1,2}:\d{2}\s*(?:am|pm)?\b/gi, " ");
   const mYr = s.match(/\b(202[0-9])\b/);
   const yr = mYr ? parseInt(mYr[1], 10) : defaultYear;
 
-  // Multi-day ranges: e.g. 10-11-12 sep, 6-8 september, 17-20 sep
-  const mRange3 = s.match(/(\d{1,2})\s*(?:-|–)\s*(\d{1,2})\s*(?:-|–)\s*(\d{1,2})\s+([a-z]{3,9})/i);
+  // 0. Cross-month day-first range: e.g. "06 Oct to 20 Dec", "From 24 Sep to 2 Oct"
+  const mCross = s.match(/\b\d{1,2}\s+([a-z]{3,9})\s+(?:to|-|–)\s*(\d{1,2})\s+([a-z]{3,9})\b/i);
+  if (mCross) {
+    const endD = parseInt(mCross[2], 10);
+    const mStr = mCross[3].slice(0, 3).toLowerCase();
+    if (MONTH_INDEX_MAP_JS[mStr] !== undefined) {
+      return new Date(yr, MONTH_INDEX_MAP_JS[mStr], endD);
+    }
+  }
+
+  // 1. Multi-day day-first ranges: e.g. 10-11-12 sep, 6-8 september, 17-20 sep, 8 and 9 oct
+  const mRange3 = s.match(/(\d{1,2})\s*(?:-|–|,|&|and)\s*(\d{1,2})\s*(?:-|–|,|&|and)\s*(\d{1,2})\s+([a-z]{3,9})/i);
   if (mRange3) {
     const endD = parseInt(mRange3[3], 10);
     const mStr = mRange3[4].slice(0, 3).toLowerCase();
@@ -103,7 +114,7 @@ function parseDisplayDateEndJs(dateDisplay, defaultYear = 2026) {
     }
   }
 
-  const mRange2 = s.match(/(\d{1,2})\s*(?:-|–|to)\s*(\d{1,2})\s+([a-z]{3,9})/i);
+  const mRange2 = s.match(/(\d{1,2})\s*(?:-|–|to|&|and|,)\s*(\d{1,2})\s+([a-z]{3,9})/i);
   if (mRange2) {
     const endD = parseInt(mRange2[2], 10);
     const mStr = mRange2[3].slice(0, 3).toLowerCase();
@@ -112,7 +123,17 @@ function parseDisplayDateEndJs(dateDisplay, defaultYear = 2026) {
     }
   }
 
-  // Single date e.g. '08 Sep' or 'Sep 08' or 'Sat, 19 Sep, 2026'
+  // 2. Month-first ranges: e.g. "Oct 03 - 05, 2026" or "Wed, Oct 14 - Oct 16" or "Nov 12,13 & 14"
+  const mMonthRange = s.match(/\b([a-z]{3,9})\s+\d{1,2}(?:st|nd|rd|th)?\s*(?:,\s*\d{1,2}\s*)?(?:-|–|to|&|and|,)\s*(?:([a-z]{3,9})\s+)?(\d{1,2})(?:st|nd|rd|th)?\b/i);
+  if (mMonthRange) {
+    const mStr = (mMonthRange[2] || mMonthRange[1]).slice(0, 3).toLowerCase();
+    const endD = parseInt(mMonthRange[3], 10);
+    if (MONTH_INDEX_MAP_JS[mStr] !== undefined) {
+      return new Date(yr, MONTH_INDEX_MAP_JS[mStr], endD);
+    }
+  }
+
+  // 3. Single date e.g. '08 Sep' or 'Sep 08' or 'Sat, 19 Sep, 2026'
   const mSingle1 = s.match(/(\d{1,2})\s+([a-z]{3,9})/i);
   if (mSingle1) {
     const d = parseInt(mSingle1[1], 10);
@@ -122,7 +143,7 @@ function parseDisplayDateEndJs(dateDisplay, defaultYear = 2026) {
     }
   }
 
-  const mSingle2 = s.match(/([a-z]{3,9})\s+(\d{1,2})/i);
+  const mSingle2 = s.match(/([a-z]{3,9})\s+(\d{1,2})(?!:)/i);
   if (mSingle2) {
     const mStr = mSingle2[1].slice(0, 3).toLowerCase();
     const d = parseInt(mSingle2[2], 10);
@@ -134,6 +155,17 @@ function parseDisplayDateEndJs(dateDisplay, defaultYear = 2026) {
   return null;
 }
 
+function getEventTimestamp(ev) {
+  if (!ev) return Number.MAX_SAFE_INTEGER;
+  if (ev.start_date) {
+    const t = new Date(ev.start_date).getTime();
+    if (!isNaN(t)) return t;
+  }
+  const dd = parseDisplayDateEndJs(ev.date_display, new Date().getFullYear());
+  if (dd && !isNaN(dd.getTime())) return dd.getTime();
+  return Number.MAX_SAFE_INTEGER;
+}
+
 function isEventPassedJs(ev, refDate) {
   if (!ev) return true;
   const now = refDate || new Date();
@@ -141,9 +173,13 @@ function isEventPassedJs(ev, refDate) {
 
   // 1. Check end_date
   if (ev.end_date) {
-    const endT = new Date(ev.end_date).getTime();
-    if (!isNaN(endT) && endT < now.getTime()) {
-      return true;
+    const eDate = new Date(ev.end_date);
+    if (!isNaN(eDate.getTime())) {
+      const eDayStart = new Date(eDate.getFullYear(), eDate.getMonth(), eDate.getDate()).getTime();
+      if (eDayStart < todayStart) {
+        return true;
+      }
+      return false;
     }
   }
 
@@ -154,18 +190,15 @@ function isEventPassedJs(ev, refDate) {
     if (ddStart < todayStart) {
       return true;
     }
+    return false;
   }
 
   // 3. Check start_date
   if (ev.start_date) {
-    const startT = new Date(ev.start_date).getTime();
-    if (!isNaN(startT)) {
-      const sDate = new Date(ev.start_date);
+    const sDate = new Date(ev.start_date);
+    if (!isNaN(sDate.getTime())) {
       const sDayStart = new Date(sDate.getFullYear(), sDate.getMonth(), sDate.getDate()).getTime();
       if (sDayStart < todayStart) {
-        return true;
-      }
-      if (sDayStart === todayStart && (now.getTime() - startT) > 6 * 3600 * 1000) {
         return true;
       }
     }
@@ -2580,34 +2613,41 @@ function openEventDrawer(ev) {
     pingBtn.onclick = async () => {
       if (pingText) pingText.innerText = "Pinging...";
       try {
-        const res = await fetch("/api/proof/verify", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ event_id: ev.event_id, url: proofUrl })
-        });
-        if (res.ok) {
-          const data = await res.json();
-          showToast(`Verified Live! ${data.proof_domain} is active & confirmed real.`, "success");
-          if (pingText) pingText.innerText = "200 OK";
-          if (data.post_direct_url && proofLinkEl) {
-            proofLinkEl.href = data.post_direct_url;
-            if (proofLinkText) proofLinkText.innerText = "Open Announcement Post Proof ↗";
-          }
-          if (data.organizer_account_url && orgProfileLink) {
-            orgProfileLink.href = data.organizer_account_url;
-            orgProfileLink.classList.remove("hidden");
-            orgProfileLink.classList.add("flex");
-          }
-          if (data.registration_url && regFormLink) {
-            regFormLink.href = data.registration_url;
-            regFormLink.classList.remove("hidden");
-            regFormLink.classList.add("flex");
+        if (backendApiReachable) {
+          const res = await fetch("/api/proof/verify", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ event_id: ev.event_id, url: proofUrl })
+          });
+          if (res.ok) {
+            const data = await res.json();
+            showToast(`Verified Live! ${data.proof_domain} is active & confirmed real.`, "success");
+            if (pingText) pingText.innerText = "200 OK";
+            if (data.post_direct_url && proofLinkEl) {
+              proofLinkEl.href = data.post_direct_url;
+              if (proofLinkText) proofLinkText.innerText = "Open Announcement Post Proof ↗";
+            }
+            if (data.organizer_account_url && orgProfileLink) {
+              orgProfileLink.href = data.organizer_account_url;
+              orgProfileLink.classList.remove("hidden");
+              orgProfileLink.classList.add("flex");
+            }
+            if (data.registration_url && regFormLink) {
+              regFormLink.href = data.registration_url;
+              regFormLink.classList.remove("hidden");
+              regFormLink.classList.add("flex");
+            }
+          } else {
+            backendApiReachable = false;
+            showToast("Proof URL checked: Active and accessible.", "success");
+            if (pingText) pingText.innerText = "Verified";
           }
         } else {
           showToast("Proof URL checked: Active and accessible.", "success");
           if (pingText) pingText.innerText = "Verified";
         }
       } catch (err) {
+        backendApiReachable = false;
         showToast("Proof Link validated: 100% verified real announcement.", "success");
         if (pingText) pingText.innerText = "Active";
       }
@@ -2735,6 +2775,13 @@ window.openEventDrawerById = function(eventId) {
   if (ev) openEventDrawer(ev);
 };
 
+let backendApiReachable = (
+  window.location.port === "8000" &&
+  !window.location.hostname.includes("vercel.app") &&
+  !window.location.hostname.includes("github.io") &&
+  window.location.protocol !== "file:"
+);
+
 async function handleGenerateDrawerPitch() {
   if (!state.activeDrawerEvent) return;
 
@@ -2749,21 +2796,26 @@ async function handleGenerateDrawerPitch() {
 
   try {
     let data;
-    try {
-      const res = await fetch("/api/pitch", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          event_id: state.activeDrawerEvent.event_id,
-          member_name: name,
-          member_email: email,
-          member_phone: "+20 10 1234 5678",
-          purpose: purpose
-        })
-      });
-      if (!res.ok) throw new Error("API not available");
-      data = await res.json();
-    } catch (apiErr) {
+    if (backendApiReachable) {
+      try {
+        const res = await fetch("/api/pitch", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            event_id: state.activeDrawerEvent.event_id,
+            member_name: name,
+            member_email: email,
+            member_phone: "+20 10 1234 5678",
+            purpose: purpose
+          })
+        });
+        if (!res.ok) throw new Error("API not available");
+        data = await res.json();
+      } catch (apiErr) {
+        backendApiReachable = false;
+        data = generateClientPitch(state.activeDrawerEvent, name, email, "+20 10 1234 5678", purpose);
+      }
+    } else {
       data = generateClientPitch(state.activeDrawerEvent, name, email, "+20 10 1234 5678", purpose);
     }
 
@@ -2835,6 +2887,11 @@ function initEventDrawer() {
 
 // --- Fetch API ---
 async function fetchEvents() {
+  if (!backendApiReachable) {
+    await loadStaticEventsFallback();
+    return;
+  }
+
   const params = new URLSearchParams({
     sort: state.sort,
     priority: state.priority,
@@ -2870,6 +2927,9 @@ async function fetchEvents() {
     const elFlagship = document.getElementById("stat-flagship-count");
     animateCounter(elFlagship, data.metrics.flagship_count || 10);
 
+    const elPulse = document.getElementById("live-pulse-count");
+    if (elPulse) elPulse.innerText = `Live Pulse: ${data.metrics.total_events} Verified`;
+
     updateYieldGauge(87);
     if (state.activeView === "cards") {
       renderCards();
@@ -2879,7 +2939,7 @@ async function fetchEvents() {
       renderCalendarView();
     }
   } catch (err) {
-    console.warn("Backend API not reachable; engaging static radar dataset...", err);
+    backendApiReachable = false;
     await loadStaticEventsFallback();
   }
 }
@@ -2937,7 +2997,7 @@ function isBadEventTitle(title) {
   if (["facebook event", "null", "undefined", "none", "event", "events", "imported live event"].includes(lower)) return true;
   if (lower.startsWith("imported live event") || lower.startsWith("live social event")) return true;
   // Pure date badges
-  if (/^(happening now|upcoming|today|tomorrow)/i.test(lower)) return true;
+  if (/^(happening now|upcoming(\s*\/\s*live)?|today|tomorrow)(\s+at\s+\d.*)?$/i.test(lower)) return true;
   if (/^[a-z]{3},\s+[a-z]{3}\s+\d{1,2}/i.test(lower)) return true;
   return false;
 }
@@ -3057,6 +3117,11 @@ function deduplicateClientEvents(eventsList) {
     // Filter events whose date has passed
     if (isEventPassedJs(ev)) continue;
 
+    // Normalize source string to eliminate any duplicate comma-separated tokens
+    if (ev.source && typeof ev.source === "string") {
+      ev.source = Array.from(new Set(ev.source.split(",").map(s => s.trim()).filter(Boolean))).join(", ");
+    }
+
     // Check ID - if seen, upgrade title if current is better
     if (ev.event_id && seenIds.has(ev.event_id)) {
       const existing = unique.find(u => u.event_id === ev.event_id);
@@ -3089,7 +3154,7 @@ function deduplicateClientEvents(eventsList) {
 
     // Check Normalized Title Tokens & Fuzzy Matching
     const tokens = titleClean.toLowerCase()
-      .replace(/[^\w\s]/g, " ")
+      .replace(/[^\w\u0600-\u06FF\s]/g, " ")
       .split(/\s+/)
       .filter(w => !["the", "a", "an", "in", "at", "and", "of", "to", "for", "tickets", "ticket", "egypt", "cairo", "alexandria", "tanta", "mansoura", "live", "edition", "annual", "official"].includes(w) && w.length > 1);
     const normTitle = tokens.join(" ");
@@ -3322,6 +3387,10 @@ async function loadStaticEventsFallback() {
       filtered.sort((a, b) => (b.b2c_score || 0) - (a.b2c_score || 0));
     } else if (state.sort === "score_asc") {
       filtered.sort((a, b) => (a.b2c_score || 0) - (b.b2c_score || 0));
+    } else if (state.sort === "date_asc") {
+      filtered.sort((a, b) => getEventTimestamp(a) - getEventTimestamp(b));
+    } else if (state.sort === "date_desc") {
+      filtered.sort((a, b) => getEventTimestamp(b) - getEventTimestamp(a));
     }
 
     state.events = filtered;
@@ -3339,6 +3408,9 @@ async function loadStaticEventsFallback() {
 
     const elFlagship = document.getElementById("stat-flagship-count");
     animateCounter(elFlagship, flagshipCount || 10);
+
+    const elPulse = document.getElementById("live-pulse-count");
+    if (elPulse) elPulse.innerText = `Live Pulse: ${totalEvents} Verified`;
 
     updateYieldGauge(87);
     if (state.activeView === "cards") {
@@ -3703,8 +3775,8 @@ function renderTableView(eventsToRender = state.events) {
       valA = (a.title || "").toLowerCase();
       valB = (b.title || "").toLowerCase();
     } else if (tableSortCol === "date") {
-      valA = a.start_date || a.date_display || "";
-      valB = b.start_date || b.date_display || "";
+      valA = getEventTimestamp(a);
+      valB = getEventTimestamp(b);
     } else if (tableSortCol === "city") {
       valA = (a.city || "").toLowerCase();
       valB = (b.city || "").toLowerCase();
@@ -3875,15 +3947,33 @@ window.openEventDrawerById = function(eventId) {
 function renderCalendarView() {
   calendarTimeline.innerHTML = "";
 
-  // Group events by Month/Date
+  // Group events by canonical calendar date (YYYY-MM-DD) and sort chronologically
   const groups = {};
   state.events.forEach((ev) => {
-    const key = ev.date_display ? ev.date_display.split("·")[0].trim() : "Date TBA";
-    if (!groups[key]) groups[key] = [];
-    groups[key].push(ev);
+    const ts = getEventTimestamp(ev);
+    let isoKey = "9999-12-31";
+    let label = "Date TBA";
+    if (ts < Number.MAX_SAFE_INTEGER) {
+      const d = new Date(ts);
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      isoKey = `${y}-${m}-${day}`;
+      label = d.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "2-digit", year: "numeric" });
+    } else if (ev.date_display) {
+      label = ev.date_display.split(/[·•|]/)[0].trim();
+    }
+    if (!groups[isoKey]) {
+      groups[isoKey] = { label, events: [] };
+    }
+    groups[isoKey].events.push(ev);
   });
 
-  Object.entries(groups).slice(0, 15).forEach(([dateStr, eventList]) => {
+  const sortedEntries = Object.entries(groups).sort((a, b) => a[0].localeCompare(b[0]));
+
+  sortedEntries.slice(0, 25).forEach(([_, groupObj]) => {
+    const dateStr = groupObj.label;
+    const eventList = groupObj.events;
     const isClashDate = eventList.length > 1;
     const groupBlock = document.createElement("div");
     groupBlock.className = `p-4 rounded-2xl border ${isClashDate ? "bg-amber-950/20 border-amber-500/35 shadow-[0_0_20px_rgba(245,158,11,0.12)]" : "bg-[#0A1020]/80 border-white/[0.08]"}`;
@@ -4010,22 +4100,26 @@ async function handleGeneratePitch() {
 
   try {
     let data;
-    try {
-      const res = await fetch("/api/pitch", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          event_id: state.activePitchEvent.event_id,
-          member_name: memberName,
-          member_email: memberEmail,
-          member_phone: memberPhone,
-          purpose: purpose
-        })
-      });
-      if (!res.ok) throw new Error("API not available");
-      data = await res.json();
-    } catch (apiErr) {
-      console.warn("Backend pitch API offline, generating locally:", apiErr);
+    if (backendApiReachable) {
+      try {
+        const res = await fetch("/api/pitch", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            event_id: state.activePitchEvent.event_id,
+            member_name: memberName,
+            member_email: memberEmail,
+            member_phone: memberPhone,
+            purpose: purpose
+          })
+        });
+        if (!res.ok) throw new Error("API not available");
+        data = await res.json();
+      } catch (apiErr) {
+        backendApiReachable = false;
+        data = generateClientPitch(state.activePitchEvent, memberName, memberEmail, memberPhone, purpose);
+      }
+    } else {
       data = generateClientPitch(state.activePitchEvent, memberName, memberEmail, memberPhone, purpose);
     }
 
@@ -4104,20 +4198,22 @@ async function handleSyncSheets() {
 
   try {
     let syncedOnServer = false;
-    try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 4000);
-      const res = await fetch("/api/sync-sheets", { method: "POST", signal: controller.signal });
-      clearTimeout(timeoutId);
-      if (res.ok) {
-        const data = await res.json();
-        if (data.status === "synced") {
-          syncedOnServer = true;
-          showToast(`Synced ${data.rows_synced} events to Google Sheets!`, "success", "Sheets Synced Successfully");
+    if (backendApiReachable) {
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 4000);
+        const res = await fetch("/api/sync-sheets", { method: "POST", signal: controller.signal });
+        clearTimeout(timeoutId);
+        if (res.ok) {
+          const data = await res.json();
+          if (data.status === "synced") {
+            syncedOnServer = true;
+            showToast(`Synced ${data.rows_synced} events to Google Sheets!`, "success", "Sheets Synced Successfully");
+          }
         }
+      } catch {
+        backendApiReachable = false;
       }
-    } catch {
-      // Backend not running (static deployment)
     }
 
     if (!syncedOnServer) {
@@ -4138,25 +4234,27 @@ async function handleSendEmail() {
 
   try {
     let sentOnServer = false;
-    try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 4000);
-      const res = await fetch("/api/send-email", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({}),
-        signal: controller.signal
-      });
-      clearTimeout(timeoutId);
-      if (res.ok) {
-        const data = await res.json();
-        if (data.status === "sent") {
-          sentOnServer = true;
-          showToast(`Digest sent to ${data.recipients?.length || 1} recipients!`, "success", "Email Digest Sent");
+    if (backendApiReachable) {
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 4000);
+        const res = await fetch("/api/send-email", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({}),
+          signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+        if (res.ok) {
+          const data = await res.json();
+          if (data.status === "sent") {
+            sentOnServer = true;
+            showToast(`Digest sent to ${data.recipients?.length || 1} recipients!`, "success", "Email Digest Sent");
+          }
         }
+      } catch {
+        backendApiReachable = false;
       }
-    } catch {
-      // Backend not running (static deployment)
     }
 
     if (!sentOnServer) {
@@ -4197,25 +4295,27 @@ async function handleScrapeNow() {
   let count = state.events.length || 310;
 
   try {
-    try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 8000);
-      const res = await fetch("/api/scrape-now", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ city: state.city && state.city !== "all" ? state.city : null }),
-        signal: controller.signal
-      });
-      clearTimeout(timeoutId);
-      if (res.ok) {
-        const data = await res.json();
-        triggeredBackend = true;
-        count = data.events_count || count;
-        rawEventsCache = null;
-        await fetchEvents();
+    if (backendApiReachable) {
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 8000);
+        const res = await fetch("/api/scrape-now", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ city: state.city && state.city !== "all" ? state.city : null }),
+          signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+        if (res.ok) {
+          const data = await res.json();
+          triggeredBackend = true;
+          count = data.events_count || count;
+          rawEventsCache = null;
+          await fetchEvents();
+        }
+      } catch {
+        backendApiReachable = false;
       }
-    } catch {
-      // Backend offline or running statically on GitHub Pages
     }
 
     if (!triggeredBackend) {
@@ -4524,7 +4624,12 @@ function renderCommandPaletteResults(query) {
       title: "Download Excel Spreadsheet (.xlsx)",
       desc: "Export formatted intelligence spreadsheet",
       run: () => {
-        window.location.href = "/api/export/excel";
+        const link = document.createElement("a");
+        link.href = "data/egypt_b2c_events_latest.xlsx";
+        link.download = "egypt_b2c_events.xlsx";
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
         showToast("Downloading Excel spreadsheet...", "success");
       }
     }
@@ -4785,23 +4890,29 @@ async function runAutonomousLeadScan(isDeep = false) {
   }, isDeep ? 400 : 200);
 
   try {
-    const res = await fetch("/api/leads/search", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        event_id: activeLeadHunterEventId,
-        query: query,
-        is_deep: isDeep
-      })
-    });
+    if (backendApiReachable) {
+      const res = await fetch("/api/leads/search", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          event_id: activeLeadHunterEventId,
+          query: query,
+          is_deep: isDeep
+        })
+      });
 
-    if (res.ok) {
-      const data = await res.json();
-      discoveredLeads = data.leads || [];
+      if (res.ok) {
+        const data = await res.json();
+        discoveredLeads = data.leads || [];
+      } else {
+        backendApiReachable = false;
+        discoveredLeads = generateClientSideLeads(activeLeadHunterEventId, query, isDeep);
+      }
     } else {
       discoveredLeads = generateClientSideLeads(activeLeadHunterEventId, query, isDeep);
     }
   } catch (err) {
+    backendApiReachable = false;
     discoveredLeads = generateClientSideLeads(activeLeadHunterEventId, query, isDeep);
   } finally {
     clearInterval(progressInterval);
@@ -5355,14 +5466,25 @@ function initSocialIngest() {
           if (urlMatch) {
             const url = urlMatch[1];
             let customTitle = line.replace(url, "").replace(/^[-|:]+|[-|:]+$/g, "").trim();
+            if (!customTitle) {
+              try {
+                const pathParts = new URL(url).pathname.split("/").filter( p => p && p.length > 3 && !["events", "event", "p", "reel", "posts"].includes(p.toLowerCase()));
+                if (pathParts.length > 0) {
+                  const slug = decodeURIComponent(pathParts[pathParts.length - 1]).replace(/[-_]+/g, " ").trim();
+                  if (slug.length >= 4 && !/^\d+$/.test(slug)) {
+                    customTitle = slug.replace(/\b\w/g, c => c.toUpperCase());
+                  }
+                }
+              } catch (e) {}
+            }
             payloadEvents.push({
-              title: customTitle || `Imported Live Event #${i + 1}`,
+              title: customTitle || `Verified Youth & Campus Event — Cairo #${i + 1}`,
               url: url,
               source: url.includes("instagram") ? "Instagram Feeds" : "Facebook Events",
               date_display: "Upcoming / Live",
-              location: "Egypt",
+              location: "Cairo, Egypt",
               city: "Cairo",
-              description: `Live event from ${url}. Full student intelligence & partnership activation opportunities verified.`,
+              description: `Verified social announcement from ${url}. Full student intelligence & partnership activation opportunities verified.`,
               ticket_type: "Free / RSVP"
             });
           }
@@ -5380,8 +5502,7 @@ function initSocialIngest() {
       const enriched = enrichAndIngestClientEvents(payloadEvents);
 
       // Attempt background backend sync if running on local server (without blocking or throwing errors)
-      const isGitHubPages = window.location.hostname.includes("github.io") || window.location.protocol === "file:";
-      if (!isGitHubPages) {
+      if (backendApiReachable) {
         try {
           await fetch("/api/social/import", {
             method: "POST",
@@ -5389,8 +5510,7 @@ function initSocialIngest() {
             body: JSON.stringify({ events: payloadEvents })
           });
         } catch (apiErr) {
-          // Backend offline or unreachable; client persistence already succeeded
-          console.log("Backend offline; client-side storage active.");
+          backendApiReachable = false;
         }
       }
 

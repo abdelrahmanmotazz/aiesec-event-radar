@@ -21,7 +21,7 @@ def test_summits_scraper_nationwide():
     techne_cairo = next((e for e in events if "techne summit cairo" in e.title.lower()), None)
     assert techne_cairo is not None
     assert techne_cairo.city == "Cairo"
-    assert techne_cairo.start_date.month == 9
+    assert techne_cairo.start_date.month == 11
 
     # Assert RiseUp is present
     riseup = next((e for e in events if "riseup" in e.title.lower()), None)

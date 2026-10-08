@@ -19,6 +19,8 @@ from .scrapers import (
     TicketsMarcheScraper,
 )
 
+from .scrapers.base import BaseScraper
+
 logger = logging.getLogger(__name__)
 
 NON_EGYPT_PATTERNS = [
@@ -27,7 +29,10 @@ NON_EGYPT_PATTERNS = [
     re.compile(r"\b(united states|usa|u\.s\.a|u\.s\.|canada|australia|united kingdom|\buk\b)\b", re.IGNORECASE),
     re.compile(r"\balexandria,\s*va\b", re.IGNORECASE),
     re.compile(r"\balexandria.*virginia\b", re.IGNORECASE),
-    re.compile(r"\b(berlin|stuttgart|valencia|barcelona|geneve|istanbul|assisi|foligno|umbria|spello|perugia|urbino|offida|scarzuola|marche festival|senigallia|montegabbione|pesaro|cannara|santa-maria-degli-angeli|fabriano|pierosara|italy|italia)\b", re.IGNORECASE),
+    re.compile(r"\b(EDT|CDT|MDT|PDT|BST|AEST)\b"),
+    re.compile(r"\b(hollin hall|vahcs|veterans affairs|morrison center|boise|mayberry|spirit night|cure coffee|pet nail trim|fall y'all|fall y’all|virginia|maryland|potomac|del ray|oronoco bay|paws in the park|aslin beer|viking plaza|turning leaf|hartselle|oshkosh|nappanee|ridgeville|sleepy hollow|moss grove|tug hill|cairo jag|minibeast)\b", re.IGNORECASE),
+    re.compile(r"\b(edinburgh|swindon|swansea|hilton york|york careers fair|lusaka|harare|jo'burg|johannesburg|perth|dallas|startup funding in germany)\b", re.IGNORECASE),
+    re.compile(r"\b(berlin|stuttgart|valencia|barcelona|geneve|istanbul|assisi|foligno|umbria|spello|perugia|urbino|offida|scarzuola|marche festival|senigallia|montegabbione|pesaro|cannara|santa-maria-degli-angeli|fabriano|pierosara|castiglion fiorentino|strada santa maria|forgiare il futuro|lintelligenza artificiale|uno nessuno e centomila|teatro comunale|italy|italia)\b", re.IGNORECASE),
     re.compile(r"\b(louisiana|high school football|maryland high school)\b", re.IGNORECASE),
 ]
 
@@ -35,6 +40,15 @@ MONTHS_MAP = {
     'jan': 1, 'feb': 2, 'mar': 3, 'apr': 4, 'may': 5, 'jun': 6,
     'jul': 7, 'aug': 8, 'sep': 9, 'oct': 10, 'nov': 11, 'dec': 12
 }
+
+
+def deduplicate_source_string(source_str: Optional[str]) -> str:
+    """Deduplicate comma-separated source names while preserving order."""
+    if not source_str:
+        return "Event Radar"
+    parts = [p.strip() for p in str(source_str).split(",") if p.strip()]
+    unique_parts = list(dict.fromkeys(parts))
+    return ", ".join(unique_parts) if unique_parts else "Event Radar"
 
 
 def parse_display_date_end(date_display: Optional[str], default_year: int = 2026) -> Optional[date]:
@@ -45,36 +59,55 @@ def parse_display_date_end(date_display: Optional[str], default_year: int = 2026
     m_yr = re.search(r'\b(202[0-9])\b', s)
     yr = int(m_yr.group(1)) if m_yr else default_year
 
-    # Check 3-day or 2-day ranges: e.g. 10-11-12 sep or 6-8 september or 17-20 sep
-    m_range = re.search(r'(\d{1,2})\s*(?:-|–|to)\s*(\d{1,2})\s+([a-z]{3,9})', s)
-    if not m_range:
-        m_range = re.search(r'(\d{1,2})\s*(?:-|–)\s*(\d{1,2})\s*(?:-|–)\s*(\d{1,2})\s+([a-z]{3,9})', s)
-        if m_range:
-            d_end = int(m_range.group(3))
-            m_str = m_range.group(4)[:3]
-            if m_str in MONTHS_MAP:
-                from datetime import date
-                try:
-                    return date(yr, MONTHS_MAP[m_str], d_end)
-                except ValueError:
-                    pass
-    if m_range:
-        d_end = int(m_range.group(2))
-        m_str = m_range.group(3)[:3]
+    # 0. Check "From 24 Sep to 2 Oct" (day-month to day-month)
+    m_cross_month = re.search(r'\b\d{1,2}\s+([a-z]{3,9})\s+(?:to|-|–)\s*(\d{1,2})\s+([a-z]{3,9})\b', s)
+    if m_cross_month:
+        d_end = int(m_cross_month.group(2))
+        m_str = m_cross_month.group(3)[:3]
         if m_str in MONTHS_MAP:
-            from datetime import date
             try:
                 return date(yr, MONTHS_MAP[m_str], d_end)
             except ValueError:
                 pass
 
-    # Single date: e.g. '08 Sep' or 'Sep 08' or 'Sat, 19 Sep, 2026'
+    # 1. Check 3-day or 2-day day-first ranges: e.g. 10-11-12 sep or 6-8 september or 17-20 sep or 8 and 9 oct
+    m_range3 = re.search(r'(\d{1,2})\s*(?:-|–|,|&|and)\s*(\d{1,2})\s*(?:-|–|,|&|and)\s*(\d{1,2})\s+([a-z]{3,9})', s)
+    if m_range3:
+        d_end = int(m_range3.group(3))
+        m_str = m_range3.group(4)[:3]
+        if m_str in MONTHS_MAP:
+            try:
+                return date(yr, MONTHS_MAP[m_str], d_end)
+            except ValueError:
+                pass
+
+    m_range2 = re.search(r'(\d{1,2})\s*(?:-|–|to|&|and|,)\s*(\d{1,2})\s+([a-z]{3,9})', s)
+    if m_range2:
+        d_end = int(m_range2.group(2))
+        m_str = m_range2.group(3)[:3]
+        if m_str in MONTHS_MAP:
+            try:
+                return date(yr, MONTHS_MAP[m_str], d_end)
+            except ValueError:
+                pass
+
+    # 2. Check month-first ranges: e.g. "Oct 03 - 05, 2026" or "Wed, Oct 14 - Oct 16" or "Nov 12,13 & 14"
+    m_month_range = re.search(r'\b([a-z]{3,9})\s+\d{1,2}(?:st|nd|rd|th)?\s*(?:,\s*\d{1,2}\s*)?(?:-|–|to|&|and|,)\s*(?:([a-z]{3,9})\s+)?(\d{1,2})(?:st|nd|rd|th)?\b', s)
+    if m_month_range:
+        m_str = (m_month_range.group(2) or m_month_range.group(1))[:3]
+        d_end = int(m_month_range.group(3))
+        if m_str in MONTHS_MAP:
+            try:
+                return date(yr, MONTHS_MAP[m_str], d_end)
+            except ValueError:
+                pass
+
+    # 3. Single date: e.g. '08 Sep' or 'Sep 08' or 'Sat, 19 Sep, 2026'
     m_single1 = re.search(r'(\d{1,2})\s+([a-z]{3,9})', s)
     if m_single1:
         d = int(m_single1.group(1))
         m_str = m_single1.group(2)[:3]
         if m_str in MONTHS_MAP:
-            from datetime import date
             try:
                 return date(yr, MONTHS_MAP[m_str], d)
             except ValueError:
@@ -85,7 +118,6 @@ def parse_display_date_end(date_display: Optional[str], default_year: int = 2026
         m_str = m_single2.group(1)[:3]
         d = int(m_single2.group(2))
         if m_str in MONTHS_MAP:
-            from datetime import date
             try:
                 return date(yr, MONTHS_MAP[m_str], d)
             except ValueError:
@@ -109,8 +141,10 @@ def is_event_passed(ev: EventRecord, ref_now: Optional[datetime] = None) -> bool
     if dd_end and dd_end < ref_date:
         return True
 
-    # 3. Check start_date
+    # 3. Check start_date (only if no later concluding date was found in date_display)
     if ev.start_date:
+        if dd_end and dd_end >= ref_date:
+            return False
         # If event was on a previous calendar day, it has definitely passed
         if ev.start_date.date() < ref_date:
             return True
@@ -173,6 +207,93 @@ def normalize_egypt_city(city_str: Optional[str], title: str = "", location: str
     return c_raw.title()
 
 
+def is_date_or_garbage_title(title: Optional[str]) -> bool:
+    """Returns True if title is a date string, status badge, street address, or meaningless fragment."""
+    if not title or not isinstance(title, str):
+        return True
+    t = re.sub(r"&(?:quot|amp|lt|gt|nbsp);?", " ", title, flags=re.IGNORECASE).strip()
+    if len(t) < 4:
+        return True
+    if re.match(r"^[\s\-_()\[\]{}|.,:;!?'\"0-9]+$", t):
+        return True
+    lower = t.lower()
+    if lower in ["null", "none", "undefined", "event", "events", "untitled", "facebook event", "happening now", "upcoming", "today", "tomorrow", "دعوه", "دعوة"]:
+        return True
+    # Reject titles that are actually city/governorate/postal address strings
+    if re.search(r"^cairo,\s*.*القاهرة", lower) or re.search(r",\s*egypt,\s*\d{5}\s*$", lower):
+        return True
+    if re.search(r"^(mon|tue|wed|thu|fri|sat|sun)\b.*?\b(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)\b", lower):
+        return True
+    if re.search(r"^(happening now|upcoming(\s*/\s*live)?|today|tomorrow)(\s+at\s+\d.*)?$", lower) or re.search(r"^\d{1,2}:\d{2}\b", lower):
+        return True
+    if re.search(r"\d+(\.\d+)?[km]?\s*(interested|going|went|مهتم|يحضر)", lower):
+        return True
+    if re.search(r"^(interested|going|share|invite|save|مهتم|يحضر|مشاركة|حفظ|details|rsvp|view event)$", lower):
+        return True
+    return False
+
+
+def repair_swapped_title_location(ev: EventRecord) -> None:
+    """Repairs events where DOM scraping placed a date/status in title or location."""
+    if not ev:
+        return
+
+    # Clean broken HTML entities in title
+    if ev.title and ("&amp" in ev.title or "&quot" in ev.title):
+        ev.title = re.sub(r"&amp;?", "&", ev.title, flags=re.IGNORECASE)
+        ev.title = re.sub(r"&quot;?", '"', ev.title, flags=re.IGNORECASE)
+        ev.title = re.sub(r"\s+", " ", ev.title).strip()
+
+    t = (ev.title or "").strip()
+    loc = (ev.location or "").strip()
+    dd = (ev.date_display or "").strip()
+
+    # 1. Repair TicketsMarche records where date_display == title and location holds the real date or time
+    date_in_loc_re = re.compile(
+        r"^(?:from\s+)?(?:\d{1,2}(?:st|nd|rd|th)?\s*(?:to|-|–|&|and|,)\s*)?(?:\d{1,2}(?:st|nd|rd|th)?\s+)?(?:jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec)[a-z]*(?:\s+\d{1,2}(?:st|nd|rd|th)?)?(?:\s*(?:to|-|–|&|and|,)\s*(?:[a-z]+\s+)?\d{1,2}(?:st|nd|rd|th)?(?:\s+[a-z]+)?)?(?:,?\s*202\d)?$",
+        re.IGNORECASE,
+    )
+    time_in_loc_re = re.compile(
+        r"^(?:from\s+)?\d{1,2}(?::\d{2})?\s*(?:am|pm)(?:\s*to\s*\d{1,2}(?::\d{2})?\s*(?:am|pm))?$",
+        re.IGNORECASE,
+    )
+
+    if loc and date_in_loc_re.match(loc):
+        ev.date_display = loc
+        ev.location = f"{ev.city or 'Cairo'} Cultural Hub"
+        ev.start_date = BaseScraper.parse_datetime(ev.date_display)
+        dd = ev.date_display
+        loc = ev.location
+    elif loc and time_in_loc_re.match(loc):
+        if dd and dd.lower() != t.lower() and loc.lower() not in dd.lower():
+            ev.date_display = f"{dd} · {loc}"
+        ev.location = f"{ev.city or 'Cairo'} Cultural Hub"
+        ev.start_date = BaseScraper.parse_datetime(ev.date_display)
+        dd = ev.date_display
+        loc = ev.location
+    elif dd and dd.lower() == t.lower():
+        ev.date_display = "TBA"
+        ev.start_date = None
+
+    # 2. Repair records where start_date differs wildly from date_display (e.g. legacy +14 days fallback on '7-11 Oct 2026' or '4-6 Nov 2026')
+    if ev.date_display and ev.date_display not in ["TBA", "Upcoming"]:
+        parsed_dd = BaseScraper.parse_datetime(ev.date_display)
+        if parsed_dd and (ev.start_date is None or abs((ev.start_date - parsed_dd).days) > 2):
+            ev.start_date = parsed_dd
+
+    # 3. Repair swapped title / location from Facebook DOM
+    if is_date_or_garbage_title(t) and loc and not is_date_or_garbage_title(loc) and loc.lower() not in ["egypt", "cairo", "alexandria", "tanta", "giza", "mansoura", "assiut", "tba", "tba / online", "online", "venue tba"]:
+        if re.search(r"\b(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)\b", t, re.IGNORECASE):
+            if not ev.date_display or ev.date_display.lower() in ["upcoming", "date tba", "tba"]:
+                ev.date_display = t
+                ev.start_date = BaseScraper.parse_datetime(ev.date_display)
+        ev.title = loc
+        ev.location = f"{ev.city or 'Cairo'}, Egypt"
+
+    if ev.location and ev.title and ev.location.strip().lower() == ev.title.strip().lower():
+        ev.location = f"{ev.city or 'Cairo'}, Egypt"
+
+
 def clean_event_title(title: str) -> str:
     """Sanitizes multiline raw social feed text into a clean single-line title."""
     if not title:
@@ -181,23 +302,16 @@ def clean_event_title(title: str) -> str:
     if not lines:
         return ""
     for line in lines:
-        if re.search(r'^(mon|tue|wed|thu|fri|sat|sun|today|tomorrow|happening|\d{1,2}:\d{2})', line, re.IGNORECASE):
-            continue
-        if re.search(r'\d+(\.\d+)?[KM]?\s*(interested|going|went|مهتم|يحضر)', line, re.IGNORECASE):
-            continue
-        if re.search(r'^(interested|going|share|invite|save|مهتم|يحضر|مشاركة|حفظ|details|rsvp|view event)$', line, re.IGNORECASE):
-            continue
-        if len(line) >= 4:
-            return line
-    # If all candidate lines were skipped, do NOT return bad line
-    first = lines[0]
-    if not re.search(r'^(interested|going|share|invite|save|مهتم|يحضر|مشاركة|حفظ|details|rsvp|view event)$', first, re.IGNORECASE) and not re.search(r'\d+(\.\d+)?[KM]?\s*(interested|going|went|مهتم|يحضر)', first, re.IGNORECASE):
-        return first
+        cleaned = re.sub(r"[\s\-·•|,:\t\r\n]+$", "", line).strip()
+        if not is_date_or_garbage_title(cleaned):
+            return cleaned
     return ""
 
 
 def is_bad_or_non_egypt(ev: EventRecord) -> bool:
     """Validates URL validity and filters out non-Egyptian / foreign search bleed."""
+    repair_swapped_title_location(ev)
+
     url = (ev.url or "").strip()
     if not url or url == "#" or not (url.startswith("http://") or url.startswith("https://")):
         return True
@@ -214,16 +328,20 @@ def is_bad_or_non_egypt(ev: EventRecord) -> bool:
     if ev.country and ev.country.strip().lower() not in ["egypt", "eg", "مصر"]:
         return True
 
-    # Drop blank or punctuation-only titles
+    # Drop blank, date-only, or garbage titles
     title = (ev.title or "").strip()
-    if not title or len(title) < 3 or re.match(r"^[\s\-_()\[\]{}|.,:;!?'\"]*$", title):
+    if is_date_or_garbage_title(title):
         return True
 
-    # Check for foreign state / country patterns in title, location, url
-    loc_and_url = f"{ev.title or ''} {ev.location or ''} {ev.url or ''}"
+    # Check for foreign state / country patterns in title, location, url, description, date_display
+    loc_and_url = f"{ev.title or ''} {ev.location or ''} {ev.url or ''} {ev.description or ''} {ev.date_display or ''}"
     for pat in NON_EGYPT_PATTERNS:
         if pat.search(loc_and_url):
             return True
+
+    # Drop unverified Facebook sidebar bleed (fb_live_* with date_display='Upcoming' and no real date)
+    if str(ev.event_id or "").startswith("fb_live_") and ev.start_date is None and (ev.date_display or "").strip().lower() in ["upcoming", "tba", ""]:
+        return True
 
     return False
 
@@ -328,6 +446,8 @@ class EventPipeline:
         # Apply AIESEC B2C Scoring & Parallel Org Detection
         scored_events = []
         for ev in raw_events:
+            repair_swapped_title_location(ev)
+            ev.source = deduplicate_source_string(ev.source)
             score, priority, category, tags, action, parallel_org = self.scorer.evaluate(
                 title=ev.title,
                 description=ev.description,
@@ -373,6 +493,9 @@ class EventPipeline:
 
         valid = []
         for ev in events:
+            repair_swapped_title_location(ev)
+            if ev.start_date is None and ev.date_display:
+                ev.start_date = BaseScraper.parse_datetime(ev.date_display, ref_now=now)
             # Purge any event that has already passed
             if is_event_passed(ev, ref_now=now):
                 continue
@@ -397,6 +520,9 @@ class EventPipeline:
         seen_title_buckets: List[Dict] = []
 
         for ev in events:
+            repair_swapped_title_location(ev)
+            ev.source = deduplicate_source_string(ev.source)
+
             # 1. Clean title if multiline or noisy
             if ev.title:
                 ev.title = clean_event_title(ev.title)
@@ -435,8 +561,17 @@ class EventPipeline:
                     if not are_dates_compatible(ev.start_date, bucket["start_date"]):
                         continue
 
-                    # Exact token match
-                    if norm_title and norm_title == bucket["norm_title"]:
+                    # Exact token match or truncated prefix match on identical date
+                    if norm_title and (
+                        norm_title == bucket["norm_title"]
+                        or (
+                            ev.start_date
+                            and bucket["start_date"]
+                            and ev.start_date.date() == bucket["start_date"].date()
+                            and min(len(norm_title), len(bucket["norm_title"])) >= 6
+                            and (norm_title.startswith(bucket["norm_title"] + " ") or bucket["norm_title"].startswith(norm_title + " "))
+                        )
+                    ):
                         matched_existing = bucket["record"]
                         break
 
@@ -451,9 +586,13 @@ class EventPipeline:
                             break
 
             if matched_existing:
-                # Merge intelligence
-                if ev.source and ev.source not in matched_existing.source:
-                    matched_existing.source = f"{matched_existing.source}, {ev.source}"
+                # Merge intelligence without repeating sources
+                if len(ev.title or "") > len(matched_existing.title or ""):
+                    matched_existing.title = ev.title
+                if ev.source:
+                    matched_existing.source = deduplicate_source_string(f"{matched_existing.source}, {ev.source}")
+                if not matched_existing.start_date and ev.start_date:
+                    matched_existing.start_date = ev.start_date
                 if len(ev.description or "") > len(matched_existing.description or ""):
                     matched_existing.description = ev.description
                 if ev.parallel_org and not matched_existing.parallel_org:
@@ -605,10 +744,10 @@ class EventPipeline:
                 "linkedin": "school/mansoura-university",
                 "phone": None,
             },
-            "aiesec": {
+            "eventradar": {
                 "email": "contact@eventradar.eg",
-                "instagram": "aiesecinegypt",
-                "linkedin": "company/aiesecinegypt",
+                "instagram": "eventradareg",
+                "linkedin": "company/eventradareg",
                 "phone": None,
             },
         }

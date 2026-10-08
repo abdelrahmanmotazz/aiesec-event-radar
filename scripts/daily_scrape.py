@@ -15,7 +15,12 @@ PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
 
-from aiesec_scraper.pipeline import EventPipeline, normalize_egypt_city
+from aiesec_scraper.pipeline import (
+    EventPipeline,
+    normalize_egypt_city,
+    repair_swapped_title_location,
+    deduplicate_source_string,
+)
 from aiesec_scraper.exporters.local import LocalExporter
 from aiesec_scraper.models import EventRecord
 
@@ -28,7 +33,7 @@ logger = logging.getLogger("daily_scraper")
 
 
 def run_daily_scrape():
-    logger.info("=== Starting Automated Daily AIESEC Event Scrape ===")
+    logger.info("=== Starting Automated Daily Event Radar Scrape ===")
     start_time = datetime.now()
 
     # Load configuration if available
@@ -44,7 +49,7 @@ def run_daily_scrape():
 
     pipeline = EventPipeline(config)
     logger.info("Running concurrent multi-source scraper (Egypt nationwide & Delta/Tanta hubs)...")
-    
+
     try:
         events = pipeline.run(city=None, country="egypt")
     except Exception as e:
@@ -54,6 +59,7 @@ def run_daily_scrape():
     logger.info(f"Scrape pass finished. Retrieved {len(events)} newly scraped events.")
 
     # Load existing database to accumulate events across runs
+    fresh_ids = {ev.event_id for ev in events if ev.event_id}
     existing_events = []
     root_events_json = os.path.join(PROJECT_ROOT, "events.json")
     if os.path.exists(root_events_json):
@@ -62,10 +68,12 @@ def run_daily_scrape():
                 raw_existing = json.load(f)
                 for item in raw_existing:
                     try:
-                        existing_events.append(EventRecord(**item))
+                        ev_rec = EventRecord(**item)
+                        if ev_rec.event_id not in fresh_ids:
+                            existing_events.append(ev_rec)
                     except Exception:
                         pass
-            logger.info(f"Loaded {len(existing_events)} existing events from local database.")
+            logger.info(f"Loaded {len(existing_events)} non-overlapping existing events from local database.")
         except Exception as read_err:
             logger.warning(f"Could not read existing events.json: {read_err}")
 
@@ -92,6 +100,8 @@ def run_daily_scrape():
 
     # Re-apply calibrated B2C scoring to all combined records
     for ev in combined_events:
+        repair_swapped_title_location(ev)
+        ev.source = deduplicate_source_string(ev.source)
         score, priority, category, tags, action, parallel_org = pipeline.scorer.evaluate(
             title=ev.title,
             description=ev.description,
@@ -122,18 +132,18 @@ def run_daily_scrape():
     events = deduped_events
     logger.info(f"Combined & deduplicated database contains {len(events)} verified Egyptian events.")
 
-    # 1. Export Excel and CSV to data/ directory
-    data_dir = os.path.join(PROJECT_ROOT, "data")
-    local_exporter = LocalExporter(output_dir=data_dir)
-    export_res = local_exporter.export(events)
-    logger.info(f"Updated Excel & CSV in {data_dir}: {export_res.get('total_records')} records.")
+    # 1. Export Excel and CSV to data/ and docs/data/ directories
+    for out_dir in [os.path.join(PROJECT_ROOT, "data"), os.path.join(PROJECT_ROOT, "docs", "data")]:
+        local_exporter = LocalExporter(output_dir=out_dir)
+        export_res = local_exporter.export(events)
+    logger.info(f"Updated Excel & CSV exports: {export_res.get('total_records')} records.")
 
     # 2. Synchronize events.json and events-data.js across all deploy targets
     # Mode 'json' ensures datetimes and Pydantic models serialize cleanly
     json_payload = [e.model_dump(mode="json") for e in events]
     json_data = json.dumps(json_payload, indent=2, ensure_ascii=False)
     js_data = (
-        f"// Auto-generated AIESEC Radar Events Data\n"
+        f"// Auto-generated Event Radar Events Data\n"
         f"window.RADAR_DATASET_VERSION = '{datetime.now().strftime('%Y-%m-%d_%H%M')}';\n"
         f"window.AIESEC_INITIAL_EVENTS = {json_data};\n"
         f"window.RADAR_STATIC_EVENTS = window.AIESEC_INITIAL_EVENTS;\n"

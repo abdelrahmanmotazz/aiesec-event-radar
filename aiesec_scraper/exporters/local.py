@@ -15,7 +15,7 @@ class LocalExporter:
         self.output_dir = output_dir
         os.makedirs(self.output_dir, exist_ok=True)
 
-    def export(self, events: List[EventRecord], base_filename: str = "aiesec_egypt_events") -> dict:
+    def export(self, events: List[EventRecord], base_filename: str = "egypt_b2c_events") -> dict:
         """
         Exports events to both Excel and CSV.
         Returns paths to the generated files.
@@ -30,6 +30,7 @@ class LocalExporter:
 
         timestamp_str = datetime.now().strftime("%Y%m%d_%H%M%S")
         latest_xlsx = os.path.join(self.output_dir, f"{base_filename}_latest.xlsx")
+        legacy_xlsx = os.path.join(self.output_dir, "aiesec_egypt_events_latest.xlsx")
         timestamped_xlsx = os.path.join(self.output_dir, f"{base_filename}_{timestamp_str}.xlsx")
         latest_csv = os.path.join(self.output_dir, f"{base_filename}_latest.csv")
 
@@ -37,10 +38,10 @@ class LocalExporter:
         df.to_csv(latest_csv, index=False, encoding="utf-8-sig")
 
         # Export Styled Excel
-        for filepath in [latest_xlsx, timestamped_xlsx]:
+        for filepath in [latest_xlsx, legacy_xlsx, timestamped_xlsx]:
             with pd.ExcelWriter(filepath, engine="openpyxl") as writer:
                 df.to_excel(writer, sheet_name="Event Radar", index=False)
-                
+
                 # Auto-adjust column widths
                 ws = writer.sheets["Event Radar"]
                 for col in ws.columns:

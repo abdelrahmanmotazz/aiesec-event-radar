@@ -15,16 +15,13 @@ from typing import Any, Dict, List, Optional
 from ..models import EventRecord
 from ..scorers import B2CScorer
 from ..analyzers.caption_analyzer import CaptionAnalyzer
+from .base import BaseScraper
+from ..pipeline import is_date_or_garbage_title, NON_EGYPT_PATTERNS
 
 logger = logging.getLogger(__name__)
 
 DEFAULT_SESSION_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "data", "meta_session"))
 DEFAULT_STATE_FILE = os.path.join(DEFAULT_SESSION_DIR, "storage_state.json")
-
-NON_EGYPT_PATTERNS = [
-    re.compile(r",\s*(va|in|md|ca|tx|fl|ny|oh|pa|nc|ga|mi|il|nj|wa|az|ma|tn|mo|wi|mn|co|sc|al|la|ky|or|ok|ct|ut|ia|nv|ar|ms|ks|nm|ne|wv|id|hi|nh|me|mt|ri|de|sd|nd|ak|vt|wy)\b", re.IGNORECASE),
-    re.compile(r"\b(united states|usa|u\.s\.a|u\.s\.|canada|australia|united kingdom|\buk\b|germany|france|netherlands|switzerland|geneve|koln|valencia|istanbul)\b", re.IGNORECASE),
-]
 
 
 def clean_event_title(title: str) -> str:
@@ -35,23 +32,16 @@ def clean_event_title(title: str) -> str:
     if not lines:
         return ""
     for line in lines:
-        if re.search(r'^(mon|tue|wed|thu|fri|sat|sun|today|tomorrow|happening|\d{1,2}:\d{2})', line, re.IGNORECASE):
-            continue
-        if re.search(r'\d+(\.\d+)?[KM]?\s*(interested|going|went|مهتم|يحضر)', line, re.IGNORECASE):
-            continue
-        if re.search(r'^(interested|going|share|invite|save|مهتم|يحضر|مشاركة|حفظ|details|rsvp|view event)$', line, re.IGNORECASE):
+        if is_date_or_garbage_title(line):
             continue
         if len(line) >= 4:
             return line
-    first = lines[0]
-    if not re.search(r'^(interested|going|share|invite|save|مهتم|يحضر|مشاركة|حفظ|details|rsvp|view event)$', first, re.IGNORECASE) and not re.search(r'\d+(\.\d+)?[KM]?\s*(interested|going|went|مهتم|يحضر)', first, re.IGNORECASE):
-        return first
     return ""
 
 
 # High-yield search queries across Egyptian university and tech ecosystems
 SEARCH_QUERIES = [
-    ("National Discovery Feed", "https://www.facebook.com/events/"),
+    ("Cairo & Egypt Events", "https://www.facebook.com/events/search/?q=cairo%20egypt%20events"),
     ("Tech & Hackathons Egypt", "https://www.facebook.com/events/search/?q=hackathon%20egypt"),
     ("Career Fairs Cairo & Giza", "https://www.facebook.com/events/search/?q=career%20fair%20cairo"),
     ("Youth Leadership Conferences", "https://www.facebook.com/events/search/?q=youth%20conference%20egypt"),
@@ -156,8 +146,8 @@ class MetaPlaywrightScraper:
                 queries_to_run = []
                 if city:
                     clean_c = city.lower().strip()
-                    queries_to_run.append((f"{city.capitalize()} Local Events", f"https://www.facebook.com/events/search/?q={clean_c}%20events"))
-                    queries_to_run.append((f"{city.capitalize()} Career Fairs", f"https://www.facebook.com/events/search/?q={clean_c}%20career%20fair"))
+                    queries_to_run.append((f"{city.capitalize()} Local Events", f"https://www.facebook.com/events/search/?q={clean_c}%20egypt%20events"))
+                    queries_to_run.append((f"{city.capitalize()} Career Fairs", f"https://www.facebook.com/events/search/?q={clean_c}%20egypt%20career%20fair"))
                 else:
                     queries_to_run = SEARCH_QUERIES[:3]
 
@@ -207,6 +197,20 @@ class MetaPlaywrightScraper:
                 const links = Array.from(document.querySelectorAll('a[href*="/events/"]'));
                 const seenIds = new Set();
 
+                const isDateLine = (str) => {
+                    if (/^(happening now|today|tomorrow|upcoming|this week|this weekend)$/i.test(str.trim())) return true;
+                    if (/^(mon|tue|wed|thu|fri|sat|sun|monday|tuesday|wednesday|thursday|friday|saturday|sunday)\b/i.test(str.trim())) return true;
+                    if (/^(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)\s+\d{1,2}/i.test(str.trim())) return true;
+                    if (/^\d{1,2}\s+(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)/i.test(str.trim())) return true;
+                    return false;
+                };
+
+                const isNoiseLine = (str) => {
+                    if (/\d+(\.\d+)?[KM]?\s*(interested|going|went|مهتم|يحضر)/i.test(str)) return true;
+                    if (/^(share|interested|going|invite|save|details|rsvp|view event|مشاركة|مهتم|تسجيل|حفظ)$/i.test(str.trim())) return true;
+                    return false;
+                };
+
                 links.forEach(a => {
                     const href = a.href;
                     const match = href.match(/\/events\/(\d+)/);
@@ -224,40 +228,40 @@ class MetaPlaywrightScraper:
                     let detectedLocation = "Egypt";
                     let detectedAttendees = "";
 
-                    // Identify attendee line, dates, location, and true title
+                    // Prefer clean anchor text if the anchor directly wraps the event title
+                    const linkLines = (a.innerText || "").split('\n').map(l => l.trim()).filter(l => l.length >= 4 && !isDateLine(l) && !isNoiseLine(l));
+                    if (linkLines.length === 1) {
+                        detectedTitle = linkLines[0];
+                    }
+
+                    // Identify attendee line, dates, true title FIRST, then location
                     lines.forEach(line => {
-                        // Check for attendee counts like '1.7K interested · 983 going'
-                        if (/\d+(\.\d+)?[KM]?\s+(interested|going|مهتم|يحضر)/i.test(line)) {
+                        if (/\d+(\.\d+)?[KM]?\s*(interested|going|مهتم|يحضر)/i.test(line)) {
                             detectedAttendees = line;
                             return;
                         }
 
-                        // Check for dates
-                        if (/\b(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec|mon|tue|wed|thu|fri|sat|sun|today|tomorrow|am|pm|يناير|فبراير|مارس|أبريل|مايو|يونيو|يوليو|أغسطس|سبتمبر|أكتوبر|نوفمبر|ديسمبر)\b/i.test(line)) {
+                        if (isDateLine(line)) {
                             if (detectedDate === "Upcoming") detectedDate = line;
                             return;
                         }
 
-                        // Check for Egyptian locations
-                        if (/\b(cairo|alexandria|tanta|mansoura|giza|assiut|hall|centre|center|hotel|campus|university|القاهرة|الإسكندرية|طنطا|المنصورة|أسيوط|جامعة|قاعة|مركز)\b/i.test(line)) {
-                            if (detectedLocation === "Egypt") detectedLocation = line;
+                        if (isNoiseLine(line)) return;
+
+                        // Real title detection FIRST (before location check, so titles with 'Conference', 'University', or 'Cairo' are never mistaken for locations)
+                        if (!detectedTitle && line.length >= 4) {
+                            detectedTitle = line;
                             return;
                         }
 
-                        // Real title detection: not an attendee count, not a button like 'Share' or 'Interested'
-                        if (!detectedTitle && line.length >= 4 && !/^(share|interested|going|invite|مشاركة|مهتم|تسجيل)$/i.test(line)) {
-                            detectedTitle = line;
+                        // Subsequent lines after title can be location
+                        if (line !== detectedTitle && detectedLocation === "Egypt" && line.length >= 3 && line.length <= 120) {
+                            detectedLocation = line;
                         }
                     });
 
-                    // Fallback to link innerText if detected title is empty or suspicious, ensuring not attendee/button
-                    if (!detectedTitle || /\d+[KM]?\s*(interested|going)/i.test(detectedTitle) || /^(share|interested|going|invite|مشاركة|مهتم|تسجيل)$/i.test(detectedTitle)) {
-                        const linkTxt = a.innerText.trim();
-                        if (linkTxt && !/\d+[KM]?\s*(interested|going)/i.test(linkTxt) && !/^(share|interested|going|invite|مشاركة|مهتم|تسجيل)$/i.test(linkTxt)) {
-                            detectedTitle = linkTxt;
-                        } else {
-                            detectedTitle = lines.find(l => l.length >= 4 && !/\d+[KM]?\s*(interested|going)/i.test(l) && !/^(share|interested|going|invite|مشاركة|مهتم|تسجيل)$/i.test(l)) || "Facebook Event";
-                        }
+                    if (!detectedTitle || isDateLine(detectedTitle) || isNoiseLine(detectedTitle)) {
+                        return;
                     }
 
                     // Extract image thumbnail if present
@@ -294,7 +298,7 @@ class MetaPlaywrightScraper:
                 name = data.get("name") or data.get("title")
                 if name and isinstance(name, str) and len(name) > 3:
                     # Skip generic or attendee titles
-                    if not re.search(r'\d+[KM]?\s+(interested|going)', name, re.IGNORECASE):
+                    if not re.search(r'\d+[KM]?\s+(interested|going)', name, re.IGNORECASE) and not is_date_or_garbage_title(name):
                         event_id = str(data.get("id"))
                         start_ts = data.get("start_timestamp")
                         date_str = datetime.fromtimestamp(start_ts).strftime("%A, %B %d, %Y") if start_ts else "Upcoming"
@@ -330,16 +334,20 @@ class MetaPlaywrightScraper:
     def _create_record(self, item: Dict[str, Any], city: Optional[str] = None) -> Optional[EventRecord]:
         """Convert raw extracted dictionary into enriched EventRecord."""
         raw_title = item.get("title", "").strip()
+        location = item.get("location", "Egypt").strip()
+        date_display = item.get("date_display", "Upcoming").strip()
+
+        # If title is a date/garbage string and location is a real title, swap them
+        if is_date_or_garbage_title(raw_title) and not is_date_or_garbage_title(location) and location.lower() not in ["egypt", "cairo", "alexandria", "giza", "tanta", "mansoura"]:
+            if date_display in ["Upcoming", "TBA", ""]:
+                date_display = raw_title
+            raw_title = location
+            location = "Egypt"
+
         title = clean_event_title(raw_title)
-        if not title or len(title) < 4:
-            return None
-        # Clean title if it contains attendee counts or generic text
-        if re.search(r'^\d+(\.\d+)?[KM]?\s+(interested|going)', title, re.IGNORECASE):
-            return None
-        if title.lower() in ["facebook event", "null", "none", "event", "events"]:
+        if not title or len(title) < 4 or is_date_or_garbage_title(title):
             return None
 
-        location = item.get("location", "Egypt")
         desc = item.get("description", "")
         attendees = item.get("attendees", "")
 
@@ -370,6 +378,7 @@ class MetaPlaywrightScraper:
         elif city:
             inferred_city = city.capitalize()
 
+        parsed_start = BaseScraper.parse_datetime(date_display)
         score, priority, category, tags, action, parallel = self.scorer.evaluate(title, desc, location)
 
         full_desc = desc
@@ -382,7 +391,8 @@ class MetaPlaywrightScraper:
             event_id=f"fb_live_{event_id}",
             title=title,
             source="Facebook Events",
-            date_display=item.get("date_display", "Upcoming"),
+            start_date=parsed_start,
+            date_display=date_display,
             location=location,
             city=inferred_city,
             country="Egypt",

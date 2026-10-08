@@ -216,7 +216,7 @@ class B2CScorer:
                         "MEDIUM",
                         "Healthcare & Medical Education",
                         tags,
-                        "Target Medical, Dental & Pharmacy Undergraduates for AIESEC Global Volunteer Projects",
+                        "Target Medical, Dental & Pharmacy Undergraduates for Global Volunteer Projects",
                         detected_org
                     )
                 tags = ["medical", "clinical", "b2b"]
@@ -277,7 +277,7 @@ class B2CScorer:
                     "HIGH",
                     "Flagship Summits",
                     tags,
-                    "Major National Activation: Deploy LC Delegation, Booth Presence & Global Volunteer Recruitment",
+                    "Major National Activation: Deploy Chapter Delegation, Booth Presence & Global Volunteer Recruitment",
                     detected_org
                 )
 
@@ -371,7 +371,7 @@ class B2CScorer:
                 "HIGH",
                 "University Conferences & Academic Forums",
                 tags,
-                "Major Campus Activation: Deploy LC Delegation, Booth Presence & Recruit University Students",
+                "Major Campus Activation: Deploy Chapter Delegation, Booth Presence & Recruit University Students",
                 detected_org
             )
         elif is_univ or (is_conf and any(re.search(p, full_text, re.IGNORECASE) for p in UNIVERSITY_ACADEMIC_PATTERNS)):
@@ -408,7 +408,7 @@ class B2CScorer:
                     "MEDIUM",
                     "Youth Leadership & Skills Workshops",
                     tags,
-                    "Speaker Outreach, Workshop Co-hosting & AIESEC Presentation",
+                    "Speaker Outreach, Workshop Co-hosting & Youth Leadership Presentation",
                     detected_org
                 )
             elif re.search(p, full_text, re.IGNORECASE):

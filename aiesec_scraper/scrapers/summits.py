@@ -16,8 +16,8 @@ SUMMITS_CATALOG = [
         "title": "Techne Summit Alexandria 2026",
         "organizer": "Techne & Marketeers",
         "url": "https://technesummit.com/",
-        "start_date": datetime(2026, 10, 3, 9, 0),
-        "date_display": "Oct 03 - 05, 2026 · 09:00 AM",
+        "start_date": datetime(2026, 10, 29, 9, 0),
+        "date_display": "Oct 29 - 31, 2026 · 09:00 AM",
         "location": "Bibliotheca Alexandrina",
         "city": "Alexandria",
         "category": "Flagship Summits",
@@ -30,18 +30,18 @@ SUMMITS_CATALOG = [
             "Venue Details: Bibliotheca Alexandrina Complex (Great Hall, B1 & B2 Conference Halls, and Open Plaza), Shatby, Alexandria. "
             "Activities: 10 specialized industry tracks (Fintech, Healthtech, Edtech, E-commerce, Gaming, Deep Tech), pitch competitions, and VIP investor matchmaking. "
             "Admission: Official student passes and delegate tickets with RFID badge entry. "
-            "AIESEC Tactical Opportunity: Flagship recruitment and partnership ground for LC Tanta and LC Alexandria: Deploy interactive booth, "
+            "B2C Tactical Opportunity: Flagship recruitment and partnership ground for Tanta and Alexandria chapters: Deploy interactive booth, "
             "secure Youth Speak forum synergies, and engage international attendees for incoming exchanges."
         ),
-        "recommended_action": "High-priority activation for LC Tanta & Alex: Deploy booth presence, distribute Global Volunteer flyers, and engage university delegations across the Delta."
+        "recommended_action": "High-priority activation for Tanta & Alexandria chapters: Deploy booth presence, distribute Global Volunteer flyers, and engage university delegations across the Delta."
     },
     {
         "id": "summit_techne_cairo_2026",
         "title": "Techne Summit Cairo 2026",
         "organizer": "Techne Global",
         "url": "https://technesummit.com/",
-        "start_date": datetime(2026, 9, 26, 10, 0),
-        "date_display": "Sep 26 - 27, 2026 · 10:00 AM",
+        "start_date": datetime(2026, 11, 20, 10, 0),
+        "date_display": "Nov 20 - 21, 2026 · 10:00 AM",
         "location": "The Nile Ritz-Carlton",
         "city": "Cairo",
         "category": "Flagship Summits",
@@ -53,9 +53,9 @@ SUMMITS_CATALOG = [
             "Venue Details: The Nile Ritz-Carlton (Al Qahira Ballroom, Alf Leila Wa Leila Ballroom, and Garden Pavilion), Downtown Cairo. "
             "Activities: 8 multi-stage tracks, corporate innovation roundtables, youth hackathon presentations, and startup funding competitions. "
             "Admission: Verified digital ticket QR pass. "
-            "AIESEC Tactical Opportunity: High-yield B2B corporate sales for Global Talent employer sponsorships and cross-border tech talent recruitment."
+            "B2C Tactical Opportunity: High-yield B2B corporate sales for Global Talent employer sponsorships and cross-border tech talent recruitment."
         ),
-        "recommended_action": "Set up AIESEC Youth Speak lounge & meet corporate partners for Global Talent internship sponsorships."
+        "recommended_action": "Set up Youth Speak lounge & meet corporate partners for Global Talent internship sponsorships."
     },
     {
         "id": "summit_riseup_2026",
@@ -76,10 +76,10 @@ SUMMITS_CATALOG = [
             "Venue Details: Grand Egyptian Museum (GEM), Pyramids Plateau, Giza (Main Atrium, Conference Center, and Outdoor Amphitheatre). "
             "Activities: 4 flagship stages (Capital, Tech, Creative, Growth), 150+ workshops, talent matchmaking alley, and startup showcase. "
             "Admission: 3-day student and general attendee passes with digital NFC check-in. "
-            "AIESEC Tactical Opportunity: Prime national activation for AIESEC Egypt: Mobilize large student delegations, "
+            "B2C Tactical Opportunity: Prime national activation across Egypt: Mobilize large student delegations, "
             "market Global Volunteer projects on the Creative stage, and engage regional companies for Global Talent internships."
         ),
-        "recommended_action": "Send LC youth delegation; engage youth attendees at networking stages for Global Volunteer & Teacher programs."
+        "recommended_action": "Send chapter youth delegation; engage youth attendees at networking stages for Global Volunteer & Teacher programs."
     },
     {
         "id": "summit_ecs_cairo_2026",
@@ -100,18 +100,18 @@ SUMMITS_CATALOG = [
             "Venue Details: The Greek Campus (The Factory Hall, Library Stage, and Main Courtyard), 28 Falaki Street, Downtown Cairo. "
             "Activities: 60+ career readiness workshops, live mock interviews, 1-on-1 resume reviews with corporate HR directors, and on-ground hiring. "
             "Admission: Free of charge with mandatory prior registration and verified QR pass. "
-            "AIESEC Tactical Opportunity: Direct candidate acquisition hotspot for AIESEC Global Talent (paid professional internships) "
+            "B2C Tactical Opportunity: Direct candidate acquisition hotspot for Global Talent (paid professional internships) "
             "and Global Teacher exchange products."
         ),
-        "recommended_action": "Direct candidate acquisition hotspot for AIESEC Global Talent & Global Teacher exchange products."
+        "recommended_action": "Direct candidate acquisition hotspot for Global Talent & Global Teacher exchange products."
     },
     {
         "id": "summit_ieee_congress_2026",
         "title": "IEEE Egypt National Student Congress & Exhibition",
         "organizer": "IEEE Egypt Section",
         "url": "https://ieee.org.eg/",
-        "start_date": datetime(2026, 9, 19, 9, 0),
-        "date_display": "Sep 19 - 20, 2026 · 09:00 AM",
+        "start_date": datetime(2026, 11, 12, 9, 0),
+        "date_display": "Nov 12 - 13, 2026 · 09:00 AM",
         "location": "Cairo University Faculty of Engineering",
         "city": "Cairo",
         "category": "Flagship Summits",
@@ -124,18 +124,18 @@ SUMMITS_CATALOG = [
             "Venue Details: Cairo University Faculty of Engineering (Main Auditorium & Electrical Engineering Building), Giza. "
             "Expected Scale: 3,000+ engineering student delegates and branch chairs. "
             "Admission: Free student pass for Egyptian university students. "
-            "AIESEC Tactical Opportunity: High-leverage institutional partnership: Sign national co-marketing agreements with IEEE student branches "
-            "to promote AIESEC Global Talent engineering internships directly to their membership."
+            "B2C Tactical Opportunity: High-leverage institutional partnership: Sign national co-marketing agreements with IEEE student branches "
+            "to promote Global Talent engineering internships directly to their membership."
         ),
-        "recommended_action": "Partner with IEEE student branches to co-promote AIESEC global technical internships and volunteer opportunities."
+        "recommended_action": "Partner with IEEE student branches to co-promote global technical internships and volunteer opportunities."
     },
     {
         "id": "summit_enactus_expo_2026",
         "title": "Enactus Egypt National Exposition & Social Forum",
         "organizer": "Enactus Egypt",
         "url": "https://enactus.org/country/egypt/",
-        "start_date": datetime(2026, 9, 29, 10, 0),
-        "date_display": "Sep 29 - 30, 2026 · 10:00 AM",
+        "start_date": datetime(2026, 12, 11, 10, 0),
+        "date_display": "Dec 11 - 12, 2026 · 10:00 AM",
         "location": "Intercontinental Citystars",
         "city": "Cairo",
         "category": "Flagship Summits",
@@ -148,10 +148,10 @@ SUMMITS_CATALOG = [
             "Venue Details: Al Saraya Grand Ballroom, Intercontinental Cairo Citystars, Heliopolis, Cairo. "
             "Expected Scale: 4,500+ university students, academic advisors, and business executives. "
             "Admission: Official university delegation passes and guest registration. "
-            "AIESEC Tactical Opportunity: 100% philosophical and operational alignment with AIESEC's SDG-based Global Volunteer exchange portfolio. "
+            "B2C Tactical Opportunity: 100% philosophical and operational alignment with SDG-based Global Volunteer exchange programs. "
             "Engage high-caliber project leaders for cross-organizational collaboration."
         ),
-        "recommended_action": "Direct alignment with AIESEC SDG Global Volunteer initiatives; engage active student participants for cross-organizational synergy."
+        "recommended_action": "Direct alignment with SDG Global Volunteer initiatives; engage active student participants for cross-organizational synergy."
     },
     {
         "id": "summit_delta_tanta_2026",
@@ -173,10 +173,10 @@ SUMMITS_CATALOG = [
             "Venue Details: Tanta University Main Convention Center (Grand Hall & Exhibition Foyer), Medical Campus, Tanta. "
             "Activities: Keynote addresses by regional governors and tech leaders, 12 career workshops, and university project exhibitions. "
             "Admission: Completely free of charge with valid university student ID. "
-            "AIESEC Tactical Opportunity: THE HIGHEST PRIORITY HOME TURF EVENT for AIESEC in Tanta: Deliver official keynote on youth leadership, "
+            "B2C Tactical Opportunity: THE HIGHEST PRIORITY HOME TURF EVENT for Tanta Campus Chapter: Deliver official keynote on youth leadership, "
             "operate main-foyer registration booth, and capture 1,000+ local leads."
         ),
-        "recommended_action": "HOME TURF PRIORITY for AIESEC in Tanta: Secure keynote speech, physical booth, and mass recruitment drive."
+        "recommended_action": "HOME TURF PRIORITY for Tanta Campus Team: Secure keynote speech, physical booth, and mass recruitment drive."
     },
     {
         "id": "summit_she_can_2026",
@@ -197,10 +197,10 @@ SUMMITS_CATALOG = [
             "Venue Details: The Greek Campus West, Mall of Arabia Complex, 6th of October City, Giza. "
             "Activities: 30+ talks, panel debates on women in technology and venture capital, 100+ female-led micro-business booths, and mentoring circles. "
             "Admission: Standard attendee pass with digital badge. "
-            "AIESEC Tactical Opportunity: Superb platform to promote AIESEC SDG 5 (Gender Equality) Global Volunteer initiatives and "
-            "recruit passionate female youth leaders for Local Committee executive roles."
+            "B2C Tactical Opportunity: Superb platform to promote SDG 5 (Gender Equality) Global Volunteer initiatives and "
+            "recruit passionate female youth leaders for executive roles."
         ),
-        "recommended_action": "Promote AIESEC SDG 5 Gender Equality volunteer projects & female youth leadership opportunities."
+        "recommended_action": "Promote SDG 5 Gender Equality volunteer projects & female youth leadership opportunities."
     },
     {
         "id": "summit_auc_leadership_2026",
@@ -221,9 +221,9 @@ SUMMITS_CATALOG = [
             "Venue Details: Bassily Auditorium & Moataz Al Alfi Hall, AUC New Cairo Campus, AUC Avenue, New Cairo. "
             "Activities: Keynotes by multinational directors and international NGO representatives, diplomatic career panels, and global networking sessions. "
             "Admission: Free admission with university ID and pre-registration approval. "
-            "AIESEC Tactical Opportunity: Premium target for high-proficiency English speakers seeking international Global Volunteer and Global Talent roles abroad."
+            "B2C Tactical Opportunity: Premium target for high-proficiency English speakers seeking international Global Volunteer and Global Talent roles abroad."
         ),
-        "recommended_action": "High-conversion campus recruitment for AIESEC Global Volunteer & Global Talent exchanges."
+        "recommended_action": "High-conversion campus recruitment for Global Volunteer & Global Talent exchanges."
     },
     {
         "id": "summit_greek_campus_expo_2026",
@@ -244,9 +244,9 @@ SUMMITS_CATALOG = [
             "Venue Details: The Greek Campus (Main Quad, The Library, and The Nest), 28 Falaki Street, Downtown Cairo. "
             "Activities: Live product demos, venture investor pitch sessions, open masterclasses in software architecture, and evening networking. "
             "Admission: Student & visitor entry pass available online. "
-            "AIESEC Tactical Opportunity: Perfect venue to pitch startup founders on hosting international interns through AIESEC Global Talent."
+            "B2C Tactical Opportunity: Perfect venue to pitch startup founders on hosting international interns through Global Talent."
         ),
-        "recommended_action": "Deploy AIESEC partnership desk & pitch startup founders on hiring international tech talent."
+        "recommended_action": "Deploy partnership desk & pitch startup founders on hiring international tech talent."
     },
     {
         "id": "summit_cairo_ict_2026",
@@ -267,9 +267,9 @@ SUMMITS_CATALOG = [
             "Venue Details: Egypt International Exhibition Center (EIEC), Halls 1, 2, 3, & 4, New Cairo. "
             "Activities: Connecta youth arena, AI innovation summit, cyber defense challenges, and university research showcase. "
             "Admission: Free digital badge registration online. "
-            "AIESEC Tactical Opportunity: Massive nationwide gathering of tech talent. Deploy cross-LC delegation to source Global Talent applicants."
+            "B2C Tactical Opportunity: Massive nationwide gathering of tech talent. Deploy cross-chapter delegation to source Global Talent applicants."
         ),
-        "recommended_action": "Nationwide youth activation: Deploy multi-LC delegation across Connecta tech hall for Global Talent IT recruitment."
+        "recommended_action": "Nationwide youth activation: Deploy multi-chapter delegation across Connecta tech hall for Global Talent IT recruitment."
     },
     {
         "id": "summit_seamless_north_africa_2026",
@@ -290,7 +290,7 @@ SUMMITS_CATALOG = [
             "Venue Details: Egypt International Exhibition Center (EIEC), Hall 2, New Cairo. "
             "Activities: Keynote tracks, start-up pitch arena, fintech talent networking, and interactive developer workshops. "
             "Admission: Free delegate pass upon pre-registration. "
-            "AIESEC Tactical Opportunity: Engage banking and tech corporate sponsors for Global Talent corporate partnerships and internships."
+            "B2C Tactical Opportunity: Engage banking and tech corporate sponsors for Global Talent corporate partnerships and internships."
         ),
         "recommended_action": "B2B partnership targeting: Meet fintech corporate partners for incoming Global Talent trainee placement."
     },
@@ -312,9 +312,9 @@ SUMMITS_CATALOG = [
             "Features 70+ local and multinational employers conducting on-site screening interviews and internship selection. "
             "Venue Details: Ain Shams University Faculty of Engineering Main Campus, 1 El-Sarayat St, Abbassia, Cairo. "
             "Admission: Free with university ID or graduate certificate. "
-            "AIESEC Tactical Opportunity: Core recruitment ground for LC Ain Shams: Deploy large booth in central campus quad."
+            "B2C Tactical Opportunity: Core recruitment ground for Ain Shams campus team: Deploy large booth in central campus quad."
         ),
-        "recommended_action": "High-priority activation for LC Ain Shams: Deploy campus booth, CV clinic, and Global Volunteer recruitment drive."
+        "recommended_action": "High-priority activation for Ain Shams campus: Deploy campus booth, CV clinic, and Global Volunteer recruitment drive."
     },
     {
         "id": "summit_cu_career_forum_2026",
@@ -334,9 +334,9 @@ SUMMITS_CATALOG = [
             "Target Audience: Final-year students and fresh graduates from Cairo University faculties. "
             "Venue Details: Cairo University Faculty of Engineering Campus, Giza (Building 3, Main Quad, and Conference Hall). "
             "Admission: Free with valid Cairo University ID card. "
-            "AIESEC Tactical Opportunity: Prime activation ground for LC Cairo University: Drive Global Talent applications."
+            "B2C Tactical Opportunity: Prime activation ground for Cairo University chapter: Drive Global Talent applications."
         ),
-        "recommended_action": "Key campus activation for LC Cairo University: Setup booth at engineering quad and pitch international developer internships."
+        "recommended_action": "Key campus activation for Cairo University: Setup booth at engineering quad and pitch international developer internships."
     },
     {
         "id": "summit_alex_univ_career_day_2026",
@@ -356,9 +356,9 @@ SUMMITS_CATALOG = [
             "Target Audience: Undergraduates and recent alumni of Alexandria University faculties. "
             "Venue Details: Faculty of Engineering Campus, El Horreya Avenue, Shatby, Alexandria. "
             "Admission: Free of charge for university students. "
-            "AIESEC Tactical Opportunity: Anchor activation for LC Alexandria: Distribute Global Volunteer flyers and register student leads."
+            "B2C Tactical Opportunity: Anchor activation for Alexandria chapter: Distribute Global Volunteer flyers and register student leads."
         ),
-        "recommended_action": "Flagship activation for LC Alexandria: Run interactive booth, provide resume reviews, and recruit outbound delegates."
+        "recommended_action": "Flagship activation for Alexandria chapter: Run interactive booth, provide resume reviews, and recruit outbound delegates."
     },
     {
         "id": "summit_mansoura_innovation_expo_2026",
@@ -378,7 +378,7 @@ SUMMITS_CATALOG = [
             "Venue Details: Grand Conference Hall & University Club, Mansoura University Campus, Mansoura. "
             "Activities: Student entrepreneurship exhibition, career talks, employer recruitment booths, and leadership workshops. "
             "Admission: Free with Mansoura University ID. "
-            "AIESEC Tactical Opportunity: Critical Delta expansion ground: Engage student leaders and recruit Global Volunteer applicants."
+            "B2C Tactical Opportunity: Critical Delta expansion ground: Engage student leaders and recruit Global Volunteer applicants."
         ),
         "recommended_action": "Delta outreach priority: Deploy student booth, engage student union heads, and drive Global Volunteer registrations."
     },
@@ -401,7 +401,7 @@ SUMMITS_CATALOG = [
             "Venue Details: Assiut University Main Campus Conference Center, Assiut. "
             "Activities: Tech keynote panels, robotics competitions, career guidance seminars, and youth workshops. "
             "Admission: Free registration for university students. "
-            "AIESEC Tactical Opportunity: Key Upper Egypt recruitment gateway: Expand AIESEC presence in regional universities."
+            "B2C Tactical Opportunity: Key Upper Egypt recruitment gateway: Expand outreach presence in regional universities."
         ),
         "recommended_action": "Upper Egypt strategic outreach: Partner with IEEE Assiut for joint youth leadership session & recruit exchange delegates."
     },
@@ -422,7 +422,7 @@ SUMMITS_CATALOG = [
             "Features 50+ student graduation projects, deep-tech prototypes, and AI solutions presented to tech venture capital funds. "
             "Venue Details: Nile University Campus, Juhayna Square, Sheikh Zayed, Giza. "
             "Admission: Free RSVP open to students and tech professionals. "
-            "AIESEC Tactical Opportunity: Recruit high-skill tech undergraduates for Global Talent IT internships abroad."
+            "B2C Tactical Opportunity: Recruit high-skill tech undergraduates for Global Talent IT internships abroad."
         ),
         "recommended_action": "Source top-tier engineering and AI talent for outbound Global Talent corporate internships in Europe and Asia."
     },
@@ -444,7 +444,7 @@ SUMMITS_CATALOG = [
             "Venue Details: The GrEEK Campus, Downtown Cairo (Factory Hall, Open Amphitheatre, and Workshop Lounges). "
             "Activities: Tracks in Machine Learning / GenAI, Cloud Computing, Android, Web Technologies, and Women in Tech. "
             "Admission: Free ticket with RSVP badge. "
-            "AIESEC Tactical Opportunity: High-density pool of developers: Perfect for recruiting Global Talent software engineers."
+            "B2C Tactical Opportunity: High-density pool of developers: Perfect for recruiting Global Talent software engineers."
         ),
         "recommended_action": "Deploy tech recruitment desk at GrEEK Campus to pitch student coders on international tech internships."
     },
@@ -465,9 +465,9 @@ SUMMITS_CATALOG = [
             "Brings together winning student teams from 40+ Egyptian universities pitching business solutions aligned with the UN SDGs. "
             "Venue Details: American University in Cairo (AUC), New Cairo Campus (Bassily Auditorium & Plaza). "
             "Admission: Student attendee pass with campus security registration. "
-            "AIESEC Tactical Opportunity: 100% philosophical match with AIESEC SDG Global Volunteer programs: Engage changemakers."
+            "B2C Tactical Opportunity: 100% philosophical match with SDG Global Volunteer programs: Engage changemakers."
         ),
-        "recommended_action": "Partner with Hult Prize organizers for AIESEC SDG keynote and invite participants to Global Volunteer projects."
+        "recommended_action": "Partner with Hult Prize organizers for SDG keynote and invite participants to Global Volunteer projects."
     }
 ]
 
@@ -483,6 +483,7 @@ class EgyptSummitsScraper(BaseScraper):
     def scrape(self, city: Optional[str] = None, country: str = "egypt") -> List[EventRecord]:
         """Scrapes and monitors flagship Egyptian summits."""
         results: List[EventRecord] = []
+        now = datetime.now()
 
         # 1. Live probe to technesummit.com to verify real-time status
         try:
@@ -499,12 +500,19 @@ class EgyptSummitsScraper(BaseScraper):
                 if target_city.lower() != city.lower():
                     continue
 
+            start_dt = s["start_date"]
+            date_disp = s["date_display"]
+            if start_dt < now - timedelta(days=2):
+                # Roll annual summit to next upcoming edition
+                start_dt = start_dt.replace(year=start_dt.year + 1)
+                date_disp = date_disp.replace("2026", str(start_dt.year))
+
             record = EventRecord(
                 event_id=s["id"],
                 title=s["title"],
                 source="Egypt Flagship Summits",
-                start_date=s["start_date"],
-                date_display=s["date_display"],
+                start_date=start_dt,
+                date_display=date_disp,
                 location=s["location"],
                 city=target_city,
                 country=country.capitalize(),
