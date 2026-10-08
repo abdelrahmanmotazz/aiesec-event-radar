@@ -1,5 +1,5 @@
 // Auto-generated Event Radar Events Data
-window.RADAR_DATASET_VERSION = '2026-10-08_1739';
+window.RADAR_DATASET_VERSION = '2026-10-08_1504';
 window.AIESEC_INITIAL_EVENTS = [
   {
     "event_id": "tm_Khayal-Mareed-Play_8475",
@@ -67,7 +67,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 25,
+    "clash_count": 26,
     "clash_details": [
       "The Annual Conference of the Egyptian Arabic Society for Healthy and Therapeutic Nutrition (EASHTN)",
       "Nasr City Boardgame Night | NewGame",
@@ -110,7 +110,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 25,
+    "clash_count": 26,
     "clash_details": [
       "Nasr City Boardgame Night | NewGame",
       "Contact Improvisation Workshop with Giulio Piazzi",
@@ -194,7 +194,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 25,
+    "clash_count": 26,
     "clash_details": [
       "The Annual Conference of the Egyptian Arabic Society for Healthy and Therapeutic Nutrition (EASHTN)",
       "Nasr City Boardgame Night | NewGame",
@@ -393,7 +393,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "is_social_first": false
   },
   {
-    "event_id": "mu_2170766601",
+    "event_id": "mu_286791735",
     "title": "Nasr City Boardgame Night | NewGame",
     "source": "Meetup",
     "start_date": "2026-10-08T15:00:00",
@@ -405,7 +405,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "url": "https://www.meetup.com/cairo-tabletop-role-playing-and-board-games-meetup-group/events/316854145/",
     "ticket_type": "Free",
     "organizer": "Egypt Board Games and Tabletop Role Playing | NewGame",
-    "description": "Come join us in Urban court for a chill boardgame night, where we have fun and make new friends. Zero experience in games needed, as I will be your host and game master introducing you to games. Join our WhatsApp group\n[https://chat.whatsapp.com/CrOryPPzVTC0j2NLNq75Gj](https://chat.whatsapp.com/Cr",
+    "description": "Come join us in Urban court for a chill boardgame night, where we have fun and make new friends.\n\nZero experience in games needed, as I will be your host and game master introducing you to games.\n\nJoin our WhatsApp group\n[https://chat.whatsapp.com/CrOryPPzVTC0j2NLNq75Gj](https://chat.whatsapp.com/Cr",
     "category": "General Event",
     "aiesec_tags": [
       "general"
@@ -415,7 +415,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 25,
+    "clash_count": 26,
     "clash_details": [
       "The Annual Conference of the Egyptian Arabic Society for Healthy and Therapeutic Nutrition (EASHTN)",
       "Contact Improvisation Workshop with Giulio Piazzi",
@@ -436,7 +436,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "is_social_first": false
   },
   {
-    "event_id": "mu_669925430",
+    "event_id": "mu_114240419",
     "title": "#AB_Talks Game Night (Round 6)",
     "source": "Meetup",
     "start_date": "2026-10-08T15:30:00",
@@ -448,7 +448,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "url": "https://www.meetup.com/talentriseacademy/events/316826107/",
     "ticket_type": "Free",
     "organizer": "TalentRise Community",
-    "description": "Book Your Spot:\nhttps://www.instagram.com/TalentRiseAcademy/ You came to meet new people... and somehow ended up oversharing over a card game 💛🃏 This time, we’re keeping it light:\n✨ABtalks Card Games\n😂 Laughs & good vibes\n🫱🏻‍🫲🏼New people\n💬Conversations that actually go somewhere No pressure. No a",
+    "description": "Book Your Spot:\nhttps://www.instagram.com/TalentRiseAcademy/\n\nYou came to meet new people... and somehow ended up oversharing over a card game 💛🃏\n\nThis time, we’re keeping it light:\n✨ABtalks Card Games\n😂 Laughs & good vibes\n🫱🏻‍🫲🏼New people\n💬Conversations that actually go somewhere\n\nNo pressure. No a",
     "category": "Social & Entertainment",
     "aiesec_tags": [
       "entertainment",
@@ -479,7 +479,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "is_social_first": false
   },
   {
-    "event_id": "mu_2374173015",
+    "event_id": "mu_3207632438",
     "title": "The 8 Strategies That Run Your Relationships",
     "source": "Meetup",
     "start_date": "2026-10-08T16:00:00",
@@ -491,7 +491,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "url": "https://www.meetup.com/relationship-support-group-here/events/316782401/",
     "ticket_type": "Free",
     "organizer": "Conversations About Relationships",
-    "description": "We all have a handful of automatic moves we make in close relationships. They fire faster than thought. They feel like personality rather than choice. From the inside, you cannot see your own strategy.\nIn this session I will walk you through all eight, one by one. Most people recognise themselves i",
+    "description": "We all have a handful of automatic moves we make in close relationships. They fire faster than thought. They feel like personality rather than choice.\n\nFrom the inside, you cannot see your own strategy.\nIn this session I will walk you through all eight, one by one. Most people recognise themselves i",
     "category": "General Event",
     "aiesec_tags": [
       "general"
@@ -505,7 +505,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "clash_details": [
       "Claude Cowork Playbook: What the Top 1% Do Differently",
       "Yvonne Moriel - Music concert",
-      "100 Cities Project: Alexandria | Dinner with New Friends"
+      "Rethinking Rebuilding"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -522,7 +522,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "is_social_first": false
   },
   {
-    "event_id": "mu_1279450190",
+    "event_id": "mu_2656456730",
     "title": "Claude Cowork Playbook: What the Top 1% Do Differently",
     "source": "Meetup",
     "start_date": "2026-10-08T17:00:00",
@@ -534,7 +534,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "url": "https://www.meetup.com/baig-academy-of-ai/events/316776806/",
     "ticket_type": "Free",
     "organizer": "Baig Academy of AI",
-    "description": "## What you'll learn * Build Advanced Workflows Without Coding Use MCP connectors and plugins to link Claude to your daily apps and automate tasks without writing code. * Master Multi-Agent Systems Learn simple frameworks to coordinate multiple AI assistants for handling complex, multi-step proj",
+    "description": "## What you'll learn\n\n* Build Advanced Workflows Without Coding\n\nUse MCP connectors and plugins to link Claude to your daily apps and automate tasks without writing code.\n\n* Master Multi-Agent Systems\n\nLearn simple frameworks to coordinate multiple AI assistants for handling complex, multi-step proj",
     "category": "General Event",
     "aiesec_tags": [
       "general"
@@ -548,7 +548,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "clash_details": [
       "The 8 Strategies That Run Your Relationships",
       "Yvonne Moriel - Music concert",
-      "100 Cities Project: Alexandria | Dinner with New Friends"
+      "Rethinking Rebuilding"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -593,7 +593,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "clash_details": [
       "The 8 Strategies That Run Your Relationships",
       "Claude Cowork Playbook: What the Top 1% Do Differently",
-      "100 Cities Project: Alexandria | Dinner with New Friends"
+      "Rethinking Rebuilding"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -635,7 +635,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Speaker Outreach, Workshop Co-hosting & Youth Leadership Presentation",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 25,
+    "clash_count": 26,
     "clash_details": [
       "The Annual Conference of the Egyptian Arabic Society for Healthy and Therapeutic Nutrition (EASHTN)",
       "Nasr City Boardgame Night | NewGame",
@@ -681,7 +681,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Promote Global Volunteer Projects & SDG Alignment",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 25,
+    "clash_count": 26,
     "clash_details": [
       "The Annual Conference of the Egyptian Arabic Society for Healthy and Therapeutic Nutrition (EASHTN)",
       "Nasr City Boardgame Night | NewGame",
@@ -694,6 +694,49 @@ window.AIESEC_INITIAL_EVENTS = [
     "organizer_phone": "16826",
     "proof_url": "https://www.ticketsmarche.com/event/Omar-Kint_9418",
     "proof_type": "Ticketsmarche Verified Registry",
+    "is_verified_proof": true,
+    "proof_evidence": "Verified Official Announcement Post",
+    "registration_url": null,
+    "organizer_profile_url": null,
+    "post_direct_url": null,
+    "is_social_first": false
+  },
+  {
+    "event_id": "ae_200030697848829",
+    "title": "Omar kint X Room Garden City",
+    "source": "AllEvents",
+    "start_date": "2026-10-08T20:00:00",
+    "end_date": null,
+    "date_display": "Thu, 08 Oct, 2026 - 08:00 PM",
+    "location": "ROOM Art Space & Cafe",
+    "city": "Cairo",
+    "country": "Egypt",
+    "url": "https://allevents.in/cairo/omar-kint-x-room-garden-city/200030697848829",
+    "ticket_type": "Registration / Tickets",
+    "organizer": "AllEvents Organizer",
+    "description": "",
+    "category": "General Event",
+    "aiesec_tags": [
+      "general"
+    ],
+    "b2c_score": 4.0,
+    "b2c_priority": "LOW",
+    "recommended_action": "General Monitoring for potential youth presence",
+    "parallel_org": null,
+    "clash_warning": true,
+    "clash_count": 26,
+    "clash_details": [
+      "The Annual Conference of the Egyptian Arabic Society for Healthy and Therapeutic Nutrition (EASHTN)",
+      "Nasr City Boardgame Night | NewGame",
+      "Contact Improvisation Workshop with Giulio Piazzi"
+    ],
+    "raw_caption": null,
+    "organizer_email": null,
+    "organizer_instagram": null,
+    "organizer_linkedin": null,
+    "organizer_phone": null,
+    "proof_url": "https://allevents.in/cairo/omar-kint-x-room-garden-city/200030697848829",
+    "proof_type": "Official Organizer Announcement",
     "is_verified_proof": true,
     "proof_evidence": "Verified Official Announcement Post",
     "registration_url": null,
@@ -724,7 +767,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 25,
+    "clash_count": 26,
     "clash_details": [
       "The Annual Conference of the Egyptian Arabic Society for Healthy and Therapeutic Nutrition (EASHTN)",
       "Nasr City Boardgame Night | NewGame",
@@ -767,7 +810,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 25,
+    "clash_count": 26,
     "clash_details": [
       "The Annual Conference of the Egyptian Arabic Society for Healthy and Therapeutic Nutrition (EASHTN)",
       "Nasr City Boardgame Night | NewGame",
@@ -810,7 +853,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 25,
+    "clash_count": 26,
     "clash_details": [
       "The Annual Conference of the Egyptian Arabic Society for Healthy and Therapeutic Nutrition (EASHTN)",
       "Nasr City Boardgame Night | NewGame",
@@ -823,49 +866,6 @@ window.AIESEC_INITIAL_EVENTS = [
     "organizer_phone": "16826",
     "proof_url": "https://www.ticketsmarche.com/event/Al-Dahdira_9536",
     "proof_type": "Ticketsmarche Verified Registry",
-    "is_verified_proof": true,
-    "proof_evidence": "Verified Official Announcement Post",
-    "registration_url": null,
-    "organizer_profile_url": null,
-    "post_direct_url": null,
-    "is_social_first": false
-  },
-  {
-    "event_id": "ae_200030697848829",
-    "title": "Omar kint X Room Garden City",
-    "source": "AllEvents",
-    "start_date": "2026-10-08T20:00:00",
-    "end_date": null,
-    "date_display": "Thu, 08 Oct, 2026 - 08:00 PM",
-    "location": "ROOM Art Space & Cafe",
-    "city": "Cairo",
-    "country": "Egypt",
-    "url": "https://allevents.in/cairo/omar-kint-x-room-garden-city/200030697848829",
-    "ticket_type": "Registration / Tickets",
-    "organizer": "AllEvents Organizer",
-    "description": "",
-    "category": "General Event",
-    "aiesec_tags": [
-      "general"
-    ],
-    "b2c_score": 4.0,
-    "b2c_priority": "LOW",
-    "recommended_action": "General Monitoring for potential youth presence",
-    "parallel_org": null,
-    "clash_warning": true,
-    "clash_count": 25,
-    "clash_details": [
-      "The Annual Conference of the Egyptian Arabic Society for Healthy and Therapeutic Nutrition (EASHTN)",
-      "Nasr City Boardgame Night | NewGame",
-      "Contact Improvisation Workshop with Giulio Piazzi"
-    ],
-    "raw_caption": null,
-    "organizer_email": null,
-    "organizer_instagram": null,
-    "organizer_linkedin": null,
-    "organizer_phone": null,
-    "proof_url": "https://allevents.in/cairo/omar-kint-x-room-garden-city/200030697848829",
-    "proof_type": "Official Organizer Announcement",
     "is_verified_proof": true,
     "proof_evidence": "Verified Official Announcement Post",
     "registration_url": null,
@@ -896,7 +896,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 25,
+    "clash_count": 26,
     "clash_details": [
       "The Annual Conference of the Egyptian Arabic Society for Healthy and Therapeutic Nutrition (EASHTN)",
       "Nasr City Boardgame Night | NewGame",
@@ -984,7 +984,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring (Social / Leisure)",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 25,
+    "clash_count": 26,
     "clash_details": [
       "The Annual Conference of the Egyptian Arabic Society for Healthy and Therapeutic Nutrition (EASHTN)",
       "Nasr City Boardgame Night | NewGame",
@@ -1005,7 +1005,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "is_social_first": false
   },
   {
-    "event_id": "mu_1711812565",
+    "event_id": "mu_2580729744",
     "title": "Qahwa 5A 5th settlement",
     "source": "Meetup",
     "start_date": "2026-10-09T04:30:00",
@@ -1017,7 +1017,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "url": "https://www.meetup.com/qahwa-coffee-meetup-group/events/316621663/",
     "ticket_type": "Free",
     "organizer": "Qahwa Coffee Meetup Group",
-    "description": "A casual weekend meetup for good coffee, breakfast, and great conversations! ☕️🥐\nEvery weekend, we’ll meet at Qahwa 5A, New Cairo to enjoy a relaxed morning, have some coffee and breakfast, and meet new people. No special requirements—just come with a good mood, an open mind, and a willingness to m",
+    "description": "A casual weekend meetup for good coffee, breakfast, and great conversations! ☕️🥐\nEvery weekend, we’ll meet at Qahwa 5A, New Cairo to enjoy a relaxed morning, have some coffee and breakfast, and meet new people.\n\nNo special requirements—just come with a good mood, an open mind, and a willingness to m",
     "category": "General Event",
     "aiesec_tags": [
       "general"
@@ -1027,7 +1027,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 25,
+    "clash_count": 26,
     "clash_details": [
       "The Annual Conference of the Egyptian Arabic Society for Healthy and Therapeutic Nutrition (EASHTN)",
       "Nasr City Boardgame Night | NewGame",
@@ -1070,7 +1070,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 25,
+    "clash_count": 26,
     "clash_details": [
       "The Annual Conference of the Egyptian Arabic Society for Healthy and Therapeutic Nutrition (EASHTN)",
       "Nasr City Boardgame Night | NewGame",
@@ -1113,7 +1113,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 25,
+    "clash_count": 26,
     "clash_details": [
       "The Annual Conference of the Egyptian Arabic Society for Healthy and Therapeutic Nutrition (EASHTN)",
       "Nasr City Boardgame Night | NewGame",
@@ -1156,7 +1156,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 25,
+    "clash_count": 26,
     "clash_details": [
       "The Annual Conference of the Egyptian Arabic Society for Healthy and Therapeutic Nutrition (EASHTN)",
       "Nasr City Boardgame Night | NewGame",
@@ -1168,6 +1168,49 @@ window.AIESEC_INITIAL_EVENTS = [
     "organizer_linkedin": null,
     "organizer_phone": null,
     "proof_url": "https://allevents.in/cairo/عرض-ومناقشة-فيلم-«اختناق»-asphyxia-2017-فى-مكتبة-مصر-الجديدة/200030785255517",
+    "proof_type": "Official Organizer Announcement",
+    "is_verified_proof": true,
+    "proof_evidence": "Verified Official Announcement Post",
+    "registration_url": null,
+    "organizer_profile_url": null,
+    "post_direct_url": null,
+    "is_social_first": false
+  },
+  {
+    "event_id": "ae_200030776555736",
+    "title": "Marioneta Show Season 29",
+    "source": "AllEvents",
+    "start_date": "2026-10-09T18:00:00",
+    "end_date": null,
+    "date_display": "Fri, 09 Oct, 2026 - 06:00 PM",
+    "location": "Galal El Sharkawy Theatre   مسرح جلال الشرقاوي",
+    "city": "Cairo",
+    "country": "Egypt",
+    "url": "https://allevents.in/cairo/marioneta-show-season-29/200030776555736",
+    "ticket_type": "Registration / Tickets",
+    "organizer": "AllEvents Organizer",
+    "description": "",
+    "category": "General Event",
+    "aiesec_tags": [
+      "general"
+    ],
+    "b2c_score": 4.0,
+    "b2c_priority": "LOW",
+    "recommended_action": "General Monitoring for potential youth presence",
+    "parallel_org": null,
+    "clash_warning": true,
+    "clash_count": 26,
+    "clash_details": [
+      "The Annual Conference of the Egyptian Arabic Society for Healthy and Therapeutic Nutrition (EASHTN)",
+      "Nasr City Boardgame Night | NewGame",
+      "Contact Improvisation Workshop with Giulio Piazzi"
+    ],
+    "raw_caption": null,
+    "organizer_email": null,
+    "organizer_instagram": null,
+    "organizer_linkedin": null,
+    "organizer_phone": null,
+    "proof_url": "https://allevents.in/cairo/marioneta-show-season-29/200030776555736",
     "proof_type": "Official Organizer Announcement",
     "is_verified_proof": true,
     "proof_evidence": "Verified Official Announcement Post",
@@ -1220,49 +1263,6 @@ window.AIESEC_INITIAL_EVENTS = [
     "is_social_first": false
   },
   {
-    "event_id": "ae_200030776555736",
-    "title": "Marioneta Show Season 29",
-    "source": "AllEvents",
-    "start_date": "2026-10-09T18:00:00",
-    "end_date": null,
-    "date_display": "Fri, 09 Oct, 2026 - 06:00 PM",
-    "location": "Galal El Sharkawy Theatre   مسرح جلال الشرقاوي",
-    "city": "Cairo",
-    "country": "Egypt",
-    "url": "https://allevents.in/cairo/marioneta-show-season-29/200030776555736",
-    "ticket_type": "Registration / Tickets",
-    "organizer": "AllEvents Organizer",
-    "description": "",
-    "category": "General Event",
-    "aiesec_tags": [
-      "general"
-    ],
-    "b2c_score": 4.0,
-    "b2c_priority": "LOW",
-    "recommended_action": "General Monitoring for potential youth presence",
-    "parallel_org": null,
-    "clash_warning": true,
-    "clash_count": 25,
-    "clash_details": [
-      "The Annual Conference of the Egyptian Arabic Society for Healthy and Therapeutic Nutrition (EASHTN)",
-      "Nasr City Boardgame Night | NewGame",
-      "Contact Improvisation Workshop with Giulio Piazzi"
-    ],
-    "raw_caption": null,
-    "organizer_email": null,
-    "organizer_instagram": null,
-    "organizer_linkedin": null,
-    "organizer_phone": null,
-    "proof_url": "https://allevents.in/cairo/marioneta-show-season-29/200030776555736",
-    "proof_type": "Official Organizer Announcement",
-    "is_verified_proof": true,
-    "proof_evidence": "Verified Official Announcement Post",
-    "registration_url": null,
-    "organizer_profile_url": null,
-    "post_direct_url": null,
-    "is_social_first": false
-  },
-  {
     "event_id": "tm_ahmed-magdy_9430",
     "title": "Ahmed Magdy x Anfoushy Cultural Palace",
     "source": "TicketsMarche",
@@ -1288,7 +1288,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Promote Global Volunteer Projects & SDG Alignment",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 25,
+    "clash_count": 26,
     "clash_details": [
       "The Annual Conference of the Egyptian Arabic Society for Healthy and Therapeutic Nutrition (EASHTN)",
       "Nasr City Boardgame Night | NewGame",
@@ -1331,7 +1331,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 25,
+    "clash_count": 26,
     "clash_details": [
       "The Annual Conference of the Egyptian Arabic Society for Healthy and Therapeutic Nutrition (EASHTN)",
       "Nasr City Boardgame Night | NewGame",
@@ -1374,7 +1374,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 25,
+    "clash_count": 26,
     "clash_details": [
       "The Annual Conference of the Egyptian Arabic Society for Healthy and Therapeutic Nutrition (EASHTN)",
       "Nasr City Boardgame Night | NewGame",
@@ -1400,9 +1400,9 @@ window.AIESEC_INITIAL_EVENTS = [
     "source": "AllEvents",
     "start_date": "2026-10-10T09:00:00",
     "end_date": null,
-    "date_display": "Sat, 10 Oct • 09:00 AM",
+    "date_display": "Sat, 10 Oct, 2026 - 09:00 AM",
     "location": "Cairo Marriott Hotel",
-    "city": "Tanta",
+    "city": "Cairo",
     "country": "Egypt",
     "url": "https://allevents.in/cairo/egypt-womens-health-summit-2026-ewhs-2026/200029585295612",
     "ticket_type": "Registration / Tickets",
@@ -1419,9 +1419,13 @@ window.AIESEC_INITIAL_EVENTS = [
     "b2c_priority": "HIGH",
     "recommended_action": "Major National Activation: Deploy Chapter Delegation, Booth Presence & Global Volunteer Recruitment",
     "parallel_org": null,
-    "clash_warning": false,
-    "clash_count": 0,
-    "clash_details": [],
+    "clash_warning": true,
+    "clash_count": 26,
+    "clash_details": [
+      "The Annual Conference of the Egyptian Arabic Society for Healthy and Therapeutic Nutrition (EASHTN)",
+      "Nasr City Boardgame Night | NewGame",
+      "Contact Improvisation Workshop with Giulio Piazzi"
+    ],
     "raw_caption": null,
     "organizer_email": null,
     "organizer_instagram": null,
@@ -1547,7 +1551,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 25,
+    "clash_count": 26,
     "clash_details": [
       "The Annual Conference of the Egyptian Arabic Society for Healthy and Therapeutic Nutrition (EASHTN)",
       "Nasr City Boardgame Night | NewGame",
@@ -1590,7 +1594,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 25,
+    "clash_count": 26,
     "clash_details": [
       "The Annual Conference of the Egyptian Arabic Society for Healthy and Therapeutic Nutrition (EASHTN)",
       "Nasr City Boardgame Night | NewGame",
@@ -1635,7 +1639,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring (Social / Leisure)",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 25,
+    "clash_count": 26,
     "clash_details": [
       "The Annual Conference of the Egyptian Arabic Society for Healthy and Therapeutic Nutrition (EASHTN)",
       "Nasr City Boardgame Night | NewGame",
@@ -1678,7 +1682,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 25,
+    "clash_count": 26,
     "clash_details": [
       "The Annual Conference of the Egyptian Arabic Society for Healthy and Therapeutic Nutrition (EASHTN)",
       "Nasr City Boardgame Night | NewGame",
@@ -1764,7 +1768,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 25,
+    "clash_count": 26,
     "clash_details": [
       "The Annual Conference of the Egyptian Arabic Society for Healthy and Therapeutic Nutrition (EASHTN)",
       "Nasr City Boardgame Night | NewGame",
@@ -1853,7 +1857,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "B2B partnership targeting: Meet fintech corporate partners for incoming Global Talent trainee placement.",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 27,
+    "clash_count": 29,
     "clash_details": [
       "Finite Element Analysis",
       "Improve Your Public Speaking - in Maadi",
@@ -1896,7 +1900,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 27,
+    "clash_count": 29,
     "clash_details": [
       "Seamless North Africa 2026 (Fintech & Digital Commerce)",
       "Improve Your Public Speaking - in Maadi",
@@ -1962,7 +1966,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "is_social_first": false
   },
   {
-    "event_id": "mu_200153245",
+    "event_id": "mu_311708635",
     "title": "Improve Your Public Speaking - in Maadi",
     "source": "Meetup",
     "start_date": "2026-10-12T16:00:00",
@@ -1974,7 +1978,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "url": "https://www.meetup.com/cairotmclub/events/316666586/",
     "ticket_type": "Free",
     "organizer": "Cairo Toastmasters - Improve your Public Speaking!",
-    "description": "Do you want to kick your public speaking skills up a couple of notches?\nJoin Maadi Toastmasters Club and practice public speaking with professional speakers from all over the world to ace your next presentation. What's Maadi Toastmasters Club? A Toastmasters Club meeting is a learn-by-doing event",
+    "description": "Do you want to kick your public speaking skills up a couple of notches?\nJoin Maadi Toastmasters Club and practice public speaking with professional speakers from all over the world to ace your next presentation.\n\nWhat's Maadi Toastmasters Club?\n\nA Toastmasters Club meeting is a learn-by-doing event ",
     "category": "Student Orgs & Campus Leadership",
     "aiesec_tags": [
       "Toastmasters",
@@ -1988,7 +1992,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Partner Outreach with Toastmasters: Joint Activation / PR Collaboration",
     "parallel_org": "Toastmasters",
     "clash_warning": true,
-    "clash_count": 27,
+    "clash_count": 29,
     "clash_details": [
       "Seamless North Africa 2026 (Fintech & Digital Commerce)",
       "Finite Element Analysis",
@@ -2052,7 +2056,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "is_social_first": false
   },
   {
-    "event_id": "mu_4264503636",
+    "event_id": "mu_4269438546",
     "title": "Caribou Coffee Morning Cairo East Walk Mall",
     "source": "Meetup",
     "start_date": "2026-10-13T04:30:00",
@@ -2064,7 +2068,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "url": "https://www.meetup.com/caribou-coffee-new-cairo-meetup/events/316427466/",
     "ticket_type": "Free",
     "organizer": "Caribou Coffee Morning New Cairo East Walk Mall",
-    "description": "Follow this link to join Caribou Coffee Meetup WhatsApp group: [https://chat.whatsapp.com/IZh4XcCOk1V2sXmIBqjYpq?s=sh&p=a&mlu=4](https://chat.whatsapp.com/IZh4XcCOk1V2sXmIBqjYpq?s=sh&p=a&mlu=4)\nFor Inquiries WhatsApp ±2 01098292380\nWhen & Where We Meet\n​Location: Caribou Coffee, East Walk Mall (New",
+    "description": "Follow this link to join Caribou Coffee Meetup WhatsApp group: [https://chat.whatsapp.com/IZh4XcCOk1V2sXmIBqjYpq?s=sh&p=a&mlu=4](https://chat.whatsapp.com/IZh4XcCOk1V2sXmIBqjYpq?s=sh&p=a&mlu=4)\nFor Inquiries WhatsApp ±2 01098292380\nWhen & Where We Meet\n​Location: Caribou Coffee, East Walk Mall (New ",
     "category": "Social & Entertainment",
     "aiesec_tags": [
       "entertainment",
@@ -2118,7 +2122,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 27,
+    "clash_count": 29,
     "clash_details": [
       "Seamless North Africa 2026 (Fintech & Digital Commerce)",
       "Finite Element Analysis",
@@ -2161,7 +2165,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 27,
+    "clash_count": 29,
     "clash_details": [
       "Seamless North Africa 2026 (Fintech & Digital Commerce)",
       "Finite Element Analysis",
@@ -2249,7 +2253,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Do Not Deploy (Niche Clinical Target - Incompatible with Youth B2C)",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 27,
+    "clash_count": 29,
     "clash_details": [
       "Seamless North Africa 2026 (Fintech & Digital Commerce)",
       "Finite Element Analysis",
@@ -2315,7 +2319,7 @@ window.AIESEC_INITIAL_EVENTS = [
   },
   {
     "event_id": "ae_200030781882625",
-    "title": "Heart Is Life Annual International Congress AIC 2026",
+    "title": "Heart Is Life  Annual International Congress  AIC 2026",
     "source": "AllEvents",
     "start_date": "2026-10-14T12:00:00",
     "end_date": null,
@@ -2336,7 +2340,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 27,
+    "clash_count": 29,
     "clash_details": [
       "Seamless North Africa 2026 (Fintech & Digital Commerce)",
       "Finite Element Analysis",
@@ -2357,7 +2361,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "is_social_first": false
   },
   {
-    "event_id": "mu_3815487931",
+    "event_id": "mu_2732624054",
     "title": "Spec-Driven Development with ATDD & AI (Valentina Jemuović)",
     "source": "Meetup",
     "start_date": "2026-10-14T15:30:00",
@@ -2369,7 +2373,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "url": "https://www.meetup.com/techexcellence/events/316851439/",
     "ticket_type": "Free",
     "organizer": "Tech Excellence",
-    "description": "You write a spec, hand it to AI, and it gives you back a PR that looks right. But the implementation can be wrong! In the current tools (Kiro, spec-kit, Tessl), the spec is a Markdown file AI is supposed to follow. But AI can ignore the spec or misread it. So you end up testing everything by hand,",
+    "description": "You write a spec, hand it to AI, and it gives you back a PR that looks right. But the implementation can be wrong!\n\nIn the current tools (Kiro, spec-kit, Tessl), the spec is a Markdown file AI is supposed to follow. But AI can ignore the spec or misread it.\n\nSo you end up testing everything by hand,",
     "category": "General Event",
     "aiesec_tags": [
       "general"
@@ -2400,7 +2404,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "is_social_first": false
   },
   {
-    "event_id": "mu_776245950",
+    "event_id": "mu_1637201427",
     "title": "🚀Meetup for Entrepreneurs by F4F",
     "source": "Meetup",
     "start_date": "2026-10-14T16:00:00",
@@ -2412,7 +2416,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "url": "https://www.meetup.com/frankfurt-english/events/316632966/",
     "ticket_type": "Free",
     "organizer": "🌍 Frankfurt Meetup | Daily Events!",
-    "description": "***Founders for Founders* brings you Real conversations for Entrepreneurs building Startups around the world. Every Wednesday.**\n*Talk it out, build it better.* * This is a special FREE weekly event for founders around the world: you can check out [The Founders for Founders Website](https://f4f.vc/",
+    "description": "***Founders for Founders* brings you Real conversations for Entrepreneurs building Startups around the world. Every Wednesday.**\n*Talk it out, build it better.*\n\n* This is a special FREE weekly event for founders around the world: you can check out [The Founders for Founders Website](https://f4f.vc/",
     "category": "General Event",
     "aiesec_tags": [
       "general"
@@ -2504,7 +2508,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 27,
+    "clash_count": 29,
     "clash_details": [
       "Seamless North Africa 2026 (Fintech & Digital Commerce)",
       "Finite Element Analysis",
@@ -2613,51 +2617,6 @@ window.AIESEC_INITIAL_EVENTS = [
     "is_social_first": false
   },
   {
-    "event_id": "ae_200030603841151",
-    "title": "18th Annual Dialysis Conference The Cardiometabolic Summit",
-    "source": "AllEvents",
-    "start_date": "2026-10-15T08:00:00",
-    "end_date": null,
-    "date_display": "Thu, 15 Oct • 08:00 AM",
-    "location": "Novotel Cairo Airport (Po Box 8 Cairo Airport, Cairo, Cairo Governorate, Egypt)",
-    "city": "Tanta",
-    "country": "Egypt",
-    "url": "https://allevents.in/heliopolis/18th-annual-dialysis-conference-the-cardiometabolic-summit/200030603841151",
-    "ticket_type": "Registration / Tickets",
-    "organizer": "AllEvents Organizer",
-    "description": "",
-    "category": "Medical & Clinical Congress",
-    "aiesec_tags": [
-      "medical",
-      "clinical",
-      "b2b"
-    ],
-    "b2c_score": 2.5,
-    "b2c_priority": "LOW",
-    "recommended_action": "Do Not Deploy (Niche Clinical Target - Incompatible with Youth B2C)",
-    "parallel_org": null,
-    "clash_warning": true,
-    "clash_count": 4,
-    "clash_details": [
-      "PACES LIVE- Communications & Consultation Course",
-      "BIODIESEL PRODUCTION TRAINING EGYPT 2026",
-      "Creativa Innovation Hub Tanta — Delta Youth AI & Startup Hackathon"
-    ],
-    "raw_caption": null,
-    "organizer_email": null,
-    "organizer_instagram": null,
-    "organizer_linkedin": null,
-    "organizer_phone": null,
-    "proof_url": "https://allevents.in/heliopolis/18th-annual-dialysis-conference-the-cardiometabolic-summit/200030603841151",
-    "proof_type": "Official Organizer Announcement",
-    "is_verified_proof": true,
-    "proof_evidence": "Verified Official Announcement Post",
-    "registration_url": null,
-    "organizer_profile_url": null,
-    "post_direct_url": null,
-    "is_social_first": false
-  },
-  {
     "event_id": "ae_200030469186724",
     "title": "7th Annual Conference of Pharmacy",
     "source": "AllEvents",
@@ -2692,6 +2651,49 @@ window.AIESEC_INITIAL_EVENTS = [
     "organizer_linkedin": null,
     "organizer_phone": null,
     "proof_url": "https://allevents.in/al-mansurah/7th-annual-conference-of-pharmacy/200030469186724",
+    "proof_type": "Official Organizer Announcement",
+    "is_verified_proof": true,
+    "proof_evidence": "Verified Official Announcement Post",
+    "registration_url": null,
+    "organizer_profile_url": null,
+    "post_direct_url": null,
+    "is_social_first": false
+  },
+  {
+    "event_id": "ae_200030603841151",
+    "title": "18th Annual Dialysis Conference The Cardiometabolic Summit",
+    "source": "AllEvents",
+    "start_date": "2026-10-15T08:00:00",
+    "end_date": null,
+    "date_display": "Thu, 15 Oct • 08:00 AM",
+    "location": "Novotel Cairo Airport (Po Box 8 Cairo Airport, Cairo, Cairo Governorate, Egypt)",
+    "city": "Tanta",
+    "country": "Egypt",
+    "url": "https://allevents.in/heliopolis/18th-annual-dialysis-conference-the-cardiometabolic-summit/200030603841151",
+    "ticket_type": "Registration / Tickets",
+    "organizer": "AllEvents Organizer",
+    "description": "",
+    "category": "Medical & Clinical Congress",
+    "aiesec_tags": [
+      "medical",
+      "clinical",
+      "b2b"
+    ],
+    "b2c_score": 2.5,
+    "b2c_priority": "LOW",
+    "recommended_action": "Do Not Deploy (Niche Clinical Target - Incompatible with Youth B2C)",
+    "parallel_org": null,
+    "clash_warning": true,
+    "clash_count": 2,
+    "clash_details": [
+      "Creativa Innovation Hub Tanta — Delta Youth AI & Startup Hackathon"
+    ],
+    "raw_caption": null,
+    "organizer_email": null,
+    "organizer_instagram": null,
+    "organizer_linkedin": null,
+    "organizer_phone": null,
+    "proof_url": "https://allevents.in/heliopolis/18th-annual-dialysis-conference-the-cardiometabolic-summit/200030603841151",
     "proof_type": "Official Organizer Announcement",
     "is_verified_proof": true,
     "proof_evidence": "Verified Official Announcement Post",
@@ -2855,7 +2857,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Campus Outreach: Engage Student Attendees & Student Union Partners",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 27,
+    "clash_count": 29,
     "clash_details": [
       "Seamless North Africa 2026 (Fintech & Digital Commerce)",
       "Finite Element Analysis",
@@ -2867,6 +2869,49 @@ window.AIESEC_INITIAL_EVENTS = [
     "organizer_linkedin": null,
     "organizer_phone": null,
     "proof_url": "https://allevents.in/cairo/umar-ryad-al-azhar-in-the-20th-century-reform-religious-authority-and-global-mission/200030703137220",
+    "proof_type": "Official Organizer Announcement",
+    "is_verified_proof": true,
+    "proof_evidence": "Verified Official Announcement Post",
+    "registration_url": null,
+    "organizer_profile_url": null,
+    "post_direct_url": null,
+    "is_social_first": false
+  },
+  {
+    "event_id": "ae_200030783625739",
+    "title": "بيت السناري",
+    "source": "AllEvents",
+    "start_date": "2026-10-15T20:00:00",
+    "end_date": null,
+    "date_display": "Thu, 15 Oct, 2026 - 08:00 PM",
+    "location": "Cairo, Egypt",
+    "city": "Cairo",
+    "country": "Egypt",
+    "url": "https://allevents.in/cairo/حفل-مجاني-ميكروفون-21/200030783625739",
+    "ticket_type": "Registration / Tickets",
+    "organizer": "AllEvents Organizer",
+    "description": "",
+    "category": "General Event",
+    "aiesec_tags": [
+      "general"
+    ],
+    "b2c_score": 4.0,
+    "b2c_priority": "LOW",
+    "recommended_action": "General Monitoring for potential youth presence",
+    "parallel_org": null,
+    "clash_warning": true,
+    "clash_count": 29,
+    "clash_details": [
+      "Seamless North Africa 2026 (Fintech & Digital Commerce)",
+      "Finite Element Analysis",
+      "Improve Your Public Speaking - in Maadi"
+    ],
+    "raw_caption": null,
+    "organizer_email": null,
+    "organizer_instagram": null,
+    "organizer_linkedin": null,
+    "organizer_phone": null,
+    "proof_url": "https://allevents.in/cairo/حفل-مجاني-ميكروفون-21/200030783625739",
     "proof_type": "Official Organizer Announcement",
     "is_verified_proof": true,
     "proof_evidence": "Verified Official Announcement Post",
@@ -2898,7 +2943,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 27,
+    "clash_count": 29,
     "clash_details": [
       "Seamless North Africa 2026 (Fintech & Digital Commerce)",
       "Finite Element Analysis",
@@ -2911,49 +2956,6 @@ window.AIESEC_INITIAL_EVENTS = [
     "organizer_phone": "16826",
     "proof_url": "https://www.ticketsmarche.com/event/i_want-dinosaur_9488",
     "proof_type": "Ticketsmarche Verified Registry",
-    "is_verified_proof": true,
-    "proof_evidence": "Verified Official Announcement Post",
-    "registration_url": null,
-    "organizer_profile_url": null,
-    "post_direct_url": null,
-    "is_social_first": false
-  },
-  {
-    "event_id": "ae_200030783625739",
-    "title": "بيت السناري",
-    "source": "AllEvents",
-    "start_date": "2026-10-15T20:00:00",
-    "end_date": null,
-    "date_display": "Thu, 15 Oct, 2026 - 08:00 PM",
-    "location": "Cairo, Egypt",
-    "city": "Cairo",
-    "country": "Egypt",
-    "url": "https://allevents.in/cairo/حفل-مجاني-ميكروفون-21/200030783625739",
-    "ticket_type": "Registration / Tickets",
-    "organizer": "AllEvents Organizer",
-    "description": "",
-    "category": "General Event",
-    "aiesec_tags": [
-      "general"
-    ],
-    "b2c_score": 4.0,
-    "b2c_priority": "LOW",
-    "recommended_action": "General Monitoring for potential youth presence",
-    "parallel_org": null,
-    "clash_warning": true,
-    "clash_count": 27,
-    "clash_details": [
-      "Seamless North Africa 2026 (Fintech & Digital Commerce)",
-      "Finite Element Analysis",
-      "Improve Your Public Speaking - in Maadi"
-    ],
-    "raw_caption": null,
-    "organizer_email": null,
-    "organizer_instagram": null,
-    "organizer_linkedin": null,
-    "organizer_phone": null,
-    "proof_url": "https://allevents.in/cairo/حفل-مجاني-ميكروفون-21/200030783625739",
-    "proof_type": "Official Organizer Announcement",
     "is_verified_proof": true,
     "proof_evidence": "Verified Official Announcement Post",
     "registration_url": null,
@@ -2987,7 +2989,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Major National Activation: Deploy Chapter Delegation, Booth Presence & Global Volunteer Recruitment",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 27,
+    "clash_count": 29,
     "clash_details": [
       "Seamless North Africa 2026 (Fintech & Digital Commerce)",
       "Finite Element Analysis",
@@ -3160,7 +3162,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 27,
+    "clash_count": 29,
     "clash_details": [
       "Seamless North Africa 2026 (Fintech & Digital Commerce)",
       "Finite Element Analysis",
@@ -3224,6 +3226,52 @@ window.AIESEC_INITIAL_EVENTS = [
     "is_social_first": false
   },
   {
+    "event_id": "fb_make_friends_cairo_2026",
+    "title": "Cairo International Youth Language & Cultural Exchange Night",
+    "source": "Facebook Events",
+    "start_date": "2026-10-16T15:03:55.567163",
+    "end_date": null,
+    "date_display": "Oct 16, 2026 · 07:30 PM",
+    "location": "Zamalek Youth Cultural Lounge, 26th of July Corridor, Zamalek, Cairo",
+    "city": "Cairo",
+    "country": "Egypt",
+    "url": "https://www.facebook.com/groups/cairomakefriends",
+    "ticket_type": "Free Admission / Open to All Youth",
+    "organizer": "Make Friends Cairo Youth Community (@cairomakefriends)",
+    "description": "The most active youth and international student cultural exchange gathering in Greater Cairo. Convenes university students, foreign exchange delegates, language learners, and young professionals for cross-cultural dialogues and networking in Zamalek.",
+    "category": "Campus & Student Activities",
+    "aiesec_tags": [
+      "campus",
+      "students",
+      "youth",
+      "education"
+    ],
+    "b2c_score": 7.8,
+    "b2c_priority": "MEDIUM",
+    "recommended_action": "Campus Outreach: Engage Student Attendees & Student Union Partners",
+    "parallel_org": null,
+    "clash_warning": true,
+    "clash_count": 29,
+    "clash_details": [
+      "Seamless North Africa 2026 (Fintech & Digital Commerce)",
+      "Finite Element Analysis",
+      "Improve Your Public Speaking - in Maadi"
+    ],
+    "raw_caption": null,
+    "organizer_email": null,
+    "organizer_instagram": null,
+    "organizer_linkedin": null,
+    "organizer_phone": null,
+    "proof_url": "https://www.facebook.com/groups/cairomakefriends",
+    "proof_type": "Direct Social Announcement Post",
+    "is_verified_proof": true,
+    "proof_evidence": "Direct announcement post verified via Facebook Events",
+    "registration_url": "https://www.facebook.com/groups/cairomakefriends",
+    "organizer_profile_url": "https://www.facebook.com/groups/cairomakefriends",
+    "post_direct_url": "https://www.facebook.com/groups/cairomakefriends",
+    "is_social_first": true
+  },
+  {
     "event_id": "ae_200030583735256",
     "title": "Chromatic Healing level 2",
     "source": "AllEvents",
@@ -3246,7 +3294,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 27,
+    "clash_count": 29,
     "clash_details": [
       "Seamless North Africa 2026 (Fintech & Digital Commerce)",
       "Finite Element Analysis",
@@ -3265,52 +3313,6 @@ window.AIESEC_INITIAL_EVENTS = [
     "organizer_profile_url": null,
     "post_direct_url": null,
     "is_social_first": false
-  },
-  {
-    "event_id": "fb_make_friends_cairo_2026",
-    "title": "Cairo International Youth Language & Cultural Exchange Night",
-    "source": "Facebook Events",
-    "start_date": "2026-10-16T17:39:51.232890",
-    "end_date": null,
-    "date_display": "Oct 16, 2026 · 07:30 PM",
-    "location": "Zamalek Youth Cultural Lounge, 26th of July Corridor, Zamalek, Cairo",
-    "city": "Cairo",
-    "country": "Egypt",
-    "url": "https://www.facebook.com/groups/cairomakefriends",
-    "ticket_type": "Free Admission / Open to All Youth",
-    "organizer": "Make Friends Cairo Youth Community (@cairomakefriends)",
-    "description": "The most active youth and international student cultural exchange gathering in Greater Cairo. Convenes university students, foreign exchange delegates, language learners, and young professionals for cross-cultural dialogues and networking in Zamalek.",
-    "category": "Campus & Student Activities",
-    "aiesec_tags": [
-      "campus",
-      "students",
-      "youth",
-      "education"
-    ],
-    "b2c_score": 7.8,
-    "b2c_priority": "MEDIUM",
-    "recommended_action": "Campus Outreach: Engage Student Attendees & Student Union Partners",
-    "parallel_org": null,
-    "clash_warning": true,
-    "clash_count": 27,
-    "clash_details": [
-      "Seamless North Africa 2026 (Fintech & Digital Commerce)",
-      "Finite Element Analysis",
-      "Improve Your Public Speaking - in Maadi"
-    ],
-    "raw_caption": null,
-    "organizer_email": null,
-    "organizer_instagram": null,
-    "organizer_linkedin": null,
-    "organizer_phone": null,
-    "proof_url": "https://www.facebook.com/groups/cairomakefriends",
-    "proof_type": "Direct Social Announcement Post",
-    "is_verified_proof": true,
-    "proof_evidence": "Direct announcement post verified via Facebook Events",
-    "registration_url": "https://www.facebook.com/groups/cairomakefriends",
-    "organizer_profile_url": "https://www.facebook.com/groups/cairomakefriends",
-    "post_direct_url": "https://www.facebook.com/groups/cairomakefriends",
-    "is_social_first": true
   },
   {
     "event_id": "ae_200030799964842",
@@ -3356,6 +3358,49 @@ window.AIESEC_INITIAL_EVENTS = [
     "is_social_first": false
   },
   {
+    "event_id": "ae_200030769947005",
+    "title": "Mawlana Band at Room Garden city",
+    "source": "AllEvents",
+    "start_date": "2026-10-16T20:00:00",
+    "end_date": null,
+    "date_display": "Fri, 16 Oct, 2026 - 08:00 PM",
+    "location": "ROOM Art Space & Cafe",
+    "city": "Cairo",
+    "country": "Egypt",
+    "url": "https://allevents.in/cairo/mawlana-band-at-room-garden-city/200030769947005",
+    "ticket_type": "Registration / Tickets",
+    "organizer": "AllEvents Organizer",
+    "description": "",
+    "category": "General Event",
+    "aiesec_tags": [
+      "general"
+    ],
+    "b2c_score": 4.0,
+    "b2c_priority": "LOW",
+    "recommended_action": "General Monitoring for potential youth presence",
+    "parallel_org": null,
+    "clash_warning": true,
+    "clash_count": 29,
+    "clash_details": [
+      "Seamless North Africa 2026 (Fintech & Digital Commerce)",
+      "Finite Element Analysis",
+      "Improve Your Public Speaking - in Maadi"
+    ],
+    "raw_caption": null,
+    "organizer_email": null,
+    "organizer_instagram": null,
+    "organizer_linkedin": null,
+    "organizer_phone": null,
+    "proof_url": "https://allevents.in/cairo/mawlana-band-at-room-garden-city/200030769947005",
+    "proof_type": "Official Organizer Announcement",
+    "is_verified_proof": true,
+    "proof_evidence": "Verified Official Announcement Post",
+    "registration_url": null,
+    "organizer_profile_url": null,
+    "post_direct_url": null,
+    "is_social_first": false
+  },
+  {
     "event_id": "tm_The_Egypt_Coffee_Festival_2026_9398",
     "title": "The Egypt Coffee Festival 2026",
     "source": "TicketsMarche",
@@ -3378,7 +3423,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 27,
+    "clash_count": 29,
     "clash_details": [
       "Seamless North Africa 2026 (Fintech & Digital Commerce)",
       "Finite Element Analysis",
@@ -3421,7 +3466,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 27,
+    "clash_count": 29,
     "clash_details": [
       "Seamless North Africa 2026 (Fintech & Digital Commerce)",
       "Finite Element Analysis",
@@ -3464,7 +3509,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 27,
+    "clash_count": 29,
     "clash_details": [
       "Seamless North Africa 2026 (Fintech & Digital Commerce)",
       "Finite Element Analysis",
@@ -3477,49 +3522,6 @@ window.AIESEC_INITIAL_EVENTS = [
     "organizer_phone": "16826",
     "proof_url": "https://www.ticketsmarche.com/event/omar_khairat_9481",
     "proof_type": "Ticketsmarche Verified Registry",
-    "is_verified_proof": true,
-    "proof_evidence": "Verified Official Announcement Post",
-    "registration_url": null,
-    "organizer_profile_url": null,
-    "post_direct_url": null,
-    "is_social_first": false
-  },
-  {
-    "event_id": "ae_200030769947005",
-    "title": "Mawlana Band at Room Garden city",
-    "source": "AllEvents",
-    "start_date": "2026-10-16T20:00:00",
-    "end_date": null,
-    "date_display": "Fri, 16 Oct, 2026 - 08:00 PM",
-    "location": "ROOM Art Space & Cafe",
-    "city": "Cairo",
-    "country": "Egypt",
-    "url": "https://allevents.in/cairo/mawlana-band-at-room-garden-city/200030769947005",
-    "ticket_type": "Registration / Tickets",
-    "organizer": "AllEvents Organizer",
-    "description": "",
-    "category": "General Event",
-    "aiesec_tags": [
-      "general"
-    ],
-    "b2c_score": 4.0,
-    "b2c_priority": "LOW",
-    "recommended_action": "General Monitoring for potential youth presence",
-    "parallel_org": null,
-    "clash_warning": true,
-    "clash_count": 27,
-    "clash_details": [
-      "Seamless North Africa 2026 (Fintech & Digital Commerce)",
-      "Finite Element Analysis",
-      "Improve Your Public Speaking - in Maadi"
-    ],
-    "raw_caption": null,
-    "organizer_email": null,
-    "organizer_instagram": null,
-    "organizer_linkedin": null,
-    "organizer_phone": null,
-    "proof_url": "https://allevents.in/cairo/mawlana-band-at-room-garden-city/200030769947005",
-    "proof_type": "Official Organizer Announcement",
     "is_verified_proof": true,
     "proof_evidence": "Verified Official Announcement Post",
     "registration_url": null,
@@ -3552,7 +3554,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Workshop Attendee Outreach & Digital Flyer Drops",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 27,
+    "clash_count": 29,
     "clash_details": [
       "Seamless North Africa 2026 (Fintech & Digital Commerce)",
       "Finite Element Analysis",
@@ -3574,13 +3576,13 @@ window.AIESEC_INITIAL_EVENTS = [
   },
   {
     "event_id": "ae_200030425289044",
-    "title": "PACES LIVE- Communications & Consultation Course",
+    "title": "PACES LIVE- Communications & Consultation  Course",
     "source": "AllEvents",
     "start_date": "2026-10-17T09:00:00",
     "end_date": null,
-    "date_display": "Sat, 17 Oct • 09:00 AM",
+    "date_display": "Sat, 17 Oct, 2026 - 09:00 AM",
     "location": "Cairo, Egypt",
-    "city": "Tanta",
+    "city": "Cairo",
     "country": "Egypt",
     "url": "https://allevents.in/cairo/paces-live-communications-and-consultation-course/200030425289044",
     "ticket_type": "Registration / Tickets",
@@ -3598,11 +3600,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Speaker Outreach, Workshop Co-hosting & Youth Leadership Presentation",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 4,
+    "clash_count": 29,
     "clash_details": [
-      "18th Annual Dialysis Conference The Cardiometabolic Summit",
-      "BIODIESEL PRODUCTION TRAINING EGYPT 2026",
-      "Creativa Innovation Hub Tanta — Delta Youth AI & Startup Hackathon"
+      "Seamless North Africa 2026 (Fintech & Digital Commerce)",
+      "Finite Element Analysis",
+      "Improve Your Public Speaking - in Maadi"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -3610,51 +3612,6 @@ window.AIESEC_INITIAL_EVENTS = [
     "organizer_linkedin": null,
     "organizer_phone": null,
     "proof_url": "https://allevents.in/cairo/paces-live-communications-and-consultation-course/200030425289044",
-    "proof_type": "Official Organizer Announcement",
-    "is_verified_proof": true,
-    "proof_evidence": "Verified Official Announcement Post",
-    "registration_url": null,
-    "organizer_profile_url": null,
-    "post_direct_url": null,
-    "is_social_first": false
-  },
-  {
-    "event_id": "ae_200030723108408",
-    "title": "BIODIESEL PRODUCTION TRAINING EGYPT 2026",
-    "source": "AllEvents",
-    "start_date": "2026-10-17T09:00:00",
-    "end_date": null,
-    "date_display": "Sat, 17 Oct • 09:00 AM",
-    "location": "Greek campus 171 tahrir st., Cairo, Egypt, 11855",
-    "city": "Tanta",
-    "country": "Egypt",
-    "url": "https://allevents.in/cairo/biodiesel-production-training-egypt-2026/200030723108408",
-    "ticket_type": "Registration / Tickets",
-    "organizer": "AllEvents Organizer",
-    "description": "",
-    "category": "B2B & Industrial Trade Expo",
-    "aiesec_tags": [
-      "trade_expo",
-      "b2b",
-      "industry"
-    ],
-    "b2c_score": 3.0,
-    "b2c_priority": "LOW",
-    "recommended_action": "Low Priority B2C / Evaluate solely for B2B Corporate Sponsorship",
-    "parallel_org": null,
-    "clash_warning": true,
-    "clash_count": 4,
-    "clash_details": [
-      "18th Annual Dialysis Conference The Cardiometabolic Summit",
-      "PACES LIVE- Communications & Consultation Course",
-      "Creativa Innovation Hub Tanta — Delta Youth AI & Startup Hackathon"
-    ],
-    "raw_caption": null,
-    "organizer_email": null,
-    "organizer_instagram": null,
-    "organizer_linkedin": null,
-    "organizer_phone": null,
-    "proof_url": "https://allevents.in/cairo/biodiesel-production-training-egypt-2026/200030723108408",
     "proof_type": "Official Organizer Announcement",
     "is_verified_proof": true,
     "proof_evidence": "Verified Official Announcement Post",
@@ -3688,7 +3645,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Low Priority B2C / Evaluate solely for B2B Corporate Sponsorship",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 27,
+    "clash_count": 29,
     "clash_details": [
       "Seamless North Africa 2026 (Fintech & Digital Commerce)",
       "Finite Element Analysis",
@@ -3700,6 +3657,51 @@ window.AIESEC_INITIAL_EVENTS = [
     "organizer_linkedin": null,
     "organizer_phone": null,
     "proof_url": "https://allevents.in/cairo/biodiesel-production-training-program-2026-rounds/200030798987446",
+    "proof_type": "Official Organizer Announcement",
+    "is_verified_proof": true,
+    "proof_evidence": "Verified Official Announcement Post",
+    "registration_url": null,
+    "organizer_profile_url": null,
+    "post_direct_url": null,
+    "is_social_first": false
+  },
+  {
+    "event_id": "ae_200030723108408",
+    "title": "BIODIESEL PRODUCTION TRAINING  EGYPT 2026",
+    "source": "AllEvents",
+    "start_date": "2026-10-17T09:00:00",
+    "end_date": null,
+    "date_display": "Sat, 17 Oct • 09:00 AM",
+    "location": "Greek campus 171 tahrir st., Cairo, Egypt, 11855",
+    "city": "Cairo",
+    "country": "Egypt",
+    "url": "https://allevents.in/cairo/biodiesel-production-training-egypt-2026/200030723108408",
+    "ticket_type": "Registration / Tickets",
+    "organizer": "AllEvents Organizer",
+    "description": "",
+    "category": "B2B & Industrial Trade Expo",
+    "aiesec_tags": [
+      "trade_expo",
+      "b2b",
+      "industry"
+    ],
+    "b2c_score": 3.0,
+    "b2c_priority": "LOW",
+    "recommended_action": "Low Priority B2C / Evaluate solely for B2B Corporate Sponsorship",
+    "parallel_org": null,
+    "clash_warning": true,
+    "clash_count": 29,
+    "clash_details": [
+      "Seamless North Africa 2026 (Fintech & Digital Commerce)",
+      "Finite Element Analysis",
+      "Improve Your Public Speaking - in Maadi"
+    ],
+    "raw_caption": null,
+    "organizer_email": null,
+    "organizer_instagram": null,
+    "organizer_linkedin": null,
+    "organizer_phone": null,
+    "proof_url": "https://allevents.in/cairo/biodiesel-production-training-egypt-2026/200030723108408",
     "proof_type": "Official Organizer Announcement",
     "is_verified_proof": true,
     "proof_evidence": "Verified Official Announcement Post",
@@ -3731,7 +3733,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 27,
+    "clash_count": 29,
     "clash_details": [
       "Seamless North Africa 2026 (Fintech & Digital Commerce)",
       "Finite Element Analysis",
@@ -3777,7 +3779,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Major National Activation: Deploy Chapter Delegation, Booth Presence & Global Volunteer Recruitment",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 27,
+    "clash_count": 29,
     "clash_details": [
       "Seamless North Africa 2026 (Fintech & Digital Commerce)",
       "Finite Element Analysis",
@@ -3809,8 +3811,8 @@ window.AIESEC_INITIAL_EVENTS = [
     "country": "Egypt",
     "url": "https://www.ticketsmarche.com/event/steps-summit_9287",
     "ticket_type": "1000.00 EGP",
-    "organizer": "AHC Advertising Agency",
-    "description": "STEPS SUMMIT organized by AHC Advertising Agency. Tickets available on TicketsMarche (1000.00 EGP). Venue: SODIC Sports Club at SODIC East.",
+    "organizer": "AHC Advertising  Agency",
+    "description": "STEPS SUMMIT organized by AHC Advertising  Agency. Tickets available on TicketsMarche (1000.00 EGP). Venue: SODIC Sports Club at SODIC East.",
     "category": "Flagship Summits",
     "aiesec_tags": [
       "summit",
@@ -3823,7 +3825,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Major National Activation: Deploy Chapter Delegation, Booth Presence & Global Volunteer Recruitment",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 27,
+    "clash_count": 29,
     "clash_details": [
       "Seamless North Africa 2026 (Fintech & Digital Commerce)",
       "Finite Element Analysis",
@@ -3909,7 +3911,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 27,
+    "clash_count": 29,
     "clash_details": [
       "Seamless North Africa 2026 (Fintech & Digital Commerce)",
       "Finite Element Analysis",
@@ -3955,7 +3957,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Direct candidate acquisition hotspot for Global Talent & Global Teacher exchange products.",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 27,
+    "clash_count": 29,
     "clash_details": [
       "Seamless North Africa 2026 (Fintech & Digital Commerce)",
       "Finite Element Analysis",
@@ -3977,7 +3979,7 @@ window.AIESEC_INITIAL_EVENTS = [
   },
   {
     "event_id": "ae_200030430642854",
-    "title": "10 Days Sun Festival Egypt Tour Package Cairo Abu Simbel & 3 Nights Nile Cruise",
+    "title": "10 Days Sun Festival Egypt Tour Package  Cairo Abu Simbel & 3 Nights Nile Cruise",
     "source": "AllEvents",
     "start_date": "2026-10-18T12:00:00",
     "end_date": null,
@@ -3998,7 +4000,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 27,
+    "clash_count": 29,
     "clash_details": [
       "Seamless North Africa 2026 (Fintech & Digital Commerce)",
       "Finite Element Analysis",
@@ -4044,11 +4046,9 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Major National Activation: Deploy Chapter Delegation, Booth Presence & Global Volunteer Recruitment",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 4,
+    "clash_count": 2,
     "clash_details": [
-      "18th Annual Dialysis Conference The Cardiometabolic Summit",
-      "PACES LIVE- Communications & Consultation Course",
-      "BIODIESEL PRODUCTION TRAINING EGYPT 2026"
+      "18th Annual Dialysis Conference The Cardiometabolic Summit"
     ],
     "raw_caption": null,
     "organizer_email": "president@tanta.edu.eg",
@@ -4090,11 +4090,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Speaker Outreach, Workshop Co-hosting & Youth Leadership Presentation",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 20,
+    "clash_count": 22,
     "clash_details": [
       "Ain Shams University Annual Employment & Career Fair",
-      "BUE Youth Executive Leadership & Entrepreneurship Forum",
-      "1st Pediatrics International Congress 2026"
+      "China Trade Expo Egypt (CTEE)",
+      "BUE Youth Executive Leadership & Entrepreneurship Forum"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -4133,10 +4133,10 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 20,
+    "clash_count": 22,
     "clash_details": [
-      "Entrepreneurship & Startup Challenges in Egypt | Roundtable",
       "Ain Shams University Annual Employment & Career Fair",
+      "China Trade Expo Egypt (CTEE)",
       "BUE Youth Executive Leadership & Entrepreneurship Forum"
     ],
     "raw_caption": null,
@@ -4180,9 +4180,9 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "High-priority activation for Ain Shams campus: Deploy campus booth, CV clinic, and Global Volunteer recruitment drive.",
     "parallel_org": "Student Union",
     "clash_warning": true,
-    "clash_count": 20,
+    "clash_count": 22,
     "clash_details": [
-      "Entrepreneurship & Startup Challenges in Egypt | Roundtable",
+      "China Trade Expo Egypt (CTEE)",
       "BUE Youth Executive Leadership & Entrepreneurship Forum",
       "1st Pediatrics International Congress 2026"
     ],
@@ -4206,9 +4206,9 @@ window.AIESEC_INITIAL_EVENTS = [
     "source": "AllEvents",
     "start_date": "2026-10-20T10:00:00",
     "end_date": null,
-    "date_display": "Tue, 20 Oct • 10:00 AM",
+    "date_display": "Tue, 20 Oct, 2026 - 10:00 AM",
     "location": "Cairo International Convention Centre",
-    "city": "Tanta",
+    "city": "Cairo",
     "country": "Egypt",
     "url": "https://allevents.in/cairo/china-trade-expo-egypt-ctee-tickets/80002157038620",
     "ticket_type": "Free",
@@ -4225,11 +4225,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Low Priority B2C / Evaluate solely for B2B Corporate Sponsorship",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 4,
+    "clash_count": 22,
     "clash_details": [
-      "9th Egyptian Pharmacists Conference & Middle East (EPC)",
-      "Delta Youth Innovation & Tech Forum (Tanta University)",
-      "Liminality Voices Across the Globe Conference"
+      "Ain Shams University Annual Employment & Career Fair",
+      "BUE Youth Executive Leadership & Entrepreneurship Forum",
+      "1st Pediatrics International Congress 2026"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -4246,7 +4246,54 @@ window.AIESEC_INITIAL_EVENTS = [
     "is_social_first": false
   },
   {
-    "event_id": "mu_4034732207",
+    "event_id": "fb_bue_youth_leadership_2026",
+    "title": "BUE Youth Executive Leadership & Entrepreneurship Forum",
+    "source": "Facebook Events",
+    "start_date": "2026-10-20T15:03:55.567095",
+    "end_date": null,
+    "date_display": "Oct 20, 2026 · 01:00 PM",
+    "location": "BUE The British University in Egypt, El Shorouk City, Cairo",
+    "city": "Cairo",
+    "country": "Egypt",
+    "url": "https://www.bue.edu.eg/",
+    "ticket_type": "Registration Required / Certificate of Completion",
+    "organizer": "The British University in Egypt (BUE) Student Union & Business Faculty",
+    "description": "Interactive youth executive leadership and entrepreneurship forum hosted at BUE campus in El Shorouk. Designed for business, law, engineering, and economics undergraduates seeking executive decision-making frameworks, startup incubation, and international career readiness.",
+    "category": "University Conferences & Academic Forums",
+    "aiesec_tags": [
+      "university",
+      "academic",
+      "conference",
+      "campus",
+      "youth"
+    ],
+    "b2c_score": 8.7,
+    "b2c_priority": "HIGH",
+    "recommended_action": "Major Campus Activation: Deploy Chapter Delegation, Booth Presence & Recruit University Students",
+    "parallel_org": "Student Union",
+    "clash_warning": true,
+    "clash_count": 22,
+    "clash_details": [
+      "Ain Shams University Annual Employment & Career Fair",
+      "China Trade Expo Egypt (CTEE)",
+      "1st Pediatrics International Congress 2026"
+    ],
+    "raw_caption": null,
+    "organizer_email": null,
+    "organizer_instagram": null,
+    "organizer_linkedin": null,
+    "organizer_phone": null,
+    "proof_url": "https://www.facebook.com/thebritishuniversityinegypt",
+    "proof_type": "Direct Social Announcement Post",
+    "is_verified_proof": true,
+    "proof_evidence": "Direct announcement post verified via Facebook Events",
+    "registration_url": "https://www.bue.edu.eg/",
+    "organizer_profile_url": "https://www.facebook.com/thebritishuniversityinegypt",
+    "post_direct_url": "https://www.facebook.com/thebritishuniversityinegypt",
+    "is_social_first": true
+  },
+  {
+    "event_id": "mu_1729789659",
     "title": "Cairo Toastmasters Meeting - Develop your public speaking in Tagamo3!",
     "source": "Meetup",
     "start_date": "2026-10-20T16:00:00",
@@ -4258,7 +4305,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "url": "https://www.meetup.com/cairotmclub/events/316705095/",
     "ticket_type": "Free",
     "organizer": "Cairo Toastmasters - Improve your Public Speaking!",
-    "description": "Do you want to kick your public speaking skills up a couple of notches? Join Cairo Toastmasters and practice public speaking with professional speakers from all over the world to ace your next presentation. Please join our whatsapp group to receive the invitation and meeting details. https://chat",
+    "description": "Do you want to kick your public speaking skills up a couple of notches?\n\nJoin Cairo Toastmasters and practice public speaking with professional speakers from all over the world to ace your next presentation.\n\nPlease join our whatsapp group to receive the invitation and meeting details.\n\nhttps://chat",
     "category": "Student Orgs & Campus Leadership",
     "aiesec_tags": [
       "Toastmasters",
@@ -4290,53 +4337,6 @@ window.AIESEC_INITIAL_EVENTS = [
     "organizer_profile_url": null,
     "post_direct_url": null,
     "is_social_first": false
-  },
-  {
-    "event_id": "fb_bue_youth_leadership_2026",
-    "title": "BUE Youth Executive Leadership & Entrepreneurship Forum",
-    "source": "Facebook Events",
-    "start_date": "2026-10-20T17:39:51.232843",
-    "end_date": null,
-    "date_display": "Oct 20, 2026 · 01:00 PM",
-    "location": "BUE The British University in Egypt, El Shorouk City, Cairo",
-    "city": "Cairo",
-    "country": "Egypt",
-    "url": "https://www.bue.edu.eg/",
-    "ticket_type": "Registration Required / Certificate of Completion",
-    "organizer": "The British University in Egypt (BUE) Student Union & Business Faculty",
-    "description": "Interactive youth executive leadership and entrepreneurship forum hosted at BUE campus in El Shorouk. Designed for business, law, engineering, and economics undergraduates seeking executive decision-making frameworks, startup incubation, and international career readiness.",
-    "category": "University Conferences & Academic Forums",
-    "aiesec_tags": [
-      "university",
-      "academic",
-      "conference",
-      "campus",
-      "youth"
-    ],
-    "b2c_score": 8.7,
-    "b2c_priority": "HIGH",
-    "recommended_action": "Major Campus Activation: Deploy Chapter Delegation, Booth Presence & Recruit University Students",
-    "parallel_org": "Student Union",
-    "clash_warning": true,
-    "clash_count": 20,
-    "clash_details": [
-      "Entrepreneurship & Startup Challenges in Egypt | Roundtable",
-      "Ain Shams University Annual Employment & Career Fair",
-      "1st Pediatrics International Congress 2026"
-    ],
-    "raw_caption": null,
-    "organizer_email": null,
-    "organizer_instagram": null,
-    "organizer_linkedin": null,
-    "organizer_phone": null,
-    "proof_url": "https://www.facebook.com/thebritishuniversityinegypt",
-    "proof_type": "Direct Social Announcement Post",
-    "is_verified_proof": true,
-    "proof_evidence": "Direct announcement post verified via Facebook Events",
-    "registration_url": "https://www.bue.edu.eg/",
-    "organizer_profile_url": "https://www.facebook.com/thebritishuniversityinegypt",
-    "post_direct_url": "https://www.facebook.com/thebritishuniversityinegypt",
-    "is_social_first": true
   },
   {
     "event_id": "tm_Jimmy-Special_9549",
@@ -4448,10 +4448,10 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Do Not Deploy (Niche Clinical Target - Incompatible with Youth B2C)",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 20,
+    "clash_count": 22,
     "clash_details": [
-      "Entrepreneurship & Startup Challenges in Egypt | Roundtable",
       "Ain Shams University Annual Employment & Career Fair",
+      "China Trade Expo Egypt (CTEE)",
       "BUE Youth Executive Leadership & Entrepreneurship Forum"
     ],
     "raw_caption": null,
@@ -4469,7 +4469,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "is_social_first": false
   },
   {
-    "event_id": "mu_3652097450",
+    "event_id": "mu_2148048675",
     "title": "Inspire Toastmasters Club Meeting",
     "source": "Meetup",
     "start_date": "2026-10-21T16:00:00",
@@ -4481,7 +4481,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "url": "https://www.meetup.com/cairotmclub/events/316296321/",
     "ticket_type": "Free",
     "organizer": "Cairo Toastmasters - Improve your Public Speaking!",
-    "description": "Do you want to kick your public speaking skills up a couple of notches? Join Inspire Toastmasters Club and practice public speaking with professional speakers from all over the world to ace your next presentation. What's Inspire Toastmasters Club? A Toastmasters Club meeting is a learn-by-doing e",
+    "description": "Do you want to kick your public speaking skills up a couple of notches?\n\nJoin Inspire Toastmasters Club and practice public speaking with professional speakers from all over the world to ace your next presentation.\n\nWhat's Inspire Toastmasters Club?\n\nA Toastmasters Club meeting is a learn-by-doing e",
     "category": "Student Orgs & Campus Leadership",
     "aiesec_tags": [
       "Toastmasters",
@@ -4495,10 +4495,10 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Partner Outreach with Toastmasters: Joint Activation / PR Collaboration",
     "parallel_org": "Toastmasters",
     "clash_warning": true,
-    "clash_count": 20,
+    "clash_count": 22,
     "clash_details": [
-      "Entrepreneurship & Startup Challenges in Egypt | Roundtable",
       "Ain Shams University Annual Employment & Career Fair",
+      "China Trade Expo Egypt (CTEE)",
       "BUE Youth Executive Leadership & Entrepreneurship Forum"
     ],
     "raw_caption": null,
@@ -4538,10 +4538,10 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 20,
+    "clash_count": 22,
     "clash_details": [
-      "Entrepreneurship & Startup Challenges in Egypt | Roundtable",
       "Ain Shams University Annual Employment & Career Fair",
+      "China Trade Expo Egypt (CTEE)",
       "BUE Youth Executive Leadership & Entrepreneurship Forum"
     ],
     "raw_caption": null,
@@ -4560,7 +4560,7 @@ window.AIESEC_INITIAL_EVENTS = [
   },
   {
     "event_id": "ae_200030751912130",
-    "title": "3x1 _ _",
+    "title": "3x1  _ _",
     "source": "AllEvents",
     "start_date": "2026-10-21T22:00:00",
     "end_date": null,
@@ -4581,10 +4581,10 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 20,
+    "clash_count": 22,
     "clash_details": [
-      "Entrepreneurship & Startup Challenges in Egypt | Roundtable",
       "Ain Shams University Annual Employment & Career Fair",
+      "China Trade Expo Egypt (CTEE)",
       "BUE Youth Executive Leadership & Entrepreneurship Forum"
     ],
     "raw_caption": null,
@@ -4667,10 +4667,10 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Do Not Deploy (Niche Clinical Target - Incompatible with Youth B2C)",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 20,
+    "clash_count": 22,
     "clash_details": [
-      "Entrepreneurship & Startup Challenges in Egypt | Roundtable",
       "Ain Shams University Annual Employment & Career Fair",
+      "China Trade Expo Egypt (CTEE)",
       "BUE Youth Executive Leadership & Entrepreneurship Forum"
     ],
     "raw_caption": null,
@@ -4710,10 +4710,10 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 20,
+    "clash_count": 22,
     "clash_details": [
-      "Entrepreneurship & Startup Challenges in Egypt | Roundtable",
       "Ain Shams University Annual Employment & Career Fair",
+      "China Trade Expo Egypt (CTEE)",
       "BUE Youth Executive Leadership & Entrepreneurship Forum"
     ],
     "raw_caption": null,
@@ -4753,10 +4753,10 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 20,
+    "clash_count": 22,
     "clash_details": [
-      "Entrepreneurship & Startup Challenges in Egypt | Roundtable",
       "Ain Shams University Annual Employment & Career Fair",
+      "China Trade Expo Egypt (CTEE)",
       "BUE Youth Executive Leadership & Entrepreneurship Forum"
     ],
     "raw_caption": null,
@@ -4799,7 +4799,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "clash_count": 3,
     "clash_details": [
       "10 Annual Conference Orthopaedic Department Al-Azhar University (Hand and Microsurgery Unit)",
-      "Cineolios Cinenights Alexandria"
+      "Cineolios Cinenights  Alexandria"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -4838,10 +4838,10 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 20,
+    "clash_count": 22,
     "clash_details": [
-      "Entrepreneurship & Startup Challenges in Egypt | Roundtable",
       "Ain Shams University Annual Employment & Career Fair",
+      "China Trade Expo Egypt (CTEE)",
       "BUE Youth Executive Leadership & Entrepreneurship Forum"
     ],
     "raw_caption": null,
@@ -4881,10 +4881,10 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 20,
+    "clash_count": 22,
     "clash_details": [
-      "Entrepreneurship & Startup Challenges in Egypt | Roundtable",
       "Ain Shams University Annual Employment & Career Fair",
+      "China Trade Expo Egypt (CTEE)",
       "BUE Youth Executive Leadership & Entrepreneurship Forum"
     ],
     "raw_caption": null,
@@ -4924,10 +4924,10 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 20,
+    "clash_count": 22,
     "clash_details": [
-      "Entrepreneurship & Startup Challenges in Egypt | Roundtable",
       "Ain Shams University Annual Employment & Career Fair",
+      "China Trade Expo Egypt (CTEE)",
       "BUE Youth Executive Leadership & Entrepreneurship Forum"
     ],
     "raw_caption": null,
@@ -4967,10 +4967,10 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 20,
+    "clash_count": 22,
     "clash_details": [
-      "Entrepreneurship & Startup Challenges in Egypt | Roundtable",
       "Ain Shams University Annual Employment & Career Fair",
+      "China Trade Expo Egypt (CTEE)",
       "BUE Youth Executive Leadership & Entrepreneurship Forum"
     ],
     "raw_caption": null,
@@ -5012,11 +5012,9 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Do Not Deploy (Niche Clinical Target - Incompatible with Youth B2C)",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 4,
+    "clash_count": 2,
     "clash_details": [
-      "China Trade Expo Egypt (CTEE)",
-      "Delta Youth Innovation & Tech Forum (Tanta University)",
-      "Liminality Voices Across the Globe Conference"
+      "Delta Youth Innovation & Tech Forum (Tanta University)"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -5058,11 +5056,9 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "HOME TURF PRIORITY for Tanta Campus Team: Secure keynote speech, physical booth, and mass recruitment drive.",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 4,
+    "clash_count": 2,
     "clash_details": [
-      "China Trade Expo Egypt (CTEE)",
-      "9th Egyptian Pharmacists Conference & Middle East (EPC)",
-      "Liminality Voices Across the Globe Conference"
+      "9th Egyptian Pharmacists Conference & Middle East (EPC)"
     ],
     "raw_caption": null,
     "organizer_email": "president@tanta.edu.eg",
@@ -5086,7 +5082,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "end_date": null,
     "date_display": "Sat, 24 Oct • 10:00 AM",
     "location": "MSA University",
-    "city": "Tanta",
+    "city": "Cairo",
     "country": "Egypt",
     "url": "https://allevents.in/giza/liminality-voices-across-the-globe-conference/200030479030933",
     "ticket_type": "Registration / Tickets",
@@ -5101,11 +5097,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 4,
+    "clash_count": 22,
     "clash_details": [
+      "Ain Shams University Annual Employment & Career Fair",
       "China Trade Expo Egypt (CTEE)",
-      "9th Egyptian Pharmacists Conference & Middle East (EPC)",
-      "Delta Youth Innovation & Tech Forum (Tanta University)"
+      "BUE Youth Executive Leadership & Entrepreneurship Forum"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -5148,8 +5144,8 @@ window.AIESEC_INITIAL_EVENTS = [
     "clash_warning": true,
     "clash_count": 3,
     "clash_details": [
-      "Exclusive Event in Cairo with Dean of IE School of Architecture and Design",
-      "Cairo Toastmasters Meeting - Develop your public speaking in Tagamo3!"
+      "Cairo Toastmasters Meeting - Develop your public speaking in Tagamo3!",
+      "Exclusive Event in Cairo with Dean of IE School of Architecture and Design"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -5166,7 +5162,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "is_social_first": false
   },
   {
-    "event_id": "mu_2298497666",
+    "event_id": "mu_336407999",
     "title": "Wadi Degla Camp in Maadi with night hike🤩✨",
     "source": "Meetup",
     "start_date": "2026-10-24T13:00:00",
@@ -5188,10 +5184,10 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 20,
+    "clash_count": 22,
     "clash_details": [
-      "Entrepreneurship & Startup Challenges in Egypt | Roundtable",
       "Ain Shams University Annual Employment & Career Fair",
+      "China Trade Expo Egypt (CTEE)",
       "BUE Youth Executive Leadership & Entrepreneurship Forum"
     ],
     "raw_caption": null,
@@ -5237,7 +5233,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "clash_warning": true,
     "clash_count": 3,
     "clash_details": [
-      "Cineolios Cinenights Alexandria",
+      "Cineolios Cinenights  Alexandria",
       "Alexandria, Egypt"
     ],
     "raw_caption": null,
@@ -5277,10 +5273,10 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 20,
+    "clash_count": 22,
     "clash_details": [
-      "Entrepreneurship & Startup Challenges in Egypt | Roundtable",
       "Ain Shams University Annual Employment & Career Fair",
+      "China Trade Expo Egypt (CTEE)",
       "BUE Youth Executive Leadership & Entrepreneurship Forum"
     ],
     "raw_caption": null,
@@ -5320,10 +5316,10 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 20,
+    "clash_count": 22,
     "clash_details": [
-      "Entrepreneurship & Startup Challenges in Egypt | Roundtable",
       "Ain Shams University Annual Employment & Career Fair",
+      "China Trade Expo Egypt (CTEE)",
       "BUE Youth Executive Leadership & Entrepreneurship Forum"
     ],
     "raw_caption": null,
@@ -5366,10 +5362,10 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Campus Outreach: Engage Student Attendees & Student Union Partners",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 20,
+    "clash_count": 22,
     "clash_details": [
-      "Entrepreneurship & Startup Challenges in Egypt | Roundtable",
       "Ain Shams University Annual Employment & Career Fair",
+      "China Trade Expo Egypt (CTEE)",
       "BUE Youth Executive Leadership & Entrepreneurship Forum"
     ],
     "raw_caption": null,
@@ -5468,7 +5464,7 @@ window.AIESEC_INITIAL_EVENTS = [
   },
   {
     "event_id": "ae_200030799965043",
-    "title": "Cineolios Cinenights Alexandria",
+    "title": "Cineolios Cinenights  Alexandria",
     "source": "AllEvents",
     "start_date": "2026-10-25T19:00:00",
     "end_date": null,
@@ -5533,10 +5529,10 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Workshop Attendee Outreach & Digital Flyer Drops",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 20,
+    "clash_count": 22,
     "clash_details": [
-      "Entrepreneurship & Startup Challenges in Egypt | Roundtable",
       "Ain Shams University Annual Employment & Career Fair",
+      "China Trade Expo Egypt (CTEE)",
       "BUE Youth Executive Leadership & Entrepreneurship Forum"
     ],
     "raw_caption": null,
@@ -5578,11 +5574,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Low Priority B2C / Evaluate solely for B2B Corporate Sponsorship",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 15,
+    "clash_count": 16,
     "clash_details": [
       "ملتقى التوظيف السنوي للأكاديمية الحديثة للعلوم والتكنولوجيا",
       "The GrEEK Campus Open Startup Hub & Youth Co-Working Day",
-      "8th Africa Fintech Forum - Cairo"
+      "ARCE Special Halloween Lecture & Book Signing by Dr. Salima Ikram"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -5624,10 +5620,9 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Promote Global Talent IT Opportunities",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 3,
+    "clash_count": 2,
     "clash_details": [
-      "IEX Egypt",
-      "SFPE ll Sphinx International Conference of Physical Therapy"
+      "IEX Egypt"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -5707,10 +5702,9 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Low Priority B2C / Evaluate solely for B2B Corporate Sponsorship",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 3,
+    "clash_count": 2,
     "clash_details": [
-      "ICEC (Intelligent Cities Exhibition & Conference) 2026",
-      "SFPE ll Sphinx International Conference of Physical Therapy"
+      "ICEC (Intelligent Cities Exhibition & Conference) 2026"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -5730,7 +5724,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "event_id": "fb_modern_academy_fair_2026",
     "title": "ملتقى التوظيف السنوي للأكاديمية الحديثة للعلوم والتكنولوجيا",
     "source": "Facebook Events",
-    "start_date": "2026-10-26T17:39:51.232780",
+    "start_date": "2026-10-26T15:03:55.567014",
     "end_date": null,
     "date_display": "Oct 26, 2026 · 09:00 AM",
     "location": "Modern Academy Campus, Maadi, Cairo",
@@ -5753,11 +5747,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Booth Booking & Direct Lead Generation for Global Talent / Teacher",
     "parallel_org": "Student Union",
     "clash_warning": true,
-    "clash_count": 15,
+    "clash_count": 16,
     "clash_details": [
-      "Oil & Gas Processing & AIM Workshop (Cairo, 2026)",
       "The GrEEK Campus Open Startup Hub & Youth Co-Working Day",
-      "8th Africa Fintech Forum - Cairo"
+      "ARCE Special Halloween Lecture & Book Signing by Dr. Salima Ikram",
+      "8th Annual Conference Of Delta Foundation For Pediatrics And Hematology (DFPH)"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -5824,7 +5818,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "event_id": "ig_the_greek_campus_open_hub",
     "title": "The GrEEK Campus Open Startup Hub & Youth Co-Working Day",
     "source": "Instagram Feeds",
-    "start_date": "2026-10-27T17:39:51.232931",
+    "start_date": "2026-10-27T15:03:55.567200",
     "end_date": null,
     "date_display": "Oct 27, 2026 · 12:00 PM",
     "location": "The Greek Campus, 28 Falaki St, Bab El Louk, Downtown Cairo",
@@ -5846,11 +5840,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Campus Outreach: Engage Student Attendees & Student Union Partners",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 15,
+    "clash_count": 16,
     "clash_details": [
-      "Oil & Gas Processing & AIM Workshop (Cairo, 2026)",
       "ملتقى التوظيف السنوي للأكاديمية الحديثة للعلوم والتكنولوجيا",
-      "8th Africa Fintech Forum - Cairo"
+      "ARCE Special Halloween Lecture & Book Signing by Dr. Salima Ikram",
+      "8th Annual Conference Of Delta Foundation For Pediatrics And Hematology (DFPH)"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -5939,11 +5933,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Major Campus Activation: Deploy Chapter Delegation, Booth Presence & Recruit University Students",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 15,
+    "clash_count": 16,
     "clash_details": [
-      "Oil & Gas Processing & AIM Workshop (Cairo, 2026)",
       "ملتقى التوظيف السنوي للأكاديمية الحديثة للعلوم والتكنولوجيا",
-      "The GrEEK Campus Open Startup Hub & Youth Co-Working Day"
+      "The GrEEK Campus Open Startup Hub & Youth Co-Working Day",
+      "ARCE Special Halloween Lecture & Book Signing by Dr. Salima Ikram"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -5982,11 +5976,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 15,
+    "clash_count": 16,
     "clash_details": [
-      "Oil & Gas Processing & AIM Workshop (Cairo, 2026)",
       "ملتقى التوظيف السنوي للأكاديمية الحديثة للعلوم والتكنولوجيا",
-      "The GrEEK Campus Open Startup Hub & Youth Co-Working Day"
+      "The GrEEK Campus Open Startup Hub & Youth Co-Working Day",
+      "8th Annual Conference Of Delta Foundation For Pediatrics And Hematology (DFPH)"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -6160,11 +6154,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Target Medical, Dental & Pharmacy Undergraduates for Global Volunteer Projects",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 15,
+    "clash_count": 16,
     "clash_details": [
-      "Oil & Gas Processing & AIM Workshop (Cairo, 2026)",
       "ملتقى التوظيف السنوي للأكاديمية الحديثة للعلوم والتكنولوجيا",
-      "The GrEEK Campus Open Startup Hub & Youth Co-Working Day"
+      "The GrEEK Campus Open Startup Hub & Youth Co-Working Day",
+      "ARCE Special Halloween Lecture & Book Signing by Dr. Salima Ikram"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -6205,11 +6199,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Do Not Deploy (Niche Clinical Target - Incompatible with Youth B2C)",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 15,
+    "clash_count": 16,
     "clash_details": [
-      "Oil & Gas Processing & AIM Workshop (Cairo, 2026)",
       "ملتقى التوظيف السنوي للأكاديمية الحديثة للعلوم والتكنولوجيا",
-      "The GrEEK Campus Open Startup Hub & Youth Co-Working Day"
+      "The GrEEK Campus Open Startup Hub & Youth Co-Working Day",
+      "ARCE Special Halloween Lecture & Book Signing by Dr. Salima Ikram"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -6231,9 +6225,9 @@ window.AIESEC_INITIAL_EVENTS = [
     "source": "AllEvents",
     "start_date": "2026-10-29T10:00:00",
     "end_date": null,
-    "date_display": "Thu, 29 Oct • 10:00 AM",
+    "date_display": "Thu, 29 Oct, 2026 - 10:00 AM",
     "location": "فندق سميراميس انتركونتننتال",
-    "city": "Tanta",
+    "city": "Cairo",
     "country": "Egypt",
     "url": "https://allevents.in/cairo/sfpe-ll-sphinx-international-conference-of-physical-therapy/200030489362157",
     "ticket_type": "Registration / Tickets",
@@ -6252,10 +6246,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Major Campus Activation: Deploy Chapter Delegation, Booth Presence & Recruit University Students",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 3,
+    "clash_count": 16,
     "clash_details": [
-      "ICEC (Intelligent Cities Exhibition & Conference) 2026",
-      "IEX Egypt"
+      "ملتقى التوظيف السنوي للأكاديمية الحديثة للعلوم والتكنولوجيا",
+      "The GrEEK Campus Open Startup Hub & Youth Co-Working Day",
+      "ARCE Special Halloween Lecture & Book Signing by Dr. Salima Ikram"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -6294,11 +6289,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 15,
+    "clash_count": 16,
     "clash_details": [
-      "Oil & Gas Processing & AIM Workshop (Cairo, 2026)",
       "ملتقى التوظيف السنوي للأكاديمية الحديثة للعلوم والتكنولوجيا",
-      "The GrEEK Campus Open Startup Hub & Youth Co-Working Day"
+      "The GrEEK Campus Open Startup Hub & Youth Co-Working Day",
+      "ARCE Special Halloween Lecture & Book Signing by Dr. Salima Ikram"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -6315,7 +6310,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "is_social_first": false
   },
   {
-    "event_id": "mu_3168554923",
+    "event_id": "mu_2759157155",
     "title": "Nuweiba 3 Days Adventure",
     "source": "Meetup",
     "start_date": "2026-10-29T19:30:00",
@@ -6337,11 +6332,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 15,
+    "clash_count": 16,
     "clash_details": [
-      "Oil & Gas Processing & AIM Workshop (Cairo, 2026)",
       "ملتقى التوظيف السنوي للأكاديمية الحديثة للعلوم والتكنولوجيا",
-      "The GrEEK Campus Open Startup Hub & Youth Co-Working Day"
+      "The GrEEK Campus Open Startup Hub & Youth Co-Working Day",
+      "ARCE Special Halloween Lecture & Book Signing by Dr. Salima Ikram"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -6380,11 +6375,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 15,
+    "clash_count": 16,
     "clash_details": [
-      "Oil & Gas Processing & AIM Workshop (Cairo, 2026)",
       "ملتقى التوظيف السنوي للأكاديمية الحديثة للعلوم والتكنولوجيا",
-      "The GrEEK Campus Open Startup Hub & Youth Co-Working Day"
+      "The GrEEK Campus Open Startup Hub & Youth Co-Working Day",
+      "ARCE Special Halloween Lecture & Book Signing by Dr. Salima Ikram"
     ],
     "raw_caption": null,
     "organizer_email": "support@ticketsmarche.com",
@@ -6423,11 +6418,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 15,
+    "clash_count": 16,
     "clash_details": [
-      "Oil & Gas Processing & AIM Workshop (Cairo, 2026)",
       "ملتقى التوظيف السنوي للأكاديمية الحديثة للعلوم والتكنولوجيا",
-      "The GrEEK Campus Open Startup Hub & Youth Co-Working Day"
+      "The GrEEK Campus Open Startup Hub & Youth Co-Working Day",
+      "ARCE Special Halloween Lecture & Book Signing by Dr. Salima Ikram"
     ],
     "raw_caption": null,
     "organizer_email": "support@ticketsmarche.com",
@@ -6444,7 +6439,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "is_social_first": false
   },
   {
-    "event_id": "mu_2251586576",
+    "event_id": "mu_2469203169",
     "title": "🍀Dahshur Countryside Daytrip ⛰️",
     "source": "Meetup, AllEvents",
     "start_date": "2026-10-30T05:00:00",
@@ -6466,11 +6461,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 15,
+    "clash_count": 16,
     "clash_details": [
-      "Oil & Gas Processing & AIM Workshop (Cairo, 2026)",
       "ملتقى التوظيف السنوي للأكاديمية الحديثة للعلوم والتكنولوجيا",
-      "The GrEEK Campus Open Startup Hub & Youth Co-Working Day"
+      "The GrEEK Campus Open Startup Hub & Youth Co-Working Day",
+      "ARCE Special Halloween Lecture & Book Signing by Dr. Salima Ikram"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -6487,7 +6482,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "is_social_first": false
   },
   {
-    "event_id": "mu_1936515364",
+    "event_id": "mu_1837291227",
     "title": "DevFest 2026: Ignite Your Tech Journey!",
     "source": "Meetup",
     "start_date": "2026-10-30T08:00:00",
@@ -6554,11 +6549,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 15,
+    "clash_count": 16,
     "clash_details": [
-      "Oil & Gas Processing & AIM Workshop (Cairo, 2026)",
       "ملتقى التوظيف السنوي للأكاديمية الحديثة للعلوم والتكنولوجيا",
-      "The GrEEK Campus Open Startup Hub & Youth Co-Working Day"
+      "The GrEEK Campus Open Startup Hub & Youth Co-Working Day",
+      "ARCE Special Halloween Lecture & Book Signing by Dr. Salima Ikram"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -6597,11 +6592,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 15,
+    "clash_count": 16,
     "clash_details": [
-      "Oil & Gas Processing & AIM Workshop (Cairo, 2026)",
       "ملتقى التوظيف السنوي للأكاديمية الحديثة للعلوم والتكنولوجيا",
-      "The GrEEK Campus Open Startup Hub & Youth Co-Working Day"
+      "The GrEEK Campus Open Startup Hub & Youth Co-Working Day",
+      "ARCE Special Halloween Lecture & Book Signing by Dr. Salima Ikram"
     ],
     "raw_caption": null,
     "organizer_email": "support@ticketsmarche.com",
@@ -6640,11 +6635,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 15,
+    "clash_count": 16,
     "clash_details": [
-      "Oil & Gas Processing & AIM Workshop (Cairo, 2026)",
       "ملتقى التوظيف السنوي للأكاديمية الحديثة للعلوم والتكنولوجيا",
-      "The GrEEK Campus Open Startup Hub & Youth Co-Working Day"
+      "The GrEEK Campus Open Startup Hub & Youth Co-Working Day",
+      "ARCE Special Halloween Lecture & Book Signing by Dr. Salima Ikram"
     ],
     "raw_caption": null,
     "organizer_email": "support@ticketsmarche.com",
@@ -6746,7 +6741,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "event_id": "ig_entreprenelle_skills_masterclass",
     "title": "Entreprenelle Female Leaders & Youth Skills Masterclass",
     "source": "Instagram Feeds",
-    "start_date": "2026-11-02T17:39:51.232990",
+    "start_date": "2026-11-02T15:03:55.567254",
     "end_date": null,
     "date_display": "Nov 02, 2026 · 01:00 PM",
     "location": "The Greek Campus, Downtown Cairo",
@@ -6768,10 +6763,10 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Speaker Outreach, Workshop Co-hosting & Youth Leadership Presentation",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 17,
+    "clash_count": 19,
     "clash_details": [
+      "17th Arab Diabetes Forum  ADF 2026.",
       "The 5th Egyptian International Radiology Conference (EIRC 2026)",
-      "Inspire Toastmasters Club Meeting",
       "برنامج التدريب الطبي الطلابي الخامس - 'الومضة الخامسة' 2026"
     ],
     "raw_caption": null,
@@ -6790,13 +6785,13 @@ window.AIESEC_INITIAL_EVENTS = [
   },
   {
     "event_id": "ae_200030203069840",
-    "title": "17th Arab Diabetes Forum ADF 2026.",
+    "title": "17th Arab Diabetes Forum  ADF 2026.",
     "source": "AllEvents",
     "start_date": "2026-11-03T08:00:00",
     "end_date": null,
-    "date_display": "Tue, 03 Nov • 08:00 AM",
+    "date_display": "Tue, 03 Nov, 2026 - 08:00 AM",
     "location": "Hilton Cairo Grand Nile (Cairo, Cairo Governorate, Egypt)",
-    "city": "Tanta",
+    "city": "Cairo",
     "country": "Egypt",
     "url": "https://allevents.in/cairo/17th-arab-diabetes-forum-adf-2026/200030203069840",
     "ticket_type": "Registration / Tickets",
@@ -6815,9 +6810,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Major Campus Activation: Deploy Chapter Delegation, Booth Presence & Recruit University Students",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 2,
+    "clash_count": 19,
     "clash_details": [
-      "Global Entrepreneurship Festival"
+      "Entreprenelle Female Leaders & Youth Skills Masterclass",
+      "The 5th Egyptian International Radiology Conference (EIRC 2026)",
+      "برنامج التدريب الطبي الطلابي الخامس - 'الومضة الخامسة' 2026"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -6905,10 +6902,10 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Do Not Deploy (Niche Clinical Target - Incompatible with Youth B2C)",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 17,
+    "clash_count": 19,
     "clash_details": [
       "Entreprenelle Female Leaders & Youth Skills Masterclass",
-      "Inspire Toastmasters Club Meeting",
+      "17th Arab Diabetes Forum  ADF 2026.",
       "برنامج التدريب الطبي الطلابي الخامس - 'الومضة الخامسة' 2026"
     ],
     "raw_caption": null,
@@ -6926,57 +6923,10 @@ window.AIESEC_INITIAL_EVENTS = [
     "is_social_first": false
   },
   {
-    "event_id": "mu_3630372617",
-    "title": "Inspire Toastmasters Club Meeting",
-    "source": "Meetup",
-    "start_date": "2026-11-04T17:00:00",
-    "end_date": null,
-    "date_display": "Nov 04, 2026 · 05:00 PM",
-    "location": "MQR, The Greek Compus",
-    "city": "Cairo",
-    "country": "Egypt",
-    "url": "https://www.meetup.com/cairotmclub/events/316296322/",
-    "ticket_type": "Free",
-    "organizer": "Cairo Toastmasters - Improve your Public Speaking!",
-    "description": "Do you want to kick your public speaking skills up a couple of notches? Join Inspire Toastmasters Club and practice public speaking with professional speakers from all over the world to ace your next presentation. What's Inspire Toastmasters Club? A Toastmasters Club meeting is a learn-by-doing e",
-    "category": "Student Orgs & Campus Leadership",
-    "aiesec_tags": [
-      "Toastmasters",
-      "student",
-      "campus",
-      "youth",
-      "leadership"
-    ],
-    "b2c_score": 8.0,
-    "b2c_priority": "MEDIUM",
-    "recommended_action": "Partner Outreach with Toastmasters: Joint Activation / PR Collaboration",
-    "parallel_org": "Toastmasters",
-    "clash_warning": true,
-    "clash_count": 17,
-    "clash_details": [
-      "Entreprenelle Female Leaders & Youth Skills Masterclass",
-      "The 5th Egyptian International Radiology Conference (EIRC 2026)",
-      "برنامج التدريب الطبي الطلابي الخامس - 'الومضة الخامسة' 2026"
-    ],
-    "raw_caption": null,
-    "organizer_email": null,
-    "organizer_instagram": null,
-    "organizer_linkedin": null,
-    "organizer_phone": null,
-    "proof_url": "https://www.meetup.com/cairotmclub/events/316296322/",
-    "proof_type": "Official Organizer Announcement",
-    "is_verified_proof": true,
-    "proof_evidence": "Verified Official Announcement Post",
-    "registration_url": null,
-    "organizer_profile_url": null,
-    "post_direct_url": null,
-    "is_social_first": false
-  },
-  {
     "event_id": "fb_club_de_la_salle_medical_2026",
     "title": "برنامج التدريب الطبي الطلابي الخامس - 'الومضة الخامسة' 2026",
     "source": "Facebook Events",
-    "start_date": "2026-11-04T17:39:51.232910",
+    "start_date": "2026-11-04T15:03:55.567181",
     "end_date": null,
     "date_display": "Nov 04, 2026 · 10:00 AM",
     "location": "Club De La Salle, Daher, Cairo",
@@ -6998,11 +6948,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Speaker Outreach, Workshop Co-hosting & Youth Leadership Presentation",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 17,
+    "clash_count": 19,
     "clash_details": [
       "Entreprenelle Female Leaders & Youth Skills Masterclass",
-      "The 5th Egyptian International Radiology Conference (EIRC 2026)",
-      "Inspire Toastmasters Club Meeting"
+      "17th Arab Diabetes Forum  ADF 2026.",
+      "The 5th Egyptian International Radiology Conference (EIRC 2026)"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -7017,6 +6967,53 @@ window.AIESEC_INITIAL_EVENTS = [
     "organizer_profile_url": "https://ifmsa.eg/",
     "post_direct_url": "https://ifmsa.eg/",
     "is_social_first": true
+  },
+  {
+    "event_id": "mu_1080309407",
+    "title": "Inspire Toastmasters Club Meeting",
+    "source": "Meetup",
+    "start_date": "2026-11-04T17:00:00",
+    "end_date": null,
+    "date_display": "Nov 04, 2026 · 05:00 PM",
+    "location": "MQR, The Greek Compus",
+    "city": "Cairo",
+    "country": "Egypt",
+    "url": "https://www.meetup.com/cairotmclub/events/316296322/",
+    "ticket_type": "Free",
+    "organizer": "Cairo Toastmasters - Improve your Public Speaking!",
+    "description": "Do you want to kick your public speaking skills up a couple of notches?\n\nJoin Inspire Toastmasters Club and practice public speaking with professional speakers from all over the world to ace your next presentation.\n\nWhat's Inspire Toastmasters Club?\n\nA Toastmasters Club meeting is a learn-by-doing e",
+    "category": "Student Orgs & Campus Leadership",
+    "aiesec_tags": [
+      "Toastmasters",
+      "student",
+      "campus",
+      "youth",
+      "leadership"
+    ],
+    "b2c_score": 8.0,
+    "b2c_priority": "MEDIUM",
+    "recommended_action": "Partner Outreach with Toastmasters: Joint Activation / PR Collaboration",
+    "parallel_org": "Toastmasters",
+    "clash_warning": true,
+    "clash_count": 19,
+    "clash_details": [
+      "Entreprenelle Female Leaders & Youth Skills Masterclass",
+      "17th Arab Diabetes Forum  ADF 2026.",
+      "The 5th Egyptian International Radiology Conference (EIRC 2026)"
+    ],
+    "raw_caption": null,
+    "organizer_email": null,
+    "organizer_instagram": null,
+    "organizer_linkedin": null,
+    "organizer_phone": null,
+    "proof_url": "https://www.meetup.com/cairotmclub/events/316296322/",
+    "proof_type": "Official Organizer Announcement",
+    "is_verified_proof": true,
+    "proof_evidence": "Verified Official Announcement Post",
+    "registration_url": null,
+    "organizer_profile_url": null,
+    "post_direct_url": null,
+    "is_social_first": false
   },
   {
     "event_id": "ae_200030230561645",
@@ -7111,7 +7108,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "event_id": "ig_youth_speak_forum_egypt",
     "title": "Youth Speak Forum Egypt 2026",
     "source": "Instagram Feeds",
-    "start_date": "2026-11-05T17:39:51.232953",
+    "start_date": "2026-11-05T15:03:55.567222",
     "end_date": null,
     "date_display": "Nov 05, 2026 · 10:00 AM",
     "location": "The American University in Cairo (AUC Tahrir Square), Downtown Cairo",
@@ -7133,11 +7130,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Major National Activation: Deploy Chapter Delegation, Booth Presence & Global Volunteer Recruitment",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 17,
+    "clash_count": 19,
     "clash_details": [
       "Entreprenelle Female Leaders & Youth Skills Masterclass",
-      "The 5th Egyptian International Radiology Conference (EIRC 2026)",
-      "Inspire Toastmasters Club Meeting"
+      "17th Arab Diabetes Forum  ADF 2026.",
+      "The 5th Egyptian International Radiology Conference (EIRC 2026)"
     ],
     "raw_caption": null,
     "organizer_email": "contact@eventradar.eg",
@@ -7176,11 +7173,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 17,
+    "clash_count": 19,
     "clash_details": [
       "Entreprenelle Female Leaders & Youth Skills Masterclass",
-      "The 5th Egyptian International Radiology Conference (EIRC 2026)",
-      "Inspire Toastmasters Club Meeting"
+      "17th Arab Diabetes Forum  ADF 2026.",
+      "The 5th Egyptian International Radiology Conference (EIRC 2026)"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -7219,11 +7216,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 17,
+    "clash_count": 19,
     "clash_details": [
       "Entreprenelle Female Leaders & Youth Skills Masterclass",
-      "The 5th Egyptian International Radiology Conference (EIRC 2026)",
-      "Inspire Toastmasters Club Meeting"
+      "17th Arab Diabetes Forum  ADF 2026.",
+      "The 5th Egyptian International Radiology Conference (EIRC 2026)"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -7262,11 +7259,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 17,
+    "clash_count": 19,
     "clash_details": [
       "Entreprenelle Female Leaders & Youth Skills Masterclass",
-      "The 5th Egyptian International Radiology Conference (EIRC 2026)",
-      "Inspire Toastmasters Club Meeting"
+      "17th Arab Diabetes Forum  ADF 2026.",
+      "The 5th Egyptian International Radiology Conference (EIRC 2026)"
     ],
     "raw_caption": null,
     "organizer_email": "support@ticketsmarche.com",
@@ -7305,11 +7302,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 17,
+    "clash_count": 19,
     "clash_details": [
       "Entreprenelle Female Leaders & Youth Skills Masterclass",
-      "The 5th Egyptian International Radiology Conference (EIRC 2026)",
-      "Inspire Toastmasters Club Meeting"
+      "17th Arab Diabetes Forum  ADF 2026.",
+      "The 5th Egyptian International Radiology Conference (EIRC 2026)"
     ],
     "raw_caption": null,
     "organizer_email": "support@ticketsmarche.com",
@@ -7348,11 +7345,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 17,
+    "clash_count": 19,
     "clash_details": [
       "Entreprenelle Female Leaders & Youth Skills Masterclass",
-      "The 5th Egyptian International Radiology Conference (EIRC 2026)",
-      "Inspire Toastmasters Club Meeting"
+      "17th Arab Diabetes Forum  ADF 2026.",
+      "The 5th Egyptian International Radiology Conference (EIRC 2026)"
     ],
     "raw_caption": null,
     "organizer_email": "support@ticketsmarche.com",
@@ -7393,11 +7390,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring (Social / Leisure)",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 17,
+    "clash_count": 19,
     "clash_details": [
       "Entreprenelle Female Leaders & Youth Skills Masterclass",
-      "The 5th Egyptian International Radiology Conference (EIRC 2026)",
-      "Inspire Toastmasters Club Meeting"
+      "17th Arab Diabetes Forum  ADF 2026.",
+      "The 5th Egyptian International Radiology Conference (EIRC 2026)"
     ],
     "raw_caption": null,
     "organizer_email": "support@ticketsmarche.com",
@@ -7475,11 +7472,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 17,
+    "clash_count": 19,
     "clash_details": [
       "Entreprenelle Female Leaders & Youth Skills Masterclass",
-      "The 5th Egyptian International Radiology Conference (EIRC 2026)",
-      "Inspire Toastmasters Club Meeting"
+      "17th Arab Diabetes Forum  ADF 2026.",
+      "The 5th Egyptian International Radiology Conference (EIRC 2026)"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -7501,9 +7498,9 @@ window.AIESEC_INITIAL_EVENTS = [
     "source": "AllEvents",
     "start_date": "2026-11-06T09:00:00",
     "end_date": null,
-    "date_display": "Fri, 06 Nov • 09:00 AM",
+    "date_display": "Fri, 06 Nov, 2026 - 09:00 AM",
     "location": "JW Marriot Hotel, Cairo, Cairo Governorate, Egypt",
-    "city": "Tanta",
+    "city": "Cairo",
     "country": "Egypt",
     "url": "https://allevents.in/cairo/global-entrepreneurship-festival/200030526005738",
     "ticket_type": "Registration / Tickets",
@@ -7521,9 +7518,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Speaker Outreach, Workshop Co-hosting & Youth Leadership Presentation",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 2,
+    "clash_count": 19,
     "clash_details": [
-      "17th Arab Diabetes Forum ADF 2026."
+      "Entreprenelle Female Leaders & Youth Skills Masterclass",
+      "17th Arab Diabetes Forum  ADF 2026.",
+      "The 5th Egyptian International Radiology Conference (EIRC 2026)"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -7565,11 +7564,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Deploy partnership desk & pitch startup founders on hiring international tech talent.",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 17,
+    "clash_count": 19,
     "clash_details": [
       "Entreprenelle Female Leaders & Youth Skills Masterclass",
-      "The 5th Egyptian International Radiology Conference (EIRC 2026)",
-      "Inspire Toastmasters Club Meeting"
+      "17th Arab Diabetes Forum  ADF 2026.",
+      "The 5th Egyptian International Radiology Conference (EIRC 2026)"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -7589,7 +7588,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "event_id": "fb_suez_canal_univ_conf_2026",
     "title": "The Tenth International Student & Scientific Conference of Suez Canal University",
     "source": "Facebook Events",
-    "start_date": "2026-11-06T17:39:51.232867",
+    "start_date": "2026-11-06T15:03:55.567140",
     "end_date": null,
     "date_display": "Nov 06, 2026 · 09:00 AM",
     "location": "Suez Canal University Grand Conference Complex",
@@ -7694,11 +7693,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 17,
+    "clash_count": 19,
     "clash_details": [
       "Entreprenelle Female Leaders & Youth Skills Masterclass",
-      "The 5th Egyptian International Radiology Conference (EIRC 2026)",
-      "Inspire Toastmasters Club Meeting"
+      "17th Arab Diabetes Forum  ADF 2026.",
+      "The 5th Egyptian International Radiology Conference (EIRC 2026)"
     ],
     "raw_caption": null,
     "organizer_email": "support@ticketsmarche.com",
@@ -7737,11 +7736,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 17,
+    "clash_count": 19,
     "clash_details": [
       "Entreprenelle Female Leaders & Youth Skills Masterclass",
-      "The 5th Egyptian International Radiology Conference (EIRC 2026)",
-      "Inspire Toastmasters Club Meeting"
+      "17th Arab Diabetes Forum  ADF 2026.",
+      "The 5th Egyptian International Radiology Conference (EIRC 2026)"
     ],
     "raw_caption": null,
     "organizer_email": "support@ticketsmarche.com",
@@ -7780,11 +7779,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 17,
+    "clash_count": 19,
     "clash_details": [
       "Entreprenelle Female Leaders & Youth Skills Masterclass",
-      "The 5th Egyptian International Radiology Conference (EIRC 2026)",
-      "Inspire Toastmasters Club Meeting"
+      "17th Arab Diabetes Forum  ADF 2026.",
+      "The 5th Egyptian International Radiology Conference (EIRC 2026)"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -7869,11 +7868,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Major National Activation: Deploy Chapter Delegation, Booth Presence & Global Volunteer Recruitment",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 17,
+    "clash_count": 19,
     "clash_details": [
       "Entreprenelle Female Leaders & Youth Skills Masterclass",
-      "The 5th Egyptian International Radiology Conference (EIRC 2026)",
-      "Inspire Toastmasters Club Meeting"
+      "17th Arab Diabetes Forum  ADF 2026.",
+      "The 5th Egyptian International Radiology Conference (EIRC 2026)"
     ],
     "raw_caption": null,
     "organizer_email": "support@ticketsmarche.com",
@@ -7978,7 +7977,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "event_id": "fb_eage26_conference",
     "title": "e-AGE26 - المؤتمر السنوي السادس عشر للمنظمة العربية لشبكات البحث العلمي والتعليم",
     "source": "Facebook Events",
-    "start_date": "2026-11-09T17:39:53.557090",
+    "start_date": "2026-11-09T15:03:54.290748",
     "end_date": null,
     "date_display": "Nov 09, 2026 · 09:30 AM",
     "location": "Bibliotheca Alexandrina & Alexandria University Conference Center",
@@ -8092,7 +8091,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "clash_warning": true,
     "clash_count": 4,
     "clash_details": [
-      "2nd MYTHS FACTS in Pediatric Practice",
+      "2nd MYTHS  FACTS in Pediatric Practice",
       "Mansoura Chest Department Annual Conference 2026",
       "(SHEDA) Celebrating World Diabetes Day \" Early Action on Diabetes \""
     ],
@@ -8139,9 +8138,9 @@ window.AIESEC_INITIAL_EVENTS = [
     "clash_warning": true,
     "clash_count": 9,
     "clash_details": [
+      "FEGO Egypt Womens Health Congress 2026",
       "IEEE Egypt National Student Congress & Exhibition",
-      "Meen Amin",
-      "Max Amini Live in Cairo"
+      "Meen Amin"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -8201,7 +8200,7 @@ window.AIESEC_INITIAL_EVENTS = [
   },
   {
     "event_id": "ae_200029887925131",
-    "title": "2nd MYTHS FACTS in Pediatric Practice",
+    "title": "2nd MYTHS  FACTS in Pediatric Practice",
     "source": "AllEvents",
     "start_date": "2026-11-12T07:00:00",
     "end_date": null,
@@ -8245,6 +8244,49 @@ window.AIESEC_INITIAL_EVENTS = [
     "is_social_first": false
   },
   {
+    "event_id": "ae_200030803418648",
+    "title": "FEGO Egypt Womens Health Congress 2026",
+    "source": "AllEvents",
+    "start_date": "2026-11-12T08:00:00",
+    "end_date": null,
+    "date_display": "Thu, 12 Nov, 2026 - 08:00 AM",
+    "location": "Le Méridien Cairo Airport",
+    "city": "Cairo",
+    "country": "Egypt",
+    "url": "https://allevents.in/cairo/fego-egypt-womens-health-congress-2026/200030803418648",
+    "ticket_type": "Registration / Tickets",
+    "organizer": "AllEvents Organizer",
+    "description": "",
+    "category": "General Event",
+    "aiesec_tags": [
+      "general"
+    ],
+    "b2c_score": 4.0,
+    "b2c_priority": "LOW",
+    "recommended_action": "General Monitoring for potential youth presence",
+    "parallel_org": null,
+    "clash_warning": true,
+    "clash_count": 9,
+    "clash_details": [
+      "IEEE Egypt National Student Congress & Exhibition",
+      "Meen Amin",
+      "Masters behind the microscope"
+    ],
+    "raw_caption": null,
+    "organizer_email": null,
+    "organizer_instagram": null,
+    "organizer_linkedin": null,
+    "organizer_phone": null,
+    "proof_url": "https://allevents.in/cairo/fego-egypt-womens-health-congress-2026/200030803418648",
+    "proof_type": "Official Organizer Announcement",
+    "is_verified_proof": true,
+    "proof_evidence": "Verified Official Announcement Post",
+    "registration_url": null,
+    "organizer_profile_url": null,
+    "post_direct_url": null,
+    "is_social_first": false
+  },
+  {
     "event_id": "ae_200030669991447",
     "title": "Mansoura Chest Department Annual Conference 2026",
     "source": "AllEvents",
@@ -8270,7 +8312,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "clash_count": 4,
     "clash_details": [
       "Mansoura University Student Innovation & Career Expo",
-      "2nd MYTHS FACTS in Pediatric Practice",
+      "2nd MYTHS  FACTS in Pediatric Practice",
       "(SHEDA) Celebrating World Diabetes Day \" Early Action on Diabetes \""
     ],
     "raw_caption": null,
@@ -8279,49 +8321,6 @@ window.AIESEC_INITIAL_EVENTS = [
     "organizer_linkedin": "school/mansoura-university",
     "organizer_phone": null,
     "proof_url": "https://allevents.in/port-said/mansoura-chest-department-annual-conference-2026/200030669991447",
-    "proof_type": "Official Organizer Announcement",
-    "is_verified_proof": true,
-    "proof_evidence": "Verified Official Announcement Post",
-    "registration_url": null,
-    "organizer_profile_url": null,
-    "post_direct_url": null,
-    "is_social_first": false
-  },
-  {
-    "event_id": "ae_200030803418648",
-    "title": "FEGO Egypt Womens Health Congress 2026",
-    "source": "AllEvents",
-    "start_date": "2026-11-12T08:00:00",
-    "end_date": null,
-    "date_display": "Thu, 12 Nov, 2026 - 08:00 AM",
-    "location": "Le Méridien Cairo Airport",
-    "city": "Cairo",
-    "country": "Egypt",
-    "url": "https://allevents.in/cairo/fego-egypt-womens-health-congress-2026/200030803418648",
-    "ticket_type": "Registration / Tickets",
-    "organizer": "AllEvents Organizer",
-    "description": "",
-    "category": "General Event",
-    "aiesec_tags": [
-      "general"
-    ],
-    "b2c_score": 4.0,
-    "b2c_priority": "LOW",
-    "recommended_action": "General Monitoring for potential youth presence",
-    "parallel_org": null,
-    "clash_warning": true,
-    "clash_count": 9,
-    "clash_details": [
-      "AIA International Conference Cairo 2026: Layers of Civilization",
-      "IEEE Egypt National Student Congress & Exhibition",
-      "Meen Amin"
-    ],
-    "raw_caption": null,
-    "organizer_email": null,
-    "organizer_instagram": null,
-    "organizer_linkedin": null,
-    "organizer_phone": null,
-    "proof_url": "https://allevents.in/cairo/fego-egypt-womens-health-congress-2026/200030803418648",
     "proof_type": "Official Organizer Announcement",
     "is_verified_proof": true,
     "proof_evidence": "Verified Official Announcement Post",
@@ -8359,9 +8358,9 @@ window.AIESEC_INITIAL_EVENTS = [
     "clash_warning": true,
     "clash_count": 9,
     "clash_details": [
-      "AIA International Conference Cairo 2026: Layers of Civilization",
+      "FEGO Egypt Womens Health Congress 2026",
       "Meen Amin",
-      "Max Amini Live in Cairo"
+      "Masters behind the microscope"
     ],
     "raw_caption": null,
     "organizer_email": "info@ieee-egypt.org",
@@ -8490,9 +8489,9 @@ window.AIESEC_INITIAL_EVENTS = [
     "clash_warning": true,
     "clash_count": 9,
     "clash_details": [
-      "AIA International Conference Cairo 2026: Layers of Civilization",
+      "FEGO Egypt Womens Health Congress 2026",
       "IEEE Egypt National Student Congress & Exhibition",
-      "Max Amini Live in Cairo"
+      "Masters behind the microscope"
     ],
     "raw_caption": null,
     "organizer_email": "support@ticketsmarche.com",
@@ -8500,49 +8499,6 @@ window.AIESEC_INITIAL_EVENTS = [
     "organizer_linkedin": "company/ticketsmarche",
     "organizer_phone": "16826",
     "proof_url": "https://www.ticketsmarche.com/event/meen_amin_9552",
-    "proof_type": "Ticketsmarche Verified Registry",
-    "is_verified_proof": true,
-    "proof_evidence": "Verified Official Announcement Post",
-    "registration_url": null,
-    "organizer_profile_url": null,
-    "post_direct_url": null,
-    "is_social_first": false
-  },
-  {
-    "event_id": "tm_MaxAmini-9128",
-    "title": "Max Amini Live in Cairo",
-    "source": "TicketsMarche, AllEvents",
-    "start_date": "2026-11-12T20:00:00",
-    "end_date": null,
-    "date_display": "Nov 12,13 & 14",
-    "location": "St. Regis, New Capital",
-    "city": "Cairo",
-    "country": "Egypt",
-    "url": "https://www.ticketsmarche.com/event/MaxAmini-9128",
-    "ticket_type": "Free / Paid Tickets",
-    "organizer": "ACUD\\u0026LN",
-    "description": "Max Amini Live in Cairo organized by ACUD\\u0026LN. Tickets available on TicketsMarche (Free / Paid Tickets). Venue: St. Regis, New Capital.",
-    "category": "General Event",
-    "aiesec_tags": [
-      "general"
-    ],
-    "b2c_score": 4.0,
-    "b2c_priority": "LOW",
-    "recommended_action": "General Monitoring for potential youth presence",
-    "parallel_org": null,
-    "clash_warning": true,
-    "clash_count": 9,
-    "clash_details": [
-      "AIA International Conference Cairo 2026: Layers of Civilization",
-      "IEEE Egypt National Student Congress & Exhibition",
-      "Meen Amin"
-    ],
-    "raw_caption": null,
-    "organizer_email": "support@ticketsmarche.com",
-    "organizer_instagram": "ticketsmarche",
-    "organizer_linkedin": "company/ticketsmarche",
-    "organizer_phone": "16826",
-    "proof_url": "https://www.ticketsmarche.com/event/MaxAmini-9128",
     "proof_type": "Ticketsmarche Verified Registry",
     "is_verified_proof": true,
     "proof_evidence": "Verified Official Announcement Post",
@@ -8576,7 +8532,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "clash_warning": true,
     "clash_count": 9,
     "clash_details": [
-      "AIA International Conference Cairo 2026: Layers of Civilization",
+      "FEGO Egypt Womens Health Congress 2026",
       "IEEE Egypt National Student Congress & Exhibition",
       "Meen Amin"
     ],
@@ -8620,7 +8576,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "clash_count": 4,
     "clash_details": [
       "Mansoura University Student Innovation & Career Expo",
-      "2nd MYTHS FACTS in Pediatric Practice",
+      "2nd MYTHS  FACTS in Pediatric Practice",
       "Mansoura Chest Department Annual Conference 2026"
     ],
     "raw_caption": null,
@@ -8639,7 +8595,7 @@ window.AIESEC_INITIAL_EVENTS = [
   },
   {
     "event_id": "ae_200030600400453",
-    "title": "5th Annual Conference of the Dermatology Department Zagazig General Hospital",
+    "title": "5th Annual Conference of the Dermatology Department  Zagazig General Hospital",
     "source": "AllEvents",
     "start_date": "2026-11-13T08:00:00",
     "end_date": null,
@@ -8679,6 +8635,49 @@ window.AIESEC_INITIAL_EVENTS = [
     "is_social_first": false
   },
   {
+    "event_id": "ae_200030638545421",
+    "title": "Max Amini Live in Cairo",
+    "source": "AllEvents, TicketsMarche",
+    "start_date": "2026-11-13T17:00:00",
+    "end_date": null,
+    "date_display": "Fri, 13 Nov, 2026 - 05:00 PM",
+    "location": "The St. Regis New Capital Cairo",
+    "city": "Cairo",
+    "country": "Egypt",
+    "url": "https://allevents.in/cairo/max-amini-live-in-cairo/200030638545421",
+    "ticket_type": "Registration / Tickets",
+    "organizer": "AllEvents Organizer",
+    "description": "Max Amini Live in Cairo organized by ACUD\\u0026LN. Tickets available on TicketsMarche (Free / Paid Tickets). Venue: St. Regis, New Capital.",
+    "category": "General Event",
+    "aiesec_tags": [
+      "general"
+    ],
+    "b2c_score": 4.0,
+    "b2c_priority": "LOW",
+    "recommended_action": "General Monitoring for potential youth presence",
+    "parallel_org": null,
+    "clash_warning": true,
+    "clash_count": 9,
+    "clash_details": [
+      "FEGO Egypt Womens Health Congress 2026",
+      "IEEE Egypt National Student Congress & Exhibition",
+      "Meen Amin"
+    ],
+    "raw_caption": null,
+    "organizer_email": "support@ticketsmarche.com",
+    "organizer_instagram": "ticketsmarche",
+    "organizer_linkedin": "company/ticketsmarche",
+    "organizer_phone": "16826",
+    "proof_url": "https://allevents.in/cairo/max-amini-live-in-cairo/200030638545421",
+    "proof_type": "Ticketsmarche Verified Registry",
+    "is_verified_proof": true,
+    "proof_evidence": "Verified Official Announcement Post",
+    "registration_url": null,
+    "organizer_profile_url": null,
+    "post_direct_url": null,
+    "is_social_first": false
+  },
+  {
     "event_id": "tm_The-Mummification-Lesson_9535",
     "title": "The Mummification Lesson",
     "source": "TicketsMarche",
@@ -8703,7 +8702,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "clash_warning": true,
     "clash_count": 9,
     "clash_details": [
-      "AIA International Conference Cairo 2026: Layers of Civilization",
+      "FEGO Egypt Womens Health Congress 2026",
       "IEEE Egypt National Student Congress & Exhibition",
       "Meen Amin"
     ],
@@ -8746,7 +8745,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "clash_warning": true,
     "clash_count": 9,
     "clash_details": [
-      "AIA International Conference Cairo 2026: Layers of Civilization",
+      "FEGO Egypt Womens Health Congress 2026",
       "IEEE Egypt National Student Congress & Exhibition",
       "Meen Amin"
     ],
@@ -8958,7 +8957,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "clash_warning": true,
     "clash_count": 9,
     "clash_details": [
-      "AIA International Conference Cairo 2026: Layers of Civilization",
+      "FEGO Egypt Womens Health Congress 2026",
       "IEEE Egypt National Student Congress & Exhibition",
       "Meen Amin"
     ],
@@ -9066,7 +9065,7 @@ window.AIESEC_INITIAL_EVENTS = [
   },
   {
     "event_id": "ae_200030454540016",
-    "title": "EGYVASC2026 19th -22th November 2026 Makadi bay Hurghada",
+    "title": "EGYVASC2026 19th -22th November 2026 Makadi bay  Hurghada",
     "source": "AllEvents",
     "start_date": "2026-11-19T00:00:00",
     "end_date": null,
@@ -9259,7 +9258,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "clash_warning": true,
     "clash_count": 4,
     "clash_details": [
-      "EGYVASC2026 19th -22th November 2026 Makadi bay Hurghada",
+      "EGYVASC2026 19th -22th November 2026 Makadi bay  Hurghada",
       "GYNE ASWAN 2026",
       "El Gouna Half Marathon 21NOV 2026"
     ],
@@ -9302,7 +9301,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "clash_warning": true,
     "clash_count": 4,
     "clash_details": [
-      "EGYVASC2026 19th -22th November 2026 Makadi bay Hurghada",
+      "EGYVASC2026 19th -22th November 2026 Makadi bay  Hurghada",
       "EGYVASC 2026",
       "El Gouna Half Marathon 21NOV 2026"
     ],
@@ -9388,7 +9387,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "clash_warning": true,
     "clash_count": 4,
     "clash_details": [
-      "EGYVASC2026 19th -22th November 2026 Makadi bay Hurghada",
+      "EGYVASC2026 19th -22th November 2026 Makadi bay  Hurghada",
       "EGYVASC 2026",
       "GYNE ASWAN 2026"
     ],
@@ -9408,8 +9407,8 @@ window.AIESEC_INITIAL_EVENTS = [
   },
   {
     "event_id": "summit_assiut_tech_conclave_2026",
-    "title": "Assiut University Youth & Technology Conclave",
-    "source": "Egypt Flagship Summits",
+    "title": "مؤتمر Paradox للقيادات الشبابية وريادة الأعمال بصعيد مصر",
+    "source": "Egypt Flagship Summits, Facebook Events",
     "start_date": "2026-11-22T09:30:00",
     "end_date": null,
     "date_display": "Nov 22 - 23, 2026 · 09:30 AM",
@@ -9423,12 +9422,12 @@ window.AIESEC_INITIAL_EVENTS = [
     "category": "Flagship Summits",
     "aiesec_tags": [
       "IEEE",
-      "summit",
-      "flagship",
+      "student",
+      "campus",
       "youth",
       "leadership"
     ],
-    "b2c_score": 9.8,
+    "b2c_score": 9.2,
     "b2c_priority": "HIGH",
     "recommended_action": "Upper Egypt strategic outreach: Partner with IEEE Assiut for joint youth leadership session & recruit exchange delegates.",
     "parallel_org": "IEEE",
@@ -9441,13 +9440,13 @@ window.AIESEC_INITIAL_EVENTS = [
     "organizer_linkedin": "company/ieee-egypt-section",
     "organizer_phone": null,
     "proof_url": "https://www.aun.edu.eg/",
-    "proof_type": "Official Organizer Announcement",
+    "proof_type": "Direct Social Announcement Post",
     "is_verified_proof": true,
-    "proof_evidence": "Verified Official Announcement Post",
-    "registration_url": null,
-    "organizer_profile_url": null,
-    "post_direct_url": null,
-    "is_social_first": false
+    "proof_evidence": "Direct announcement post verified via Egypt Flagship Summits, Facebook Events",
+    "registration_url": "https://www.aun.edu.eg/",
+    "organizer_profile_url": "https://www.aun.edu.eg/",
+    "post_direct_url": "https://www.aun.edu.eg/",
+    "is_social_first": true
   },
   {
     "event_id": "ae_200030651478814",
@@ -9819,7 +9818,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "clash_warning": true,
     "clash_count": 7,
     "clash_details": [
-      "e-AGE26: المؤتمر السنوي السادس عشر - الأهرامات: بنيان لا يزول",
+      "e-AGE26",
       "Art therapy",
       "10th Annual Congress of Al-Muwasah University Hospital"
     ],
@@ -9880,8 +9879,8 @@ window.AIESEC_INITIAL_EVENTS = [
   },
   {
     "event_id": "ae_200030323061248",
-    "title": "e-AGE26: المؤتمر السنوي السادس عشر - الأهرامات: بنيان لا يزول",
-    "source": "AllEvents, Facebook Events",
+    "title": "e-AGE26",
+    "source": "AllEvents",
     "start_date": "2026-12-01T09:00:00",
     "end_date": null,
     "date_display": "Tue, 01 Dec, 2026 - 09:00 AM",
@@ -9891,17 +9890,13 @@ window.AIESEC_INITIAL_EVENTS = [
     "url": "https://allevents.in/alexandria/e-age26-المؤتمر-السنوي-السادس-عشر-الأهرامات-بنيان-لا-يزول/200030323061248",
     "ticket_type": "Registration / Tickets",
     "organizer": "AllEvents Organizer",
-    "description": "Tue, Dec 1 - Dec 3\ne-AGE26: المؤتمر السنوي السادس عشر - الأهرامات: بنيان لا يزول\nChatby, Alexandria 21526, EGYPT, Alexandria, Egypt, P.O. Box 138\n3.1K interested · 115 going",
+    "description": "",
     "category": "General Event",
     "aiesec_tags": [
-      "general",
-      "campus",
-      "students",
-      "youth",
-      "education"
+      "general"
     ],
-    "b2c_score": 7.8,
-    "b2c_priority": "MEDIUM",
+    "b2c_score": 4.0,
+    "b2c_priority": "LOW",
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
@@ -9916,14 +9911,14 @@ window.AIESEC_INITIAL_EVENTS = [
     "organizer_instagram": null,
     "organizer_linkedin": null,
     "organizer_phone": null,
-    "proof_url": "https://www.facebook.com/events/1880065419619587/",
-    "proof_type": "Direct Social Announcement Post",
+    "proof_url": "https://allevents.in/alexandria/e-age26-المؤتمر-السنوي-السادس-عشر-الأهرامات-بنيان-لا-يزول/200030323061248",
+    "proof_type": "Official Organizer Announcement",
     "is_verified_proof": true,
-    "proof_evidence": "Direct announcement post verified via AllEvents, Facebook Events",
-    "registration_url": "https://www.facebook.com/events/1880065419619587/",
-    "organizer_profile_url": "https://www.facebook.com/events/1880065419619587/",
-    "post_direct_url": "https://www.facebook.com/events/1880065419619587/",
-    "is_social_first": true
+    "proof_evidence": "Verified Official Announcement Post",
+    "registration_url": null,
+    "organizer_profile_url": null,
+    "post_direct_url": null,
+    "is_social_first": false
   },
   {
     "event_id": "ae_200030709291557",
@@ -9951,7 +9946,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "clash_count": 7,
     "clash_details": [
       "CIPEG 2026 Annual Meeting",
-      "e-AGE26: المؤتمر السنوي السادس عشر - الأهرامات: بنيان لا يزول",
+      "e-AGE26",
       "10th Annual Congress of Al-Muwasah University Hospital"
     ],
     "raw_caption": null,
@@ -10042,7 +10037,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "clash_count": 7,
     "clash_details": [
       "CIPEG 2026 Annual Meeting",
-      "e-AGE26: المؤتمر السنوي السادس عشر - الأهرامات: بنيان لا يزول",
+      "e-AGE26",
       "Art therapy"
     ],
     "raw_caption": null,
@@ -10085,7 +10080,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "clash_count": 7,
     "clash_details": [
       "CIPEG 2026 Annual Meeting",
-      "e-AGE26: المؤتمر السنوي السادس عشر - الأهرامات: بنيان لا يزول",
+      "e-AGE26",
       "Art therapy"
     ],
     "raw_caption": null,
@@ -10146,8 +10141,8 @@ window.AIESEC_INITIAL_EVENTS = [
   },
   {
     "event_id": "tm_gouna-photo-week",
-    "title": "El Gouna Photo Week",
-    "source": "TicketsMarche",
+    "title": "El Gouna Photo Week 2026",
+    "source": "TicketsMarche, AllEvents",
     "start_date": "2026-12-04T20:00:00",
     "end_date": null,
     "date_display": "Dec 4 to Dec 12",
@@ -10169,8 +10164,8 @@ window.AIESEC_INITIAL_EVENTS = [
     "clash_warning": true,
     "clash_count": 4,
     "clash_details": [
-      "If Only there was a Photo Documentary Workshop by Tasneem Elsultan",
       "Salty Sphynxter 14 (Dec 26)",
+      "If Only there was a Photo Documentary Workshop by Tasneem Elsultan",
       "Interiors Beyond Documentation - Architecture Photography Workshop by Felix Speller"
     ],
     "raw_caption": null,
@@ -10297,7 +10292,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "clash_warning": true,
     "clash_count": 4,
     "clash_details": [
-      "El Gouna Photo Week",
+      "El Gouna Photo Week 2026",
       "If Only there was a Photo Documentary Workshop by Tasneem Elsultan",
       "Interiors Beyond Documentation - Architecture Photography Workshop by Felix Speller"
     ],
@@ -10341,7 +10336,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "clash_count": 7,
     "clash_details": [
       "CIPEG 2026 Annual Meeting",
-      "e-AGE26: المؤتمر السنوي السادس عشر - الأهرامات: بنيان لا يزول",
+      "e-AGE26",
       "Art therapy"
     ],
     "raw_caption": null,
@@ -10384,7 +10379,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "clash_count": 7,
     "clash_details": [
       "CIPEG 2026 Annual Meeting",
-      "e-AGE26: المؤتمر السنوي السادس عشر - الأهرامات: بنيان لا يزول",
+      "e-AGE26",
       "Art therapy"
     ],
     "raw_caption": null,
@@ -10429,7 +10424,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "clash_warning": true,
     "clash_count": 4,
     "clash_details": [
-      "El Gouna Photo Week",
+      "El Gouna Photo Week 2026",
       "Salty Sphynxter 14 (Dec 26)",
       "Interiors Beyond Documentation - Architecture Photography Workshop by Felix Speller"
     ],
@@ -10475,9 +10470,9 @@ window.AIESEC_INITIAL_EVENTS = [
     "clash_warning": true,
     "clash_count": 4,
     "clash_details": [
-      "El Gouna Photo Week",
-      "If Only there was a Photo Documentary Workshop by Tasneem Elsultan",
-      "Salty Sphynxter 14 (Dec 26)"
+      "El Gouna Photo Week 2026",
+      "Salty Sphynxter 14 (Dec 26)",
+      "If Only there was a Photo Documentary Workshop by Tasneem Elsultan"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -11313,8 +11308,8 @@ window.AIESEC_INITIAL_EVENTS = [
   },
   {
     "event_id": "ae_80001323154858",
-    "title": "EDUGATE Cairo 20th Edition – International Universities Fair",
-    "source": "AllEvents, Eventbrite",
+    "title": "EDUGATE Cairo 20th Edition  International Universities Fair",
+    "source": "AllEvents",
     "start_date": "2027-02-01T00:00:00",
     "end_date": null,
     "date_display": "Mon, 01 Feb, 2027 - 12:00 AM",
@@ -11324,7 +11319,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "url": "https://allevents.in/cairo/edugate-cairo-20th-edition-international-universities-fair-tickets/80001323154858",
     "ticket_type": "Free",
     "organizer": "AllEvents Organizer",
-    "description": "EDUGATE Cairo 20th Edition is an international universities fair taking place from 1–3 February 2027 at Royal Maxim Palace Kempinski, Cairo.",
+    "description": "",
     "category": "General Event",
     "aiesec_tags": [
       "general"
