@@ -1,5 +1,5 @@
 // Auto-generated Event Radar Events Data
-window.RADAR_DATASET_VERSION = '2026-10-26_0825';
+window.RADAR_DATASET_VERSION = '2026-10-26_2033';
 window.AIESEC_INITIAL_EVENTS = [
   {
     "event_id": "tm_Khayal-Mareed-Play_8475",
@@ -106,11 +106,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Low Priority B2C / Evaluate solely for B2B Corporate Sponsorship",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 49,
+    "clash_count": 44,
     "clash_details": [
       "Export Smart 4th Edition",
-      "🗣️ English Speaking Practice - Professional Host!",
-      "Improve Your Public Speaking - in Maadi"
+      "Cinema Club",
+      "MSP S27 RECRUITMENT"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -149,11 +149,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 24,
+    "clash_count": 26,
     "clash_details": [
-      "German Practice | Meet Friends (Professional Host)",
-      "Git & GitHub: From Zero to Contributor",
-      "Soul Circle · Expanding our capacity to receive"
+      "Alexandria University Career Day & Engineering Forum",
+      "🌐 English Conversation Practice: Professional Host!",
+      "EgyCraft - Lumiere By Noura ElKabany"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -236,11 +236,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 49,
+    "clash_count": 44,
     "clash_details": [
-      "🗣️ English Speaking Practice - Professional Host!",
-      "Improve Your Public Speaking - in Maadi",
-      "Cinema Club"
+      "Cinema Club",
+      "MSP S27 RECRUITMENT",
+      "ARCE Special Halloween Lecture & Book Signing by Dr. Salima Ikram"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -325,11 +325,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Speaker Outreach, Workshop Co-hosting & Youth Leadership Presentation",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 18,
+    "clash_count": 24,
     "clash_details": [
-      "90's Comedy Show",
-      "Impulse: Halloween Edition - Mont Rouge",
-      "World Orchestra"
+      "Zamalek Boardgame Night | NewGame",
+      "Nasr City Boardgame Night | NewGame",
+      "90's Comedy Show"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -371,11 +371,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Speaker Outreach, Workshop Co-hosting & Youth Leadership Presentation",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 24,
+    "clash_count": 26,
     "clash_details": [
       "friendly match",
-      "German Practice | Meet Friends (Professional Host)",
-      "Git & GitHub: From Zero to Contributor"
+      "Alexandria University Career Day & Engineering Forum",
+      "🌐 English Conversation Practice: Professional Host!"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -383,95 +383,6 @@ window.AIESEC_INITIAL_EVENTS = [
     "organizer_linkedin": null,
     "organizer_phone": null,
     "proof_url": "https://www.meetup.com/dubai-investors-group/events/316866039/",
-    "proof_type": "Official Organizer Announcement",
-    "is_verified_proof": true,
-    "proof_evidence": "Verified Official Announcement Post",
-    "registration_url": null,
-    "organizer_profile_url": null,
-    "post_direct_url": null,
-    "is_social_first": false
-  },
-  {
-    "event_id": "mu_732618325",
-    "title": "🗣️ English Speaking Practice - Professional Host!",
-    "source": "Meetup",
-    "start_date": "2026-10-26T15:00:00",
-    "end_date": null,
-    "date_display": "Oct 26, 2026 · 03:00 PM",
-    "location": "TBA",
-    "city": "Cairo",
-    "country": "Egypt",
-    "url": "https://www.meetup.com/frankfurt-english/events/317101245/",
-    "ticket_type": "Free",
-    "organizer": "🌍 Frankfurt Meetup | Daily Events!",
-    "description": "Do you ever feel a bit nervous when speaking German? You’re not alone. Many of us want to express ourselves more confidently, but it’s hard to find a safe, supportive space to practice.\nThat’s why we created this warm, judgment-free group where you can have real, meaningful conversations, connect wi",
-    "category": "Volunteering, SDGs & Cultural Exchange",
-    "aiesec_tags": [
-      "culture",
-      "volunteering",
-      "sdg",
-      "exchange"
-    ],
-    "b2c_score": 7.0,
-    "b2c_priority": "MEDIUM",
-    "recommended_action": "Promote Global Volunteer Projects & SDG Alignment",
-    "parallel_org": null,
-    "clash_warning": true,
-    "clash_count": 49,
-    "clash_details": [
-      "Export Smart 4th Edition",
-      "Improve Your Public Speaking - in Maadi",
-      "Cinema Club"
-    ],
-    "raw_caption": null,
-    "organizer_email": null,
-    "organizer_instagram": null,
-    "organizer_linkedin": null,
-    "organizer_phone": null,
-    "proof_url": "https://www.meetup.com/frankfurt-english/events/317101245/",
-    "proof_type": "Official Organizer Announcement",
-    "is_verified_proof": true,
-    "proof_evidence": "Verified Official Announcement Post",
-    "registration_url": null,
-    "organizer_profile_url": null,
-    "post_direct_url": null,
-    "is_social_first": false
-  },
-  {
-    "event_id": "mu_248804388",
-    "title": "German Practice | Meet Friends (Professional Host)",
-    "source": "Meetup",
-    "start_date": "2026-10-26T15:00:00",
-    "end_date": null,
-    "date_display": "Oct 26, 2026 · 03:00 PM",
-    "location": "TBA",
-    "city": "Alexandria",
-    "country": "Egypt",
-    "url": "https://www.meetup.com/wien-english/events/316869338/",
-    "ticket_type": "Free",
-    "organizer": "✅ Vienna Conversation Exchange | Daily Events!",
-    "description": "Do you ever feel a bit nervous when speaking German? You’re not alone. Many of us want to express ourselves more confidently, but it’s hard to find a safe, supportive space to practice.\nThat’s why we created this warm, judgment-free group where you can have real, meaningful conversations, connect wi",
-    "category": "General Event",
-    "aiesec_tags": [
-      "general"
-    ],
-    "b2c_score": 4.0,
-    "b2c_priority": "LOW",
-    "recommended_action": "General Monitoring for potential youth presence",
-    "parallel_org": null,
-    "clash_warning": true,
-    "clash_count": 24,
-    "clash_details": [
-      "friendly match",
-      "Git & GitHub: From Zero to Contributor",
-      "Soul Circle · Expanding our capacity to receive"
-    ],
-    "raw_caption": null,
-    "organizer_email": null,
-    "organizer_instagram": null,
-    "organizer_linkedin": null,
-    "organizer_phone": null,
-    "proof_url": "https://www.meetup.com/wien-english/events/316869338/",
     "proof_type": "Official Organizer Announcement",
     "is_verified_proof": true,
     "proof_evidence": "Verified Official Announcement Post",
@@ -507,11 +418,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Partner Outreach with Toastmasters: Joint Activation / PR Collaboration",
     "parallel_org": "Toastmasters",
     "clash_warning": true,
-    "clash_count": 49,
+    "clash_count": 44,
     "clash_details": [
       "Export Smart 4th Edition",
-      "🗣️ English Speaking Practice - Professional Host!",
-      "Cinema Club"
+      "Cinema Club",
+      "MSP S27 RECRUITMENT"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -550,11 +461,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 24,
+    "clash_count": 26,
     "clash_details": [
       "friendly match",
-      "German Practice | Meet Friends (Professional Host)",
-      "Soul Circle · Expanding our capacity to receive"
+      "Alexandria University Career Day & Engineering Forum",
+      "🌐 English Conversation Practice: Professional Host!"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -593,11 +504,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 24,
+    "clash_count": 26,
     "clash_details": [
       "friendly match",
-      "German Practice | Meet Friends (Professional Host)",
-      "Git & GitHub: From Zero to Contributor"
+      "Alexandria University Career Day & Engineering Forum",
+      "🌐 English Conversation Practice: Professional Host!"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -638,11 +549,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring (Social / Leisure)",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 49,
+    "clash_count": 44,
     "clash_details": [
       "Export Smart 4th Edition",
-      "🗣️ English Speaking Practice - Professional Host!",
-      "Improve Your Public Speaking - in Maadi"
+      "Cinema Club",
+      "MSP S27 RECRUITMENT"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -681,11 +592,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 49,
+    "clash_count": 44,
     "clash_details": [
       "Export Smart 4th Edition",
-      "🗣️ English Speaking Practice - Professional Host!",
-      "Improve Your Public Speaking - in Maadi"
+      "MSP S27 RECRUITMENT",
+      "ARCE Special Halloween Lecture & Book Signing by Dr. Salima Ikram"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -726,11 +637,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Workshop Attendee Outreach & Digital Flyer Drops",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 24,
+    "clash_count": 26,
     "clash_details": [
       "friendly match",
-      "German Practice | Meet Friends (Professional Host)",
-      "Git & GitHub: From Zero to Contributor"
+      "Alexandria University Career Day & Engineering Forum",
+      "🌐 English Conversation Practice: Professional Host!"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -769,11 +680,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 49,
+    "clash_count": 44,
     "clash_details": [
       "Export Smart 4th Edition",
-      "🗣️ English Speaking Practice - Professional Host!",
-      "Improve Your Public Speaking - in Maadi"
+      "Cinema Club",
+      "ARCE Special Halloween Lecture & Book Signing by Dr. Salima Ikram"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -812,11 +723,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 18,
+    "clash_count": 24,
     "clash_details": [
-      "90's Comedy Show",
-      "Impulse: Halloween Edition - Mont Rouge",
-      "World Orchestra"
+      "Zamalek Boardgame Night | NewGame",
+      "Nasr City Boardgame Night | NewGame",
+      "90's Comedy Show"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -833,7 +744,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "is_social_first": false
   },
   {
-    "event_id": "mu_1705372459",
+    "event_id": "mu_1170365802",
     "title": "Caribou Coffee Morning Cairo East Walk Mall",
     "source": "Meetup",
     "start_date": "2026-10-27T04:30:00",
@@ -857,11 +768,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring (Social / Leisure)",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 7,
+    "clash_count": 5,
     "clash_details": [
-      "Nasr City Boardgame Night | NewGame",
       "Heliopolis Boardgame Night | NewGame",
-      "التجمع الخامس"
+      "التجمع الخامس",
+      "Nasr City Boardgame Night | NewGame"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -904,11 +815,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Flagship activation for Alexandria chapter: Run interactive booth, provide resume reviews, and recruit outbound delegates.",
     "parallel_org": "Student Union",
     "clash_warning": true,
-    "clash_count": 24,
+    "clash_count": 26,
     "clash_details": [
       "friendly match",
-      "German Practice | Meet Friends (Professional Host)",
-      "Git & GitHub: From Zero to Contributor"
+      "🌐 English Conversation Practice: Professional Host!",
+      "EgyCraft - Lumiere By Noura ElKabany"
     ],
     "raw_caption": null,
     "organizer_email": "info@alexu.edu.eg",
@@ -916,6 +827,53 @@ window.AIESEC_INITIAL_EVENTS = [
     "organizer_linkedin": "school/alexandria-university",
     "organizer_phone": null,
     "proof_url": "https://eng.alexu.edu.eg/",
+    "proof_type": "Official Organizer Announcement",
+    "is_verified_proof": true,
+    "proof_evidence": "Verified Official Announcement Post",
+    "registration_url": null,
+    "organizer_profile_url": null,
+    "post_direct_url": null,
+    "is_social_first": false
+  },
+  {
+    "event_id": "mu_3741477812",
+    "title": "🌐 English Conversation Practice: Professional Host!",
+    "source": "Meetup",
+    "start_date": "2026-10-27T10:00:00",
+    "end_date": null,
+    "date_display": "Oct 27, 2026 · 10:00 AM",
+    "location": "TBA",
+    "city": "Alexandria",
+    "country": "Egypt",
+    "url": "https://www.meetup.com/athens-english/events/316880043/",
+    "ticket_type": "Free",
+    "organizer": "🤝 Athens Conversation Exchange",
+    "description": "**Practice English online in a fun, supportive space, for free!**\nGet real-time speaking experience, meet new people, and improve fast with guided feedback.\n🔑 **What to Expect:**\n✅ **Live 1-on-1 Conversations**\n\n* Chat with different partners at your level\n* Each round = 3-5 min vocab warmup + 12 mi",
+    "category": "General Event",
+    "aiesec_tags": [
+      "general",
+      "culture",
+      "volunteering",
+      "sdg",
+      "exchange"
+    ],
+    "b2c_score": 7.0,
+    "b2c_priority": "MEDIUM",
+    "recommended_action": "General Monitoring for potential youth presence",
+    "parallel_org": null,
+    "clash_warning": true,
+    "clash_count": 26,
+    "clash_details": [
+      "friendly match",
+      "Alexandria University Career Day & Engineering Forum",
+      "EgyCraft - Lumiere By Noura ElKabany"
+    ],
+    "raw_caption": null,
+    "organizer_email": null,
+    "organizer_instagram": null,
+    "organizer_linkedin": null,
+    "organizer_phone": null,
+    "proof_url": "https://www.meetup.com/athens-english/events/316880043/",
     "proof_type": "Official Organizer Announcement",
     "is_verified_proof": true,
     "proof_evidence": "Verified Official Announcement Post",
@@ -947,11 +905,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 24,
+    "clash_count": 26,
     "clash_details": [
       "friendly match",
-      "German Practice | Meet Friends (Professional Host)",
-      "Git & GitHub: From Zero to Contributor"
+      "Alexandria University Career Day & Engineering Forum",
+      "🌐 English Conversation Practice: Professional Host!"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -968,14 +926,14 @@ window.AIESEC_INITIAL_EVENTS = [
     "is_social_first": false
   },
   {
-    "event_id": "mu_2654688172",
+    "event_id": "mu_3817317535",
     "title": "Zamalek Boardgame Night | NewGame",
     "source": "Meetup",
     "start_date": "2026-10-27T15:00:00",
     "end_date": null,
     "date_display": "Oct 27, 2026 · 03:00 PM",
     "location": "Daily Dose",
-    "city": "Cairo",
+    "city": "Giza",
     "country": "Egypt",
     "url": "https://www.meetup.com/cairo-tabletop-role-playing-and-board-games-meetup-group/events/317136077/",
     "ticket_type": "Free",
@@ -990,11 +948,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 49,
+    "clash_count": 24,
     "clash_details": [
-      "Export Smart 4th Edition",
-      "🗣️ English Speaking Practice - Professional Host!",
-      "Improve Your Public Speaking - in Maadi"
+      "Nasr City Boardgame Night | NewGame",
+      "90's Comedy Show",
+      "Dokki Boardgame Night | NewGame"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -1011,14 +969,14 @@ window.AIESEC_INITIAL_EVENTS = [
     "is_social_first": false
   },
   {
-    "event_id": "mu_2595371141",
+    "event_id": "mu_1462455071",
     "title": "Nasr City Boardgame Night | NewGame",
     "source": "Meetup",
     "start_date": "2026-10-27T15:00:00",
     "end_date": null,
     "date_display": "Oct 27, 2026 · 03:00 PM",
     "location": "Alia Lounge & Chef Mo",
-    "city": "New Cairo",
+    "city": "Giza",
     "country": "Egypt",
     "url": "https://www.meetup.com/cairo-tabletop-role-playing-and-board-games-meetup-group/events/317136136/",
     "ticket_type": "Free",
@@ -1033,11 +991,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 7,
+    "clash_count": 24,
     "clash_details": [
-      "Caribou Coffee Morning Cairo East Walk Mall",
-      "Heliopolis Boardgame Night | NewGame",
-      "التجمع الخامس"
+      "Zamalek Boardgame Night | NewGame",
+      "90's Comedy Show",
+      "Dokki Boardgame Night | NewGame"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -1054,7 +1012,50 @@ window.AIESEC_INITIAL_EVENTS = [
     "is_social_first": false
   },
   {
-    "event_id": "mu_2689755324",
+    "event_id": "mu_1059063548",
+    "title": "German Practice | Meet Friends (Professional Host)",
+    "source": "Meetup",
+    "start_date": "2026-10-27T15:00:00",
+    "end_date": null,
+    "date_display": "Oct 27, 2026 · 03:00 PM",
+    "location": "TBA",
+    "city": "Alexandria",
+    "country": "Egypt",
+    "url": "https://www.meetup.com/wien-english/events/316882664/",
+    "ticket_type": "Free",
+    "organizer": "✅ Vienna Conversation Exchange | Daily Events!",
+    "description": "Do you ever feel a bit nervous when speaking German? You’re not alone. Many of us want to express ourselves more confidently, but it’s hard to find a safe, supportive space to practice.\nThat’s why we created this warm, judgment-free group where you can have real, meaningful conversations, connect wi",
+    "category": "General Event",
+    "aiesec_tags": [
+      "general"
+    ],
+    "b2c_score": 4.0,
+    "b2c_priority": "LOW",
+    "recommended_action": "General Monitoring for potential youth presence",
+    "parallel_org": null,
+    "clash_warning": true,
+    "clash_count": 26,
+    "clash_details": [
+      "friendly match",
+      "Alexandria University Career Day & Engineering Forum",
+      "🌐 English Conversation Practice: Professional Host!"
+    ],
+    "raw_caption": null,
+    "organizer_email": null,
+    "organizer_instagram": null,
+    "organizer_linkedin": null,
+    "organizer_phone": null,
+    "proof_url": "https://www.meetup.com/wien-english/events/316882664/",
+    "proof_type": "Official Organizer Announcement",
+    "is_verified_proof": true,
+    "proof_evidence": "Verified Official Announcement Post",
+    "registration_url": null,
+    "organizer_profile_url": null,
+    "post_direct_url": null,
+    "is_social_first": false
+  },
+  {
+    "event_id": "mu_555680523",
     "title": "Advanced Cloud Architecture & DevOps CICD Pipeline Process",
     "source": "Meetup",
     "start_date": "2026-10-27T17:00:00",
@@ -1079,11 +1080,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Promote Global Talent IT Opportunities",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 24,
+    "clash_count": 26,
     "clash_details": [
       "friendly match",
-      "German Practice | Meet Friends (Professional Host)",
-      "Git & GitHub: From Zero to Contributor"
+      "Alexandria University Career Day & Engineering Forum",
+      "🌐 English Conversation Practice: Professional Host!"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -1122,11 +1123,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 24,
+    "clash_count": 26,
     "clash_details": [
       "friendly match",
-      "German Practice | Meet Friends (Professional Host)",
-      "Git & GitHub: From Zero to Contributor"
+      "Alexandria University Career Day & Engineering Forum",
+      "🌐 English Conversation Practice: Professional Host!"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -1211,11 +1212,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Promote Global Volunteer Projects & SDG Alignment",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 24,
+    "clash_count": 26,
     "clash_details": [
       "friendly match",
-      "German Practice | Meet Friends (Professional Host)",
-      "Git & GitHub: From Zero to Contributor"
+      "Alexandria University Career Day & Engineering Forum",
+      "🌐 English Conversation Practice: Professional Host!"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -1254,11 +1255,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 18,
+    "clash_count": 24,
     "clash_details": [
-      "90's Comedy Show",
-      "Impulse: Halloween Edition - Mont Rouge",
-      "World Orchestra"
+      "Zamalek Boardgame Night | NewGame",
+      "Nasr City Boardgame Night | NewGame",
+      "90's Comedy Show"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -1299,11 +1300,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring (Social / Leisure)",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 18,
+    "clash_count": 24,
     "clash_details": [
-      "Impulse: Halloween Edition - Mont Rouge",
-      "World Orchestra",
-      "Halloween - Disco Misr"
+      "Zamalek Boardgame Night | NewGame",
+      "Nasr City Boardgame Night | NewGame",
+      "Dokki Boardgame Night | NewGame"
     ],
     "raw_caption": null,
     "organizer_email": "support@ticketsmarche.com",
@@ -1346,11 +1347,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Major Campus Activation: Deploy Chapter Delegation, Booth Presence & Recruit University Students",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 49,
+    "clash_count": 44,
     "clash_details": [
       "Export Smart 4th Edition",
-      "🗣️ English Speaking Practice - Professional Host!",
-      "Improve Your Public Speaking - in Maadi"
+      "Cinema Club",
+      "MSP S27 RECRUITMENT"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -1406,7 +1407,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "is_social_first": false
   },
   {
-    "event_id": "mu_727221240",
+    "event_id": "mu_2207108421",
     "title": "🚀Meetup for Entrepreneurs by F4F",
     "source": "Meetup",
     "start_date": "2026-10-28T17:00:00",
@@ -1428,11 +1429,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 24,
+    "clash_count": 26,
     "clash_details": [
       "friendly match",
-      "German Practice | Meet Friends (Professional Host)",
-      "Git & GitHub: From Zero to Contributor"
+      "Alexandria University Career Day & Engineering Forum",
+      "🌐 English Conversation Practice: Professional Host!"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -1449,14 +1450,14 @@ window.AIESEC_INITIAL_EVENTS = [
     "is_social_first": false
   },
   {
-    "event_id": "mu_2752101174",
+    "event_id": "mu_2394587073",
     "title": "✅Founders for Founders (F4F): Meetup for Entrepreneurs",
     "source": "Meetup",
     "start_date": "2026-10-28T17:00:00",
     "end_date": null,
     "date_display": "Oct 28, 2026 · 05:00 PM",
     "location": "TBA",
-    "city": "New Cairo",
+    "city": "Alexandria",
     "country": "Egypt",
     "url": "https://www.meetup.com/wien-english/events/316898805/",
     "ticket_type": "Free",
@@ -1471,11 +1472,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 7,
+    "clash_count": 26,
     "clash_details": [
-      "Caribou Coffee Morning Cairo East Walk Mall",
-      "Nasr City Boardgame Night | NewGame",
-      "Heliopolis Boardgame Night | NewGame"
+      "friendly match",
+      "Alexandria University Career Day & Engineering Forum",
+      "🌐 English Conversation Practice: Professional Host!"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -1518,11 +1519,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Partner Outreach with Toastmasters: Joint Activation / PR Collaboration",
     "parallel_org": "Toastmasters",
     "clash_warning": true,
-    "clash_count": 24,
+    "clash_count": 26,
     "clash_details": [
       "friendly match",
-      "German Practice | Meet Friends (Professional Host)",
-      "Git & GitHub: From Zero to Contributor"
+      "Alexandria University Career Day & Engineering Forum",
+      "🌐 English Conversation Practice: Professional Host!"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -1561,11 +1562,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 49,
+    "clash_count": 44,
     "clash_details": [
       "Export Smart 4th Edition",
-      "🗣️ English Speaking Practice - Professional Host!",
-      "Improve Your Public Speaking - in Maadi"
+      "Cinema Club",
+      "MSP S27 RECRUITMENT"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -1606,11 +1607,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring (Social / Leisure)",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 49,
+    "clash_count": 44,
     "clash_details": [
       "Export Smart 4th Edition",
-      "🗣️ English Speaking Practice - Professional Host!",
-      "Improve Your Public Speaking - in Maadi"
+      "Cinema Club",
+      "MSP S27 RECRUITMENT"
     ],
     "raw_caption": null,
     "organizer_email": "support@ticketsmarche.com",
@@ -1692,11 +1693,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 18,
+    "clash_count": 24,
     "clash_details": [
-      "90's Comedy Show",
-      "Impulse: Halloween Edition - Mont Rouge",
-      "World Orchestra"
+      "Zamalek Boardgame Night | NewGame",
+      "Nasr City Boardgame Night | NewGame",
+      "90's Comedy Show"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -1737,11 +1738,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Do Not Deploy (Niche Clinical Target - Incompatible with Youth B2C)",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 49,
+    "clash_count": 44,
     "clash_details": [
       "Export Smart 4th Edition",
-      "🗣️ English Speaking Practice - Professional Host!",
-      "Improve Your Public Speaking - in Maadi"
+      "Cinema Club",
+      "MSP S27 RECRUITMENT"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -1784,11 +1785,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Major Campus Activation: Deploy Chapter Delegation, Booth Presence & Recruit University Students",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 24,
+    "clash_count": 26,
     "clash_details": [
       "friendly match",
-      "German Practice | Meet Friends (Professional Host)",
-      "Git & GitHub: From Zero to Contributor"
+      "Alexandria University Career Day & Engineering Forum",
+      "🌐 English Conversation Practice: Professional Host!"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -1827,11 +1828,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 24,
+    "clash_count": 26,
     "clash_details": [
       "friendly match",
-      "German Practice | Meet Friends (Professional Host)",
-      "Git & GitHub: From Zero to Contributor"
+      "Alexandria University Career Day & Engineering Forum",
+      "🌐 English Conversation Practice: Professional Host!"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -1870,11 +1871,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 24,
+    "clash_count": 26,
     "clash_details": [
       "friendly match",
-      "German Practice | Meet Friends (Professional Host)",
-      "Git & GitHub: From Zero to Contributor"
+      "Alexandria University Career Day & Engineering Forum",
+      "🌐 English Conversation Practice: Professional Host!"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -1916,11 +1917,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "High-priority activation for Tanta & Alexandria chapters: Deploy booth presence, distribute Global Volunteer flyers, and engage university delegations across the Delta.",
     "parallel_org": "Techne Global",
     "clash_warning": true,
-    "clash_count": 24,
+    "clash_count": 26,
     "clash_details": [
       "friendly match",
-      "German Practice | Meet Friends (Professional Host)",
-      "Git & GitHub: From Zero to Contributor"
+      "Alexandria University Career Day & Engineering Forum",
+      "🌐 English Conversation Practice: Professional Host!"
     ],
     "raw_caption": null,
     "organizer_email": "info@technesummit.com",
@@ -1962,11 +1963,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Target Medical, Dental & Pharmacy Undergraduates for Global Volunteer Projects",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 49,
+    "clash_count": 44,
     "clash_details": [
       "Export Smart 4th Edition",
-      "🗣️ English Speaking Practice - Professional Host!",
-      "Improve Your Public Speaking - in Maadi"
+      "Cinema Club",
+      "MSP S27 RECRUITMENT"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -2007,11 +2008,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Do Not Deploy (Niche Clinical Target - Incompatible with Youth B2C)",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 49,
+    "clash_count": 44,
     "clash_details": [
       "Export Smart 4th Edition",
-      "🗣️ English Speaking Practice - Professional Host!",
-      "Improve Your Public Speaking - in Maadi"
+      "Cinema Club",
+      "MSP S27 RECRUITMENT"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -2054,11 +2055,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Major Campus Activation: Deploy Chapter Delegation, Booth Presence & Recruit University Students",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 49,
+    "clash_count": 44,
     "clash_details": [
       "Export Smart 4th Edition",
-      "🗣️ English Speaking Practice - Professional Host!",
-      "Improve Your Public Speaking - in Maadi"
+      "Cinema Club",
+      "MSP S27 RECRUITMENT"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -2097,11 +2098,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 18,
+    "clash_count": 24,
     "clash_details": [
-      "90's Comedy Show",
-      "Impulse: Halloween Edition - Mont Rouge",
-      "World Orchestra"
+      "Zamalek Boardgame Night | NewGame",
+      "Nasr City Boardgame Night | NewGame",
+      "90's Comedy Show"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -2140,11 +2141,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 18,
+    "clash_count": 24,
     "clash_details": [
-      "90's Comedy Show",
-      "Impulse: Halloween Edition - Mont Rouge",
-      "World Orchestra"
+      "Zamalek Boardgame Night | NewGame",
+      "Nasr City Boardgame Night | NewGame",
+      "90's Comedy Show"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -2161,7 +2162,50 @@ window.AIESEC_INITIAL_EVENTS = [
     "is_social_first": false
   },
   {
-    "event_id": "mu_298821795",
+    "event_id": "mu_4178010524",
+    "title": "Dokki Boardgame Night | NewGame",
+    "source": "Meetup",
+    "start_date": "2026-10-29T15:00:00",
+    "end_date": null,
+    "date_display": "Oct 29, 2026 · 03:00 PM",
+    "location": "TREE HOUSE",
+    "city": "Giza",
+    "country": "Egypt",
+    "url": "https://www.meetup.com/cairo-tabletop-role-playing-and-board-games-meetup-group/events/317136230/",
+    "ticket_type": "Free",
+    "organizer": "Egypt Board Games and Tabletop Role Playing | NewGame",
+    "description": "Come join us in Tree House for a chill boardgame night, where we have fun and make new friends.\nDate: Thu 29/10 from 6:00 pm to 11:00 pm\nFee is 300 EGP (≈ $5.40 USD)\nLocation: Tree House\nZero experience in games needed — I'll be your host and Game Master introducing you to games.\nJoin our WhatsApp g",
+    "category": "General Event",
+    "aiesec_tags": [
+      "general"
+    ],
+    "b2c_score": 4.0,
+    "b2c_priority": "LOW",
+    "recommended_action": "General Monitoring for potential youth presence",
+    "parallel_org": null,
+    "clash_warning": true,
+    "clash_count": 24,
+    "clash_details": [
+      "Zamalek Boardgame Night | NewGame",
+      "Nasr City Boardgame Night | NewGame",
+      "90's Comedy Show"
+    ],
+    "raw_caption": null,
+    "organizer_email": null,
+    "organizer_instagram": null,
+    "organizer_linkedin": null,
+    "organizer_phone": null,
+    "proof_url": "https://www.meetup.com/cairo-tabletop-role-playing-and-board-games-meetup-group/events/317136230/",
+    "proof_type": "Official Organizer Announcement",
+    "is_verified_proof": true,
+    "proof_evidence": "Verified Official Announcement Post",
+    "registration_url": null,
+    "organizer_profile_url": null,
+    "post_direct_url": null,
+    "is_social_first": false
+  },
+  {
+    "event_id": "mu_4291099916",
     "title": "Heliopolis Boardgame Night | NewGame",
     "source": "Meetup",
     "start_date": "2026-10-29T15:00:00",
@@ -2183,11 +2227,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 7,
+    "clash_count": 5,
     "clash_details": [
       "Caribou Coffee Morning Cairo East Walk Mall",
-      "Nasr City Boardgame Night | NewGame",
-      "التجمع الخامس"
+      "التجمع الخامس",
+      "Nasr City Boardgame Night | NewGame"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -2228,11 +2272,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Workshop Attendee Outreach & Digital Flyer Drops",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 24,
+    "clash_count": 26,
     "clash_details": [
       "friendly match",
-      "German Practice | Meet Friends (Professional Host)",
-      "Git & GitHub: From Zero to Contributor"
+      "Alexandria University Career Day & Engineering Forum",
+      "🌐 English Conversation Practice: Professional Host!"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -2271,11 +2315,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 49,
+    "clash_count": 44,
     "clash_details": [
       "Export Smart 4th Edition",
-      "🗣️ English Speaking Practice - Professional Host!",
-      "Improve Your Public Speaking - in Maadi"
+      "Cinema Club",
+      "MSP S27 RECRUITMENT"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -2316,11 +2360,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring (Social / Leisure)",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 49,
+    "clash_count": 44,
     "clash_details": [
       "Export Smart 4th Edition",
-      "🗣️ English Speaking Practice - Professional Host!",
-      "Improve Your Public Speaking - in Maadi"
+      "Cinema Club",
+      "MSP S27 RECRUITMENT"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -2359,11 +2403,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 49,
+    "clash_count": 44,
     "clash_details": [
       "Export Smart 4th Edition",
-      "🗣️ English Speaking Practice - Professional Host!",
-      "Improve Your Public Speaking - in Maadi"
+      "Cinema Club",
+      "MSP S27 RECRUITMENT"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -2402,11 +2446,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 49,
+    "clash_count": 44,
     "clash_details": [
       "Export Smart 4th Edition",
-      "🗣️ English Speaking Practice - Professional Host!",
-      "Improve Your Public Speaking - in Maadi"
+      "Cinema Club",
+      "MSP S27 RECRUITMENT"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -2447,11 +2491,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring (Social / Leisure)",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 49,
+    "clash_count": 44,
     "clash_details": [
       "Export Smart 4th Edition",
-      "🗣️ English Speaking Practice - Professional Host!",
-      "Improve Your Public Speaking - in Maadi"
+      "Cinema Club",
+      "MSP S27 RECRUITMENT"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -2468,14 +2512,14 @@ window.AIESEC_INITIAL_EVENTS = [
     "is_social_first": false
   },
   {
-    "event_id": "mu_3076481015",
+    "event_id": "mu_346774096",
     "title": "Nuweiba 3 Days Adventure",
     "source": "Meetup",
     "start_date": "2026-10-29T19:30:00",
     "end_date": null,
     "date_display": "Oct 29, 2026 · 07:30 PM",
     "location": "Tahrir Square",
-    "city": "Cairo",
+    "city": "Giza",
     "country": "Egypt",
     "url": "https://www.meetup.com/greencampegypt/events/315322040/",
     "ticket_type": "Free",
@@ -2490,11 +2534,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 49,
+    "clash_count": 24,
     "clash_details": [
-      "Export Smart 4th Edition",
-      "🗣️ English Speaking Practice - Professional Host!",
-      "Improve Your Public Speaking - in Maadi"
+      "Zamalek Boardgame Night | NewGame",
+      "Nasr City Boardgame Night | NewGame",
+      "90's Comedy Show"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -2533,11 +2577,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 18,
+    "clash_count": 24,
     "clash_details": [
-      "90's Comedy Show",
-      "World Orchestra",
-      "Halloween - Disco Misr"
+      "Zamalek Boardgame Night | NewGame",
+      "Nasr City Boardgame Night | NewGame",
+      "90's Comedy Show"
     ],
     "raw_caption": null,
     "organizer_email": "support@ticketsmarche.com",
@@ -2576,11 +2620,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 49,
+    "clash_count": 44,
     "clash_details": [
       "Export Smart 4th Edition",
-      "🗣️ English Speaking Practice - Professional Host!",
-      "Improve Your Public Speaking - in Maadi"
+      "Cinema Club",
+      "MSP S27 RECRUITMENT"
     ],
     "raw_caption": null,
     "organizer_email": "support@ticketsmarche.com",
@@ -2619,11 +2663,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 49,
+    "clash_count": 44,
     "clash_details": [
       "Export Smart 4th Edition",
-      "🗣️ English Speaking Practice - Professional Host!",
-      "Improve Your Public Speaking - in Maadi"
+      "Cinema Club",
+      "MSP S27 RECRUITMENT"
     ],
     "raw_caption": null,
     "organizer_email": "support@ticketsmarche.com",
@@ -2705,11 +2749,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 18,
+    "clash_count": 24,
     "clash_details": [
-      "90's Comedy Show",
-      "Impulse: Halloween Edition - Mont Rouge",
-      "World Orchestra"
+      "Zamalek Boardgame Night | NewGame",
+      "Nasr City Boardgame Night | NewGame",
+      "90's Comedy Show"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -2726,14 +2770,14 @@ window.AIESEC_INITIAL_EVENTS = [
     "is_social_first": false
   },
   {
-    "event_id": "mu_1155715016",
+    "event_id": "mu_1371169449",
     "title": "🍀Dahshur Countryside Daytrip ⛰️",
     "source": "Meetup, AllEvents",
     "start_date": "2026-10-30T05:00:00",
     "end_date": null,
     "date_display": "Oct 30, 2026 · 05:00 AM",
     "location": "Tahrir Square",
-    "city": "Cairo",
+    "city": "Giza",
     "country": "Egypt",
     "url": "https://www.meetup.com/greencampegypt/events/315366408/",
     "ticket_type": "Free",
@@ -2748,11 +2792,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 49,
+    "clash_count": 24,
     "clash_details": [
-      "Export Smart 4th Edition",
-      "🗣️ English Speaking Practice - Professional Host!",
-      "Improve Your Public Speaking - in Maadi"
+      "Zamalek Boardgame Night | NewGame",
+      "Nasr City Boardgame Night | NewGame",
+      "90's Comedy Show"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -2769,14 +2813,14 @@ window.AIESEC_INITIAL_EVENTS = [
     "is_social_first": false
   },
   {
-    "event_id": "mu_1101857848",
+    "event_id": "mu_1879388166",
     "title": "Qahwa 5A 5th settlement",
     "source": "Meetup",
     "start_date": "2026-10-30T05:30:00",
     "end_date": null,
     "date_display": "Oct 30, 2026 · 05:30 AM",
     "location": "Qahwa 5A",
-    "city": "Cairo",
+    "city": "Giza",
     "country": "Egypt",
     "url": "https://www.meetup.com/qahwa-coffee-meetup-group/events/316874091/",
     "ticket_type": "Free",
@@ -2791,11 +2835,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 49,
+    "clash_count": 24,
     "clash_details": [
-      "Export Smart 4th Edition",
-      "🗣️ English Speaking Practice - Professional Host!",
-      "Improve Your Public Speaking - in Maadi"
+      "Zamalek Boardgame Night | NewGame",
+      "Nasr City Boardgame Night | NewGame",
+      "90's Comedy Show"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -2812,7 +2856,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "is_social_first": false
   },
   {
-    "event_id": "mu_1927955869",
+    "event_id": "mu_488090504",
     "title": "DevFest 2026: Ignite Your Tech Journey!",
     "source": "Meetup",
     "start_date": "2026-10-30T08:00:00",
@@ -2836,11 +2880,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Workshop Attendee Outreach & Digital Flyer Drops",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 24,
+    "clash_count": 26,
     "clash_details": [
       "friendly match",
-      "German Practice | Meet Friends (Professional Host)",
-      "Git & GitHub: From Zero to Contributor"
+      "Alexandria University Career Day & Engineering Forum",
+      "🌐 English Conversation Practice: Professional Host!"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -2879,11 +2923,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 49,
+    "clash_count": 44,
     "clash_details": [
       "Export Smart 4th Edition",
-      "🗣️ English Speaking Practice - Professional Host!",
-      "Improve Your Public Speaking - in Maadi"
+      "Cinema Club",
+      "MSP S27 RECRUITMENT"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -2922,11 +2966,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 49,
+    "clash_count": 44,
     "clash_details": [
       "Export Smart 4th Edition",
-      "🗣️ English Speaking Practice - Professional Host!",
-      "Improve Your Public Speaking - in Maadi"
+      "Cinema Club",
+      "MSP S27 RECRUITMENT"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -2967,11 +3011,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Tech Talent Sourcing for Global Talent",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 24,
+    "clash_count": 26,
     "clash_details": [
       "friendly match",
-      "German Practice | Meet Friends (Professional Host)",
-      "Git & GitHub: From Zero to Contributor"
+      "Alexandria University Career Day & Engineering Forum",
+      "🌐 English Conversation Practice: Professional Host!"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -3010,11 +3054,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 49,
+    "clash_count": 44,
     "clash_details": [
       "Export Smart 4th Edition",
-      "🗣️ English Speaking Practice - Professional Host!",
-      "Improve Your Public Speaking - in Maadi"
+      "Cinema Club",
+      "MSP S27 RECRUITMENT"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -3056,11 +3100,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Speaker Outreach, Workshop Co-hosting & Youth Leadership Presentation",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 24,
+    "clash_count": 26,
     "clash_details": [
       "friendly match",
-      "German Practice | Meet Friends (Professional Host)",
-      "Git & GitHub: From Zero to Contributor"
+      "Alexandria University Career Day & Engineering Forum",
+      "🌐 English Conversation Practice: Professional Host!"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -3099,11 +3143,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 18,
+    "clash_count": 24,
     "clash_details": [
-      "90's Comedy Show",
-      "Impulse: Halloween Edition - Mont Rouge",
-      "Halloween - Disco Misr"
+      "Zamalek Boardgame Night | NewGame",
+      "Nasr City Boardgame Night | NewGame",
+      "90's Comedy Show"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -3185,11 +3229,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 49,
+    "clash_count": 44,
     "clash_details": [
       "Export Smart 4th Edition",
-      "🗣️ English Speaking Practice - Professional Host!",
-      "Improve Your Public Speaking - in Maadi"
+      "Cinema Club",
+      "MSP S27 RECRUITMENT"
     ],
     "raw_caption": null,
     "organizer_email": "support@ticketsmarche.com",
@@ -3228,11 +3272,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 49,
+    "clash_count": 44,
     "clash_details": [
       "Export Smart 4th Edition",
-      "🗣️ English Speaking Practice - Professional Host!",
-      "Improve Your Public Speaking - in Maadi"
+      "Cinema Club",
+      "MSP S27 RECRUITMENT"
     ],
     "raw_caption": null,
     "organizer_email": "support@ticketsmarche.com",
@@ -3271,11 +3315,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 49,
+    "clash_count": 44,
     "clash_details": [
       "Export Smart 4th Edition",
-      "🗣️ English Speaking Practice - Professional Host!",
-      "Improve Your Public Speaking - in Maadi"
+      "Cinema Club",
+      "MSP S27 RECRUITMENT"
     ],
     "raw_caption": null,
     "organizer_email": "support@ticketsmarche.com",
@@ -3314,11 +3358,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 49,
+    "clash_count": 44,
     "clash_details": [
       "Export Smart 4th Edition",
-      "🗣️ English Speaking Practice - Professional Host!",
-      "Improve Your Public Speaking - in Maadi"
+      "Cinema Club",
+      "MSP S27 RECRUITMENT"
     ],
     "raw_caption": null,
     "organizer_email": "support@ticketsmarche.com",
@@ -3359,11 +3403,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring (Social / Leisure)",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 49,
+    "clash_count": 44,
     "clash_details": [
       "Export Smart 4th Edition",
-      "🗣️ English Speaking Practice - Professional Host!",
-      "Improve Your Public Speaking - in Maadi"
+      "Cinema Club",
+      "MSP S27 RECRUITMENT"
     ],
     "raw_caption": null,
     "organizer_email": "support@ticketsmarche.com",
@@ -3404,11 +3448,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring (Social / Leisure)",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 18,
+    "clash_count": 24,
     "clash_details": [
-      "90's Comedy Show",
-      "Impulse: Halloween Edition - Mont Rouge",
-      "World Orchestra"
+      "Zamalek Boardgame Night | NewGame",
+      "Nasr City Boardgame Night | NewGame",
+      "90's Comedy Show"
     ],
     "raw_caption": null,
     "organizer_email": "support@ticketsmarche.com",
@@ -3447,11 +3491,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 49,
+    "clash_count": 44,
     "clash_details": [
       "Export Smart 4th Edition",
-      "🗣️ English Speaking Practice - Professional Host!",
-      "Improve Your Public Speaking - in Maadi"
+      "Cinema Club",
+      "MSP S27 RECRUITMENT"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -3490,11 +3534,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 49,
+    "clash_count": 44,
     "clash_details": [
       "Export Smart 4th Edition",
-      "🗣️ English Speaking Practice - Professional Host!",
-      "Improve Your Public Speaking - in Maadi"
+      "Cinema Club",
+      "MSP S27 RECRUITMENT"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -3533,11 +3577,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 49,
+    "clash_count": 44,
     "clash_details": [
       "Export Smart 4th Edition",
-      "🗣️ English Speaking Practice - Professional Host!",
-      "Improve Your Public Speaking - in Maadi"
+      "Cinema Club",
+      "MSP S27 RECRUITMENT"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -3576,11 +3620,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 49,
+    "clash_count": 44,
     "clash_details": [
       "Export Smart 4th Edition",
-      "🗣️ English Speaking Practice - Professional Host!",
-      "Improve Your Public Speaking - in Maadi"
+      "Cinema Club",
+      "MSP S27 RECRUITMENT"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -3619,11 +3663,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 7,
+    "clash_count": 5,
     "clash_details": [
       "Caribou Coffee Morning Cairo East Walk Mall",
-      "Nasr City Boardgame Night | NewGame",
-      "Heliopolis Boardgame Night | NewGame"
+      "Heliopolis Boardgame Night | NewGame",
+      "Nasr City Boardgame Night | NewGame"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -3664,11 +3708,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Low Priority B2C / Evaluate solely for B2B Corporate Sponsorship",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 49,
+    "clash_count": 44,
     "clash_details": [
       "Export Smart 4th Edition",
-      "🗣️ English Speaking Practice - Professional Host!",
-      "Improve Your Public Speaking - in Maadi"
+      "Cinema Club",
+      "MSP S27 RECRUITMENT"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -3707,11 +3751,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 49,
+    "clash_count": 44,
     "clash_details": [
       "Export Smart 4th Edition",
-      "🗣️ English Speaking Practice - Professional Host!",
-      "Improve Your Public Speaking - in Maadi"
+      "Cinema Club",
+      "MSP S27 RECRUITMENT"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -3752,11 +3796,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring (Social / Leisure)",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 49,
+    "clash_count": 44,
     "clash_details": [
       "Export Smart 4th Edition",
-      "🗣️ English Speaking Practice - Professional Host!",
-      "Improve Your Public Speaking - in Maadi"
+      "Cinema Club",
+      "MSP S27 RECRUITMENT"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -3795,11 +3839,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 49,
+    "clash_count": 44,
     "clash_details": [
       "Export Smart 4th Edition",
-      "🗣️ English Speaking Practice - Professional Host!",
-      "Improve Your Public Speaking - in Maadi"
+      "Cinema Club",
+      "MSP S27 RECRUITMENT"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -3879,11 +3923,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 49,
+    "clash_count": 44,
     "clash_details": [
       "Export Smart 4th Edition",
-      "🗣️ English Speaking Practice - Professional Host!",
-      "Improve Your Public Speaking - in Maadi"
+      "Cinema Club",
+      "MSP S27 RECRUITMENT"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -3922,11 +3966,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 18,
+    "clash_count": 24,
     "clash_details": [
-      "90's Comedy Show",
-      "Impulse: Halloween Edition - Mont Rouge",
-      "World Orchestra"
+      "Zamalek Boardgame Night | NewGame",
+      "Nasr City Boardgame Night | NewGame",
+      "90's Comedy Show"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -3943,7 +3987,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "is_social_first": false
   },
   {
-    "event_id": "mu_1382940517",
+    "event_id": "mu_1126400088",
     "title": "Nasr City Boardgame Night | NewGame",
     "source": "Meetup",
     "start_date": "2026-10-31T16:00:00",
@@ -3965,11 +4009,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 7,
+    "clash_count": 5,
     "clash_details": [
       "Caribou Coffee Morning Cairo East Walk Mall",
-      "Nasr City Boardgame Night | NewGame",
-      "Heliopolis Boardgame Night | NewGame"
+      "Heliopolis Boardgame Night | NewGame",
+      "التجمع الخامس"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -4052,11 +4096,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Speaker Outreach, Workshop Co-hosting & Youth Leadership Presentation",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 24,
+    "clash_count": 26,
     "clash_details": [
       "friendly match",
-      "German Practice | Meet Friends (Professional Host)",
-      "Git & GitHub: From Zero to Contributor"
+      "Alexandria University Career Day & Engineering Forum",
+      "🌐 English Conversation Practice: Professional Host!"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -4073,7 +4117,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "is_social_first": false
   },
   {
-    "event_id": "mu_3238075972",
+    "event_id": "mu_3339530480",
     "title": "⚡️Boom Room MADINATY meetup #2 (Good Vibes, New faces!)",
     "source": "Meetup",
     "start_date": "2026-10-31T17:00:00",
@@ -4095,11 +4139,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 7,
+    "clash_count": 5,
     "clash_details": [
       "Caribou Coffee Morning Cairo East Walk Mall",
-      "Nasr City Boardgame Night | NewGame",
-      "Heliopolis Boardgame Night | NewGame"
+      "Heliopolis Boardgame Night | NewGame",
+      "التجمع الخامس"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -4138,11 +4182,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 24,
+    "clash_count": 26,
     "clash_details": [
       "friendly match",
-      "German Practice | Meet Friends (Professional Host)",
-      "Git & GitHub: From Zero to Contributor"
+      "Alexandria University Career Day & Engineering Forum",
+      "🌐 English Conversation Practice: Professional Host!"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -4183,11 +4227,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring (Social / Leisure)",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 18,
+    "clash_count": 24,
     "clash_details": [
-      "90's Comedy Show",
-      "Impulse: Halloween Edition - Mont Rouge",
-      "World Orchestra"
+      "Zamalek Boardgame Night | NewGame",
+      "Nasr City Boardgame Night | NewGame",
+      "90's Comedy Show"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -4226,11 +4270,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 49,
+    "clash_count": 44,
     "clash_details": [
       "Export Smart 4th Edition",
-      "🗣️ English Speaking Practice - Professional Host!",
-      "Improve Your Public Speaking - in Maadi"
+      "Cinema Club",
+      "MSP S27 RECRUITMENT"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -4272,11 +4316,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Speaker Outreach, Workshop Co-hosting & Youth Leadership Presentation",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 18,
+    "clash_count": 24,
     "clash_details": [
-      "90's Comedy Show",
-      "Impulse: Halloween Edition - Mont Rouge",
-      "World Orchestra"
+      "Zamalek Boardgame Night | NewGame",
+      "Nasr City Boardgame Night | NewGame",
+      "90's Comedy Show"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -4315,11 +4359,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 18,
+    "clash_count": 24,
     "clash_details": [
-      "90's Comedy Show",
-      "Impulse: Halloween Edition - Mont Rouge",
-      "World Orchestra"
+      "Zamalek Boardgame Night | NewGame",
+      "Nasr City Boardgame Night | NewGame",
+      "90's Comedy Show"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -4358,11 +4402,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 49,
+    "clash_count": 44,
     "clash_details": [
       "Export Smart 4th Edition",
-      "🗣️ English Speaking Practice - Professional Host!",
-      "Improve Your Public Speaking - in Maadi"
+      "Cinema Club",
+      "MSP S27 RECRUITMENT"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -4401,11 +4445,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 18,
+    "clash_count": 24,
     "clash_details": [
-      "90's Comedy Show",
-      "Impulse: Halloween Edition - Mont Rouge",
-      "World Orchestra"
+      "Zamalek Boardgame Night | NewGame",
+      "Nasr City Boardgame Night | NewGame",
+      "90's Comedy Show"
     ],
     "raw_caption": null,
     "organizer_email": "support@ticketsmarche.com",
@@ -4444,11 +4488,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 49,
+    "clash_count": 44,
     "clash_details": [
       "Export Smart 4th Edition",
-      "🗣️ English Speaking Practice - Professional Host!",
-      "Improve Your Public Speaking - in Maadi"
+      "Cinema Club",
+      "MSP S27 RECRUITMENT"
     ],
     "raw_caption": null,
     "organizer_email": "support@ticketsmarche.com",
@@ -4487,11 +4531,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 49,
+    "clash_count": 44,
     "clash_details": [
       "Export Smart 4th Edition",
-      "🗣️ English Speaking Practice - Professional Host!",
-      "Improve Your Public Speaking - in Maadi"
+      "Cinema Club",
+      "MSP S27 RECRUITMENT"
     ],
     "raw_caption": null,
     "organizer_email": "support@ticketsmarche.com",
@@ -4530,11 +4574,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 18,
+    "clash_count": 24,
     "clash_details": [
-      "90's Comedy Show",
-      "Impulse: Halloween Edition - Mont Rouge",
-      "World Orchestra"
+      "Zamalek Boardgame Night | NewGame",
+      "Nasr City Boardgame Night | NewGame",
+      "90's Comedy Show"
     ],
     "raw_caption": null,
     "organizer_email": "support@ticketsmarche.com",
@@ -4573,11 +4617,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 49,
+    "clash_count": 44,
     "clash_details": [
       "Export Smart 4th Edition",
-      "🗣️ English Speaking Practice - Professional Host!",
-      "Improve Your Public Speaking - in Maadi"
+      "Cinema Club",
+      "MSP S27 RECRUITMENT"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -4662,11 +4706,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 49,
+    "clash_count": 44,
     "clash_details": [
       "Export Smart 4th Edition",
-      "🗣️ English Speaking Practice - Professional Host!",
-      "Improve Your Public Speaking - in Maadi"
+      "Cinema Club",
+      "MSP S27 RECRUITMENT"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -4705,11 +4749,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 18,
+    "clash_count": 24,
     "clash_details": [
-      "90's Comedy Show",
-      "Impulse: Halloween Edition - Mont Rouge",
-      "World Orchestra"
+      "Zamalek Boardgame Night | NewGame",
+      "Nasr City Boardgame Night | NewGame",
+      "90's Comedy Show"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -4750,11 +4794,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring (Social / Leisure)",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 49,
+    "clash_count": 44,
     "clash_details": [
       "Export Smart 4th Edition",
-      "🗣️ English Speaking Practice - Professional Host!",
-      "Improve Your Public Speaking - in Maadi"
+      "Cinema Club",
+      "MSP S27 RECRUITMENT"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -4795,11 +4839,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Workshop Attendee Outreach & Digital Flyer Drops",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 24,
+    "clash_count": 26,
     "clash_details": [
       "friendly match",
-      "German Practice | Meet Friends (Professional Host)",
-      "Git & GitHub: From Zero to Contributor"
+      "Alexandria University Career Day & Engineering Forum",
+      "🌐 English Conversation Practice: Professional Host!"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -4838,7 +4882,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 34,
+    "clash_count": 33,
     "clash_details": [
       "Conversation Hub for Teens Course",
       "Foundation Reading and Writing Course ( November 2026)",
@@ -4927,7 +4971,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Speaker Outreach, Workshop Co-hosting & Youth Leadership Presentation",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 34,
+    "clash_count": 33,
     "clash_details": [
       "Grand Opening",
       "Foundation Reading and Writing Course ( November 2026)",
@@ -4973,7 +5017,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Speaker Outreach, Workshop Co-hosting & Youth Leadership Presentation",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 34,
+    "clash_count": 33,
     "clash_details": [
       "Grand Opening",
       "Conversation Hub for Teens Course",
@@ -5016,11 +5060,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 11,
+    "clash_count": 12,
     "clash_details": [
       "Cairo University Engineering & Technology Career Forum",
-      "Mohamed Fawzi's Play",
-      "Bridges to Impact"
+      "Inspire Toastmasters Club Meeting",
+      "Mohamed Fawzi's Play"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -5059,11 +5103,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 11,
+    "clash_count": 12,
     "clash_details": [
       "Cairo University Engineering & Technology Career Forum",
-      "Mohamed Fawzi's Play",
-      "Egypt Stargate Retreat 2026"
+      "Inspire Toastmasters Club Meeting",
+      "Mohamed Fawzi's Play"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -5150,7 +5194,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Major Campus Activation: Deploy Chapter Delegation, Booth Presence & Recruit University Students",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 34,
+    "clash_count": 33,
     "clash_details": [
       "Grand Opening",
       "Conversation Hub for Teens Course",
@@ -5169,52 +5213,6 @@ window.AIESEC_INITIAL_EVENTS = [
     "organizer_profile_url": null,
     "post_direct_url": null,
     "is_social_first": false
-  },
-  {
-    "event_id": "fb_make_friends_cairo_2026",
-    "title": "Cairo International Youth Language & Cultural Exchange Night",
-    "source": "Facebook Events",
-    "start_date": "2026-11-03T08:25:39.527671",
-    "end_date": null,
-    "date_display": "Nov 03, 2026 · 07:30 PM",
-    "location": "Zamalek Youth Cultural Lounge, 26th of July Corridor, Zamalek, Cairo",
-    "city": "Cairo",
-    "country": "Egypt",
-    "url": "https://www.facebook.com/groups/cairomakefriends",
-    "ticket_type": "Free Admission / Open to All Youth",
-    "organizer": "Make Friends Cairo Youth Community (@cairomakefriends)",
-    "description": "The most active youth and international student cultural exchange gathering in Greater Cairo. Convenes university students, foreign exchange delegates, language learners, and young professionals for cross-cultural dialogues and networking in Zamalek.",
-    "category": "Campus & Student Activities",
-    "aiesec_tags": [
-      "campus",
-      "students",
-      "youth",
-      "education"
-    ],
-    "b2c_score": 7.8,
-    "b2c_priority": "MEDIUM",
-    "recommended_action": "Campus Outreach: Engage Student Attendees & Student Union Partners",
-    "parallel_org": null,
-    "clash_warning": true,
-    "clash_count": 34,
-    "clash_details": [
-      "Grand Opening",
-      "Conversation Hub for Teens Course",
-      "Foundation Reading and Writing Course ( November 2026)"
-    ],
-    "raw_caption": null,
-    "organizer_email": null,
-    "organizer_instagram": null,
-    "organizer_linkedin": null,
-    "organizer_phone": null,
-    "proof_url": "https://www.facebook.com/groups/cairomakefriends",
-    "proof_type": "Direct Social Announcement Post",
-    "is_verified_proof": true,
-    "proof_evidence": "Direct announcement post verified via Facebook Events",
-    "registration_url": "https://www.facebook.com/groups/cairomakefriends",
-    "organizer_profile_url": "https://www.facebook.com/groups/cairomakefriends",
-    "post_direct_url": "https://www.facebook.com/groups/cairomakefriends",
-    "is_social_first": true
   },
   {
     "event_id": "ae_200030881633349",
@@ -5258,7 +5256,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "is_social_first": false
   },
   {
-    "event_id": "mu_522875181",
+    "event_id": "mu_2189120852",
     "title": "Cairo Toastmasters Meeting - Develop your public speaking in Tagamo3!",
     "source": "Meetup",
     "start_date": "2026-11-03T17:00:00",
@@ -5302,6 +5300,52 @@ window.AIESEC_INITIAL_EVENTS = [
     "organizer_profile_url": null,
     "post_direct_url": null,
     "is_social_first": false
+  },
+  {
+    "event_id": "fb_make_friends_cairo_2026",
+    "title": "Cairo International Youth Language & Cultural Exchange Night",
+    "source": "Facebook Events",
+    "start_date": "2026-11-03T20:33:28.142401",
+    "end_date": null,
+    "date_display": "Nov 03, 2026 · 07:30 PM",
+    "location": "Zamalek Youth Cultural Lounge, 26th of July Corridor, Zamalek, Cairo",
+    "city": "Cairo",
+    "country": "Egypt",
+    "url": "https://www.facebook.com/groups/cairomakefriends",
+    "ticket_type": "Free Admission / Open to All Youth",
+    "organizer": "Make Friends Cairo Youth Community (@cairomakefriends)",
+    "description": "The most active youth and international student cultural exchange gathering in Greater Cairo. Convenes university students, foreign exchange delegates, language learners, and young professionals for cross-cultural dialogues and networking in Zamalek.",
+    "category": "Campus & Student Activities",
+    "aiesec_tags": [
+      "campus",
+      "students",
+      "youth",
+      "education"
+    ],
+    "b2c_score": 7.8,
+    "b2c_priority": "MEDIUM",
+    "recommended_action": "Campus Outreach: Engage Student Attendees & Student Union Partners",
+    "parallel_org": null,
+    "clash_warning": true,
+    "clash_count": 33,
+    "clash_details": [
+      "Grand Opening",
+      "Conversation Hub for Teens Course",
+      "Foundation Reading and Writing Course ( November 2026)"
+    ],
+    "raw_caption": null,
+    "organizer_email": null,
+    "organizer_instagram": null,
+    "organizer_linkedin": null,
+    "organizer_phone": null,
+    "proof_url": "https://www.facebook.com/groups/cairomakefriends",
+    "proof_type": "Direct Social Announcement Post",
+    "is_verified_proof": true,
+    "proof_evidence": "Direct announcement post verified via Facebook Events",
+    "registration_url": "https://www.facebook.com/groups/cairomakefriends",
+    "organizer_profile_url": "https://www.facebook.com/groups/cairomakefriends",
+    "post_direct_url": "https://www.facebook.com/groups/cairomakefriends",
+    "is_social_first": true
   },
   {
     "event_id": "ae_200030848654621",
@@ -5373,11 +5417,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Key campus activation for Cairo University: Setup booth at engineering quad and pitch international developer internships.",
     "parallel_org": "Student Union",
     "clash_warning": true,
-    "clash_count": 11,
+    "clash_count": 12,
     "clash_details": [
+      "Inspire Toastmasters Club Meeting",
       "Mohamed Fawzi's Play",
-      "Egypt Stargate Retreat 2026",
-      "Bridges to Impact"
+      "Egypt Stargate Retreat 2026"
     ],
     "raw_caption": null,
     "organizer_email": "events@cu.edu.eg",
@@ -5418,7 +5462,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Do Not Deploy (Niche Clinical Target - Incompatible with Youth B2C)",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 34,
+    "clash_count": 33,
     "clash_details": [
       "Grand Opening",
       "Conversation Hub for Teens Course",
@@ -5463,11 +5507,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Do Not Deploy (Niche Clinical Target - Incompatible with Youth B2C)",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 11,
+    "clash_count": 12,
     "clash_details": [
       "Cairo University Engineering & Technology Career Forum",
-      "Mohamed Fawzi's Play",
-      "Egypt Stargate Retreat 2026"
+      "Inspire Toastmasters Club Meeting",
+      "Mohamed Fawzi's Play"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -5484,14 +5528,14 @@ window.AIESEC_INITIAL_EVENTS = [
     "is_social_first": false
   },
   {
-    "event_id": "mu_3726477520",
+    "event_id": "mu_2840846592",
     "title": "Inspire Toastmasters Club Meeting",
     "source": "Meetup",
     "start_date": "2026-11-04T17:00:00",
     "end_date": null,
     "date_display": "Nov 04, 2026 · 05:00 PM",
     "location": "MQR, The Greek Compus",
-    "city": "Cairo",
+    "city": "Giza",
     "country": "Egypt",
     "url": "https://www.meetup.com/cairotmclub/events/316296322/",
     "ticket_type": "Free",
@@ -5510,11 +5554,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Partner Outreach with Toastmasters: Joint Activation / PR Collaboration",
     "parallel_org": "Toastmasters",
     "clash_warning": true,
-    "clash_count": 34,
+    "clash_count": 12,
     "clash_details": [
-      "Grand Opening",
-      "Conversation Hub for Teens Course",
-      "Foundation Reading and Writing Course ( November 2026)"
+      "Cairo University Engineering & Technology Career Forum",
+      "Mohamed Fawzi's Play",
+      "Egypt Stargate Retreat 2026"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -5556,11 +5600,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Speaker Outreach, Workshop Co-hosting & Youth Leadership Presentation",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 11,
+    "clash_count": 12,
     "clash_details": [
       "Cairo University Engineering & Technology Career Forum",
-      "Mohamed Fawzi's Play",
-      "Egypt Stargate Retreat 2026"
+      "Inspire Toastmasters Club Meeting",
+      "Mohamed Fawzi's Play"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -5599,11 +5643,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 11,
+    "clash_count": 12,
     "clash_details": [
       "Cairo University Engineering & Technology Career Forum",
-      "Mohamed Fawzi's Play",
-      "Egypt Stargate Retreat 2026"
+      "Inspire Toastmasters Club Meeting",
+      "Mohamed Fawzi's Play"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -5645,7 +5689,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Speaker Outreach, Workshop Co-hosting & Youth Leadership Presentation",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 34,
+    "clash_count": 33,
     "clash_details": [
       "Grand Opening",
       "Conversation Hub for Teens Course",
@@ -5730,7 +5774,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 34,
+    "clash_count": 33,
     "clash_details": [
       "Grand Opening",
       "Conversation Hub for Teens Course",
@@ -5773,7 +5817,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 34,
+    "clash_count": 33,
     "clash_details": [
       "Grand Opening",
       "Conversation Hub for Teens Course",
@@ -5816,7 +5860,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 34,
+    "clash_count": 33,
     "clash_details": [
       "Grand Opening",
       "Conversation Hub for Teens Course",
@@ -5859,7 +5903,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 34,
+    "clash_count": 33,
     "clash_details": [
       "Grand Opening",
       "Conversation Hub for Teens Course",
@@ -5902,7 +5946,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 34,
+    "clash_count": 33,
     "clash_details": [
       "Grand Opening",
       "Conversation Hub for Teens Course",
@@ -5945,7 +5989,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 34,
+    "clash_count": 33,
     "clash_details": [
       "Grand Opening",
       "Conversation Hub for Teens Course",
@@ -5988,7 +6032,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 34,
+    "clash_count": 33,
     "clash_details": [
       "Grand Opening",
       "Conversation Hub for Teens Course",
@@ -6033,7 +6077,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring (Social / Leisure)",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 34,
+    "clash_count": 33,
     "clash_details": [
       "Grand Opening",
       "Conversation Hub for Teens Course",
@@ -6079,7 +6123,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Speaker Outreach, Workshop Co-hosting & Youth Leadership Presentation",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 34,
+    "clash_count": 33,
     "clash_details": [
       "Grand Opening",
       "Conversation Hub for Teens Course",
@@ -6164,7 +6208,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 34,
+    "clash_count": 33,
     "clash_details": [
       "Grand Opening",
       "Conversation Hub for Teens Course",
@@ -6210,7 +6254,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Speaker Outreach, Workshop Co-hosting & Youth Leadership Presentation",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 34,
+    "clash_count": 33,
     "clash_details": [
       "Grand Opening",
       "Conversation Hub for Teens Course",
@@ -6256,7 +6300,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Deploy partnership desk & pitch startup founders on hiring international tech talent.",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 34,
+    "clash_count": 33,
     "clash_details": [
       "Grand Opening",
       "Conversation Hub for Teens Course",
@@ -6299,11 +6343,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 11,
+    "clash_count": 12,
     "clash_details": [
       "Cairo University Engineering & Technology Career Forum",
-      "Mohamed Fawzi's Play",
-      "Egypt Stargate Retreat 2026"
+      "Inspire Toastmasters Club Meeting",
+      "Mohamed Fawzi's Play"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -6342,7 +6386,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 34,
+    "clash_count": 33,
     "clash_details": [
       "Grand Opening",
       "Conversation Hub for Teens Course",
@@ -6388,7 +6432,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Speaker Outreach, Workshop Co-hosting & Youth Leadership Presentation",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 34,
+    "clash_count": 33,
     "clash_details": [
       "Grand Opening",
       "Conversation Hub for Teens Course",
@@ -6474,7 +6518,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 34,
+    "clash_count": 33,
     "clash_details": [
       "Grand Opening",
       "Conversation Hub for Teens Course",
@@ -6517,11 +6561,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 11,
+    "clash_count": 12,
     "clash_details": [
       "Cairo University Engineering & Technology Career Forum",
-      "Mohamed Fawzi's Play",
-      "Egypt Stargate Retreat 2026"
+      "Inspire Toastmasters Club Meeting",
+      "Mohamed Fawzi's Play"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -6560,7 +6604,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 34,
+    "clash_count": 33,
     "clash_details": [
       "Grand Opening",
       "Conversation Hub for Teens Course",
@@ -6603,7 +6647,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 34,
+    "clash_count": 33,
     "clash_details": [
       "Grand Opening",
       "Conversation Hub for Teens Course",
@@ -6646,7 +6690,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 34,
+    "clash_count": 33,
     "clash_details": [
       "Grand Opening",
       "Conversation Hub for Teens Course",
@@ -6689,7 +6733,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 34,
+    "clash_count": 33,
     "clash_details": [
       "Grand Opening",
       "Conversation Hub for Teens Course",
@@ -6732,11 +6776,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 11,
+    "clash_count": 12,
     "clash_details": [
       "Cairo University Engineering & Technology Career Forum",
-      "Mohamed Fawzi's Play",
-      "Egypt Stargate Retreat 2026"
+      "Inspire Toastmasters Club Meeting",
+      "Mohamed Fawzi's Play"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -6775,7 +6819,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 34,
+    "clash_count": 33,
     "clash_details": [
       "Grand Opening",
       "Conversation Hub for Teens Course",
@@ -6794,53 +6838,6 @@ window.AIESEC_INITIAL_EVENTS = [
     "organizer_profile_url": null,
     "post_direct_url": null,
     "is_social_first": false
-  },
-  {
-    "event_id": "fb_bue_youth_leadership_2026",
-    "title": "BUE Youth Executive Leadership & Entrepreneurship Forum",
-    "source": "Facebook Events",
-    "start_date": "2026-11-07T08:25:39.527629",
-    "end_date": null,
-    "date_display": "Nov 07, 2026 · 01:00 PM",
-    "location": "BUE The British University in Egypt, El Shorouk City, Cairo",
-    "city": "Cairo",
-    "country": "Egypt",
-    "url": "https://www.bue.edu.eg/",
-    "ticket_type": "Registration Required / Certificate of Completion",
-    "organizer": "The British University in Egypt (BUE) Student Union & Business Faculty",
-    "description": "Interactive youth executive leadership and entrepreneurship forum hosted at BUE campus in El Shorouk. Designed for business, law, engineering, and economics undergraduates seeking executive decision-making frameworks, startup incubation, and international career readiness.",
-    "category": "University Conferences & Academic Forums",
-    "aiesec_tags": [
-      "university",
-      "academic",
-      "conference",
-      "campus",
-      "youth"
-    ],
-    "b2c_score": 8.7,
-    "b2c_priority": "HIGH",
-    "recommended_action": "Major Campus Activation: Deploy Chapter Delegation, Booth Presence & Recruit University Students",
-    "parallel_org": "Student Union",
-    "clash_warning": true,
-    "clash_count": 34,
-    "clash_details": [
-      "Grand Opening",
-      "Conversation Hub for Teens Course",
-      "Foundation Reading and Writing Course ( November 2026)"
-    ],
-    "raw_caption": null,
-    "organizer_email": null,
-    "organizer_instagram": null,
-    "organizer_linkedin": null,
-    "organizer_phone": null,
-    "proof_url": "https://www.facebook.com/thebritishuniversityinegypt",
-    "proof_type": "Direct Social Announcement Post",
-    "is_verified_proof": true,
-    "proof_evidence": "Direct announcement post verified via Facebook Events",
-    "registration_url": "https://www.bue.edu.eg/",
-    "organizer_profile_url": "https://www.facebook.com/thebritishuniversityinegypt",
-    "post_direct_url": "https://www.facebook.com/thebritishuniversityinegypt",
-    "is_social_first": true
   },
   {
     "event_id": "summit_hult_prize_egypt_2026",
@@ -6911,7 +6908,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 34,
+    "clash_count": 33,
     "clash_details": [
       "Grand Opening",
       "Conversation Hub for Teens Course",
@@ -6954,11 +6951,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 11,
+    "clash_count": 12,
     "clash_details": [
       "Cairo University Engineering & Technology Career Forum",
-      "Mohamed Fawzi's Play",
-      "Egypt Stargate Retreat 2026"
+      "Inspire Toastmasters Club Meeting",
+      "Mohamed Fawzi's Play"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -7039,11 +7036,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 11,
+    "clash_count": 12,
     "clash_details": [
       "Cairo University Engineering & Technology Career Forum",
-      "Egypt Stargate Retreat 2026",
-      "Bridges to Impact"
+      "Inspire Toastmasters Club Meeting",
+      "Egypt Stargate Retreat 2026"
     ],
     "raw_caption": null,
     "organizer_email": "support@ticketsmarche.com",
@@ -7085,7 +7082,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Major National Activation: Deploy Chapter Delegation, Booth Presence & Global Volunteer Recruitment",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 34,
+    "clash_count": 33,
     "clash_details": [
       "Grand Opening",
       "Conversation Hub for Teens Course",
@@ -7130,7 +7127,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Promote Cross-Cultural Exchange",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 34,
+    "clash_count": 33,
     "clash_details": [
       "Grand Opening",
       "Conversation Hub for Teens Course",
@@ -7173,7 +7170,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 34,
+    "clash_count": 33,
     "clash_details": [
       "Grand Opening",
       "Conversation Hub for Teens Course",
@@ -7192,6 +7189,53 @@ window.AIESEC_INITIAL_EVENTS = [
     "organizer_profile_url": null,
     "post_direct_url": null,
     "is_social_first": false
+  },
+  {
+    "event_id": "fb_bue_youth_leadership_2026",
+    "title": "BUE Youth Executive Leadership & Entrepreneurship Forum",
+    "source": "Facebook Events",
+    "start_date": "2026-11-07T20:33:28.142363",
+    "end_date": null,
+    "date_display": "Nov 07, 2026 · 01:00 PM",
+    "location": "BUE The British University in Egypt, El Shorouk City, Cairo",
+    "city": "Cairo",
+    "country": "Egypt",
+    "url": "https://www.bue.edu.eg/",
+    "ticket_type": "Registration Required / Certificate of Completion",
+    "organizer": "The British University in Egypt (BUE) Student Union & Business Faculty",
+    "description": "Interactive youth executive leadership and entrepreneurship forum hosted at BUE campus in El Shorouk. Designed for business, law, engineering, and economics undergraduates seeking executive decision-making frameworks, startup incubation, and international career readiness.",
+    "category": "University Conferences & Academic Forums",
+    "aiesec_tags": [
+      "university",
+      "academic",
+      "conference",
+      "campus",
+      "youth"
+    ],
+    "b2c_score": 8.7,
+    "b2c_priority": "HIGH",
+    "recommended_action": "Major Campus Activation: Deploy Chapter Delegation, Booth Presence & Recruit University Students",
+    "parallel_org": "Student Union",
+    "clash_warning": true,
+    "clash_count": 33,
+    "clash_details": [
+      "Grand Opening",
+      "Conversation Hub for Teens Course",
+      "Foundation Reading and Writing Course ( November 2026)"
+    ],
+    "raw_caption": null,
+    "organizer_email": null,
+    "organizer_instagram": null,
+    "organizer_linkedin": null,
+    "organizer_phone": null,
+    "proof_url": "https://www.facebook.com/thebritishuniversityinegypt",
+    "proof_type": "Direct Social Announcement Post",
+    "is_verified_proof": true,
+    "proof_evidence": "Direct announcement post verified via Facebook Events",
+    "registration_url": "https://www.bue.edu.eg/",
+    "organizer_profile_url": "https://www.facebook.com/thebritishuniversityinegypt",
+    "post_direct_url": "https://www.facebook.com/thebritishuniversityinegypt",
+    "is_social_first": true
   },
   {
     "event_id": "ae_200030896520812",
@@ -7216,7 +7260,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 34,
+    "clash_count": 33,
     "clash_details": [
       "Grand Opening",
       "Conversation Hub for Teens Course",
@@ -7390,9 +7434,56 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Speaker Outreach, Workshop Co-hosting & Youth Leadership Presentation",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 11,
+    "clash_count": 12,
     "clash_details": [
-      "childrens day",
+      "Improve Your Public Speaking - in Maadi",
+      "BuildStorm Cairo 2026",
+      "RiseUp Summit 2026"
+    ],
+    "raw_caption": null,
+    "organizer_email": null,
+    "organizer_instagram": null,
+    "organizer_linkedin": null,
+    "organizer_phone": null,
+    "proof_url": "https://allevents.in/heliopolis/haute-couture-and-draping-course-90-hrs/200030842365438",
+    "proof_type": "Official Organizer Announcement",
+    "is_verified_proof": true,
+    "proof_evidence": "Verified Official Announcement Post",
+    "registration_url": null,
+    "organizer_profile_url": null,
+    "post_direct_url": null,
+    "is_social_first": false
+  },
+  {
+    "event_id": "mu_4263867066",
+    "title": "Improve Your Public Speaking - in Maadi",
+    "source": "Meetup",
+    "start_date": "2026-11-09T17:00:00",
+    "end_date": null,
+    "date_display": "Nov 09, 2026 · 05:00 PM",
+    "location": "Bio Geometry Consulting Ltd.",
+    "city": "Giza",
+    "country": "Egypt",
+    "url": "https://www.meetup.com/cairotmclub/events/316872136/",
+    "ticket_type": "Free",
+    "organizer": "Cairo Toastmasters - Improve your Public Speaking!",
+    "description": "Do you want to kick your public speaking skills up a couple of notches?\nJoin Maadi Toastmasters Club and practice public speaking with professional speakers from all over the world to ace your next presentation.\n\nWhat's Maadi Toastmasters Club?\n\nA Toastmasters Club meeting is a learn-by-doing event ",
+    "category": "Student Orgs & Campus Leadership",
+    "aiesec_tags": [
+      "Toastmasters",
+      "student",
+      "campus",
+      "youth",
+      "leadership"
+    ],
+    "b2c_score": 8.0,
+    "b2c_priority": "MEDIUM",
+    "recommended_action": "Partner Outreach with Toastmasters: Joint Activation / PR Collaboration",
+    "parallel_org": "Toastmasters",
+    "clash_warning": true,
+    "clash_count": 12,
+    "clash_details": [
+      "BuildStorm Cairo 2026",
       "RiseUp Summit 2026",
       "MOMOS: TRAUMA – Live in Cairo"
     ],
@@ -7401,7 +7492,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "organizer_instagram": null,
     "organizer_linkedin": null,
     "organizer_phone": null,
-    "proof_url": "https://allevents.in/heliopolis/haute-couture-and-draping-course-90-hrs/200030842365438",
+    "proof_url": "https://www.meetup.com/cairotmclub/events/316872136/",
     "proof_type": "Official Organizer Announcement",
     "is_verified_proof": true,
     "proof_evidence": "Verified Official Announcement Post",
@@ -7438,8 +7529,8 @@ window.AIESEC_INITIAL_EVENTS = [
     "clash_count": 21,
     "clash_details": [
       "Good Night, Mom",
-      "Unicorn Store",
-      "IEEE Egypt National Student Congress & Exhibition"
+      "childrens day",
+      "Unicorn Store"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -7478,11 +7569,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 11,
+    "clash_count": 12,
     "clash_details": [
-      "childrens day",
-      "RiseUp Summit 2026",
-      "MOMOS: TRAUMA – Live in Cairo"
+      "Improve Your Public Speaking - in Maadi",
+      "BuildStorm Cairo 2026",
+      "RiseUp Summit 2026"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -7616,8 +7707,8 @@ window.AIESEC_INITIAL_EVENTS = [
     "clash_count": 21,
     "clash_details": [
       "Mina & Mariams wedding day",
-      "Unicorn Store",
-      "IEEE Egypt National Student Congress & Exhibition"
+      "childrens day",
+      "Unicorn Store"
     ],
     "raw_caption": null,
     "organizer_email": "support@ticketsmarche.com",
@@ -7664,7 +7755,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "clash_details": [
       "Mina & Mariams wedding day",
       "Good Night, Mom",
-      "Unicorn Store"
+      "childrens day"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -7688,7 +7779,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "end_date": null,
     "date_display": "Wed, 11 Nov, 2026 - 10:00 AM",
     "location": "١١ شارع محمد المقريف  . المنطقه السادسه (المربع الذهبي )  ، مدينة نصر, Cairo, Cairo Governorate, Egypt",
-    "city": "Giza",
+    "city": "Cairo",
     "country": "Egypt",
     "url": "https://allevents.in/cairo/childrens-day/200030903836937",
     "ticket_type": "Registration / Tickets",
@@ -7703,11 +7794,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 11,
+    "clash_count": 21,
     "clash_details": [
-      "RiseUp Summit 2026",
-      "MOMOS: TRAUMA – Live in Cairo",
-      "El Leila El Kebira x Theatro Arkan"
+      "Mina & Mariams wedding day",
+      "Good Night, Mom",
+      "Unicorn Store"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -7749,11 +7840,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Speaker Outreach, Workshop Co-hosting & Youth Leadership Presentation",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 11,
+    "clash_count": 12,
     "clash_details": [
-      "childrens day",
-      "RiseUp Summit 2026",
-      "MOMOS: TRAUMA – Live in Cairo"
+      "Improve Your Public Speaking - in Maadi",
+      "BuildStorm Cairo 2026",
+      "RiseUp Summit 2026"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -7796,7 +7887,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "clash_details": [
       "Mina & Mariams wedding day",
       "Good Night, Mom",
-      "IEEE Egypt National Student Congress & Exhibition"
+      "childrens day"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -7835,11 +7926,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 11,
+    "clash_count": 12,
     "clash_details": [
-      "childrens day",
-      "RiseUp Summit 2026",
-      "MOMOS: TRAUMA – Live in Cairo"
+      "Improve Your Public Speaking - in Maadi",
+      "BuildStorm Cairo 2026",
+      "RiseUp Summit 2026"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -8008,11 +8099,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 11,
+    "clash_count": 12,
     "clash_details": [
-      "childrens day",
-      "RiseUp Summit 2026",
-      "MOMOS: TRAUMA – Live in Cairo"
+      "Improve Your Public Speaking - in Maadi",
+      "BuildStorm Cairo 2026",
+      "RiseUp Summit 2026"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -8059,7 +8150,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "clash_details": [
       "Mina & Mariams wedding day",
       "Good Night, Mom",
-      "Unicorn Store"
+      "childrens day"
     ],
     "raw_caption": null,
     "organizer_email": "info@ieee-egypt.org",
@@ -8186,11 +8277,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 11,
+    "clash_count": 12,
     "clash_details": [
-      "childrens day",
-      "RiseUp Summit 2026",
-      "MOMOS: TRAUMA – Live in Cairo"
+      "Improve Your Public Speaking - in Maadi",
+      "BuildStorm Cairo 2026",
+      "RiseUp Summit 2026"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -8322,7 +8413,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "clash_details": [
       "Mina & Mariams wedding day",
       "Good Night, Mom",
-      "Unicorn Store"
+      "childrens day"
     ],
     "raw_caption": null,
     "organizer_email": "support@ticketsmarche.com",
@@ -8404,7 +8495,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "clash_details": [
       "Mina & Mariams wedding day",
       "Good Night, Mom",
-      "Unicorn Store"
+      "childrens day"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -8449,7 +8540,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "clash_details": [
       "Mina & Mariams wedding day",
       "Good Night, Mom",
-      "Unicorn Store"
+      "childrens day"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -8550,53 +8641,6 @@ window.AIESEC_INITIAL_EVENTS = [
     "is_social_first": false
   },
   {
-    "event_id": "fb_modern_academy_fair_2026",
-    "title": "ملتقى التوظيف السنوي للأكاديمية الحديثة للعلوم والتكنولوجيا",
-    "source": "Facebook Events",
-    "start_date": "2026-11-13T08:25:39.527570",
-    "end_date": null,
-    "date_display": "Nov 13, 2026 · 09:00 AM",
-    "location": "Modern Academy Campus, Maadi, Cairo",
-    "city": "Cairo",
-    "country": "Egypt",
-    "url": "https://www.modern-academy.edu.eg/",
-    "ticket_type": "Free Student Admission (University ID / CV Required)",
-    "organizer": "Modern Academy for Engineering and Technology Student Union",
-    "description": "ملتقى التوظيف السنوي لطلاب وخريجي الأكاديمية الحديثة للهندسة والتكنولوجيا بالمعادي. يوفر أكثر من 800 فرصة تدريب وتوظيف بمشاركة 45 شركة رائدة في مجالات هندسة الحاسبات، الاتصالات، العمارة، وإدارة الأعمال. يشمل ورش عمل تفاعلية ومراجعة السيرة الذاتية مجاناً لجميع الطلاب والخريجين الجدد.",
-    "category": "Career & Recruitment Fairs",
-    "aiesec_tags": [
-      "career",
-      "job fair",
-      "student",
-      "cv",
-      "internship"
-    ],
-    "b2c_score": 9.2,
-    "b2c_priority": "HIGH",
-    "recommended_action": "Booth Booking & Direct Lead Generation for Global Talent / Teacher",
-    "parallel_org": "Student Union",
-    "clash_warning": true,
-    "clash_count": 21,
-    "clash_details": [
-      "Mina & Mariams wedding day",
-      "Good Night, Mom",
-      "Unicorn Store"
-    ],
-    "raw_caption": null,
-    "organizer_email": null,
-    "organizer_instagram": null,
-    "organizer_linkedin": null,
-    "organizer_phone": null,
-    "proof_url": "https://www.facebook.com/ModernAcademyMaadi",
-    "proof_type": "Direct Social Announcement Post",
-    "is_verified_proof": true,
-    "proof_evidence": "Direct announcement post verified via Facebook Events",
-    "registration_url": "https://www.modern-academy.edu.eg/",
-    "organizer_profile_url": "https://www.facebook.com/ModernAcademyMaadi",
-    "post_direct_url": "https://www.facebook.com/ModernAcademyMaadi",
-    "is_social_first": true
-  },
-  {
     "event_id": "ae_200030906815157",
     "title": "CairoComix 11",
     "source": "AllEvents",
@@ -8623,7 +8667,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "clash_details": [
       "Mina & Mariams wedding day",
       "Good Night, Mom",
-      "Unicorn Store"
+      "childrens day"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -8666,7 +8710,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "clash_details": [
       "Mina & Mariams wedding day",
       "Good Night, Mom",
-      "Unicorn Store"
+      "childrens day"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -8709,7 +8753,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "clash_details": [
       "Mina & Mariams wedding day",
       "Good Night, Mom",
-      "Unicorn Store"
+      "childrens day"
     ],
     "raw_caption": null,
     "organizer_email": "support@ticketsmarche.com",
@@ -8752,7 +8796,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "clash_details": [
       "Mina & Mariams wedding day",
       "Good Night, Mom",
-      "Unicorn Store"
+      "childrens day"
     ],
     "raw_caption": null,
     "organizer_email": "support@ticketsmarche.com",
@@ -8838,7 +8882,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "clash_details": [
       "Mina & Mariams wedding day",
       "Good Night, Mom",
-      "Unicorn Store"
+      "childrens day"
     ],
     "raw_caption": null,
     "organizer_email": "support@ticketsmarche.com",
@@ -8881,7 +8925,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "clash_details": [
       "Mina & Mariams wedding day",
       "Good Night, Mom",
-      "Unicorn Store"
+      "childrens day"
     ],
     "raw_caption": null,
     "organizer_email": "support@ticketsmarche.com",
@@ -8896,6 +8940,53 @@ window.AIESEC_INITIAL_EVENTS = [
     "organizer_profile_url": null,
     "post_direct_url": null,
     "is_social_first": false
+  },
+  {
+    "event_id": "fb_modern_academy_fair_2026",
+    "title": "ملتقى التوظيف السنوي للأكاديمية الحديثة للعلوم والتكنولوجيا",
+    "source": "Facebook Events",
+    "start_date": "2026-11-13T20:33:28.142287",
+    "end_date": null,
+    "date_display": "Nov 13, 2026 · 09:00 AM",
+    "location": "Modern Academy Campus, Maadi, Cairo",
+    "city": "Cairo",
+    "country": "Egypt",
+    "url": "https://www.modern-academy.edu.eg/",
+    "ticket_type": "Free Student Admission (University ID / CV Required)",
+    "organizer": "Modern Academy for Engineering and Technology Student Union",
+    "description": "ملتقى التوظيف السنوي لطلاب وخريجي الأكاديمية الحديثة للهندسة والتكنولوجيا بالمعادي. يوفر أكثر من 800 فرصة تدريب وتوظيف بمشاركة 45 شركة رائدة في مجالات هندسة الحاسبات، الاتصالات، العمارة، وإدارة الأعمال. يشمل ورش عمل تفاعلية ومراجعة السيرة الذاتية مجاناً لجميع الطلاب والخريجين الجدد.",
+    "category": "Career & Recruitment Fairs",
+    "aiesec_tags": [
+      "career",
+      "job fair",
+      "student",
+      "cv",
+      "internship"
+    ],
+    "b2c_score": 9.2,
+    "b2c_priority": "HIGH",
+    "recommended_action": "Booth Booking & Direct Lead Generation for Global Talent / Teacher",
+    "parallel_org": "Student Union",
+    "clash_warning": true,
+    "clash_count": 21,
+    "clash_details": [
+      "Mina & Mariams wedding day",
+      "Good Night, Mom",
+      "childrens day"
+    ],
+    "raw_caption": null,
+    "organizer_email": null,
+    "organizer_instagram": null,
+    "organizer_linkedin": null,
+    "organizer_phone": null,
+    "proof_url": "https://www.facebook.com/ModernAcademyMaadi",
+    "proof_type": "Direct Social Announcement Post",
+    "is_verified_proof": true,
+    "proof_evidence": "Direct announcement post verified via Facebook Events",
+    "registration_url": "https://www.modern-academy.edu.eg/",
+    "organizer_profile_url": "https://www.facebook.com/ModernAcademyMaadi",
+    "post_direct_url": "https://www.facebook.com/ModernAcademyMaadi",
+    "is_social_first": true
   },
   {
     "event_id": "eb_2674521553",
@@ -8924,7 +9015,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "clash_details": [
       "Mina & Mariams wedding day",
       "Good Night, Mom",
-      "Unicorn Store"
+      "childrens day"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -8941,14 +9032,14 @@ window.AIESEC_INITIAL_EVENTS = [
     "is_social_first": false
   },
   {
-    "event_id": "mu_3841302192",
+    "event_id": "mu_2404766709",
     "title": "BuildStorm Cairo 2026",
     "source": "Meetup",
     "start_date": "2026-11-14T07:00:00",
     "end_date": null,
     "date_display": "Nov 14, 2026 · 07:00 AM",
     "location": "MQR, The Greek Compus",
-    "city": "Cairo",
+    "city": "Giza",
     "country": "Egypt",
     "url": "https://www.meetup.com/aws-ug-cairo/events/316958274/",
     "ticket_type": "Free",
@@ -8966,11 +9057,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Promote Global Talent IT & Tech Internship Opportunities",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 21,
+    "clash_count": 12,
     "clash_details": [
-      "Mina & Mariams wedding day",
-      "Good Night, Mom",
-      "Unicorn Store"
+      "Improve Your Public Speaking - in Maadi",
+      "RiseUp Summit 2026",
+      "MOMOS: TRAUMA – Live in Cairo"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -8985,52 +9076,6 @@ window.AIESEC_INITIAL_EVENTS = [
     "organizer_profile_url": null,
     "post_direct_url": null,
     "is_social_first": false
-  },
-  {
-    "event_id": "ig_the_greek_campus_open_hub",
-    "title": "The GrEEK Campus Open Startup Hub & Youth Co-Working Day",
-    "source": "Instagram Feeds",
-    "start_date": "2026-11-14T08:25:39.527711",
-    "end_date": null,
-    "date_display": "Nov 14, 2026 · 12:00 PM",
-    "location": "The Greek Campus, 28 Falaki St, Bab El Louk, Downtown Cairo",
-    "city": "Cairo",
-    "country": "Egypt",
-    "url": "https://www.thegreekcampus.com/eventspaces",
-    "ticket_type": "Free Student Admission / RSVP Required",
-    "organizer": "The GrEEK Campus (@thegreekcampus)",
-    "description": "Downtown Cairo's iconic tech hub opening its doors for a full day of student workshops, startup showcases, and freelance career clinics. Features resident tech companies offering summer internships and project collaborations. Target Audience: Tech enthusiasts, designers, developers, and young entrepreneurs across Greater Cairo. Venue Details: The Greek Campus, Factory Building & Courtyard, 28 Falaki Street, Downtown Cairo. B2C Tactical Opportunity: Prime outdoor branding location for Global Volunteer and Global Talent.",
-    "category": "Campus & Student Activities",
-    "aiesec_tags": [
-      "campus",
-      "students",
-      "youth",
-      "education"
-    ],
-    "b2c_score": 7.8,
-    "b2c_priority": "MEDIUM",
-    "recommended_action": "Campus Outreach: Engage Student Attendees & Student Union Partners",
-    "parallel_org": null,
-    "clash_warning": true,
-    "clash_count": 21,
-    "clash_details": [
-      "Mina & Mariams wedding day",
-      "Good Night, Mom",
-      "Unicorn Store"
-    ],
-    "raw_caption": null,
-    "organizer_email": null,
-    "organizer_instagram": null,
-    "organizer_linkedin": null,
-    "organizer_phone": null,
-    "proof_url": "https://www.thegreekcampus.com/eventspaces",
-    "proof_type": "Direct Social Announcement Post",
-    "is_verified_proof": true,
-    "proof_evidence": "Direct announcement post verified via Instagram Feeds",
-    "registration_url": "https://www.thegreekcampus.com/eventspaces",
-    "organizer_profile_url": "https://www.thegreekcampus.com",
-    "post_direct_url": "https://www.thegreekcampus.com/eventspaces",
-    "is_social_first": true
   },
   {
     "event_id": "summit_riseup_2026",
@@ -9058,11 +9103,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Send chapter youth delegation; engage youth attendees at networking stages for Global Volunteer & Teacher programs.",
     "parallel_org": "RiseUp Community",
     "clash_warning": true,
-    "clash_count": 11,
+    "clash_count": 12,
     "clash_details": [
-      "childrens day",
-      "MOMOS: TRAUMA – Live in Cairo",
-      "El Leila El Kebira x Theatro Arkan"
+      "Improve Your Public Speaking - in Maadi",
+      "BuildStorm Cairo 2026",
+      "MOMOS: TRAUMA – Live in Cairo"
     ],
     "raw_caption": null,
     "organizer_email": "info@riseupsummit.com",
@@ -9108,7 +9153,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "clash_details": [
       "Mina & Mariams wedding day",
       "Good Night, Mom",
-      "Unicorn Store"
+      "childrens day"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -9271,11 +9316,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 11,
+    "clash_count": 12,
     "clash_details": [
-      "childrens day",
-      "RiseUp Summit 2026",
-      "El Leila El Kebira x Theatro Arkan"
+      "Improve Your Public Speaking - in Maadi",
+      "BuildStorm Cairo 2026",
+      "RiseUp Summit 2026"
     ],
     "raw_caption": null,
     "organizer_email": "support@ticketsmarche.com",
@@ -9314,11 +9359,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 11,
+    "clash_count": 12,
     "clash_details": [
-      "childrens day",
-      "RiseUp Summit 2026",
-      "MOMOS: TRAUMA – Live in Cairo"
+      "Improve Your Public Speaking - in Maadi",
+      "BuildStorm Cairo 2026",
+      "RiseUp Summit 2026"
     ],
     "raw_caption": null,
     "organizer_email": "support@ticketsmarche.com",
@@ -9333,6 +9378,52 @@ window.AIESEC_INITIAL_EVENTS = [
     "organizer_profile_url": null,
     "post_direct_url": null,
     "is_social_first": false
+  },
+  {
+    "event_id": "ig_the_greek_campus_open_hub",
+    "title": "The GrEEK Campus Open Startup Hub & Youth Co-Working Day",
+    "source": "Instagram Feeds",
+    "start_date": "2026-11-14T20:33:28.142434",
+    "end_date": null,
+    "date_display": "Nov 14, 2026 · 12:00 PM",
+    "location": "The Greek Campus, 28 Falaki St, Bab El Louk, Downtown Cairo",
+    "city": "Cairo",
+    "country": "Egypt",
+    "url": "https://www.thegreekcampus.com/eventspaces",
+    "ticket_type": "Free Student Admission / RSVP Required",
+    "organizer": "The GrEEK Campus (@thegreekcampus)",
+    "description": "Downtown Cairo's iconic tech hub opening its doors for a full day of student workshops, startup showcases, and freelance career clinics. Features resident tech companies offering summer internships and project collaborations. Target Audience: Tech enthusiasts, designers, developers, and young entrepreneurs across Greater Cairo. Venue Details: The Greek Campus, Factory Building & Courtyard, 28 Falaki Street, Downtown Cairo. B2C Tactical Opportunity: Prime outdoor branding location for Global Volunteer and Global Talent.",
+    "category": "Campus & Student Activities",
+    "aiesec_tags": [
+      "campus",
+      "students",
+      "youth",
+      "education"
+    ],
+    "b2c_score": 7.8,
+    "b2c_priority": "MEDIUM",
+    "recommended_action": "Campus Outreach: Engage Student Attendees & Student Union Partners",
+    "parallel_org": null,
+    "clash_warning": true,
+    "clash_count": 21,
+    "clash_details": [
+      "Mina & Mariams wedding day",
+      "Good Night, Mom",
+      "childrens day"
+    ],
+    "raw_caption": null,
+    "organizer_email": null,
+    "organizer_instagram": null,
+    "organizer_linkedin": null,
+    "organizer_phone": null,
+    "proof_url": "https://www.thegreekcampus.com/eventspaces",
+    "proof_type": "Direct Social Announcement Post",
+    "is_verified_proof": true,
+    "proof_evidence": "Direct announcement post verified via Instagram Feeds",
+    "registration_url": "https://www.thegreekcampus.com/eventspaces",
+    "organizer_profile_url": "https://www.thegreekcampus.com",
+    "post_direct_url": "https://www.thegreekcampus.com/eventspaces",
+    "is_social_first": true
   },
   {
     "event_id": "summit_cairo_ict_2026",
@@ -9364,7 +9455,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "clash_details": [
       "Mina & Mariams wedding day",
       "Good Night, Mom",
-      "Unicorn Store"
+      "childrens day"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -9406,11 +9497,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Speaker Outreach, Workshop Co-hosting & Youth Leadership Presentation",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 11,
+    "clash_count": 12,
     "clash_details": [
-      "childrens day",
-      "RiseUp Summit 2026",
-      "MOMOS: TRAUMA – Live in Cairo"
+      "Improve Your Public Speaking - in Maadi",
+      "BuildStorm Cairo 2026",
+      "RiseUp Summit 2026"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -9455,7 +9546,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "clash_details": [
       "Mina & Mariams wedding day",
       "Good Night, Mom",
-      "Unicorn Store"
+      "childrens day"
     ],
     "raw_caption": null,
     "organizer_email": "support@ticketsmarche.com",
@@ -9494,7 +9585,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 17,
+    "clash_count": 16,
     "clash_details": [
       "The 5th Edition of The Cairo CFO Summit",
       "Max Amini Live in Cairo 18th Nov",
@@ -9539,7 +9630,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Low Priority B2C / Evaluate solely for B2B Corporate Sponsorship",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 17,
+    "clash_count": 16,
     "clash_details": [
       "Max Amini Live in Cairo 18th Nov",
       "4th Annual Egy Derma 2026",
@@ -9631,7 +9722,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Partner Outreach with Toastmasters: Joint Activation / PR Collaboration",
     "parallel_org": "Toastmasters",
     "clash_warning": true,
-    "clash_count": 17,
+    "clash_count": 16,
     "clash_details": [
       "The 5th Edition of The Cairo CFO Summit",
       "Max Amini Live in Cairo 18th Nov",
@@ -9674,7 +9765,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 17,
+    "clash_count": 16,
     "clash_details": [
       "The 5th Edition of The Cairo CFO Summit",
       "4th Annual Egy Derma 2026",
@@ -9803,7 +9894,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Do Not Deploy (Niche Clinical Target - Incompatible with Youth B2C)",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 17,
+    "clash_count": 16,
     "clash_details": [
       "The 5th Edition of The Cairo CFO Summit",
       "Max Amini Live in Cairo 18th Nov",
@@ -9977,7 +10068,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 17,
+    "clash_count": 16,
     "clash_details": [
       "The 5th Edition of The Cairo CFO Summit",
       "Max Amini Live in Cairo 18th Nov",
@@ -10020,8 +10111,9 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 3,
+    "clash_count": 4,
     "clash_details": [
+      "Egypt Azure Community— TBD",
       "GDA 6",
       "FGMA Health Awarness Day"
     ],
@@ -10062,7 +10154,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 17,
+    "clash_count": 16,
     "clash_details": [
       "The 5th Edition of The Cairo CFO Summit",
       "Max Amini Live in Cairo 18th Nov",
@@ -10081,52 +10173,6 @@ window.AIESEC_INITIAL_EVENTS = [
     "organizer_profile_url": null,
     "post_direct_url": null,
     "is_social_first": false
-  },
-  {
-    "event_id": "ig_entreprenelle_skills_masterclass",
-    "title": "Entreprenelle Female Leaders & Youth Skills Masterclass",
-    "source": "Instagram Feeds",
-    "start_date": "2026-11-20T08:25:39.527759",
-    "end_date": null,
-    "date_display": "Nov 20, 2026 · 01:00 PM",
-    "location": "The Greek Campus, Downtown Cairo",
-    "city": "Cairo",
-    "country": "Egypt",
-    "url": "https://entreprenelle.com/programs",
-    "ticket_type": "Free Youth Admission / Pre-Registration",
-    "organizer": "Entreprenelle Egypt (@entreprenelle)",
-    "description": "Empowerment and leadership masterclass curated by Entreprenelle targeting aspiring female entrepreneurs and university changemakers. Covers public speaking, pitch deck design, and international career navigation. Target Audience: University students, female founders, and young professionals. Venue Details: The Greek Campus, Downtown Cairo.",
-    "category": "Youth Leadership & Skills Workshops",
-    "aiesec_tags": [
-      "workshop",
-      "skills",
-      "leadership",
-      "development"
-    ],
-    "b2c_score": 7.5,
-    "b2c_priority": "MEDIUM",
-    "recommended_action": "Speaker Outreach, Workshop Co-hosting & Youth Leadership Presentation",
-    "parallel_org": null,
-    "clash_warning": true,
-    "clash_count": 17,
-    "clash_details": [
-      "The 5th Edition of The Cairo CFO Summit",
-      "Max Amini Live in Cairo 18th Nov",
-      "4th Annual Egy Derma 2026"
-    ],
-    "raw_caption": null,
-    "organizer_email": null,
-    "organizer_instagram": null,
-    "organizer_linkedin": null,
-    "organizer_phone": null,
-    "proof_url": "https://entreprenelle.com/programs",
-    "proof_type": "Direct Social Announcement Post",
-    "is_verified_proof": true,
-    "proof_evidence": "Direct announcement post verified via Instagram Feeds",
-    "registration_url": "https://entreprenelle.com/programs",
-    "organizer_profile_url": "https://entreprenelle.com",
-    "post_direct_url": "https://entreprenelle.com/programs",
-    "is_social_first": true
   },
   {
     "event_id": "ae_200030857190445",
@@ -10199,7 +10245,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Major National Activation: Deploy Chapter Delegation, Booth Presence & Global Volunteer Recruitment",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 17,
+    "clash_count": 16,
     "clash_details": [
       "The 5th Edition of The Cairo CFO Summit",
       "Max Amini Live in Cairo 18th Nov",
@@ -10285,7 +10331,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 17,
+    "clash_count": 16,
     "clash_details": [
       "The 5th Edition of The Cairo CFO Summit",
       "Max Amini Live in Cairo 18th Nov",
@@ -10328,7 +10374,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 17,
+    "clash_count": 16,
     "clash_details": [
       "The 5th Edition of The Cairo CFO Summit",
       "Max Amini Live in Cairo 18th Nov",
@@ -10371,7 +10417,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 17,
+    "clash_count": 16,
     "clash_details": [
       "The 5th Edition of The Cairo CFO Summit",
       "Max Amini Live in Cairo 18th Nov",
@@ -10431,6 +10477,52 @@ window.AIESEC_INITIAL_EVENTS = [
     "organizer_profile_url": null,
     "post_direct_url": null,
     "is_social_first": false
+  },
+  {
+    "event_id": "ig_entreprenelle_skills_masterclass",
+    "title": "Entreprenelle Female Leaders & Youth Skills Masterclass",
+    "source": "Instagram Feeds",
+    "start_date": "2026-11-20T20:33:28.142481",
+    "end_date": null,
+    "date_display": "Nov 20, 2026 · 01:00 PM",
+    "location": "The Greek Campus, Downtown Cairo",
+    "city": "Cairo",
+    "country": "Egypt",
+    "url": "https://entreprenelle.com/programs",
+    "ticket_type": "Free Youth Admission / Pre-Registration",
+    "organizer": "Entreprenelle Egypt (@entreprenelle)",
+    "description": "Empowerment and leadership masterclass curated by Entreprenelle targeting aspiring female entrepreneurs and university changemakers. Covers public speaking, pitch deck design, and international career navigation. Target Audience: University students, female founders, and young professionals. Venue Details: The Greek Campus, Downtown Cairo.",
+    "category": "Youth Leadership & Skills Workshops",
+    "aiesec_tags": [
+      "workshop",
+      "skills",
+      "leadership",
+      "development"
+    ],
+    "b2c_score": 7.5,
+    "b2c_priority": "MEDIUM",
+    "recommended_action": "Speaker Outreach, Workshop Co-hosting & Youth Leadership Presentation",
+    "parallel_org": null,
+    "clash_warning": true,
+    "clash_count": 16,
+    "clash_details": [
+      "The 5th Edition of The Cairo CFO Summit",
+      "Max Amini Live in Cairo 18th Nov",
+      "4th Annual Egy Derma 2026"
+    ],
+    "raw_caption": null,
+    "organizer_email": null,
+    "organizer_instagram": null,
+    "organizer_linkedin": null,
+    "organizer_phone": null,
+    "proof_url": "https://entreprenelle.com/programs",
+    "proof_type": "Direct Social Announcement Post",
+    "is_verified_proof": true,
+    "proof_evidence": "Direct announcement post verified via Instagram Feeds",
+    "registration_url": "https://entreprenelle.com/programs",
+    "organizer_profile_url": "https://entreprenelle.com",
+    "post_direct_url": "https://entreprenelle.com/programs",
+    "is_social_first": true
   },
   {
     "event_id": "ae_200030333805406",
@@ -10498,9 +10590,10 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 3,
+    "clash_count": 4,
     "clash_details": [
       "Meen Amin",
+      "Egypt Azure Community— TBD",
       "FGMA Health Awarness Day"
     ],
     "raw_caption": null,
@@ -10540,9 +10633,10 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "General Monitoring for potential youth presence",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 3,
+    "clash_count": 4,
     "clash_details": [
       "Meen Amin",
+      "Egypt Azure Community— TBD",
       "GDA 6"
     ],
     "raw_caption": null,
@@ -10560,14 +10654,14 @@ window.AIESEC_INITIAL_EVENTS = [
     "is_social_first": false
   },
   {
-    "event_id": "mu_1819275575",
+    "event_id": "mu_882817245",
     "title": "Egypt Azure Community— TBD",
     "source": "Meetup",
     "start_date": "2026-11-21T17:00:00",
     "end_date": null,
     "date_display": "Nov 21, 2026 · 05:00 PM",
     "location": "TBA",
-    "city": "Cairo",
+    "city": "Giza",
     "country": "Egypt",
     "url": "https://www.meetup.com/egyptazurecommunity/events/317052210/",
     "ticket_type": "Free",
@@ -10584,11 +10678,11 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Workshop Attendee Outreach & Digital Flyer Drops",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 17,
+    "clash_count": 4,
     "clash_details": [
-      "The 5th Edition of The Cairo CFO Summit",
-      "Max Amini Live in Cairo 18th Nov",
-      "4th Annual Egy Derma 2026"
+      "Meen Amin",
+      "GDA 6",
+      "FGMA Health Awarness Day"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -10629,7 +10723,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "National Activation: Secondary Presence & Digital Lead Harvesting",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 17,
+    "clash_count": 16,
     "clash_details": [
       "The 5th Edition of The Cairo CFO Summit",
       "Max Amini Live in Cairo 18th Nov",
@@ -10675,7 +10769,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Major National Activation: Deploy Chapter Delegation, Booth Presence & Global Volunteer Recruitment",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 17,
+    "clash_count": 16,
     "clash_details": [
       "The 5th Edition of The Cairo CFO Summit",
       "Max Amini Live in Cairo 18th Nov",
@@ -10739,52 +10833,6 @@ window.AIESEC_INITIAL_EVENTS = [
     "is_social_first": false
   },
   {
-    "event_id": "fb_club_de_la_salle_medical_2026",
-    "title": "برنامج التدريب الطبي الطلابي الخامس - 'الومضة الخامسة' 2026",
-    "source": "Facebook Events",
-    "start_date": "2026-11-22T08:25:39.527689",
-    "end_date": null,
-    "date_display": "Nov 22, 2026 · 10:00 AM",
-    "location": "Club De La Salle, Daher, Cairo",
-    "city": "Cairo",
-    "country": "Egypt",
-    "url": "https://ifmsa.eg/",
-    "ticket_type": "Free Student Enrollment",
-    "organizer": "Club De La Salle Medical Student Committee & IFMSA Egypt",
-    "description": "برنامج تدريبي متقدم يستهدف طلاب كليات الطب والصيدلة والتمريض بمختلف الجامعات المصرية. يركز على مهارات التواصل مع المرضى، الإسعافات الأولية المتقدمة، وإدارة الفرق الطبية التطوعية في القوافل العلاجية.",
-    "category": "Youth Leadership & Skills Workshops",
-    "aiesec_tags": [
-      "workshop",
-      "skills",
-      "leadership",
-      "development"
-    ],
-    "b2c_score": 7.5,
-    "b2c_priority": "MEDIUM",
-    "recommended_action": "Speaker Outreach, Workshop Co-hosting & Youth Leadership Presentation",
-    "parallel_org": null,
-    "clash_warning": true,
-    "clash_count": 17,
-    "clash_details": [
-      "The 5th Edition of The Cairo CFO Summit",
-      "Max Amini Live in Cairo 18th Nov",
-      "4th Annual Egy Derma 2026"
-    ],
-    "raw_caption": null,
-    "organizer_email": null,
-    "organizer_instagram": null,
-    "organizer_linkedin": null,
-    "organizer_phone": null,
-    "proof_url": "https://ifmsa.eg/",
-    "proof_type": "Direct Social Announcement Post",
-    "is_verified_proof": true,
-    "proof_evidence": "Direct announcement post verified via Facebook Events",
-    "registration_url": "https://ifmsa.eg/",
-    "organizer_profile_url": "https://ifmsa.eg/",
-    "post_direct_url": "https://ifmsa.eg/",
-    "is_social_first": true
-  },
-  {
     "event_id": "ae_200030881267936",
     "title": "11th Egypt Automotive Summit",
     "source": "AllEvents",
@@ -10810,7 +10858,7 @@ window.AIESEC_INITIAL_EVENTS = [
     "recommended_action": "Major National Activation: Deploy Chapter Delegation, Booth Presence & Global Volunteer Recruitment",
     "parallel_org": null,
     "clash_warning": true,
-    "clash_count": 17,
+    "clash_count": 16,
     "clash_details": [
       "The 5th Edition of The Cairo CFO Summit",
       "Max Amini Live in Cairo 18th Nov",
@@ -10876,6 +10924,52 @@ window.AIESEC_INITIAL_EVENTS = [
     "is_social_first": true
   },
   {
+    "event_id": "fb_club_de_la_salle_medical_2026",
+    "title": "برنامج التدريب الطبي الطلابي الخامس - 'الومضة الخامسة' 2026",
+    "source": "Facebook Events",
+    "start_date": "2026-11-22T20:33:28.142416",
+    "end_date": null,
+    "date_display": "Nov 22, 2026 · 10:00 AM",
+    "location": "Club De La Salle, Daher, Cairo",
+    "city": "Cairo",
+    "country": "Egypt",
+    "url": "https://ifmsa.eg/",
+    "ticket_type": "Free Student Enrollment",
+    "organizer": "Club De La Salle Medical Student Committee & IFMSA Egypt",
+    "description": "برنامج تدريبي متقدم يستهدف طلاب كليات الطب والصيدلة والتمريض بمختلف الجامعات المصرية. يركز على مهارات التواصل مع المرضى، الإسعافات الأولية المتقدمة، وإدارة الفرق الطبية التطوعية في القوافل العلاجية.",
+    "category": "Youth Leadership & Skills Workshops",
+    "aiesec_tags": [
+      "workshop",
+      "skills",
+      "leadership",
+      "development"
+    ],
+    "b2c_score": 7.5,
+    "b2c_priority": "MEDIUM",
+    "recommended_action": "Speaker Outreach, Workshop Co-hosting & Youth Leadership Presentation",
+    "parallel_org": null,
+    "clash_warning": true,
+    "clash_count": 16,
+    "clash_details": [
+      "The 5th Edition of The Cairo CFO Summit",
+      "Max Amini Live in Cairo 18th Nov",
+      "4th Annual Egy Derma 2026"
+    ],
+    "raw_caption": null,
+    "organizer_email": null,
+    "organizer_instagram": null,
+    "organizer_linkedin": null,
+    "organizer_phone": null,
+    "proof_url": "https://ifmsa.eg/",
+    "proof_type": "Direct Social Announcement Post",
+    "is_verified_proof": true,
+    "proof_evidence": "Direct announcement post verified via Facebook Events",
+    "registration_url": "https://ifmsa.eg/",
+    "organizer_profile_url": "https://ifmsa.eg/",
+    "post_direct_url": "https://ifmsa.eg/",
+    "is_social_first": true
+  },
+  {
     "event_id": "ae_200030651478814",
     "title": "Epic Red Sea Scuba Safari Nile Cruise",
     "source": "AllEvents",
@@ -10915,10 +11009,98 @@ window.AIESEC_INITIAL_EVENTS = [
     "is_social_first": false
   },
   {
+    "event_id": "ae_80003155923058",
+    "title": "IEX Egypt (Edtech Expo)",
+    "source": "AllEvents",
+    "start_date": "2026-11-23T09:00:00",
+    "end_date": null,
+    "date_display": "Mon, 23 Nov, 2026 - 09:00 AM",
+    "location": "EIEC",
+    "city": "Cairo",
+    "country": "Egypt",
+    "url": "https://allevents.in/cairo/iex-egypt-edtech-expo/80003155923058",
+    "ticket_type": "Registration / Tickets",
+    "organizer": "AllEvents Organizer",
+    "description": "",
+    "category": "B2B & Industrial Trade Expo",
+    "aiesec_tags": [
+      "trade_expo",
+      "b2b",
+      "industry"
+    ],
+    "b2c_score": 3.0,
+    "b2c_priority": "LOW",
+    "recommended_action": "Low Priority B2C / Evaluate solely for B2B Corporate Sponsorship",
+    "parallel_org": null,
+    "clash_warning": true,
+    "clash_count": 9,
+    "clash_details": [
+      "Thanksgiving - Wonders of Egypt by EuroTrip Adventures",
+      "Youth Speak Forum Egypt 2026",
+      "32nd Annual International Conference of the Egyptian Fertility and Sterility Society (E.F.S.S.)"
+    ],
+    "raw_caption": null,
+    "organizer_email": null,
+    "organizer_instagram": null,
+    "organizer_linkedin": null,
+    "organizer_phone": null,
+    "proof_url": "https://allevents.in/cairo/iex-egypt-edtech-expo/80003155923058",
+    "proof_type": "Official Organizer Announcement",
+    "is_verified_proof": true,
+    "proof_evidence": "Verified Official Announcement Post",
+    "registration_url": null,
+    "organizer_profile_url": null,
+    "post_direct_url": null,
+    "is_social_first": false
+  },
+  {
+    "event_id": "ae_200030614253152",
+    "title": "Thanksgiving - Wonders of Egypt by EuroTrip Adventures",
+    "source": "AllEvents",
+    "start_date": "2026-11-23T11:00:00",
+    "end_date": null,
+    "date_display": "Mon, 23 Nov, 2026 - 11:00 AM",
+    "location": "Egypt, Cairo, Luxor",
+    "city": "Cairo",
+    "country": "Egypt",
+    "url": "https://allevents.in/cairo/thanksgiving-wonders-of-egypt-by-eurotrip-adventures/200030614253152",
+    "ticket_type": "Registration / Tickets",
+    "organizer": "AllEvents Organizer",
+    "description": "",
+    "category": "General Event",
+    "aiesec_tags": [
+      "general"
+    ],
+    "b2c_score": 4.0,
+    "b2c_priority": "LOW",
+    "recommended_action": "General Monitoring for potential youth presence",
+    "parallel_org": null,
+    "clash_warning": true,
+    "clash_count": 9,
+    "clash_details": [
+      "IEX Egypt (Edtech Expo)",
+      "Youth Speak Forum Egypt 2026",
+      "32nd Annual International Conference of the Egyptian Fertility and Sterility Society (E.F.S.S.)"
+    ],
+    "raw_caption": null,
+    "organizer_email": null,
+    "organizer_instagram": null,
+    "organizer_linkedin": null,
+    "organizer_phone": null,
+    "proof_url": "https://allevents.in/cairo/thanksgiving-wonders-of-egypt-by-eurotrip-adventures/200030614253152",
+    "proof_type": "Official Organizer Announcement",
+    "is_verified_proof": true,
+    "proof_evidence": "Verified Official Announcement Post",
+    "registration_url": null,
+    "organizer_profile_url": null,
+    "post_direct_url": null,
+    "is_social_first": false
+  },
+  {
     "event_id": "ig_youth_speak_forum_egypt",
     "title": "Youth Speak Forum Egypt 2026",
     "source": "Instagram Feeds",
-    "start_date": "2026-11-23T08:25:39.527729",
+    "start_date": "2026-11-23T20:33:28.142452",
     "end_date": null,
     "date_display": "Nov 23, 2026 · 10:00 AM",
     "location": "The American University in Cairo (AUC Tahrir Square), Downtown Cairo",
@@ -10961,98 +11143,10 @@ window.AIESEC_INITIAL_EVENTS = [
     "is_social_first": true
   },
   {
-    "event_id": "ae_80003155923058",
-    "title": "IEX Egypt (Edtech Expo)",
-    "source": "AllEvents",
-    "start_date": "2026-11-23T09:00:00",
-    "end_date": null,
-    "date_display": "Mon, 23 Nov, 2026 - 09:00 AM",
-    "location": "EIEC",
-    "city": "Cairo",
-    "country": "Egypt",
-    "url": "https://allevents.in/cairo/iex-egypt-edtech-expo/80003155923058",
-    "ticket_type": "Registration / Tickets",
-    "organizer": "AllEvents Organizer",
-    "description": "",
-    "category": "B2B & Industrial Trade Expo",
-    "aiesec_tags": [
-      "trade_expo",
-      "b2b",
-      "industry"
-    ],
-    "b2c_score": 3.0,
-    "b2c_priority": "LOW",
-    "recommended_action": "Low Priority B2C / Evaluate solely for B2B Corporate Sponsorship",
-    "parallel_org": null,
-    "clash_warning": true,
-    "clash_count": 9,
-    "clash_details": [
-      "Youth Speak Forum Egypt 2026",
-      "Thanksgiving - Wonders of Egypt by EuroTrip Adventures",
-      "32nd Annual International Conference of the Egyptian Fertility and Sterility Society (E.F.S.S.)"
-    ],
-    "raw_caption": null,
-    "organizer_email": null,
-    "organizer_instagram": null,
-    "organizer_linkedin": null,
-    "organizer_phone": null,
-    "proof_url": "https://allevents.in/cairo/iex-egypt-edtech-expo/80003155923058",
-    "proof_type": "Official Organizer Announcement",
-    "is_verified_proof": true,
-    "proof_evidence": "Verified Official Announcement Post",
-    "registration_url": null,
-    "organizer_profile_url": null,
-    "post_direct_url": null,
-    "is_social_first": false
-  },
-  {
-    "event_id": "ae_200030614253152",
-    "title": "Thanksgiving - Wonders of Egypt by EuroTrip Adventures",
-    "source": "AllEvents",
-    "start_date": "2026-11-23T11:00:00",
-    "end_date": null,
-    "date_display": "Mon, 23 Nov, 2026 - 11:00 AM",
-    "location": "Egypt, Cairo, Luxor",
-    "city": "Cairo",
-    "country": "Egypt",
-    "url": "https://allevents.in/cairo/thanksgiving-wonders-of-egypt-by-eurotrip-adventures/200030614253152",
-    "ticket_type": "Registration / Tickets",
-    "organizer": "AllEvents Organizer",
-    "description": "",
-    "category": "General Event",
-    "aiesec_tags": [
-      "general"
-    ],
-    "b2c_score": 4.0,
-    "b2c_priority": "LOW",
-    "recommended_action": "General Monitoring for potential youth presence",
-    "parallel_org": null,
-    "clash_warning": true,
-    "clash_count": 9,
-    "clash_details": [
-      "Youth Speak Forum Egypt 2026",
-      "IEX Egypt (Edtech Expo)",
-      "32nd Annual International Conference of the Egyptian Fertility and Sterility Society (E.F.S.S.)"
-    ],
-    "raw_caption": null,
-    "organizer_email": null,
-    "organizer_instagram": null,
-    "organizer_linkedin": null,
-    "organizer_phone": null,
-    "proof_url": "https://allevents.in/cairo/thanksgiving-wonders-of-egypt-by-eurotrip-adventures/200030614253152",
-    "proof_type": "Official Organizer Announcement",
-    "is_verified_proof": true,
-    "proof_evidence": "Verified Official Announcement Post",
-    "registration_url": null,
-    "organizer_profile_url": null,
-    "post_direct_url": null,
-    "is_social_first": false
-  },
-  {
     "event_id": "fb_suez_canal_univ_conf_2026",
     "title": "The Tenth International Student & Scientific Conference of Suez Canal University",
     "source": "Facebook Events",
-    "start_date": "2026-11-24T08:25:39.527652",
+    "start_date": "2026-11-24T20:33:28.142385",
     "end_date": null,
     "date_display": "Nov 24, 2026 · 09:00 AM",
     "location": "Suez Canal University Grand Conference Complex",
@@ -11208,9 +11302,9 @@ window.AIESEC_INITIAL_EVENTS = [
     "clash_warning": true,
     "clash_count": 9,
     "clash_details": [
-      "Youth Speak Forum Egypt 2026",
       "IEX Egypt (Edtech Expo)",
-      "Thanksgiving - Wonders of Egypt by EuroTrip Adventures"
+      "Thanksgiving - Wonders of Egypt by EuroTrip Adventures",
+      "Youth Speak Forum Egypt 2026"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -11251,9 +11345,9 @@ window.AIESEC_INITIAL_EVENTS = [
     "clash_warning": true,
     "clash_count": 9,
     "clash_details": [
-      "Youth Speak Forum Egypt 2026",
       "IEX Egypt (Edtech Expo)",
-      "Thanksgiving - Wonders of Egypt by EuroTrip Adventures"
+      "Thanksgiving - Wonders of Egypt by EuroTrip Adventures",
+      "Youth Speak Forum Egypt 2026"
     ],
     "raw_caption": null,
     "organizer_email": "support@ticketsmarche.com",
@@ -11298,9 +11392,9 @@ window.AIESEC_INITIAL_EVENTS = [
     "clash_warning": true,
     "clash_count": 9,
     "clash_details": [
-      "Youth Speak Forum Egypt 2026",
       "IEX Egypt (Edtech Expo)",
-      "Thanksgiving - Wonders of Egypt by EuroTrip Adventures"
+      "Thanksgiving - Wonders of Egypt by EuroTrip Adventures",
+      "Youth Speak Forum Egypt 2026"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -11317,10 +11411,53 @@ window.AIESEC_INITIAL_EVENTS = [
     "is_social_first": false
   },
   {
+    "event_id": "tm_tamer-ashour_9638",
+    "title": "Tamer Ashour",
+    "source": "TicketsMarche",
+    "start_date": "2026-11-27T20:00:00",
+    "end_date": null,
+    "date_display": "Nov 27 · 09:30 PM",
+    "location": "Fustat",
+    "city": "Cairo",
+    "country": "Egypt",
+    "url": "https://www.ticketsmarche.com/event/tamer-ashour_9638",
+    "ticket_type": "800.00 EGP",
+    "organizer": "Waleed Mansour",
+    "description": "Tamer Ashour organized by Waleed Mansour. Tickets available on TicketsMarche (800.00 EGP). Venue: Fustat.",
+    "category": "General Event",
+    "aiesec_tags": [
+      "general"
+    ],
+    "b2c_score": 4.0,
+    "b2c_priority": "LOW",
+    "recommended_action": "General Monitoring for potential youth presence",
+    "parallel_org": null,
+    "clash_warning": true,
+    "clash_count": 9,
+    "clash_details": [
+      "IEX Egypt (Edtech Expo)",
+      "Thanksgiving - Wonders of Egypt by EuroTrip Adventures",
+      "Youth Speak Forum Egypt 2026"
+    ],
+    "raw_caption": null,
+    "organizer_email": "support@ticketsmarche.com",
+    "organizer_instagram": "ticketsmarche",
+    "organizer_linkedin": "company/ticketsmarche",
+    "organizer_phone": "16826",
+    "proof_url": "https://www.ticketsmarche.com/event/tamer-ashour_9638",
+    "proof_type": "Ticketsmarche Verified Registry",
+    "is_verified_proof": true,
+    "proof_evidence": "Verified Official Announcement Post",
+    "registration_url": null,
+    "organizer_profile_url": null,
+    "post_direct_url": null,
+    "is_social_first": false
+  },
+  {
     "event_id": "fb_eage26_conference",
     "title": "e-AGE26 - المؤتمر السنوي السادس عشر للمنظمة العربية لشبكات البحث العلمي والتعليم",
     "source": "Facebook Events",
-    "start_date": "2026-11-27T08:25:40.005023",
+    "start_date": "2026-11-27T20:33:31.320775",
     "end_date": null,
     "date_display": "Nov 27, 2026 · 09:30 AM",
     "location": "Bibliotheca Alexandrina & Alexandria University Conference Center",
@@ -11361,49 +11498,6 @@ window.AIESEC_INITIAL_EVENTS = [
     "organizer_profile_url": "https://asren.net/",
     "post_direct_url": "https://asren.net/",
     "is_social_first": true
-  },
-  {
-    "event_id": "tm_tamer-ashour_9638",
-    "title": "Tamer Ashour",
-    "source": "TicketsMarche",
-    "start_date": "2026-11-27T20:00:00",
-    "end_date": null,
-    "date_display": "Nov 27 · 09:30 PM",
-    "location": "Fustat",
-    "city": "Cairo",
-    "country": "Egypt",
-    "url": "https://www.ticketsmarche.com/event/tamer-ashour_9638",
-    "ticket_type": "800.00 EGP",
-    "organizer": "Waleed Mansour",
-    "description": "Tamer Ashour organized by Waleed Mansour. Tickets available on TicketsMarche (800.00 EGP). Venue: Fustat.",
-    "category": "General Event",
-    "aiesec_tags": [
-      "general"
-    ],
-    "b2c_score": 4.0,
-    "b2c_priority": "LOW",
-    "recommended_action": "General Monitoring for potential youth presence",
-    "parallel_org": null,
-    "clash_warning": true,
-    "clash_count": 9,
-    "clash_details": [
-      "Youth Speak Forum Egypt 2026",
-      "IEX Egypt (Edtech Expo)",
-      "Thanksgiving - Wonders of Egypt by EuroTrip Adventures"
-    ],
-    "raw_caption": null,
-    "organizer_email": "support@ticketsmarche.com",
-    "organizer_instagram": "ticketsmarche",
-    "organizer_linkedin": "company/ticketsmarche",
-    "organizer_phone": "16826",
-    "proof_url": "https://www.ticketsmarche.com/event/tamer-ashour_9638",
-    "proof_type": "Ticketsmarche Verified Registry",
-    "is_verified_proof": true,
-    "proof_evidence": "Verified Official Announcement Post",
-    "registration_url": null,
-    "organizer_profile_url": null,
-    "post_direct_url": null,
-    "is_social_first": false
   },
   {
     "event_id": "summit_she_can_2026",
@@ -11476,9 +11570,9 @@ window.AIESEC_INITIAL_EVENTS = [
     "clash_warning": true,
     "clash_count": 9,
     "clash_details": [
-      "Youth Speak Forum Egypt 2026",
       "IEX Egypt (Edtech Expo)",
-      "Thanksgiving - Wonders of Egypt by EuroTrip Adventures"
+      "Thanksgiving - Wonders of Egypt by EuroTrip Adventures",
+      "Youth Speak Forum Egypt 2026"
     ],
     "raw_caption": null,
     "organizer_email": null,
@@ -11651,9 +11745,9 @@ window.AIESEC_INITIAL_EVENTS = [
     "clash_warning": true,
     "clash_count": 9,
     "clash_details": [
-      "Youth Speak Forum Egypt 2026",
       "IEX Egypt (Edtech Expo)",
-      "Thanksgiving - Wonders of Egypt by EuroTrip Adventures"
+      "Thanksgiving - Wonders of Egypt by EuroTrip Adventures",
+      "Youth Speak Forum Egypt 2026"
     ],
     "raw_caption": null,
     "organizer_email": "support@ticketsmarche.com",
